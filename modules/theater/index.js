@@ -3966,7 +3966,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const text = String(value || '').trim();
         if (!text) return { year:'', month:'', day:'', time:'', date:'', label:'' };
         let year = '', month = '', day = '', time = '';
-        const full = [...text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))[-\/.年]\s*(1[0-2]|0?[1-9])(?:[-\/.月]\s*(3[01]|[12]\d|0?[1-9]))?/g)].at(-1);
+        const full = [...text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*[-\/.]\s*(1[0-2]|0?[1-9])(?:\s*[-\/.]\s*(3[01]|[12]\d|0?[1-9]))?/g)].at(-1);
         if (full) {
             year = full[1] || '';
             month = String(Number(full[2] || 0) || '');
@@ -3977,7 +3977,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const fact = facts.at(-1);
             if (fact) { month = String(fact.month); day = String(fact.day); }
         }
-        const clock = [...text.matchAll(/(?:^|[^\d])([01]?\d|2[0-3])\s*(?::|：|点|时)\s*([0-5]?\d)?\s*(?:分)?/g)].at(-1);
+        const clock = [...text.matchAll(/(?:^|[^\d])([01]?\d|2[0-3])\s*(?::|gi[ờo]|h(?![A-Za-zÀ-ỹ]))\s*([0-5]?\d)?\s*(?:phút)?/gi)].at(-1);
         if (clock) time = `${String(Number(clock[1])).padStart(2,'0')}:${String(Number(clock[2] || 0)).padStart(2,'0')}`;
         const date = month && day ? (year?`ngày ${day}/${month}/${year}`:`ngày ${day}/${month}`) : '';
         const result={year,month,day,time,date,label:''};
@@ -4085,9 +4085,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return null;
     }
 
-    // fixed40：自动记忆只认“本次真实生成明确绑定的 user Tầng”。
-    // 这和“聊天里历史上曾出现过 user”完全不同：新存档可能包含复制的 metadata、示例消息或开场初始化，
-    // 它们都不能把旧 assistant Tầng武装成一次新的自动整理任务。
+    // fixed40: phần ghi nhớ tự động chỉ công nhận “tầng user được lượt sinh nội dung thật này gắn rõ ràng”.
+    // Điều đó khác hẳn với “trong lịch sử cuộc trò chuyện từng có user”: bản lưu mới có thể chứa metadata sao chép, tin nhắn mẫu hoặc phần khởi tạo mở màn,
+    // và không thứ nào trong số đó được phép biến một tầng assistant cũ thành một tác vụ tự sắp xếp mới.
     function liveTurnUserEntry() {
         const chat=context()?.chat||[];
         const floor=Number(stateRuntime.liveUserFloor);
@@ -4180,7 +4180,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function memoryRecordUsable(item){return !item?._staleAfterHistoryMutation&&!item?._orphanedByChatEdit;}
 
-    function markHistoryMutationStale(fromFloor, reason='聊天历史被修改') {
+    function markHistoryMutationStale(fromFloor, reason='Lịch sử cuộc trò chuyện đã bị sửa') {
         const s=stateRuntime.state;if(!s)return;
         const floor=Math.max(0,Number(fromFloor||0));
         s.progress.historyMutationFloor=Number.isFinite(Number(s.progress.historyMutationFloor))?Math.min(Number(s.progress.historyMutationFloor),floor):floor;
@@ -4196,11 +4196,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }
         for(const row of s.tables?.summaries||[]){
             const r=parseRange(row['Tầng bao phủ']);
-            if(Number.isFinite(Number(r.end))&&Number(r.end)>=floor&&/阶段总结|大总结|时代总结/.test(String(row['Loại']||row['Loại bảng']||''))){
-                row._previousStatus=row._previousStatus||row['Trạng thái'];row['Trạng thái']='需重算';row._staleReason=`${reason}：第${floor}层起历史可能变化`;
+            if(Number.isFinite(Number(r.end))&&Number(r.end)>=floor&&/Tổng kết giai đoạn|Đại tổng kết|Tổng kết thời đại/i.test(String(row['Loại']||row['Loại bảng']||''))){
+                row._previousStatus=row._previousStatus||row['Trạng thái'];row['Trạng thái']='Cần tính lại';row._staleReason=`${reason}: lịch sử từ tầng ${floor} trở đi có thể đã thay đổi`;
             }
         }
-        logAudit('历史一致性保护',`${reason}，从第${floor}层起旧派生记忆已冻结，相关总结标记需重算`);
+        logAudit('Bảo vệ tính nhất quán của lịch sử',`${reason}; ký ức phái sinh cũ từ tầng ${floor} trở đi đã bị đóng băng, các bản tổng kết liên quan được đánh dấu cần tính lại`);
         recalculateSummaryProgress();
     }
 
@@ -4277,7 +4277,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         catch(error){if(stateRuntime.historyMutationFingerprint===fingerprint){stateRuntime.historyMutationFingerprint='';stateRuntime.historyMutationFingerprintAt=0;}throw error;}
     }
 
-    function reconcileHistoryMutationState(state,chat,mutationFloor,{legacyOnly=false,reason='聊天历史被修改'}={}) {
+    function reconcileHistoryMutationState(state,chat,mutationFloor,{legacyOnly=false,reason='Lịch sử cuộc trò chuyện đã bị sửa'}={}) {
         const floor=Math.max(0,Number(mutationFloor)||0),maps=historyReconciliationMaps(chat),details={},result={removed:0,rebased:0,rolledBack:0,preservedManual:0,details,changed:false};
         const reconcileRows=(path,rows)=>{
             const kept=[];let removed=0;
@@ -4330,17 +4330,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         details.npcRegistry=npcRemoved;
 
         for(const row of state.tables?.summaries||[]){
-            const range=parseRange(row?.['Tầng bao phủ']);if(Number.isFinite(Number(range.end))&&Number(range.end)>=floor&&/阶段总结|大总结|时代总结/.test(String(row?.['Loại']||row?.['Loại bảng']||''))){row._previousStatus=row._previousStatus||row['Trạng thái'];row['Trạng thái']='需重算';row._staleReason=`${reason}：第${floor}层起旧分支已清理`;row['Thời điểm tạo']=nowText();delete row._orphanedByChatEdit;}
+            const range=parseRange(row?.['Tầng bao phủ']);if(Number.isFinite(Number(range.end))&&Number(range.end)>=floor&&/Tổng kết giai đoạn|Đại tổng kết|Tổng kết thời đại/i.test(String(row?.['Loại']||row?.['Loại bảng']||''))){row._previousStatus=row._previousStatus||row['Trạng thái'];row['Trạng thái']='Cần tính lại';row._staleReason=`${reason}: nhánh cũ từ tầng ${floor} trở đi đã được dọn`;row['Thời điểm tạo']=nowText();delete row._orphanedByChatEdit;}
         }
         for(const phoneList of [state.phone?.wechat,state.phone?.wechatGroups,state.phone?.channelGroups,state.phone?.sms,state.phone?.calls])for(const row of phoneList||[])clearHistoryMutationMarkers(row);
         if(!legacyOnly){
             state.memoryHealth ||= {};state.memoryHealth.attempts=(state.memoryHealth.attempts||[]).filter(item=>Number(item?.floor)<floor);
-            for(const job of state.summaryJobs||[])if(Number(job?.floor)>=floor||Number(job?.start)>=floor||Number(job?.end)>=floor){job.originalStatus=job.originalStatus||job.status;job.status='orphaned';job.applied=true;job.error=`${reason}：来源Tầng已删除或改写`;job.updatedAt=Date.now();}
+            for(const job of state.summaryJobs||[])if(Number(job?.floor)>=floor||Number(job?.start)>=floor||Number(job?.end)>=floor){job.originalStatus=job.originalStatus||job.status;job.status='orphaned';job.applied=true;job.error=`${reason}: tầng nguồn đã bị xóa hoặc viết lại`;job.updatedAt=Date.now();}
             const p=state.progress||{};p.assistantMemoryQueue=[];p.lastExtractedMessage=Math.min(Number(p.lastExtractedMessage??-1),floor-1);p.lastExtractedAssistantFloor=Math.min(Number(p.lastExtractedAssistantFloor??-1),floor-1);p.lastExtractedAssistantSignature='';p.lastCompanionFloor=Math.min(Number(p.lastCompanionFloor??-1),floor-1);p.lastCompanionSignature='';p.extractRetryPending=false;p.extractRetryAttempt=0;p.extractRetryReason='';p.extractRetryChatIdentity='';p.extractRetryFloor=-1;p.extractRetrySignature='';p.extractRetryAt=0;p.extractDedupeFloor=-1;p.extractDedupeSignature='';p.extractDedupeGeneration=0;
         }
         rebuildCharacterWorldFromEvents();
         result.changed=Boolean(result.removed||result.rebased||result.rolledBack||result.preservedManual);
-        if(result.changed){state.progress.historyReconciliation={floor,reason,legacyOnly,removed:result.removed,rebased:result.rebased,rolledBack:result.rolledBack,preservedManual:result.preservedManual,time:nowText()};logAudit('历史分支清理',`${reason}：移除旧分支派生记忆 ${result.removed} 条，迁移 ${result.rebased} 条，回滚 ${result.rolledBack} 条，保留手动资料 ${result.preservedManual} 条`);}
+        if(result.changed){state.progress.historyReconciliation={floor,reason,legacyOnly,removed:result.removed,rebased:result.rebased,rolledBack:result.rolledBack,preservedManual:result.preservedManual,time:nowText()};logAudit('Dọn nhánh lịch sử',`${reason}: đã xóa ${result.removed} ký ức phái sinh thuộc nhánh cũ, di trú ${result.rebased} mục, hoàn tác ${result.rolledBack} mục, giữ lại ${result.preservedManual} tư liệu nhập tay`);}
         recalculateSummaryProgress();return result;
     }
 
@@ -4390,8 +4390,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             chat.splice(duplicateIndex,1);messageNodeForFloor(duplicateIndex)?.remove();
             await saveChatExtras(scope);
             if(!chatScopeIsCurrent(scope))return true;
-            decorateCompanionOutput(keepIndex);scheduleReindex();console.warn(`[vvv小剧场] 已清理重复AITầng：删除${duplicateIndex}，保留${keepIndex}`);return true;
-        }catch(error){if(chatScopeIsCurrent(scope))console.warn('[vvv小剧场] 清理重复AITầng失败',error);return false;}
+            decorateCompanionOutput(keepIndex);scheduleReindex();console.warn(`[Tiểu Kịch Trường vvv] Đã dọn tầng AI trùng lặp: xóa ${duplicateIndex}, giữ ${keepIndex}`);return true;
+        }catch(error){if(chatScopeIsCurrent(scope))console.warn('[Tiểu Kịch Trường vvv] Dọn tầng AI trùng lặp thất bại',error);return false;}
         finally{if(stateRuntime.duplicateGuardToken===token){stateRuntime.duplicateGuardToken=null;stateRuntime.duplicateGuardRunning=false;}}
     }
 
@@ -4407,7 +4407,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!strongWorldInfoModulePromise) {
             strongWorldInfoModulePromise = import('/scripts/world-info.js').catch(error => {
                 strongWorldInfoModulePromise = null;
-                console.warn('[0-32·强读世界书] 无法读取酒馆世界书模块，本轮跳过强读', error);
+                console.warn('[0-32 · Đọc bắt buộc sách thế giới] Không đọc được mô-đun sách thế giới của SillyTavern, lượt này bỏ qua bước đọc bắt buộc', error);
                 return null;
             });
         }
@@ -4437,15 +4437,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const ctx=context()||{},character=activeCharacterObject()||{};
         const rows=[];
         const add=(name,source,boost)=>{name=String(name??'').trim();if(!name)return;const key=worldBookNameKey(name);if(!key)return;if(rows.some(row=>worldBookNameKey(row.name)===key))return;rows.push({name,source,boost});};
-        add(character?.data?.extensions?.world ?? character?.extensions?.world,'角色主世界书',45);
-        add(ctx?.chatMetadata?.world_info ?? ctx?.chat_metadata?.world_info,'聊天世界书',42);
+        add(character?.data?.extensions?.world ?? character?.extensions?.world,'Sách thế giới chính của nhân vật',45);
+        add(ctx?.chatMetadata?.world_info ?? ctx?.chat_metadata?.world_info,'Sách thế giới của cuộc trò chuyện',42);
         const candidates=[character?.avatar,character?.name,character?.data?.name,ctx?.name2].map(worldBookNameKey).filter(Boolean);
         for(const binding of wi.world_info?.charLore || []){
             const bindingName=worldBookNameKey(binding?.name);
             if(!bindingName||!candidates.some(candidate=>candidate===bindingName||candidate.includes(bindingName)||bindingName.includes(candidate)))continue;
-            for(const name of binding?.extraBooks || [])add(name,'角色附加世界书',38);
+            for(const name of binding?.extraBooks || [])add(name,'Sách thế giới bổ sung của nhân vật',38);
         }
-        for(const name of Array.isArray(wi.selected_world_info)?wi.selected_world_info:[])add(name,'全局世界书',28);
+        for(const name of Array.isArray(wi.selected_world_info)?wi.selected_world_info:[])add(name,'Sách thế giới toàn cục',28);
         return {wi,books:rows};
     }
 
@@ -4467,7 +4467,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const scan=strongWorldBookScanText(),character=activeCharacterObject()||{},candidates=[];
         for(const book of books){
             let data=null;
-            try{data=await wi.loadWorldInfo?.(book.name);}catch(error){console.warn(`[0-32·强读世界书] 读取“${book.name}”失败`,error);continue;}
+            try{data=await wi.loadWorldInfo?.(book.name);}catch(error){console.warn(`[0-32 · Đọc bắt buộc sách thế giới] Đọc “${book.name}” thất bại`,error);continue;}
             const entries=Array.isArray(data?.entries)?data.entries:Object.values(data?.entries||{});
             for(const entry of entries){
                 if(!strongWorldBookEntryAllowed(entry,character))continue;
@@ -4475,18 +4475,18 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const constant=entry.constant===true||entry.alwaysActive===true;
                 const order=Number(entry.order??entry.insertion_order??0)||0;
                 const score=book.boost+(constant?180:0)+(primary.length?120+Math.min(60,primary.length*12):0)+Math.max(-20,Math.min(40,order/10));
-                const title=compactText(entry.comment||entry.name||keys.join('、')||`条目 ${entry.uid??''}`,180)||'Chưa đặt tên条目';
+                const title=compactText(entry.comment||entry.name||keys.join(', ')||`Mục ${entry.uid??''}`,180)||'Mục chưa đặt tên';
                 const content=String(entry.content||'').replace(/\u0000/g,'').replace(/\r\n?/g,'\n').trim().slice(0,5000);
                 if(content)candidates.push({book,title,content,score,constant,matched:primary.slice(0,8),uid:entry.uid});
             }
         }
         if(!candidates.length)return '';
         candidates.sort((a,b)=>b.score-a.score||Number(b.constant)-Number(a.constant)||String(a.book.name).localeCompare(String(b.book.name),'zh-CN'));
-        const lines=['【0-32 强读世界书｜高优先级硬设定】','以下内容来自当前角色/当前聊天/当前全局实际绑定的世界书。请主动读取并遵守；世界书中的静态设定优先于旧记忆或模型惯性，但最新user明确行动与本轮Đã xảy ra剧情仍是当前现实。不要复述世界书，直接按设定继续剧情。'];
+        const lines=['【SÁCH THẾ GIỚI ĐỌC BẮT BUỘC 0-32｜thiết định cứng, ưu tiên cao】','Nội dung dưới đây lấy từ những sách thế giới đang thực sự gắn với nhân vật hiện tại / cuộc trò chuyện hiện tại / cấu hình toàn cục hiện tại. Hãy chủ động đọc và tuân thủ; thiết định tĩnh trong sách thế giới được ưu tiên hơn ký ức cũ hay quán tính của mô hình, nhưng hành động rõ ràng mới nhất của user và những tình tiết đã xảy ra ở lượt này vẫn là hiện thực hiện tại. Đừng kể lại sách thế giới, hãy theo thiết định mà viết tiếp mạch truyện.'];
         let used=lines.join('\n').length,accepted=0;
         for(const item of candidates){
             if(accepted>=80)break;
-            const heading=`\n【${item.book.source}｜${item.book.name}｜${item.title}${item.matched.length?`｜命中:${item.matched.join('、')}`:''}】\n`;
+            const heading=`\n【${item.book.source}｜${item.book.name}｜${item.title}${item.matched.length?`｜trúng: ${item.matched.join(', ')}`:''}】\n`;
             const room=hardLimit-used-heading.length;
             if(room<160)break;
             const body=item.content.slice(0,Math.min(5000,room));
@@ -4497,75 +4497,78 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return lines.join('\n').slice(0,hardLimit);
     }
 
-    const SOURCE_ROSTER_GENERIC_TITLE = /^(?:人物|人物设定|角色|角色设定|npc|主要人物|配角|世界观|背景|关系|关系网|社交关系|群像|学校|公司|组织|家族|家庭|朋友|同学|室友|同事|附录|Ghi chú|其他|设定)$/i;
-    const SOURCE_ROSTER_BAD_NAME = /^(?:Chưa rõ|无|Chưa có|男|女|男性|女性|成年|成年人|学生|老师|同学|室友|同事|朋友|好友|家人|父亲|母亲|哥哥|姐姐|弟弟|妹妹|上司|下属|老板|角色|人物|NPC|user|char|none|null|true|false|反馈|流程|预算|求助|往来|身边|争辩|温情|商场|插画|谈资|声线|Thân phận|决定|机制|规则|规范|Ghi chú|说明)$/i;
-    const SOURCE_ROSTER_INDEX_TITLE = /^(?:[0-9０-９]{1,6}|第?[0-9０-９一二三四五六七八九十百千]{1,8}(?:号|条|章|节|项|层|页)?|(?:entry|item|npc|char)[-_ ]?[0-9]{1,6})$/i;
-    const SOURCE_ROSTER_SECTION_TITLE = /(?:背景|日常|规则|规范|机制|核心|设定|条件|结局|情感|肉体|分离|角色扮演|衣物|点缀|家庭生活|玩法|模式|说明|简介|章节|标题|表面|内在|癖好|配饰|附件|眼睛|Tính cách|关系|习惯|Trạng thái|世界观|道德|伦理|禁忌|描写|细节|主题|内容|补充|Ghi chú|索引|分类|目录|流程|反馈|预算|求助|往来|身边|争辩|温情|商场|插画|谈资|声线|Thân phận|判断|说话|吐槽|决定|专业联系|职业社交|工作流程|纹身|抽象曼波|template|schema|config|setting|surface|inner|daily|accessories|eyes|fetishes|relationships|temperament|complexes|anus)/i;
+    const SOURCE_ROSTER_GENERIC_TITLE = /^(?:nhân vật|thiết định nhân vật|vai|thiết định vai|npc|nhân vật chính|vai phụ|thế giới quan|bối cảnh|quan hệ|mạng quan hệ|quan hệ xã hội|quần chúng|trường học|công ty|tổ chức|dòng họ|gia đình|bạn bè|bạn học|bạn cùng phòng|đồng nghiệp|phụ lục|ghi chú|khác|thiết định)$/i;
+    const SOURCE_ROSTER_BAD_NAME = /^(?:chưa rõ|không|chưa có|nam|nữ|đàn ông|phụ nữ|trưởng thành|người trưởng thành|học sinh|giáo viên|bạn học|bạn cùng phòng|đồng nghiệp|bạn bè|bạn thân|người nhà|bố|mẹ|anh trai|chị gái|em trai|em gái|cấp trên|cấp dưới|sếp|vai|nhân vật|NPC|user|char|none|null|true|false|phản hồi|quy trình|ngân sách|nhờ giúp|qua lại|bên cạnh|tranh cãi|ấm áp|trung tâm thương mại|minh họa|chuyện phiếm|chất giọng|thân phận|quyết định|cơ chế|quy tắc|chuẩn mực|ghi chú|diễn giải)$/i;
+    const SOURCE_ROSTER_INDEX_TITLE = /^(?:[0-9]{1,6}|(?:số|mục|chương|phần|tầng|trang)\s*[0-9]{1,6}|(?:entry|item|npc|char)[-_ ]?[0-9]{1,6})$/i;
+    const SOURCE_ROSTER_SECTION_TITLE = /(?:bối cảnh|thường nhật|quy tắc|chuẩn mực|cơ chế|cốt lõi|thiết định|điều kiện|kết cục|tình cảm|thể xác|chia ly|nhập vai|trang phục|phụ kiện|đời sống gia đình|lối chơi|chế độ|diễn giải|giới thiệu|chương hồi|tiêu đề|bề ngoài|bên trong|sở thích riêng|đồ trang sức|tệp đính kèm|đôi mắt|tính cách|quan hệ|thói quen|trạng thái|thế giới quan|đạo đức|luân lý|điều cấm kỵ|miêu tả|chi tiết|chủ đề|nội dung|bổ sung|ghi chú|mục lục|phân loại|danh mục|quy trình|phản hồi|ngân sách|nhờ giúp|qua lại|bên cạnh|tranh cãi|ấm áp|trung tâm thương mại|minh họa|chuyện phiếm|chất giọng|thân phận|phán đoán|lời nói|cà khịa|quyết định|liên hệ chuyên môn|xã giao nghề nghiệp|quy trình làm việc|hình xăm|template|schema|config|setting|surface|inner|daily|accessories|eyes|fetishes|relationships|temperament|complexes|anus)/i;
     const SOURCE_ROSTER_RELATION_TOKENS = [
-        '外祖父','外祖母','祖父','祖母','爷爷','奶奶','外公','外婆','父亲','母亲','爸爸','妈妈','父母','继父','继母','岳父','岳母','公公','婆婆',
-        '哥哥','姐姐','弟弟','妹妹','兄长','姊姊','兄弟','姐妹','小姨','姨妈','姨父','舅舅','舅妈','姑姑','姑父','叔叔','婶婶','伯父','伯母','堂兄','堂姐','堂弟','堂妹','表哥','表姐','表弟','表妹',
-        '丈夫','妻子','配偶','恋人','伴侣','男友','女友','前任','未婚夫','未婚妻','爱人',
-        '朋友','好友','闺蜜','发小','旧友','室友','舍友','同学','班长','辅导员','老师','导师','教授','助教','同事','上司','下属','老板','领导','助理','秘书','客户','甲方','乙方','队友','会长','社长',
-        '房东','邻居','大楼对门','对门邻居','对门','五楼邻居','五楼','楼上邻居','楼下邻居','店长','经理','主编','编辑','制片人','广告制片','制片','摄影师','插画师','设计师','独立音乐人','音乐人','医生','律师','经纪人','导演','编剧','画师','店员','老板娘'
+        'ông ngoại','bà ngoại','ông nội','bà nội','ông','bà','bố','mẹ','ba','má','bố mẹ','cha dượng','mẹ kế','bố vợ','mẹ vợ','bố chồng','mẹ chồng',
+        'anh trai','chị gái','em trai','em gái','anh cả','chị cả','anh em','chị em','dì','bác gái','dượng','cậu','mợ','cô','chú rể','chú','thím','bác','bác dâu','anh họ','chị họ','em họ',
+        'chồng','vợ','bạn đời','người yêu','bạn đời','bạn trai','bạn gái','người yêu cũ','vị hôn phu','vị hôn thê','người thương',
+        'bạn','bạn thân','bạn gái thân','bạn từ nhỏ','bạn cũ','bạn cùng phòng','bạn ở ghép','bạn học','lớp trưởng','cố vấn học tập','giáo viên','người hướng dẫn','giáo sư','trợ giảng','đồng nghiệp','cấp trên','cấp dưới','sếp','lãnh đạo','trợ lý','thư ký','khách hàng','bên A','bên B','đồng đội','hội trưởng','chủ nhiệm',
+        'chủ nhà','hàng xóm','nhà đối diện','hàng xóm đối diện','đối diện','hàng xóm tầng năm','tầng năm','hàng xóm tầng trên','hàng xóm tầng dưới','quản lý cửa hàng','quản lý','tổng biên tập','biên tập','nhà sản xuất','nhà sản xuất quảng cáo','sản xuất','nhiếp ảnh gia','họa sĩ minh họa','nhà thiết kế','nhạc sĩ độc lập','nhạc sĩ','bác sĩ','luật sư','người quản lý','đạo diễn','biên kịch','họa sĩ','nhân viên bán hàng','bà chủ'
     ];
-    const SOURCE_ROSTER_RELATION_PREFIX = new RegExp(`^(?:${SOURCE_ROSTER_RELATION_TOKENS.slice().sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')})[·・\\s_-]*`,'i');
+    const SOURCE_ROSTER_RELATION_PREFIX = new RegExp(`^(?:${SOURCE_ROSTER_RELATION_TOKENS.slice().sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')})(?![A-Za-zÀ-ỹ])[\\s_-]+`,'i');
     const SOURCE_ROSTER_PROSE_RELATION = `(?:${SOURCE_ROSTER_RELATION_TOKENS.slice().sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')})`;
-    const SOURCE_ROSTER_PROSE_BAD_STEM = /^(?:的|地|得|她|他|它|其|这|那|某|经营|负责|知道|喜欢|讨厌|觉得|认为|希望|要求|提醒|没有|不是|已经|仍然|通常|后来|现在|目前|因为|所以|如果|但是|而且|以及|一起|一个|一家|一位|两人|双方|关系|家庭|工作|生活|剧情|设定|世界|角色|朋友们|同事们|家人们|继续|开始|结束|进行|进入|出来|成为|保持|回到|留下|怀孕|裸体|说过|死后|谈话|推倒|尖叫|求助|交合|赤诚|成年|成熟|反馈|方向|方式|反应|镜像|混合体|那一夜|女儿|乳头|舌尖|嘴唇|旗帜|颜料|深处|子宫口|在床|也发现|最好了|与|和|又|可|会|全|身|声|往|求|进|需|流|反|预|争|频|抽|炫|Thân phận|流程|反馈|预算|同行|自住|录音|混音|尊重|兴趣|创作|专业|职业|社交|联系|领域|空间|隐私|习惯|自由职业)/;
-    const SOURCE_ROSTER_NON_PERSON_TERM = /^(?:同行|自住|尊重兴趣|录音混音|录音|混音|音轨|音频|插画|设计|绘画|创作|创作习惯|创作领域|专业联系|职业社交|工作流程|自由职业|兴趣|隐私|个人空间|生活方式|核心机制|背景设定|角色设定|Thân phận设定|关系设定|日常规则|道德规范)$/i;
-    // fixed31：不是继续扩“黑名单”，而是先拦截明显属于章节、Trạng thái、地点、动作、物品、时间、抽象概念的短语。
-    // 这些词即使碰巧以中文姓氏开头，也不能仅凭“长得像2-4字Họ tên”进入微信。
-    const SOURCE_ROSTER_SEMANTIC_NON_PERSON = /(?:费用|收费|预算|价格|金额|工资|收入|支出|成本|负担|环境|成长环境|背景|经历|阶段|时期|毕业后|毕业前|高一|高二|高三|大一|大二|大三|大四|相似的脸|相似|相称|支撑|意味|意义|性意味|录音|混音|音轨|音频|旋律|节奏|插画|绘画|设计|创作|工作流程|职业社交|专业联系|同行|自住|兴趣|尊重兴趣|习惯|隐私|自由职业|关系|Trạng thái|条件|结局|原则|规则|规范|机制|流程|反馈|方向|方式|反应|目标|任务|价值|观念|情绪|语气|口吻|声线|声音|身体|部位|乳头|嘴唇|舌尖|子宫|裸体|怀孕|谈话|对话|那一夜|女儿|脸|面|桥|公园|山道|道路|Tầng|档口|店铺|商场|门店|学校|班级|年级|宿舍|社团|公会|战队|省|市|区|县|镇|乡|村|大道|街道|菜单|食物|面条|米线|汤面|地瓜|警告|通知|公告|大厅|客人|姑娘|媒体|NTR)/i;
-    const SOURCE_ROSTER_GEO_OR_ORG = /(?:省|自治区|特别行政区|市|区|县|镇|乡|村|街道|路|街|巷|小区|公寓|宿舍|寝室|公司|集团|工作室|门店|店铺|商店|学校|大学|学院|医院|诊所|机构|协会|社团|公会|战队|公园|广场|景区|山道|桥)$/;
-    const SOURCE_ROSTER_COMMON_SURNAME = /^[赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻柏窦章云苏潘葛奚范彭郎鲁韦昌马苗凤花方俞任袁柳鲍史唐费廉岑薛雷贺倪汤滕殷罗毕郝邬安常乐于时傅皮卞齐康伍余元卜顾孟平黄和穆萧尹姚邵湛汪祁毛禹狄米贝明臧计伏成戴谈宋茅庞熊纪舒屈项祝董梁杜阮蓝闵席季麻强贾路娄危江童颜郭梅盛林刁钟徐邱骆高夏蔡田樊胡凌霍虞万支柯管卢莫房裘缪解应宗丁宣邓郁单杭洪包诸左石崔吉钮龚程嵇邢滑裴陆荣翁荀羊甄家封芮储靳汲糜段富巫乌焦巴牧山谷车侯全班仰秋仲伊宫宁仇栾甘厉祖武符刘景詹束龙叶幸司郜黎薄印宿白怀蒲从鄂索咸赖卓蔺屠蒙池乔胥苍双闻党翟谭贡劳姬申扶冉雍桑桂濮牛寿通边扈燕冀浦尚农温别庄晏柴瞿阎艾鱼容向古易慎戈廖终居衡步都耿满弘匡国文寇广东欧沃利蔚越隆师巩聂晁勾融辛阚那简饶曾沙鞠丰巢关蒯相查后荆红游竺权益桓]/;
-    const SOURCE_ROSTER_COMPOUND_SURNAME = /^(?:欧阳|司马|上官|诸葛|东方|皇甫|尉迟|公孙|慕容|司徒|司空|夏侯|端木|长孙|宇文|令狐|轩辕|南宫)/;
-    const SOURCE_ROSTER_FAMILY_RELATIONS = new Set(['外祖父','外祖母','祖父','祖母','爷爷','奶奶','外公','外婆','父亲','母亲','爸爸','妈妈','父母','继父','继母','岳父','岳母','公公','婆婆','哥哥','姐姐','弟弟','妹妹','兄长','姊姊','兄弟','姐妹','小姨','姨妈','姨父','舅舅','舅妈','姑姑','姑父','叔叔','婶婶','伯父','伯母','堂兄','堂姐','堂弟','堂妹','表哥','表姐','表弟','表妹']);
-    const SOURCE_ROSTER_OWNER_RELATIONS = new Set([...SOURCE_ROSTER_FAMILY_RELATIONS,'丈夫','妻子','配偶','恋人','伴侣','男友','女友','前任','未婚夫','未婚妻','爱人','朋友','好友','闺蜜','发小','旧友','室友','舍友','同学']);
+    const SOURCE_ROSTER_PROSE_BAD_STEM = /^(?:của|cô ấy|anh ấy|nó|này|kia|nào đó|kinh doanh|phụ trách|biết|thích|ghét|thấy|cho rằng|hy vọng|yêu cầu|nhắc|không có|không phải|đã|vẫn|thường|về sau|hiện tại|lúc này|vì|nên|nếu|nhưng|hơn nữa|cùng với|cùng nhau|một|một nhà|một vị|hai người|cả hai|quan hệ|gia đình|công việc|cuộc sống|cốt truyện|thiết định|thế giới|nhân vật|bạn bè|đồng nghiệp|người nhà|tiếp tục|bắt đầu|kết thúc|tiến hành|bước vào|đi ra|trở thành|giữ nguyên|quay về|ở lại|mang thai|khỏa thân|từng nói|sau khi chết|trò chuyện|xô ngã|hét lên|nhờ giúp|ân ái|chân thành|trưởng thành|phản hồi|hướng|cách|phản ứng|phản chiếu|hỗn hợp|đêm đó|con gái|đầu ngực|đầu lưỡi|bờ môi|lá cờ|màu vẽ|sâu bên trong|cổ tử cung|trên giường|cũng phát hiện|tốt nhất|và|với|lại|có thể|sẽ|toàn|thân|tiếng|về phía|xin|vào|cần|chảy|ngược|dự|tranh|thường xuyên|rút|khoe|thân phận|quy trình|ngân sách|đồng nghiệp cùng ngành|tự ở|thu âm|hòa âm|tôn trọng|sở thích|sáng tác|chuyên môn|nghề nghiệp|xã giao|liên hệ|lĩnh vực|không gian|riêng tư|thói quen|nghề tự do)/i;
+    const SOURCE_ROSTER_NON_PERSON_TERM = /^(?:đồng nghiệp cùng ngành|tự ở|tôn trọng sở thích|thu âm hòa âm|thu âm|hòa âm|bản nhạc|âm thanh|minh họa|thiết kế|hội họa|sáng tác|thói quen sáng tác|lĩnh vực sáng tác|liên hệ chuyên môn|xã giao nghề nghiệp|quy trình làm việc|nghề tự do|sở thích|riêng tư|không gian cá nhân|lối sống|cơ chế cốt lõi|thiết định bối cảnh|thiết định nhân vật|thiết định thân phận|thiết định quan hệ|quy tắc thường nhật|chuẩn mực đạo đức)$/i;
+    // fixed31: thay vì tiếp tục nới rộng “danh sách đen”, hãy chặn trước những cụm rõ ràng thuộc về chương mục, trạng thái, địa điểm, hành động, vật phẩm, thời gian hay khái niệm trừu tượng.
+    // Dù các cụm đó tình cờ bắt đầu bằng một họ Việt thì cũng không được vào WeChat chỉ vì “trông giống tên 2-4 chữ”.
+    const SOURCE_ROSTER_SEMANTIC_NON_PERSON = /(?:chi phí|thu phí|ngân sách|giá|số tiền|lương|thu nhập|chi tiêu|chi phí vốn|gánh nặng|môi trường|môi trường trưởng thành|bối cảnh|trải nghiệm|giai đoạn|thời kỳ|sau khi tốt nghiệp|trước khi tốt nghiệp|lớp 10|lớp 11|lớp 12|năm nhất|năm hai|năm ba|năm tư|khuôn mặt giống|tương tự|xứng đôi|nâng đỡ|hàm ý|ý nghĩa|ẩn ý tình dục|thu âm|hòa âm|bản nhạc|âm thanh|giai điệu|nhịp điệu|minh họa|hội họa|thiết kế|sáng tác|quy trình làm việc|xã giao nghề nghiệp|liên hệ chuyên môn|đồng nghiệp cùng ngành|tự ở|sở thích|tôn trọng sở thích|thói quen|riêng tư|nghề tự do|quan hệ|trạng thái|điều kiện|kết cục|nguyên tắc|quy tắc|chuẩn mực|cơ chế|quy trình|phản hồi|hướng đi|cách thức|phản ứng|mục tiêu|nhiệm vụ|giá trị|quan niệm|cảm xúc|giọng điệu|khẩu khí|chất giọng|âm thanh|cơ thể|bộ phận|đầu ngực|bờ môi|đầu lưỡi|tử cung|khỏa thân|mang thai|trò chuyện|đối thoại|đêm đó|con gái|khuôn mặt|mặt|cầu|công viên|đường núi|con đường|tầng lầu|quầy hàng|cửa tiệm|trung tâm thương mại|cửa hàng|trường học|lớp học|khối lớp|ký túc xá|câu lạc bộ|công hội|đội tuyển|tỉnh|thành phố|quận|huyện|thị trấn|xã|thôn|đại lộ|đường phố|thực đơn|đồ ăn|mì|bún|mì nước|khoai lang|cảnh báo|thông báo|thông cáo|sảnh lớn|khách|cô gái|truyền thông|NTR)/i;
+    const SOURCE_ROSTER_GEO_OR_ORG = /^(?:tỉnh|thành phố|quận|huyện|thị trấn|xã|thôn|phường|đường|phố|hẻm|khu dân cư|chung cư|ký túc xá|phòng ở|công ty|tập đoàn|studio|cửa hàng|cửa tiệm|tiệm|trường học|đại học|học viện|bệnh viện|phòng khám|cơ quan|hiệp hội|câu lạc bộ|công hội|đội tuyển|công viên|quảng trường|khu du lịch|đường núi|cầu)(?![A-Za-zÀ-ỹ])/i;
+    const SOURCE_ROSTER_COMMON_SURNAME = /^(?:Nguyễn|Trần|Lê|Phạm|Hoàng|Huỳnh|Phan|Vũ|Võ|Đặng|Bùi|Đỗ|Hồ|Ngô|Dương|Lý|Đinh|Tô|Trương|Đoàn|Mai|Lâm|Cao|Chu|Hà|Tạ|Lưu|Nghiêm|Thái|Vương|Kiều|Quách|Tăng|Trịnh|Lương|Đào|Bạch|Chử|Diệp|Doãn|Giang|Hàn|Khổng|La|Lạc|Lỗ|Lục|Mạc|Ninh|Ông|Phùng|Quan|Quyền|Sử|Tần|Thi|Thân|Thạch|Tiêu|Tống|Từ|Uông|Xa|Ân|Tôn|Tưởng|Trác|Tất|Hứa|Diêm|Hình|Hùng|Cù|Cấn|Bành|Bế|Bồ|Ma|Nông|Sầm|Triệu|Chương|Đàm|Đậu|Đường|Hạ|Khương|Kim|Lai|Liêu|Lữ|Miêu|Nhâm|Sĩ|Tiết|Thang|Thành|Thiều|Thiệu|Tiền|Trang|Trình|Vi|Viên|Vinh|Vưu)\s/;
+    const SOURCE_ROSTER_COMPOUND_SURNAME = /^(?:Âu Dương|Tôn Thất|Tôn Nữ|Công Tằng Tôn Nữ|Nguyễn Phúc|Nguyễn Khoa|Hoàng Phủ|Đặng Trần|Chu Văn|Tư Mã|Gia Cát|Thượng Quan|Đông Phương|Hoàng Phủ|Uất Trì|Công Tôn|Mộ Dung|Tư Đồ|Hạ Hầu|Trưởng Tôn|Vũ Văn|Lệnh Hồ|Hiên Viên|Nam Cung)\s/;
+    const SOURCE_ROSTER_FAMILY_RELATIONS = new Set(['ông ngoại','bà ngoại','ông nội','bà nội','ông','bà','bố','mẹ','ba','má','bố mẹ','cha dượng','mẹ kế','bố vợ','mẹ vợ','bố chồng','mẹ chồng','anh trai','chị gái','em trai','em gái','anh cả','chị cả','anh em','chị em','dì','bác gái','dượng','cậu','mợ','cô','chú','thím','bác','bác dâu','anh họ','chị họ','em họ']);
+    const SOURCE_ROSTER_OWNER_RELATIONS = new Set([...SOURCE_ROSTER_FAMILY_RELATIONS,'chồng','vợ','bạn đời','người yêu','bạn trai','bạn gái','người yêu cũ','vị hôn phu','vị hôn thê','người thương','bạn','bạn thân','bạn gái thân','bạn từ nhỏ','bạn cũ','bạn cùng phòng','bạn ở ghép','bạn học']);
 
     function cleanSourceRosterName(value) {
         let name=compactText(value,80).replace(/^[\s`*_#>\-+【\[（(「『“\"']+|[\s`*_#>\-+】\]）)」』”\"',，。；;：:]+$/g,'').trim();
-        name=name.replace(/^(?:Họ tên|名字|Tên nhân vật|人物名|name)\s*[:：]\s*/i,'').trim();
-        name=name.split(/[（(【\[|｜,，;；\/\\]/)[0].trim();
+        name=name.replace(/^(?:họ tên|tên|tên nhân vật|tên vai|name)\s*[:]\s*/i,'').trim();
+        name=name.split(/[(【\[|｜,;\/\\]/)[0].trim();
         name=name.replace(SOURCE_ROSTER_RELATION_PREFIX,'').trim();
         if(!name||SOURCE_ROSTER_INDEX_TITLE.test(name)||name.length<2||name.length>40||SOURCE_ROSTER_BAD_NAME.test(name)||SOURCE_ROSTER_GENERIC_TITLE.test(name))return '';
-        if(/[。！？!?<>={}]/.test(name)||/^(?:这是|一个|某个|当前|主要|重要|其他|以及|角色卡|世界书)/.test(name))return '';
+        if(/[.!?<>={}]/.test(name)||/^(?:đây là|một|nào đó|hiện tại|chính|quan trọng|khác|cùng với|thẻ nhân vật|sách thế giới)/i.test(name))return '';
         if(/\s{2,}/.test(name))return '';
         if(/^[a-z][a-z0-9_-]{1,39}$/.test(name))return '';
-        const cjk=(name.match(/[\u3400-\u9fff]/g)||[]).length;
-        if(cjk&&cjk===name.length&&name.length>6)return '';
+        // A Vietnamese personal name is at most five syllables; anything longer is a phrase.
+        if(name.split(/\s+/).filter(Boolean).length>5)return '';
         if(SOURCE_ROSTER_SECTION_TITLE.test(name)||SOURCE_ROSTER_NON_PERSON_TERM.test(name)||SOURCE_ROSTER_SEMANTIC_NON_PERSON.test(name)||SOURCE_ROSTER_GEO_OR_ORG.test(name))return '';
-        if(/的/.test(name)&&!/^(?:阿|欧阳|司马)/.test(name))return '';
+        if(/\b(?:của|và|với)\b/i.test(name))return '';
         return name;
     }
 
     function sourceRosterLikelyHumanName(value='', {explicit=false}={}) {
         const name=cleanSourceRosterName(value);if(!name)return false;
-        if(/^[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}$/.test(name))return true;
         if(/^[\u3040-\u30ffー・]{2,16}$/.test(name))return true;
-        if(!/^[\u3400-\u9fff·]{2,6}$/.test(name))return false;
+        // Plain ASCII names (foreign characters) keep the original permissive rule.
+        if(/^[A-Z][A-Za-z.'-]{1,30}(?:\s+[A-Z][A-Za-z.'-]{1,30}){1,3}$/.test(name))return true;
+        if(!/^[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}(?:\s+[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}){0,4}$/.test(name))return false;
         if(SOURCE_ROSTER_NON_PERSON_TERM.test(name)||SOURCE_ROSTER_SEMANTIC_NON_PERSON.test(name)||SOURCE_ROSTER_GEO_OR_ORG.test(name))return false;
         if(explicit)return true;
-        if(/(?:阿姨|叔叔|大叔|叔|姐|哥|老师|师傅)$/.test(name)&&name.length<=4)return true;
+        // Vietnamese puts the kinship term in front: "cô Mai", "chú Nam", "thầy Hải".
+        if(/^(?:cô|dì|chú|bác|cậu|mợ|thím|anh|chị|em|thầy|sư phụ)\s+[A-ZÀ-Ỹ]/.test(name)&&name.split(/\s+/).length<=3)return true;
         return SOURCE_ROSTER_COMMON_SURNAME.test(name)||SOURCE_ROSTER_COMPOUND_SURNAME.test(name);
     }
 
 
-    // fixed31：自由文本中的“关系词 + 后续短语”不再直接视作Họ tên，并要求候选具备可追溯的人物证据。
-    // 中文自由文本候选默认必须像真实Họ tên；只有明确人物档案字段且同时有多项人物证据时才放宽。
+    // fixed31: trong văn bản tự do, cụm “từ chỉ quan hệ + cụm phía sau” không còn được coi thẳng là họ tên, và ứng viên phải có bằng chứng nhân vật truy được nguồn.
+    // Ứng viên lấy từ văn bản tự do mặc định phải trông như một cái tên thật; chỉ nới lỏng khi có trường hồ sơ nhân vật rõ ràng kèm nhiều bằng chứng nhân vật.
     function sourceRosterStrictHumanName(value='', {schemaExplicit=false, evidence=''}={}) {
         const name=cleanSourceRosterName(value);if(!name)return false;
-        if(/^[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}$/.test(name))return true;
         if(/^[\u3040-\u30ffー・]{2,16}$/.test(name))return true;
-        if(!/^[\u3400-\u9fff·]{2,6}$/.test(name))return false;
+        // Plain ASCII names (foreign characters) keep the original permissive rule.
+        if(/^[A-Z][A-Za-z.'-]{1,30}(?:\s+[A-Z][A-Za-z.'-]{1,30}){1,3}$/.test(name))return true;
+        if(!/^[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}(?:\s+[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}){0,4}$/.test(name))return false;
         if(SOURCE_ROSTER_PROSE_BAD_STEM.test(name)||SOURCE_ROSTER_NON_PERSON_TERM.test(name)||SOURCE_ROSTER_SEMANTIC_NON_PERSON.test(name)||SOURCE_ROSTER_GEO_OR_ORG.test(name))return false;
-        if(/^(?:的|地|得|她|他|它|其|这|那|某)/.test(name))return false;
+        if(/^(?:của|cô ấy|anh ấy|nó|này|kia|nào đó)\b/i.test(name))return false;
         if(SOURCE_ROSTER_COMMON_SURNAME.test(name)||SOURCE_ROSTER_COMPOUND_SURNAME.test(name))return true;
-        if(/(?:阿姨|叔叔|大叔|叔|姐|哥|老师|师傅)$/.test(name)&&name.length<=4)return true;
+        if(/^(?:cô|dì|chú|bác|cậu|mợ|thím|anh|chị|em|thầy|sư phụ)\s+[A-ZÀ-Ỹ]/.test(name)&&name.split(/\s+/).length<=3)return true;
         if(schemaExplicit){
             const ev=compactText(evidence,900);
             const strong=[
-                /(?:Tuổi|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i,
-                /(?:性别|gender)\s*[:：]?\s*(?:男|女|male|female)/i,
-                /(?:Thân phận|职业|occupation|job)\s*[:：]/i,
+                /(?:tuổi|age)\s*[:]?\s*\d{1,3}|\d{1,3}\s*tuổi/i,
+                /(?:giới tính|gender)\s*[:]?\s*(?:nam|nữ|male|female)/i,
+                /(?:thân phận|nghề nghiệp|occupation|job)\s*[:]/i,
             ].filter(re=>re.test(ev)).length;
             return strong>=2;
         }
@@ -4575,11 +4578,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function sourceRosterDirectProfileEvidence(text='') {
         const value=compactText(text,1800);
         let score=0;
-        if(/(?:Tuổi|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i.test(value))score+=2;
-        if(/(?:性别|gender)\s*[:：]?\s*(?:男|女|male|female)/i.test(value))score+=2;
-        if(/(?:Thân phận|职业|occupation|job)\s*[:：]\s*[^，,。；;\n]{1,40}/i.test(value))score+=2;
-        if(/(?:生日|出生|birth)\s*[:：]?\s*[^，,。；;\n]{2,40}/i.test(value))score+=1;
-        if(/(?:身高|height)\s*[:：]?\s*\d{2,3}/i.test(value))score+=1;
+        if(/(?:tuổi|age)\s*[:]?\s*\d{1,3}|\d{1,3}\s*tuổi/i.test(value))score+=2;
+        if(/(?:giới tính|gender)\s*[:]?\s*(?:nam|nữ|male|female)/i.test(value))score+=2;
+        if(/(?:thân phận|nghề nghiệp|occupation|job)\s*[:]\s*[^,.;\n]{1,40}/i.test(value))score+=2;
+        if(/(?:sinh nhật|ngày sinh|birth)\s*[:]?\s*[^,.;\n]{2,40}/i.test(value))score+=1;
+        if(/(?:chiều cao|height)\s*[:]?\s*\d{2,3}/i.test(value))score+=1;
         return score;
     }
 
@@ -4598,31 +4601,32 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function sourceRosterConcretePersonEvidence(text='') {
         const value=compactText(text,1600);
         return [
-            /(?:Tuổi|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i,
-            /(?:性别|gender)\s*[:：]?\s*(?:男|女|male|female)/i,
-            /(?:Thân phận|职业|occupation|job)\s*[:：]/i,
-            new RegExp(`${SOURCE_ROSTER_PROSE_RELATION}\\s*[:：]`,'i'),
-            /(?:与|和|同)\s*(?:\{\{user\}\}|user|\{\{char\}\}|char)\s*(?:的)?(?:关系|是|为)/i,
+            /(?:tuổi|age)\s*[:]?\s*\d{1,3}|\d{1,3}\s*tuổi/i,
+            /(?:giới tính|gender)\s*[:]?\s*(?:nam|nữ|male|female)/i,
+            /(?:thân phận|nghề nghiệp|occupation|job)\s*[:]/i,
+            new RegExp(`${SOURCE_ROSTER_PROSE_RELATION}\\s*[:]`,'i'),
+            /(?:với|cùng)\s*(?:\{\{user\}\}|user|\{\{char\}\}|char)\s*(?:có|là)?\s*(?:quan hệ|là)/i,
         ].filter(re=>re.test(value)).length;
     }
 
     function sourceRosterProperNameShape(value='') {
         const name=cleanSourceRosterName(value);if(!name)return false;
-        if(/^[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}$/.test(name))return true;
         if(/^[\u3040-\u30ffー・]{2,16}$/.test(name))return true;
-        return /^[\u3400-\u9fff·]{2,6}$/.test(name);
+        // Plain ASCII names (foreign characters) keep the original permissive rule.
+        if(/^[A-Z][A-Za-z.'-]{1,30}(?:\s+[A-Z][A-Za-z.'-]{1,30}){1,3}$/.test(name))return true;
+        return /^[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}(?:\s+[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}){0,4}$/.test(name);
     }
 
     function sourceRosterRoleText(text='') {
         const value=compactText(text,1200);
         const hits=[];
         const rules=[
-            ['family',/(?:父亲|母亲|父母|爸爸|妈妈|爷爷|奶奶|外公|外婆|祖父|祖母|哥哥|姐姐|弟弟|妹妹|兄长|姊妹|小姨|姨妈|舅舅|姑姑|叔叔|伯父|家人|亲属|家庭|丈夫|妻子|配偶)/i],
-            ['friend',/(?:朋友|好友|闺蜜|发小|青梅竹马|旧友|friend)/i],
-            ['school',/(?:同学|学生|班长|班委|辅导员|老师|教师|教授|导师|助教|室友|舍友|学校|大学|学院|高中|课程|student|classmate|teacher|roommate)/i],
-            ['work',/(?:同事|上司|下属|老板|领导|助理|秘书|客户|甲方|乙方|公司|工作|项目|房东|店长|经理|主编|编辑|制片|摄影师|插画师|设计师|音乐人|医生|律师|经纪人|导演|编剧|coworker|boss|colleague)/i],
-            ['club',/(?:社团|学生会|协会|俱乐部|公会|战队|队友|guild|club)/i],
-            ['romance',/(?:恋人|伴侣|男友|女友|前任|未婚夫|未婚妻|爱人|lover|partner)/i],
+            ['family',/(?:bố|mẹ|bố mẹ|ba|má|ông nội|bà nội|ông ngoại|bà ngoại|anh trai|chị gái|em trai|em gái|anh cả|chị em|dì|bác gái|cậu|cô|chú|bác|người nhà|họ hàng|gia đình|chồng|vợ|bạn đời)/i],
+            ['friend',/(?:bạn bè|bạn thân|bạn gái thân|bạn từ nhỏ|thanh mai trúc mã|bạn cũ|friend)/i],
+            ['school',/(?:bạn học|học sinh|lớp trưởng|ban cán sự|cố vấn học tập|giáo viên|thầy giáo|cô giáo|giáo sư|người hướng dẫn|trợ giảng|bạn cùng phòng|bạn ở ghép|trường học|đại học|học viện|trung học|môn học|student|classmate|teacher|roommate)/i],
+            ['work',/(?:đồng nghiệp|cấp trên|cấp dưới|sếp|lãnh đạo|trợ lý|thư ký|khách hàng|bên A|bên B|công ty|công việc|dự án|chủ nhà|quản lý cửa hàng|quản lý|tổng biên tập|biên tập|sản xuất|nhiếp ảnh gia|họa sĩ minh họa|nhà thiết kế|nhạc sĩ|bác sĩ|luật sư|người quản lý|đạo diễn|biên kịch|coworker|boss|colleague)/i],
+            ['club',/(?:câu lạc bộ|hội sinh viên|hiệp hội|công hội|đội tuyển|đồng đội|guild|club)/i],
+            ['romance',/(?:người yêu|bạn đời|bạn trai|bạn gái|người yêu cũ|vị hôn phu|vị hôn thê|người thương|lover|partner)/i],
         ];
         for(const [label,re] of rules)if(re.test(value))hits.push(label);
         return hits.join(',');
@@ -4642,7 +4646,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if(!name)return false;
             const escaped=String(name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
             const rel=String(relation||'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-            return new RegExp(`${escaped}\\s*(?:的)?\\s*${rel||SOURCE_ROSTER_PROSE_RELATION}`,'i').test(value);
+            return new RegExp(`${escaped}\\s*(?:là|của)?\\s*${rel||SOURCE_ROSTER_PROSE_RELATION}`,'i').test(value);
         };
         if(/\{\{user\}\}|\buser\b/i.test(value)&&userName)return userName;
         if(/\{\{char\}\}|\bchar\b/i.test(value)&&charName)return charName;
@@ -4651,7 +4655,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const entry=compactText(meta?.entry||'',180);
         if(userName&&entry.includes(userName)&&SOURCE_ROSTER_OWNER_RELATIONS.has(relation))return userName;
         if(charName&&entry.includes(charName)&&SOURCE_ROSTER_OWNER_RELATIONS.has(relation))return charName;
-        if(charName&&String(meta?.source||'').includes('角色')&&SOURCE_ROSTER_OWNER_RELATIONS.has(relation))return charName;
+        if(charName&&/nhân vật/i.test(String(meta?.source||''))&&SOURCE_ROSTER_OWNER_RELATIONS.has(relation))return charName;
         return '';
     }
 
