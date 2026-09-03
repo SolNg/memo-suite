@@ -6971,8 +6971,8 @@ ${scene.mood||''}`,12000);
         query.forEach(token=>{if(destination.has(token))overlap+=1;});
         const ratio=overlap/Math.max(1,Math.min(query.size,14));
         if(ratio>=0.58||overlap>=6)return true;
-        if(candidate?.category==='commitment'&&/(?:答应|同意|没问题|交给|我会|会去|会帮|会陪)/.test(reply)){
-            const topic=String(candidate?.text||'').replace(/^(?:我|他|她|我们|他们|她们|{{user}})/i,'');
+        if(candidate?.category==='commitment'&&/(?:đồng ý|nhận lời|không vấn đề gì|giao cho|tôi sẽ|sẽ đi|sẽ giúp|sẽ đi cùng)/i.test(reply)){
+            const topic=String(candidate?.text||'').replace(/^(?:tôi|anh ấy|cô ấy|chúng tôi|bọn họ|{{user}})\s*/i,'');
             return semanticSimilarity(topic,reply)>=0.38||overlap>=3;
         }
         return false;
@@ -6980,12 +6980,12 @@ ${scene.mood||''}`,12000);
 
     function lifeDetailExplicitlyDeniedByAssistant(candidate, assistantText) {
         const actions={
-            commitment:'(?:答应|承诺|同意|Lời hẹn|说好|接受|参加|出席|代开|代为|帮|陪|接送|办理|处理|负责|照顾|完成|做|去)',
-            meal:'(?:吃|喝|点单?)', shopping:'(?:买|购买|下单)', travel:'(?:去|前往|到达|来到|回到|返回)',
-            clothing:'(?:穿|换上|戴上|套上)', money:'(?:花|支付|付款)', routine:'(?:洗|收拾|打扫|刷|擦|清理|整理)',
-        }[candidate?.category]||'(?:答应|承诺|同意|Lời hẹn|吃|喝|点单?|买|购买|下单|去|穿|花|支付|付款|洗|收拾|打扫|清理|整理)';
-        const denied=new RegExp(`(?:(?:没有|没|未|未曾|并未|不曾|从未|不(?!但|仅|只|过)(?:会|能|愿意?|想)?)\\s*(?:真正|实际|明确)?\\s*${actions}|(?:拒绝|否认)(?:了)?\\s*${actions})`);
-        const deniedFacetPrefix=new RegExp('(?:没有|并无|不存在|并非|不是|未发生|没发生|拒绝|否认)[^，。；！？!?]{0,4}$');
+            commitment:'(?:đồng ý|hứa|chấp nhận|hẹn|đã hẹn|nhận lời|tham gia|có mặt|làm thay|thay mặt|giúp|đi cùng|đưa đón|làm thủ tục|xử lý|phụ trách|chăm sóc|hoàn thành|làm|đi)',
+            meal:'(?:ăn|uống|gọi món)', shopping:'(?:mua|mua sắm|đặt đơn)', travel:'(?:đi|tới|đến nơi|quay về|trở về)',
+            clothing:'(?:mặc|thay|đeo|khoác)', money:'(?:tiêu|thanh toán|trả tiền)', routine:'(?:rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)',
+        }[candidate?.category]||'(?:đồng ý|hứa|chấp nhận|hẹn|ăn|uống|gọi món|mua|đặt đơn|đi|mặc|tiêu|thanh toán|trả tiền|rửa|dọn dẹp|quét dọn|lau dọn|sắp xếp)';
+        const denied=new RegExp(`(?:(?:không|chưa|chẳng|không hề|chưa từng|chưa bao giờ|không (?:thể|muốn|chịu))\\s*(?:thật sự|thực tế|rõ ràng)?\\s*${actions}|(?:từ chối|phủ nhận)\\s*${actions})`,'i');
+        const deniedFacetPrefix=new RegExp('(?:không có|chẳng có|không tồn tại|không phải|chưa xảy ra|từ chối|phủ nhận)[^,.;!?]{0,4}$','i');
         const facets=lifeDetailCriticalFacets(candidate?.text);
         const facetDenied=clause=>{
             const normalizedClause=normalizeDetailFacet(clause);
@@ -7024,9 +7024,9 @@ ${scene.mood||''}`,12000);
             });
             if(!duplicate)result.push(mapped);
         };
-        // AI回复中明写的事实直接归属该AITầng。
+        // Những sự thật được ghi rõ trong câu trả lời của AI thì thuộc luôn về tầng AI đó.
         detectLifeDetailCandidates(targetFloor,targetFloor,{limit:cap}).forEach(add);
-        // user输入只是上下文；只审计被AI回复明确确认/承接的原子事实，且仍归属AITầng。
+        // Đầu vào của user chỉ là ngữ cảnh; chỉ kiểm toán những sự thật nguyên tử được câu trả lời AI xác nhận/tiếp nối rõ ràng, và chúng vẫn thuộc về tầng AI.
         const user=previousUserEntryForAssistant(targetFloor);
         if(user)detectLifeDetailCandidates(user.index,user.index,{limit:cap}).filter(item=>lifeDetailConfirmedByAssistant(item,assistantText)).forEach(add);
         const sorted=result.sort((a,b)=>lifeDetailCandidateScore(b)-lifeDetailCandidateScore(a)||Number(a.evidenceFloor)-Number(b.evidenceFloor));
@@ -7040,11 +7040,11 @@ ${scene.mood||''}`,12000);
             if(!fact||!Number.isFinite(floor)||floor<0)continue;
             const sourceMessageKey=compactText(raw?.sourceMessageKey||messageKey,320),dedupe=`${floor}|${category}|${npcNameKey(fact)}`;if(seen.has(dedupe))continue;seen.add(dedupe);
             const entities=[];const push=value=>{value=compactText(value,120);if(value&&!entities.includes(value))entities.push(value);};
-            for(const match of fact.matchAll(/\d+(?:\.\d+)?\s*(?:元|块钱|块|美元|人民币|港币|日元|欧元)/g))push(match[0]);
-            for(const match of fact.matchAll(/(?:吃(?:了|完|过|的是)?|喝(?:了|完|过|的是)?|点(?:了|的是)?|买(?:了|下|的是)?|购买(?:了)?|下单(?:了)?)\s*([^\u3002！？；;]{1,100})/g)){
-                String(match[1]||'').split(/[、，,]|以及|和|还有/).map(value=>value.replace(/(?:一共|共计|支付|花了)\s*\d+(?:\.\d+)?\s*(?:元|块钱|块).*$/,'').trim()).filter(value=>value.length>=2).forEach(push);
+            for(const match of fact.matchAll(/\d+(?:[.,]\d+)?\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\b|USD|đô la|euro|yên)/gi))push(match[0]);
+            for(const match of fact.matchAll(/(?:(?:đã |vừa )?(?:ăn|uống)(?:\s*(?:xong|hết))?|(?:đã )?gọi(?: món)?|(?:đã )?mua|mua sắm|(?:đã )?đặt đơn)\s+([^.!?;]{1,100})/gi)){
+                String(match[1]||'').split(/[,;]|\svà\s|\scùng\s|\scòn có\s/i).map(value=>value.replace(new RegExp('(?:tổng cộng|tất cả|thanh toán|đã tiêu)\\s*\\d+(?:[.,]\\d+)?\\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\\b|USD|đô la|euro|yên).*$','i'),'').trim()).filter(value=>value.length>=2).forEach(push);
             }
-            const merchant=fact.match(/(?:在|从)「?([^\u300d，。！？]{2,32}?(?:便利店|超市|餐厅|饭店|小吃店|商场|店|美团|饿了么|淘宝|京东))」?(?:里|上)?/);
+            const merchant=fact.match(/(?:ở|tại|từ)\s*“?([^”,.!?]{2,32}?(?:cửa hàng tiện lợi|siêu thị|nhà hàng|quán ăn|quán vặt|trung tâm thương mại|cửa hàng|Meituan|Ele\.me|Taobao|JD))”?/i);
             if(merchant?.[1])push(merchant[1]);
             const people=[...new Set([raw?.speaker,...(Array.isArray(raw?.people)?raw.people:[])].map(value=>compactText(value,120)).filter(Boolean))].slice(0,20);
             rows.push({id:`episode-${stableHash(`${sourceMessageKey}|${dedupe}`)}`,category,fact,entities:entities.slice(0,80),people,floor,evidenceFloor:Number.isFinite(evidenceFloor)?evidenceFloor:floor,sourceMessageKey,evidenceText:fact,evidenceKind:evidenceFloor===floor?'assistant-explicit':'assistant-confirmed-user-fact',evidenceRank:evidenceFloor===floor?75:85,status:'active',createdAt:compactText(createdAt,120)});
@@ -7069,23 +7069,23 @@ ${scene.mood||''}`,12000);
         const tokens=[];
         for(const latin of value.match(/[a-z0-9]+(?:\.[0-9]+)?/g)||[])if(latin.length>1)tokens.push(latin);
         for(const chunk of value.match(/[\u3400-\u9fff]+/g)||[]){const chars=[...chunk];for(let i=0;i<chars.length-1;i+=1)tokens.push(chars[i]+chars[i+1]);}
-        const stop=new Set(['我们','他们','她们','一起','今天','现在','然后','已经','本轮','chính văn','这个','那个','时候','晚上','早上','中午','后来','接着','一下','一些','一个','两个','吃了','喝了','去了','买了','穿了','点了','一共','顺便']);
+        const stop=new Set(['chúng tôi','bọn họ','cùng nhau','hôm nay','bây giờ','rồi thì','đã','lượt này','chính văn','cái này','cái kia','lúc','buổi tối','buổi sáng','buổi trưa','về sau','tiếp đó','một chút','một vài','một cái','hai cái','đã ăn','đã uống','đã đi','đã mua','đã mặc','đã gọi','tổng cộng','tiện thể']);
         return new Set(tokens.filter(token=>!stop.has(token)));
     }
 
     function normalizeDetailFacet(value) {
-        return String(value||'').toLowerCase().replace(/[\s“”\x22\x27‘’（）()，,。；;：:！？!?、]/g,'').replace(/^(?:我|她|他|我们|他们|角色|user|char)+/i,'').slice(0,80);
+        return String(value||'').toLowerCase().replace(/[\s“”\x22\x27‘’().,;:!?]/g,' ').trim().replace(/^(?:tôi|cô ấy|anh ấy|chúng tôi|bọn họ|nhân vật|user|char)\s*/i,'').slice(0,80);
     }
 
     function lifeDetailCriticalFacets(text) {
         const raw=String(text||''); const facets=[]; const push=v=>{const n=normalizeDetailFacet(v);if(n.length>=2&&!facets.includes(n))facets.push(n);};
-        for(const m of raw.matchAll(/\d+(?:\.\d+)?\s*(?:元|块钱|块|美元|人民币|港币|日元|欧元)/g))push(m[0]);
-        for(const m of raw.matchAll(/微辣|中辣|重辣|特辣|少辣|不辣|无糖|少糖|三分糖|五分糖|七分糖|全糖|去冰|少冰|正常冰|常温|不要香菜|不加香菜|加香菜|加卤蛋|加金针菇|加豆皮/g))push(m[0]);
-        const named=/(麻婆豆腐|宫保鸡丁|锅包肉|北京烤鸭|烤鸭|牛排|寿喜烧|韩式烤肉|煎饼果子|番茄牛腩盖饭|番茄牛腩|照烧鸡腿饭|照烧鸡腿|酸菜鱼|水煮鱼|烤鱼|红烧肉|回锅肉|鱼香肉丝|青椒肉丝|糖醋里脊|小龙虾|螺蛳粉|桂林米粉|牛肉面|炸酱面|鸡丝凉面|杨枝甘露|抹茶拿铁|椰子水|珍珠奶绿|红豆冰|草莓酸奶|冰柠檬茶|热豆浆|无糖可乐|芋泥奶茶|白萝卜|鱼豆腐|魔芋丝|福袋|海带结|鸡肉咖喱饭|猪排咖喱饭|鲜肉小馄饨|荠菜大馄饨|葱油饼|黑米粥|生煎包|咸豆浆|短靴|长靴|马丁靴|水手服|连衣裙)/g;
+        for(const m of raw.matchAll(/\d+(?:[.,]\d+)?\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\b|USD|đô la|euro|yên)/gi))push(m[0]);
+        for(const m of raw.matchAll(/hơi cay|cay vừa|cay nhiều|siêu cay|ít cay|không cay|không đường|ít đường|30% đường|50% đường|70% đường|100% đường|không đá|ít đá|đá bình thường|nhiệt độ thường|không rau mùi|thêm rau mùi|thêm trứng|thêm nấm kim châm|thêm đậu hũ/gi))push(m[0]);
+        const named=/(phở bò|phở gà|bún bò Huế|bún bò|bún chả|bún riêu|bún đậu mắm tôm|bánh mì thịt|bánh mì|bánh cuốn|bánh xèo|bánh canh|hủ tiếu|mì quảng|cơm tấm sườn|cơm tấm|cơm gà|cơm rang dưa bò|cơm chiên|xôi xéo|xôi|cháo lòng|cháo|nem rán|nem nướng|chả giò|gỏi cuốn|bánh bao|há cảo|mì trộn|miến trộn|lẩu thái|lẩu|chè dưỡng nhan|matcha latte|nước dừa|trà sữa trân châu|đá đậu đỏ|sữa chua dâu|trà chanh đá|sữa đậu nành nóng|coca không đường|trà sữa khoai môn|củ cải trắng|chả cá|thạch konjac|cà ri gà|cà ri sườn|hoành thánh|bánh rán|cháo gạo lứt|bánh bao chiên|sữa đậu nành mặn|bốt ngắn|bốt cao|giày martin|đồng phục thủy thủ|váy liền)/gi;
         for(const m of raw.matchAll(named))push(m[0]);
-        const action=/(?:答应(?:了)?|承诺(?:了)?|同意(?:了)?|Lời hẹn(?:了)?|说好|吃(?:了|完|的是)?|喝(?:了|完|的是)?|点(?:了|的是)?|买(?:了|的是)?|购买(?:了)?|穿(?:了|的是|着)?|换上|套上|戴上|去了?|前往|到达|花了|支付了|洗(?:了|完)?|收拾(?:了|完)?|打扫(?:了|完)?|清理(?:了|完)?)\s*([^，。；！？!?]{1,36})/g;
+        const action=/(?:(?:đã )?(?:đồng ý|hứa|chấp nhận|hẹn|nhận lời)|(?:đã |vừa )?(?:ăn|uống)(?:\s*(?:xong|hết))?|(?:đã )?gọi(?: món)?|(?:đã )?mua|mua sắm|(?:đã |đang )?(?:mặc|thay|đeo|khoác)|(?:đã )?đi|tới|đến nơi|đã tiêu|đã thanh toán|(?:đã )?(?:rửa|dọn dẹp|quét dọn|lau dọn)(?:\s*xong)?)\s+([^,.;!?]{1,36})/gi;
         for(const m of raw.matchAll(action)){
-            const phrase=String(m[1]||'').split(/(?:，|、|和|以及|并且|而且|还|又|一共)/)[0];
+            const phrase=String(m[1]||'').split(/(?:,|;|\svà\s|\scùng\s|\shơn nữa\s|\slại\s|\stổng cộng\s)/i)[0];
             push(phrase);
         }
         return facets.slice(0,16);
@@ -7093,8 +7093,8 @@ ${scene.mood||''}`,12000);
 
     function lifeDetailFacetCovered(facet, destination) {
         const f=normalizeDetailFacet(facet), d=normalizeDetailFacet(destination); if(!f)return true;
-        if(/^\d+(?:\.\d+)?(?:元|块钱|块|美元|人民币|港币|日元|欧元)$/.test(f)){
-            return (d.match(/\d+(?:\.\d+)?(?:元|块钱|块|美元|人民币|港币|日元|欧元)/g)||[]).includes(f);
+        if(new RegExp('^\\d+(?:[.,]\\d+)?\\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\\b|USD|đô la|euro|yên)$','i').test(f)){
+            return (d.match(new RegExp('\\d+(?:[.,]\\d+)?\\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\\b|USD|đô la|euro|yên)','gi'))||[]).includes(f);
         }
         if(d.includes(f))return true;
         const q=lifeDetailTokens(f), x=lifeDetailTokens(d); if(!q.size)return false;let overlap=0;q.forEach(token=>{if(x.has(token))overlap+=1;});
@@ -7108,8 +7108,8 @@ ${scene.mood||''}`,12000);
         const destinations=anchors.map(anchor=>`${anchor.event||''} ${anchor.details||''} ${(anchor.tags||[]).join(' ')}`);
         const facets=lifeDetailCriticalFacets(candidate?.text);
         if(facets.length){
-            // U1.7.2：允许一个原句拆成多个detail anchor。旧版要求“所有关键实体必须同时出现在同一个anchor”，
-            // 模型即使已经分别记全了也会被判漏，造成无限修复。现在按同Tầng全部锚点的并集判定。
+            // U1.7.2: cho phép một câu gốc tách thành nhiều detail anchor. Bản cũ đòi “mọi thực thể then chốt phải cùng xuất hiện trong một anchor”,
+            // nên dù mô hình đã ghi đủ ở các mục riêng thì vẫn bị chấm là sót, gây ra vòng sửa vô tận. Giờ phán định theo hợp của tất cả mốc neo trong cùng tầng.
             return facets.every(facet=>destinations.some(destination=>lifeDetailFacetCovered(facet,destination)));
         }
         const combined=destinations.join(' ');
@@ -7119,15 +7119,15 @@ ${scene.mood||''}`,12000);
     }
 
     function applyDeterministicLifeDetailFallback(candidates,{source='p13-source-fallback'}={}) {
-        // API三次仍没把“原文明写的事实”组织成可通过覆盖校验的anchor时，直接使用原文证据做detail锚点。
-        // 不推理、不改写、不写长期偏好，因此不会脑补；同时保证一键修复不会陷入永久missing。
+        // Khi qua ba lần gọi API mà “sự thật ghi rõ trong nguyên văn” vẫn chưa thành anchor qua được kiểm tra độ phủ, thì dùng thẳng bằng chứng nguyên văn làm detail anchor.
+        // Không suy luận, không viết lại, không ghi sở thích dài hạn nên sẽ không bịa; đồng thời bảo đảm nút sửa một chạm không kẹt mãi ở trạng thái missing.
         const remaining=(candidates||[]).filter(item=>item?.text&&!lifeDetailCandidateCovered(item));
         if(!remaining.length)return {applied:0,remaining:[]};
         const typeMap={meal:'meal',shopping:'shopping',travel:'travel',clothing:'clothing',money:'money',commitment:'promise',routine:'detail',preference:'detail'};
         const anchors=remaining.map(item=>({
             floor:String(resolvedMemoryFloor(item.floor,-1)),type:typeMap[item.category]||'detail',importance:'detail',
-            people:item.speaker?[item.speaker]:[],event:compactText(item.text,900),details:`P13原文证据：${compactText(item.text,1200)}`,
-            tags:[compactText(item.category,50),'P13原文保底'],source,
+            people:item.speaker?[item.speaker]:[],event:compactText(item.text,900),details:`Bằng chứng nguyên văn P13: ${compactText(item.text,1200)}`,
+            tags:[compactText(item.category,50),'Phương án tối thiểu từ nguyên văn P13'],source,
         })).filter(item=>resolvedMemoryFloor(item.floor,-1)>=0);
         if(anchors.length)mergeMemoryAnchors(anchors,-1);
         for(const item of remaining.filter(row=>row?.category==='commitment')){
@@ -7139,7 +7139,7 @@ ${scene.mood||''}`,12000);
     }
 
     function ensureTurnMemoryFactCoverage(assistantFloor,{source='r52-source-evidence'}={}) {
-        // R15确定性账本不设16/24/80条上限；模型补抓UI上限只影响额外润色，不影响原文事件落库。
+        // Sổ cái tất định R15 không đặt trần 16/24/80 mục; giới hạn trên giao diện của phần mô hình quét bù chỉ ảnh hưởng tới việc gọt giũa thêm, không ảnh hưởng tới việc lưu sự kiện nguyên văn.
         const candidates=detectTurnLifeDetailCandidates(assistantFloor,{limit:Number.POSITIVE_INFINITY});
         mergeEpisodeFacts(candidates,{source});
         const missing=candidates.filter(item=>!lifeDetailCandidateCovered(item));
@@ -7149,8 +7149,8 @@ ${scene.mood||''}`,12000);
     }
 
     function lifeDetailRescuePrompt(candidates) {
-        const lines=(candidates||[]).map(item=>`【第${item.floor}层｜${item.speaker}｜${item.category}】${item.text}`).join('\n');
-        return `你是“0-32·永不落幕的剧场 P14 生活细节保底提取器”。主记忆已经处理过本轮，但下面这些明确Sự thật đời thường没有被事件锚点完整覆盖。只补漏，不重复总结整段，不续写剧情，不脑补。输出严格JSON，不要Markdown：\n{"anchors":[{"date":"","time":"","floor":"","type":"meal|promise|shopping|travel|clothing|money|detail","people":[],"event":"","details":"","tags":[],"importance":"detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":""}]}\n\n规则：\n1. 每个候选只要存在可直接确认的具体事实，就至少输出一条对应floor的anchor；commitment使用promise，其余无法细分的家务/日常事实使用detail。不得只记其中一半。承诺内容、菜名、饮料、辣度、糖度、冰量、配料、购买物、地点、衣服、金额等候选中出现的关键实体必须完整保留。\n2. lifeFacts只写明确长期偏好/忌口/习惯/限制。一次点了某道菜不等于喜欢它；角色直接说“我不吃香菜/喜欢微辣/过敏”时explicit=true；只是重复行为证据时explicit=false。\n3. 不得把候选之外的旧事加入结果。\n\n漏记候选：\n${lines}`;
+        const lines=(candidates||[]).map(item=>`【Tầng ${item.floor}｜${item.speaker}｜${item.category}】${item.text}`).join('\n');
+        return `Bạn là “bộ trích xuất chi tiết đời sống dự phòng P14 của 0-32 · Sân Khấu Không Bao Giờ Hạ Màn”. Ký ức chính đã xử lý lượt này rồi, nhưng những sự thật đời sống rõ ràng dưới đây chưa được các mốc neo sự kiện phủ hết. Chỉ bù chỗ sót, không tóm tắt lại cả đoạn, không viết tiếp cốt truyện, không bịa. Xuất JSON nghiêm ngặt, không dùng Markdown:\n{"anchors":[{"date":"","time":"","floor":"","type":"meal|promise|shopping|travel|clothing|money|detail","people":[],"event":"","details":"","tags":[],"importance":"detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":""}]}\n\nQUY TẮC:\n1. Chỉ cần một ứng viên có sự thật cụ thể xác nhận được ngay thì phải xuất ít nhất một anchor ứng với floor đó; commitment dùng promise, các sự thật việc nhà/thường nhật không phân loại được thì dùng detail. Không được ghi mỗi một nửa. Các thực thể then chốt xuất hiện trong ứng viên như nội dung lời hứa, tên món, đồ uống, độ cay, độ ngọt, lượng đá, topping, món đã mua, địa điểm, quần áo, số tiền đều phải giữ lại đầy đủ.\n2. lifeFacts chỉ ghi những sở thích/kiêng khem/thói quen/giới hạn dài hạn rõ ràng. Gọi một món một lần không có nghĩa là thích món đó; khi nhân vật nói thẳng “tôi không ăn rau mùi / tôi thích hơi cay / tôi bị dị ứng” thì explicit=true; nếu chỉ là bằng chứng hành vi lặp lại thì explicit=false.\n3. Không được đưa chuyện cũ nằm ngoài danh sách ứng viên vào kết quả.\n\nCÁC ỨNG VIÊN BỊ BỎ SÓT:\n${lines}`;
     }
 
     async function rescueLifeDetailCandidates(candidates, { source='turn-audit', maxAttempts=null } = {}) {
@@ -7166,47 +7166,47 @@ ${scene.mood||''}`,12000);
         let remaining=original.filter(item=>!lifeDetailCandidateCovered(item));
         let attemptsUsed=0,lastError='';
         if(!remaining.length)return {attempted:false,success:true,covered:original.length,missing:[],attempts:0,fallbackApplied:0};
-        // 没有独立API时，生活细节仍可用原文证据无损保底；只有“整轮结构化记忆重建”必须依赖模型。
+        // Khi không có API riêng thì chi tiết đời sống vẫn có phương án tối thiểu không mất mát dựa trên bằng chứng nguyên văn; chỉ việc “dựng lại toàn bộ ký ức có cấu trúc của cả lượt” mới bắt buộc cần mô hình.
         if(!independentApiReady()){
             const fallback=applyDeterministicLifeDetailFallback(remaining,{source:`${source}-no-api-fallback`});
             remaining=original.filter(item=>!lifeDetailCandidateCovered(item));
-            return {attempted:false,success:remaining.length===0,covered:original.length-remaining.length,missing:remaining,attempts:0,error:remaining.length?'本地原文保底后仍有未覆盖项':'',fallbackApplied:fallback.applied};
+            return {attempted:false,success:remaining.length===0,covered:original.length-remaining.length,missing:remaining,attempts:0,error:remaining.length?'Sau phương án tối thiểu từ nguyên văn cục bộ vẫn còn mục chưa được phủ':'',fallbackApplied:fallback.applied};
         }
 
         for(let attempt=1;attempt<=attemptLimit;attempt+=1){
-            if(!stillCurrent())return {attempted:attemptsUsed>0,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓期间已切换聊天'};
+            if(!stillCurrent())return {attempted:attemptsUsed>0,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Đã đổi cuộc trò chuyện trong lúc quét bù'};
             attemptsUsed=attempt;
             let result=null;
             try{
                 result=await runFeature('extract',lifeDetailRescuePrompt(remaining),{
                     kind:'extract',repairKind:'life-detail',repairSource:source,
                     repairFloors:[...new Set(remaining.map(i=>i.floor))],repairAttempt:attempt,repairAttemptLimit:attemptLimit,
-                },{jsonMode:true,busyLabel:`后台补抓生活细节 ${attempt}/${attemptLimit}…`,timeoutMs});
-                if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓完成时已切换聊天'};
+                },{jsonMode:true,busyLabel:`Quét bù chi tiết đời sống ở nền ${attempt}/${attemptLimit}…`,timeoutMs});
+                if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Đã đổi cuộc trò chuyện khi quét bù xong'};
                 if(result.record?.chatIdentity&&result.record.chatIdentity!==operationScope.chatKey){
-                    markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:'补抓完成时聊天Thân phận不一致，结果丢弃'});
-                    return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓完成时聊天Thân phận不一致'};
+                    markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:'Danh tính cuộc trò chuyện không khớp khi quét bù xong, kết quả bị hủy'});
+                    return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Danh tính cuộc trò chuyện không khớp khi quét bù xong'};
                 }
-                // U1.6.3：每次尝试仍只允许 anchors + lifeFacts 写入；即使模型乱回其它字段也全部丢弃。
+                // U1.6.3: mỗi lần thử vẫn chỉ cho ghi anchors + lifeFacts; kể cả khi mô hình trả về lung tung các trường khác thì cũng bỏ hết.
                 const raw=parseGeneratedJson(result.text||'{}');
                 applyLifeDetailRepairPayload(raw,remaining);
                 markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only'});
                 remaining=original.filter(item=>!lifeDetailCandidateCovered(item));
                 if(!remaining.length)return {attempted:true,success:true,covered:original.length,missing:[],attempts:attemptsUsed};
-                lastError=`第 ${attempt} 次返回后仍有 ${remaining.length} 项未覆盖`;
+                lastError=`Sau lần trả về thứ ${attempt} vẫn còn ${remaining.length} mục chưa được phủ`;
             }catch(error){
-                if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓期间已切换聊天'};
+                if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Đã đổi cuộc trò chuyện trong lúc quét bù'};
                 if(result?.record)markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:error?.message||error});
-                lastError=compactText(error?.message||error,400)||'Chưa rõ错误';
-                console.warn(`[vvv记忆中枢] P13生活细节补抓第 ${attempt}/${attemptLimit} 次失败`,error);
+                lastError=compactText(error?.message||error,400)||'Lỗi không rõ';
+                console.warn(`[Trung tâm Ký ức vvv] Lần quét bù chi tiết đời sống P13 thứ ${attempt}/${attemptLimit} thất bại`,error);
             }
             if(attempt<attemptLimit){
                 const delay=Math.min(12000,baseDelay*(2**(attempt-1)));
                 await new Promise(resolve=>setTimeout(resolve,delay));
-                if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'重试等待期间已切换聊天'};
+                if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Đã đổi cuộc trò chuyện trong lúc chờ thử lại'};
             }
         }
-        if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓结束时已切换聊天'};
+        if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Đã đổi cuộc trò chuyện khi quét bù kết thúc'};
         remaining=original.filter(item=>!lifeDetailCandidateCovered(item));
         const fallback=applyDeterministicLifeDetailFallback(remaining,{source:`${source}-retry-exhausted-fallback`});
         remaining=original.filter(item=>!lifeDetailCandidateCovered(item));
@@ -7228,7 +7228,7 @@ ${scene.mood||''}`,12000);
             const floor=targetFloor>=0?targetFloor:evidenceFloor;if(floor<0)continue;
             const speaker=compactText(item?.speaker,120);
             for(const text of splitDetailSentences(item?.text||'')){
-                // 重新用当前版本的事实判定器验证历史候选；升级后旧的假设/建议伪遗漏会自动退出健康窗口。
+                // Dùng bộ phán định sự thật của phiên bản hiện tại để kiểm lại các ứng viên lịch sử; sau khi nâng cấp, những chỗ “sót giả” kiểu giả định/gợi ý cũ sẽ tự rời khỏi cửa sổ sức khỏe.
                 const factText=cleanDetectedDetailText(text);const category=lifeDetailCategory(factText);if(!category)continue;
                 if(targetFloor>=0&&evidenceFloor>=0&&evidenceFloor!==targetFloor&&!lifeDetailConfirmedByAssistant({floor,category,speaker,text:factText},targetReply))continue;
                 const key=`${floor}|${category}|${factText}`;if(seen.has(key))continue;seen.add(key);
@@ -7349,7 +7349,7 @@ ${scene.mood||''}`,12000);
             rescueAttempted:Boolean(existing?.rescueAttempted||coverage.applied), rescueSuccess:Boolean((existing?.rescueAttempted||coverage.applied)&&missing.length===0),
             rescueSource:coverage.applied?'deterministic-source-evidence':existing?.rescueSource, fallbackApplied:Number(existing?.fallbackApplied||0)+Number(coverage.applied||0), extractedThrough,
         });
-        if(['missing','memory-missing'].includes(status))console.warn('[vvv记忆中枢] P13记忆健康检查发现漏记',entry);
+        if(['missing','memory-missing'].includes(status))console.warn('[Trung tâm Ký ức vvv] Kiểm tra sức khỏe ký ức P13 phát hiện chỗ bị bỏ sót',entry);
         return entry;
     }
 
@@ -7371,7 +7371,7 @@ ${scene.mood||''}`,12000);
                 return memoryHealthAttemptForFloor(current.floor)||current;
             }
             const rescue=await rescueLifeDetailCandidates(candidates,{source:'auto-post-settled'});
-            // U1.7：epoch + state + chat identity + data generation 四重校验，A→B→A 也不能接纳旧异步结果。
+            // U1.7: bốn lớp kiểm tra epoch + state + danh tính cuộc trò chuyện + thế hệ dữ liệu, nên ngay cả chuỗi A→B→A cũng không nhận kết quả bất đồng bộ cũ.
             if(!stillCurrent())return null;
             const allCandidates=healthCandidatesFromAttempt(current);
             const missingAfter=allCandidates.filter(item=>!lifeDetailCandidateCovered(item));
@@ -7394,7 +7394,7 @@ ${scene.mood||''}`,12000);
         const scope=captureChatScope();
         runLaterForScope(scope,0,()=>{
             if(getChatKey()!==expectedChatIdentity)return;
-            return rescueMemoryHealthAttempt(attempt.id).catch(error=>console.warn('[vvv记忆中枢] P13后台生活补抓异常',error));
+            return rescueMemoryHealthAttempt(attempt.id).catch(error=>console.warn('[Trung tâm Ký ức vvv] Quét bù chi tiết đời sống P13 ở nền gặp lỗi',error));
         });
     }
 
