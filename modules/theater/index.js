@@ -5621,23 +5621,23 @@ ${scene.mood||''}`,12000);
         const ancient=(raw.match(/(?:cổ đại|trung cổ|vương quốc|đế quốc|trạm dịch|bồ câu đưa thư|thư từ|sứ giả|nhà Nguyễn|nhà Lê|nhà Trần|nhà Lý)/ig)||[]).length;
         const industrial=(raw.match(/(?:thời Pháp thuộc|sở điện báo|máy điện báo|thời đại hơi nước|cảng thuộc địa)/ig)||[]).length;
         const fantasy=(raw.match(/(?:dị giới|ma pháp|tu tiên|tiên hiệp|linh lực|thần thuật|pha lê truyền tin|tinh linh|thú nhân|hầm ngục)/ig)||[]).length;
-        if(modern>=2 && modern>=Math.max(ancient,industrial,fantasy)*1.5)return {era:'现代',technologyLevel:'modern-digital',kind:'modern'};
+        if(modern>=2 && modern>=Math.max(ancient,industrial,fantasy)*1.5)return {era:'Hiện đại',technologyLevel:'modern-digital',kind:'modern'};
         if(fantasy>=2 && fantasy>modern)return {era:'Dị giới/thời đại kỳ ảo',technologyLevel:'fantasy',kind:'fantasy'};
-        if(industrial>=2 && industrial>modern)return {era:'近代',technologyLevel:'industrial-telegraph',kind:'industrial'};
-        if(ancient>=2 && ancient>modern)return {era:'古代/前现代',technologyLevel:'preindustrial',kind:'ancient'};
+        if(industrial>=2 && industrial>modern)return {era:'Cận đại',technologyLevel:'industrial-telegraph',kind:'industrial'};
+        if(ancient>=2 && ancient>modern)return {era:'Cổ đại/tiền hiện đại',technologyLevel:'preindustrial',kind:'ancient'};
         return inferEraFromEvidence(raw);
     }
 
     function currentNarrativeEvidence(limit = 11000) {
         const scene = stateRuntime.state?.scene || {};
         const sceneText = [scene.time, scene.location, scene.weather, scene.goal].filter(Boolean).join('｜');
-        // 只看最近6层作为“此刻”的高权重证据，不把整张角色卡和user Persona混进当前时代判断。
-        return [`【当前scene】${sceneText || 'Chưa ghi nhận'}`, `【最近6层】\n${recentTranscript(6)}`].join('\n').slice(0, limit);
+        // Chỉ lấy 6 tầng gần nhất làm bằng chứng trọng số cao cho “lúc này”, không trộn cả thẻ nhân vật và Persona của user vào việc phán đoán thời đại hiện tại.
+        return [`【SCENE HIỆN TẠI】${sceneText || 'Chưa ghi nhận'}`, `【6 TẦNG GẦN NHẤT】\n${recentTranscript(6)}`].join('\n').slice(0, limit);
     }
 
     function latestTransitionEvidence(limit = 6500) {
         const chat = context()?.chat || [];
-        const rows = chat.slice(-4).map((m, i) => `【${chat.length - Math.min(4,chat.length) + i}层｜${messageSpeaker(m)}】${messageText(m).slice(0,1800)}`);
+        const rows = chat.slice(-4).map((m, i) => `【Tầng ${chat.length - Math.min(4,chat.length) + i}｜${messageSpeaker(m)}】${messageText(m).slice(0,1800)}`);
         const scene = stateRuntime.state?.scene || {};
         return [`scene=${[scene.time,scene.location].filter(Boolean).join('｜')}`, ...rows].join('\n').slice(0,limit);
     }
@@ -5645,12 +5645,12 @@ ${scene.mood||''}`,12000);
     function latestWorldTransitionInfo() {
         const chat = context()?.chat || [];
         const patterns = [
-            { kind:'origin', rx:/(?:回到|返回|回归|重新回到|回来了|返回到)[^。！？\n]{0,42}(?:原世界|现实世界|现代(?:社会|世界)?|20\d{2}年)/i },
-            { kind:'fantasy', rx:/(?:穿越(?:到|进)?|传送(?:到|进)?|掉进|来到|进入|抵达)[^。！？\n]{0,42}(?:异世界|魔法世界|修仙界|仙界|秘境|位面|魔法学院|精灵国|兽人国)/i },
-            { kind:'parallel', rx:/(?:穿越(?:到|进)?|传送(?:到|进)?|来到|进入|抵达)[^。！？\n]{0,42}(?:平行世界|另一个世界|平行时空)/i },
-            { kind:'future', rx:/(?:穿越(?:到|进)?|传送(?:到|进)?|来到|进入|抵达)[^。！？\n]{0,42}(?:未来|21\d{2}年|星际|空间站|殖民星|星舰|太空殖民|赛博都市)/i },
-            { kind:'historical', rx:/(?:穿越(?:到|进)?|传送(?:到|进)?|回到|来到|进入|抵达)[^。！？\n]{0,42}(?:1[0-9]\d{2}年)/i },
-            { kind:'historical', rx:/(?:穿越(?:到|进)?|传送(?:到|进)?|回到|来到|进入|抵达)[^。！？\n]{0,42}(?:古代|前现代|中世纪|封建时代|王朝时期|清朝|明朝|宋朝|唐朝)/i },
+            { kind:'origin', rx:/(?:quay về|trở về|trở lại|quay lại|đã về)[^.!?\n]{0,42}(?:thế giới gốc|thế giới thực|(?:xã hội |thế giới )?hiện đại|năm 20\d{2})/i },
+            { kind:'fantasy', rx:/(?:xuyên (?:tới|vào)|dịch chuyển (?:tới|vào)|rơi vào|tới|bước vào|tới nơi)[^.!?\n]{0,42}(?:dị giới|thế giới ma pháp|tu tiên giới|tiên giới|bí cảnh|thế giới song song|học viện ma pháp|vương quốc tinh linh|vương quốc thú nhân)/i },
+            { kind:'parallel', rx:/(?:xuyên (?:tới|vào)|dịch chuyển (?:tới|vào)|tới|bước vào|tới nơi)[^.!?\n]{0,42}(?:thế giới song song|một thế giới khác|không thời gian song song)/i },
+            { kind:'future', rx:/(?:xuyên (?:tới|vào)|dịch chuyển (?:tới|vào)|tới|bước vào|tới nơi)[^.!?\n]{0,42}(?:tương lai|năm 21\d{2}|liên sao|trạm không gian|hành tinh thuộc địa|phi thuyền|thuộc địa vũ trụ|đô thị cyber)/i },
+            { kind:'historical', rx:/(?:xuyên (?:tới|về)|dịch chuyển (?:tới|về)|quay về|tới|bước vào|tới nơi)[^.!?\n]{0,42}(?:năm 1[0-9]\d{2})/i },
+            { kind:'historical', rx:/(?:xuyên (?:tới|về)|dịch chuyển (?:tới|về)|quay về|tới|bước vào|tới nơi)[^.!?\n]{0,42}(?:cổ đại|tiền hiện đại|trung cổ|thời phong kiến|thời vương triều|nhà Nguyễn|nhà Lê|nhà Trần|nhà Lý)/i },
         ];
         for (let i = chat.length - 1; i >= 0; i--) {
             const text = messageText(chat[i]);
@@ -5659,8 +5659,8 @@ ${scene.mood||''}`,12000);
                 if (!match) continue;
                 const index=match.index??0;
                 const prefix=text.slice(Math.max(0,index-42),index);
-                if (/(?:没有|并没有|还没|尚未|未曾|并未|不曾|并不|没有真正|并没有真的)\s*$/i.test(prefix)) continue;
-                if (/(?:如果|假如|假设|假定|要是|倘若|比如|例如|想象|可能|也许|计划|打算|回忆|想起|曾经|当年|过去|故事里|小说里|小说中|梦里|梦中|提到|说起)[^。！？\n]{0,34}$/i.test(prefix)) continue;
+                if (/(?:không có|chưa có|vẫn chưa|chưa từng|không hề|chưa thực sự|không thật sự)\s*$/i.test(prefix)) continue;
+                if (/(?:nếu|giả như|giả sử|giả định|nếu mà|ví dụ|chẳng hạn|tưởng tượng|có thể|có lẽ|kế hoạch|dự định|hồi tưởng|nhớ lại|từng|hồi đó|quá khứ|trong truyện|trong tiểu thuyết|trong mơ|nhắc tới|nói tới)[^.!?\n]{0,34}$/i.test(prefix)) continue;
                 return { kind:item.kind, floor:i, text:compactText(text,1800) };
             }
         }
@@ -5672,28 +5672,28 @@ ${scene.mood||''}`,12000);
         const transition = latestWorldTransitionInfo();
         const startByWindow = Math.max(0, chat.length - Math.max(1, Number(limit) || 8));
         const start = transition.floor >= 0 ? Math.max(startByWindow, transition.floor) : startByWindow;
-        return chat.slice(start).map((m, offset) => `【${start + offset}层｜${messageSpeaker(m)}】${messageText(m)}`).join('\n').slice(0,14000);
+        return chat.slice(start).map((m, offset) => `【Tầng ${start + offset}｜${messageSpeaker(m)}】${messageText(m)}`).join('\n').slice(0,14000);
     }
 
     function extractCurrentWorldAnchor(text) {
         const value=String(text||'');
         const hits=[];
         const patterns=[
-            /(?:回到|返回|回归|重新回到|来到|进入|穿越(?:到|进)?|传送(?:到|进)?|身处|位于)\s*([^，。！？；;\n]{2,36}?(?:原世界|现实世界|世界|大陆|位面|星球|殖民星|空间站|王国|帝国|联邦|香港|东京|伦敦|上海|北京|成都))/ig,
-            /([^，。！？；;\n]{2,28}(?:世界|大陆|位面|星球|殖民星|空间站))/ig,
+            /(?:quay về|trở về|trở lại|tới|bước vào|xuyên (?:tới|vào)|dịch chuyển (?:tới|vào)|đang ở|nằm ở)\s*([^,.!?;\n]{2,36}?(?:thế giới gốc|thế giới thực|thế giới|đại lục|thế giới song song|hành tinh|hành tinh thuộc địa|trạm không gian|vương quốc|đế quốc|liên bang|Hà Nội|Sài Gòn|Đà Nẵng|Hồng Kông|Tokyo|London))/ig,
+            /([^,.!?;\n]{2,28}(?:thế giới|đại lục|thế giới song song|hành tinh|hành tinh thuộc địa|trạm không gian))/ig,
         ];
         for(const rx of patterns) for(const m of value.matchAll(rx)) if(m?.[1]) hits.push({index:m.index??-1,value:compactText(m[1],80)});
         return hits.sort((a,b)=>b.index-a.index)[0]?.value || '';
     }
 
     function inferConnectivityFromEvidence(raw) {
-        // fixed42：网络Trạng thái只能由“明确的设备/网络事实”裁决。
-        // 旧版把“无法联络、与外界隔绝”这类普通叙事词也当成断网，容易把现代城市剧情误锁成离线。
+        // fixed42: trạng thái mạng chỉ được phán định bởi “sự thật rõ ràng về thiết bị/mạng”.
+        // Bản cũ coi cả những cụm tự sự thông thường như “không liên lạc được, bị cách biệt với bên ngoài” là mất mạng, dễ khóa nhầm mạch truyện đô thị hiện đại thành ngoại tuyến.
         const text=String(raw||'');
         const hits=[];
         const negated=(index)=>{
             const prefix=text.slice(Math.max(0,index-24),index);
-            return /(?:并非|不是|没有|并没有|并未|不再|并不|未出现|未发生)\s*$/i.test(prefix);
+            return /(?:không phải|không có|chưa có|không hề|không còn|chưa xuất hiện|chưa xảy ra)\s*$/i.test(prefix);
         };
         const collect=(rx,state)=>{
             const flags=rx.flags.includes('g')?rx.flags:`${rx.flags}g`;
@@ -5702,12 +5702,12 @@ ${scene.mood||''}`,12000);
                 hits.push({index,state,text:m[0]});
             }
         };
-        // 离线必须是“网络/信号/设备”本身的明确Trạng thái，不再接受泛化的人际“无法联络”。
-        collect(/(?:手机|蜂窝|移动网络|4G|5G|Wi[- ]?Fi|网络|信号)[^。！？\n]{0,22}(?:无信号|没有信号|断网|中断|断开|不可用|无法联网|无法连接|被屏蔽|屏蔽|无服务)/ig,'offline');
-        collect(/(?:无信号|没有信号|断网了?|网络中断|网络断开|无法联网|信号被屏蔽|通信被屏蔽|手机无服务|无服务)/ig,'offline');
-        // 在线恢复覆盖离线；兼容“网络连接稳定正常”“手机信号正常/满格”等自然说法。
-        collect(/(?:手机|蜂窝|移动网络|4G|5G|Wi[- ]?Fi|网络|信号)[^。！？\n]{0,26}(?:恢复|正常|稳定|畅通|可用|满格|已连接|连接稳定|连接正常)/ig,'online');
-        collect(/(?:信号恢复(?:正常)?|恢复信号|重新有信号|网络恢复(?:正常)?|恢复联网|重新联网|连接恢复|重新连上网络|有信号了|网络连接稳定正常|网络正常)/ig,'online');
+        // Ngoại tuyến phải là trạng thái rõ ràng của chính “mạng/sóng/thiết bị”, không còn chấp nhận cụm chung chung kiểu “không liên lạc được với ai”.
+        collect(/(?:điện thoại|di động|mạng di động|4G|5G|Wi[- ]?Fi|mạng|sóng)[^.!?\n]{0,22}(?:mất sóng|không có sóng|mất mạng|gián đoạn|ngắt kết nối|không dùng được|không vào mạng được|không kết nối được|bị chặn|không có dịch vụ)/ig,'offline');
+        collect(/(?:mất sóng|không có sóng|mất mạng|mạng gián đoạn|mạng ngắt kết nối|không vào mạng được|sóng bị chặn|liên lạc bị chặn|điện thoại không có dịch vụ|không có dịch vụ)/ig,'offline');
+        // Việc khôi phục kết nối ghi đè trạng thái ngoại tuyến; nhận cả các cách nói tự nhiên như “kết nối mạng ổn định bình thường”, “sóng điện thoại bình thường/đầy vạch”.
+        collect(/(?:điện thoại|di động|mạng di động|4G|5G|Wi[- ]?Fi|mạng|sóng)[^.!?\n]{0,26}(?:khôi phục|bình thường|ổn định|thông suốt|dùng được|đầy vạch|đã kết nối|kết nối ổn định|kết nối bình thường)/ig,'online');
+        collect(/(?:sóng (?:đã )?khôi phục|có sóng trở lại|mạng (?:đã )?khôi phục|vào mạng lại được|kết nối lại được|kết nối khôi phục|đã có sóng|kết nối mạng ổn định bình thường|mạng bình thường)/ig,'online');
         hits.sort((a,b)=>b.index-a.index);
         return hits[0]?.state||'unknown';
     }
@@ -5718,7 +5718,7 @@ ${scene.mood||''}`,12000);
         const transition = latestTransitionEvidence(6500);
         const worldTransition = latestWorldTransitionInfo();
         const prevWorld = stateRuntime.state?.worldTransit?.current || {};
-        // U1.7.2：最近真实chính văn优先于scene。scene可能正是上一次错误七条写入的污染源，不能拿污染结果证明自己。
+        // U1.7.2: chính văn thật gần nhất được ưu tiên hơn scene. Chính scene có thể là nguồn ô nhiễm do một lượt Bảy điều sai trước đó ghi vào, nên không thể lấy kết quả ô nhiễm để tự chứng minh.
         let eraInfo = inferEraFromEvidence(recentOnly);
         const baseEra = inferBaseEraFromCharacterCard();
         let usingStoredWorld = false;
@@ -5732,30 +5732,30 @@ ${scene.mood||''}`,12000);
         const activeNonModernTransition = ['fantasy','future','historical','parallel'].includes(worldTransition.kind)
             && worldTransition.floor >= Math.max(0, chatLength - 8);
         const explicitRecentNonModernEra = eraInfo.kind!=='unknown' && eraInfo.kind!=='modern'
-            && /(?:(?:当前|现在|如今|此刻)(?:的)?(?:时间|年份|年代|时代)?\s*(?:是|为|处于|到了|来到)\s*(?:(?:公元|西元)?\s*1[0-9]\d{2}\s*年|古代|前现代|中世纪|封建时代|王朝时期|未来|星际|异世界|魔法世界|修仙界)|(?:故事|剧情)(?:发生|设定)(?:于|在|为)?\s*(?:(?:公元|西元)?\s*1[0-9]\d{2}\s*年|古代|前现代|中世纪|未来|异世界|魔法世界|修仙界))/i.test(recentOnly);
+            && /(?:(?:hiện tại|bây giờ|ngày nay|lúc này)\s*(?:thời gian|năm|niên đại|thời đại)?\s*(?:là|đang ở|đã tới)\s*(?:năm\s*1[0-9]\d{2}|cổ đại|tiền hiện đại|trung cổ|thời phong kiến|thời vương triều|tương lai|liên sao|dị giới|thế giới ma pháp|tu tiên giới)|(?:câu chuyện|mạch truyện)\s*(?:diễn ra|được đặt)\s*(?:tại|ở|vào)?\s*(?:năm\s*1[0-9]\d{2}|cổ đại|tiền hiện đại|trung cổ|tương lai|dị giới|thế giới ma pháp|tu tiên giới))/i.test(recentOnly);
         if (eraInfo.kind==='unknown' && activeNonModernTransition && worldTransition.kind==='historical') {
-            eraInfo={era:'古代/前现代',technologyLevel:'preindustrial',kind:'ancient'};
+            eraInfo={era:'Cổ đại/tiền hiện đại',technologyLevel:'preindustrial',kind:'ancient'};
         }
-        // 最近chính văn没有时代线索时：已经有迁移历史就延续已确认世界；没有迁移历史则优先角色卡基线。
+        // Khi chính văn gần đây không có manh mối thời đại: nếu đã có lịch sử dịch chuyển thì tiếp tục thế giới đã xác nhận; nếu chưa có thì ưu tiên đường cơ sở của thẻ nhân vật.
         if (eraInfo.kind === 'unknown' && worldTransition.kind && storedKind !== 'unknown') {
             eraInfo = { era:prevWorld.era || '', technologyLevel:prevWorld.technologyLevel, kind:storedKind }; usingStoredWorld = true;
         }
         if (eraInfo.kind === 'unknown' && baseEra.kind !== 'unknown') eraInfo = baseEra;
         if (eraInfo.kind === 'unknown' && storedKind !== 'unknown') { eraInfo={era:prevWorld.era||'',technologyLevel:prevWorld.technologyLevel,kind:storedKind};usingStoredWorld=true; }
-        // 现代卡的旧 worldTransit/scene 可能已经被一次错误七条写成古代。
-        // 没有“最近8层明确穿越/抵达非现代世界”时，卡面现代基线拥有更高优先级，
-        // 不再要求最近chính văn恰好出现两个手机词才允许自愈。
+        // worldTransit/scene cũ của một thẻ hiện đại có thể đã bị một lượt Bảy điều sai ghi thành cổ đại.
+        // Khi không có “8 tầng gần nhất nói rõ xuyên/tới một thế giới phi hiện đại”, đường cơ sở hiện đại của mặt thẻ có ưu tiên cao hơn,
+        // và không còn đòi chính văn gần đây phải có đúng hai từ về điện thoại mới cho tự phục hồi.
         if (baseEra.kind==='modern' && !activeNonModernTransition && !explicitRecentNonModernEra) {
-            eraInfo={era:'现代',technologyLevel:'modern-digital',kind:'modern'};
+            eraInfo={era:'Hiện đại',technologyLevel:'modern-digital',kind:'modern'};
             usingStoredWorld=false;
         }
-        // P30：最新chính văn的完整公历年份必须压过旧 sidecar/worldTransit 的残留时代。
-        // 例如当前Trạng thái栏已经明确写出 2026 年，但旧幕后卡仍保存“1000 年/书信往来”时，
-        // 不能让历史 payload 把当前现实重新降级为前现代；只有最近明确穿越到非现代时代时才保留旧裁决。
+        // P30: một năm dương lịch đầy đủ trong chính văn mới nhất phải lấn át thời đại còn sót lại trong sidecar/worldTransit cũ.
+        // Ví dụ thanh trạng thái hiện tại đã ghi rõ năm 2026 nhưng thẻ hậu trường cũ vẫn lưu “năm 1000 / thư từ qua lại”,
+        // thì không được để payload lịch sử hạ hiện thực hiện tại xuống tiền hiện đại; chỉ giữ phán quyết cũ khi gần đây có lần xuyên rõ ràng sang thời đại phi hiện đại.
         const trustedYear=trustedCurrentYearFromNarrative();
         if (Number.isFinite(trustedYear) && trustedYear>=2000 && trustedYear<2100
             && !activeNonModernTransition && !explicitRecentNonModernEra) {
-            eraInfo={era:`${trustedYear}年`,technologyLevel:'modern-digital',kind:'modern'};
+            eraInfo={era:`năm ${trustedYear}`,technologyLevel:'modern-digital',kind:'modern'};
             usingStoredWorld=false;
         }
         const manualEra=calibratedEraInfo();
@@ -5763,44 +5763,44 @@ ${scene.mood||''}`,12000);
             eraInfo=manualEra;
             usingStoredWorld=false;
         }
-        const raw = `${primary}\n【最近迁移证据】\n${transition}`;
+        const raw = `${primary}\n【BẰNG CHỨNG DỊCH CHUYỂN GẦN ĐÂY】\n${transition}`;
         const location = compactText(stateRuntime.state?.scene?.location, 160);
-        // U1.7.2：网络Trạng thái按文本中“最后一次明确Trạng thái”裁决；“隧道里无信号→驶出隧道信号恢复”必须以恢复为准。
+        // U1.7.2: trạng thái mạng được phán theo “trạng thái rõ ràng cuối cùng” trong văn bản; chuỗi “mất sóng trong đường hầm → ra khỏi hầm sóng khôi phục” phải lấy trạng thái khôi phục làm chuẩn.
         const connectivityState=inferConnectivityFromEvidence(primary);
         const noSignal = connectivityState==='offline';
         const transitionNow = worldTransition.floor >= Math.max(0, chatLength - 4);
         const crossWorld = Boolean(worldTransition.kind && worldTransition.kind !== 'origin');
         const alternateRealm = Boolean(eraInfo.kind === 'fantasy' || ['fantasy','parallel'].includes(worldTransition.kind));
-        const magicComm = /(?:传讯水晶|魔法通讯|通讯水晶|灵符传讯|传音|神术通讯|魔法频道|心灵通讯|传讯玉符)/i.test(primary);
-        const radioComm = /(?:无线电|电台|步话机|对讲机|军用电台)/i.test(primary);
-        const telegraph = /(?:电报|电报局|电报机|telegram)/i.test(primary);
-        const landline = /(?:座机|固定电话|电话局|公用电话)/i.test(primary);
-        const messenger = /(?:信使|驿站|飞鸽|传令兵|口信)/i.test(primary);
-        const letter = /(?:书信|信件|邮局|邮差|邮政)/i.test(primary);
-        let communicationType = 'terminal', deviceLabel = '当前区域通讯终端', available = !noSignal;
+        const magicComm = /(?:pha lê truyền tin|liên lạc ma pháp|tinh thể liên lạc|linh phù truyền tin|truyền âm|liên lạc thần thuật|kênh ma pháp|liên lạc tâm linh|ngọc phù truyền tin)/i.test(primary);
+        const radioComm = /(?:vô tuyến|đài phát|máy bộ đàm|bộ đàm|điện đài quân sự)/i.test(primary);
+        const telegraph = /(?:điện báo|sở điện báo|máy điện báo|telegram)/i.test(primary);
+        const landline = /(?:máy bàn|điện thoại bàn|tổng đài điện thoại|điện thoại công cộng)/i.test(primary);
+        const messenger = /(?:sứ giả|trạm dịch|bồ câu đưa thư|lính truyền tin|nhắn miệng)/i.test(primary);
+        const letter = /(?:thư từ|lá thư|bưu điện|người đưa thư|bưu chính)/i.test(primary);
+        let communicationType = 'terminal', deviceLabel = 'Thiết bị liên lạc của khu vực hiện tại', available = !noSignal;
         if (eraInfo.kind === 'modern') { communicationType='smartphone'; deviceLabel='iPhone17Promax'; }
-        else if (eraInfo.kind === 'future') { communicationType='terminal'; deviceLabel='个人通讯终端'; }
+        else if (eraInfo.kind === 'future') { communicationType='terminal'; deviceLabel='Thiết bị liên lạc cá nhân'; }
         else if (eraInfo.kind === 'fantasy') {
-            if (magicComm) { communicationType='magic'; deviceLabel='传讯水晶/设定内魔法通讯'; }
-            else if (messenger) { communicationType='messenger'; deviceLabel='信使往来'; }
-            else if (letter) { communicationType='letter'; deviceLabel='书信往来'; }
-            else { communicationType='magic'; deviceLabel='设定内通讯媒介'; }
+            if (magicComm) { communicationType='magic'; deviceLabel='Pha lê truyền tin / liên lạc ma pháp theo thiết định'; }
+            else if (messenger) { communicationType='messenger'; deviceLabel='Sứ giả qua lại'; }
+            else if (letter) { communicationType='letter'; deviceLabel='Thư từ qua lại'; }
+            else { communicationType='magic'; deviceLabel='Phương tiện liên lạc theo thiết định'; }
         } else if (eraInfo.kind === 'industrial') {
-            if (telegraph) { communicationType='telegram'; deviceLabel='邮局/电报局电报'; }
-            else if (landline) { communicationType='landline'; deviceLabel='固定电话'; }
-            else { communicationType='letter'; deviceLabel='书信/邮政'; }
+            if (telegraph) { communicationType='telegram'; deviceLabel='Điện báo qua bưu điện/sở điện báo'; }
+            else if (landline) { communicationType='landline'; deviceLabel='Điện thoại bàn'; }
+            else { communicationType='letter'; deviceLabel='Thư từ/bưu chính'; }
         } else if (eraInfo.kind === 'analog') {
-            if (radioComm) { communicationType='radio'; deviceLabel='无线电设备'; }
-            else if (landline) { communicationType='landline'; deviceLabel='固定电话'; }
-            else { communicationType='letter'; deviceLabel='书信/邮政'; }
+            if (radioComm) { communicationType='radio'; deviceLabel='Thiết bị vô tuyến'; }
+            else if (landline) { communicationType='landline'; deviceLabel='Điện thoại bàn'; }
+            else { communicationType='letter'; deviceLabel='Thư từ/bưu chính'; }
         } else if (eraInfo.kind === 'ancient') {
-            if (magicComm) { communicationType='magic'; deviceLabel='设定内魔法通讯'; }
-            else if (messenger) { communicationType='messenger'; deviceLabel='信使/驿站'; }
-            else { communicationType='letter'; deviceLabel='书信往来'; }
+            if (magicComm) { communicationType='magic'; deviceLabel='Liên lạc ma pháp theo thiết định'; }
+            else if (messenger) { communicationType='messenger'; deviceLabel='Sứ giả/trạm dịch'; }
+            else { communicationType='letter'; deviceLabel='Thư từ qua lại'; }
         } else {
             const prev = stateRuntime.state?.communicationProfile || {};
             communicationType = prev.communicationType || 'terminal';
-            deviceLabel = prev.deviceLabel || '当前区域通讯终端';
+            deviceLabel = prev.deviceLabel || 'Thiết bị liên lạc của khu vực hiện tại';
             available = prev.available !== false && !noSignal;
         }
         if (usingStoredWorld && prevWorld.communicationType) {
@@ -5809,17 +5809,17 @@ ${scene.mood||''}`,12000);
             available = prevWorld.available !== false;
         }
         if (noSignal) available = false;
-        let worldType = eraInfo.kind==='fantasy'?'异世界/奇幻':eraInfo.kind==='future'?'未来/星际':eraInfo.kind==='ancient'?'前现代':eraInfo.kind==='industrial'?'近代':eraInfo.kind==='analog'?'现代早期':eraInfo.kind==='modern'?'现代':'当前世界';
-        if (eraInfo.kind==='modern' && alternateRealm) worldType='现代·异世界/平行世界';
+        let worldType = eraInfo.kind==='fantasy'?'Dị giới/kỳ ảo':eraInfo.kind==='future'?'Tương lai/liên sao':eraInfo.kind==='ancient'?'Tiền hiện đại':eraInfo.kind==='industrial'?'Cận đại':eraInfo.kind==='analog'?'Đầu thời hiện đại':eraInfo.kind==='modern'?'Hiện đại':'Thế giới hiện tại';
+        if (eraInfo.kind==='modern' && alternateRealm) worldType='Hiện đại · dị giới/thế giới song song';
         const anchor = extractCurrentWorldAnchor(`${transition}\n${primary}`);
-        // worldKey绝不能带location；从宿舍走到教室不等于换了一个世界。
+        // worldKey tuyệt đối không mang theo location; đi từ ký túc xá sang lớp học không có nghĩa là đổi thế giới.
         const eraBucket = eraInfo.kind==='modern'?'2000-2099':eraInfo.kind==='industrial'?(eraInfo.era||'1850-1949'):eraInfo.kind==='analog'?(eraInfo.era||'1950-1999'):eraInfo.kind;
         const worldBasis = `${worldType}|${eraBucket}|${anchor}`.replace(/\s+/g,'') || 'world-current';
         let hash=2166136261; for(const ch of worldBasis){hash^=ch.charCodeAt(0);hash=Math.imul(hash,16777619)}
         let worldKey=`world-${(hash>>>0).toString(16)}`;
         const prev=prevWorld;
-        const sameEra = !eraInfo.era || !prev.era || String(prev.era)===String(eraInfo.era) || (eraInfo.kind==='modern'&&/现代|20\d{2}/.test(String(prev.era)));
-        // 刚完成穿越后的后续几轮往往不再重复“来到某世界”字样；若时代层级没有变化且没有新的世界锚点，沿用上一worldKey，避免同一世界因文字变化被误切成新世界。
+        const sameEra = !eraInfo.era || !prev.era || String(prev.era)===String(eraInfo.era) || (eraInfo.kind==='modern'&&/[Hh]iện đại|20\d{2}/.test(String(prev.era)));
+        // Vài lượt ngay sau khi xuyên không thường không lặp lại cụm “tới thế giới nào đó”; nếu tầng thời đại không đổi và không có mốc neo thế giới mới thì dùng lại worldKey trước đó, tránh cùng một thế giới bị cắt nhầm thành thế giới mới chỉ vì câu chữ thay đổi.
         if (!transitionNow && !anchor && prev.worldKey && prev.technologyLevel===eraInfo.technologyLevel && sameEra) worldKey=prev.worldKey;
         return { raw, worldKey, worldType, era:eraInfo.era, location, technologyLevel:eraInfo.technologyLevel, communicationType, deviceLabel, available, networkState:available?'online':'offline', crossWorld, alternateRealm, worldAnchor:anchor, transitionKind:worldTransition.kind, transitionFloor:worldTransition.floor };
     }
