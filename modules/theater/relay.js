@@ -1987,7 +1987,7 @@ ${JSON.stringify(environment)}
         const limit=Math.max(1,Math.min(20000,requested));
         if(chars.length<=limit)return chars.join('');
         const first=chars.slice(0,limit).join('');
-        const matches=[...first.matchAll(/[。！？!?；;]\s*/g)];
+        const matches=[...first.matchAll(/[.!?;]\s*/g)];
         const cut=matches.length?matches.at(-1).index+matches.at(-1)[0].length:limit;
         return [...first].slice(0,cut).join('').trim();
     }
@@ -2254,9 +2254,9 @@ ${notes||'không có'}
 
     function relayTextLooksTruncated(text='') {
         const value=String(text||'').trim();if(!value)return true;
-        const pairs=[['“','”'],['「','」'],['『','』'],['（','）'],['(',')'],['【','】'],['[',']'],['《','》']];
+        const pairs=[['“','”'],['‘','’'],['«','»'],['(',')'],['【','】'],['[',']']];
         if(pairs.some(([open,close])=>(value.split(open).length-1)>(value.split(close).length-1)))return true;
-        if(/[，,:：；;、（(\[【《“「『—-]$/.test(value))return true;
+        if(/[,;:(\[【“‘«—-]$/.test(value))return true;
         if(/(?:và|nhưng|rồi|tiếp đó|đồng thời|vì|nên|chuẩn bị|sắp|vừa định|định|thử|muốn|nói rằng|hỏi rằng|đáp rằng)$/i.test(value))return true;
         return false;
     }
