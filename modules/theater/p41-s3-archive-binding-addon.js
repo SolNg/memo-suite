@@ -6,27 +6,27 @@
   const LEGACY_ARCHIVE_STYLE_ID='vvvtm-s5-archive-style';
   function removeLegacyArchiveStyle(){document.getElementById(LEGACY_ARCHIVE_STYLE_ID)?.remove();}
   function downloadJson(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-  async function syncNow(button){const b=bridge();if(!b?.syncPermanentArchive)throw new Error('永久档案桥未加载');button&&(button.disabled=true);try{await b.syncPermanentArchive('manual-archive-sync');alert('✅ 当前聊天的0-32全部生成数据已同步到角色卡永久档案。');}finally{button&&(button.disabled=false)}}
-  async function exportBundle(button){const b=bridge();if(!b?.exportCurrentCharacterArchives)throw new Error('永久档案桥未加载');button&&(button.disabled=true);try{await b.syncPermanentArchive?.('before-cardvault-export');const d=await b.exportCurrentCharacterArchives();const bundle=d?.bundle||d;const name=String(bundle?.characterName||'角色').replace(/[\\/:*?"<>|]+/g,'_');downloadJson(`${name}_0-32角色卡伴随档案.json`,bundle);alert('✅ 已导出角色卡伴随档案。CardVault可直接保存同一bundle。');}finally{button&&(button.disabled=false)}}
+  async function syncNow(button){const b=bridge();if(!b?.syncPermanentArchive)throw new Error('Cầu nối hồ sơ vĩnh viễn chưa được nạp');button&&(button.disabled=true);try{await b.syncPermanentArchive('manual-archive-sync');alert('✅ Toàn bộ dữ liệu 0-32 sinh ra trong cuộc trò chuyện này đã được đồng bộ vào hồ sơ vĩnh viễn của thẻ nhân vật.');}finally{button&&(button.disabled=false)}}
+  async function exportBundle(button){const b=bridge();if(!b?.exportCurrentCharacterArchives)throw new Error('Cầu nối hồ sơ vĩnh viễn chưa được nạp');button&&(button.disabled=true);try{await b.syncPermanentArchive?.('before-cardvault-export');const d=await b.exportCurrentCharacterArchives();const bundle=d?.bundle||d;const name=String(bundle?.characterName||'Nhân vật').replace(/[\\/:*?"<>|]+/g,'_');downloadJson(`${name}_0-32-ho-so-di-kem-the-nhan-vat.json`,bundle);alert('✅ Đã xuất hồ sơ đi kèm thẻ nhân vật. CardVault có thể lưu thẳng cùng bundle này.');}finally{button&&(button.disabled=false)}}
   function panelHtml(){
     const b=bridge(),binding=b?.getArchiveBinding?.()||{},identity=b?.getArchiveIdentity?.()||{};
     const ready=Boolean(binding.archiveId);
-    return `<div id="vvvtm-s5-archive-dialog" role="dialog" aria-modal="true" aria-label="0-32永久档案">
-      <div class="s5-head"><h3>📁 永久档案 <span class="s5-status ${ready?'s5-ok':'s5-warn'}">${ready?'● 已绑定':'● 正在建立'}</span></h3><button class="s5-close" data-s5-close>×</button></div>
-      <p class="s5-note">当前角色卡/聊天产生的记忆、时间线、人物与关系、约定秘密、各级总结、手机、朋友圈、日记、纪念日、彼间私文、人物外观、章节与检索源都保存在这里。S10按“角色卡 + 每个聊天记录”独立永久绑定：新聊天使用新档案，切回旧聊天仍恢复旧档；插件升级/回退只替换代码，普通保存不会自动删除任何历史。</p>
+    return `<div id="vvvtm-s5-archive-dialog" role="dialog" aria-modal="true" aria-label="Hồ sơ vĩnh viễn 0-32">
+      <div class="s5-head"><h3>📁 Hồ sơ vĩnh viễn <span class="s5-status ${ready?'s5-ok':'s5-warn'}">${ready?'● Đã gắn kết':'● Đang khởi tạo'}</span></h3><button class="s5-close" data-s5-close>×</button></div>
+      <p class="s5-note">Mọi thứ do thẻ nhân vật / cuộc trò chuyện hiện tại sinh ra đều được lưu tại đây: ký ức, dòng thời gian, nhân vật và quan hệ, lời hẹn và bí mật, các cấp tổng kết, điện thoại, Khoảnh khắc, nhật ký, ngày kỷ niệm, Bỉ Gian Tư Văn, ngoại hình nhân vật, chương hồi và nguồn truy xuất. S10 gắn kết vĩnh viễn độc lập theo “thẻ nhân vật + từng đoạn chat”: chat mới dùng hồ sơ mới, quay lại chat cũ vẫn khôi phục hồ sơ cũ; nâng cấp/hạ cấp tiện ích chỉ thay mã nguồn, thao tác lưu thông thường không tự xóa bất kỳ lịch sử nào.</p>
       <div class="s5-info">
-        <div><small>角色</small><b>${esc(identity.characterName||'未识别')}</b></div>
-        <div><small>当前聊天档案 ID</small><b title="${esc(binding.archiveId||'')}">${esc(binding.archiveId||'建立中…')}</b></div>
-        <div><small>宝塔永久目录</small><b title="${esc(binding.relativePath||'')}">${esc(binding.relativePath||'data/vvv/vvv-theater-memory/card-archives/...')}</b></div>
-        <div><small>CardVault 桥</small><b>${globalThis.VVVTheaterMemoryBridge?.exportCurrentCharacterArchives?'已就绪':'等待加载'}</b></div>
+        <div><small>Nhân vật</small><b>${esc(identity.characterName||'Chưa nhận diện')}</b></div>
+        <div><small>ID hồ sơ của chat hiện tại</small><b title="${esc(binding.archiveId||'')}">${esc(binding.archiveId||'Đang khởi tạo…')}</b></div>
+        <div><small>Thư mục vĩnh viễn trên máy chủ</small><b title="${esc(binding.relativePath||'')}">${esc(binding.relativePath||'data/vvv/vvv-theater-memory/card-archives/...')}</b></div>
+        <div><small>Cầu nối CardVault</small><b>${globalThis.VVVTheaterMemoryBridge?.exportCurrentCharacterArchives?'Sẵn sàng':'Đang chờ nạp'}</b></div>
       </div>
-      <div class="s5-actions"><button data-s5-sync>立即同步</button><button data-s5-export>📦 导出CardVault伴随档案</button></div>
+      <div class="s5-actions"><button data-s5-sync>Đồng bộ ngay</button><button data-s5-export>📦 Xuất hồ sơ đi kèm CardVault</button></div>
     </div>`;
   }
   function ensureTopButton(){
     const actions=document.querySelector('#vvvtm-modal .vvvtm-head-actions');if(!actions)return;
     let btn=document.getElementById('vvvtm-s5-archive-button');
-    if(!btn){btn=document.createElement('button');btn.id='vvvtm-s5-archive-button';btn.type='button';btn.textContent='📁 永久档案';btn.title='查看当前角色/聊天绑定的0-32永久档案';const exportBtn=actions.querySelector('[data-action="export"]');if(exportBtn)actions.insertBefore(btn,exportBtn);else actions.appendChild(btn);}
+    if(!btn){btn=document.createElement('button');btn.id='vvvtm-s5-archive-button';btn.type='button';btn.textContent='📁 Hồ sơ vĩnh viễn';btn.title='Xem hồ sơ vĩnh viễn 0-32 đang gắn với nhân vật / cuộc trò chuyện hiện tại';const exportBtn=actions.querySelector('[data-action="export"]');if(exportBtn)actions.insertBefore(btn,exportBtn);else actions.appendChild(btn);}
   }
   function ensureOverlay(){
     const modal=document.getElementById('vvvtm-modal');if(!modal)return null;
@@ -39,11 +39,11 @@
     const overlay=ensureOverlay();if(!overlay)return;
     overlay.innerHTML=panelHtml();overlay.hidden=false;
     overlay.querySelector('[data-s5-close]')?.addEventListener('click',closePanel);
-    overlay.querySelector('[data-s5-sync]')?.addEventListener('click',async e=>{try{await syncNow(e.currentTarget);openPanel()}catch(err){alert(`同步失败：${err.message}`)}});
-    overlay.querySelector('[data-s5-export]')?.addEventListener('click',async e=>{try{await exportBundle(e.currentTarget)}catch(err){alert(`导出失败：${err.message}`)}});
+    overlay.querySelector('[data-s5-sync]')?.addEventListener('click',async e=>{try{await syncNow(e.currentTarget);openPanel()}catch(err){alert(`Đồng bộ thất bại: ${err.message}`)}});
+    overlay.querySelector('[data-s5-export]')?.addEventListener('click',async e=>{try{await exportBundle(e.currentTarget)}catch(err){alert(`Xuất dữ liệu thất bại: ${err.message}`)}});
   }
   function removeOverviewCard(){document.getElementById('vvvtm-s3-archive-card')?.remove();}
-  function removeOldTakeoverText(){document.querySelectorAll('#vvvtm-content .vvvtm-counter-note').forEach(n=>{if(/旧档安全锁|旧档一键接管/.test(n.textContent||''))n.remove()});}
+  function removeOldTakeoverText(){document.querySelectorAll('#vvvtm-content .vvvtm-counter-note').forEach(n=>{if(/Khóa an toàn hồ sơ cũ|Tiếp quản hồ sơ cũ một chạm/.test(n.textContent||''))n.remove()});}
   function enhance(){removeLegacyArchiveStyle();ensureTopButton();ensureOverlay();removeOverviewCard();removeOldTakeoverText();}
 
   globalThis.VVVTheaterCardVaultBridge=Object.assign(globalThis.VVVTheaterCardVaultBridge||{}, {
@@ -55,6 +55,6 @@
   globalThis.dispatchEvent?.(new CustomEvent('vvv-theater-cardvault-bridge-ready',{detail:{schema:'vvv-theater-cardvault-bundle-v2'}}));
 
   function scheduleEnhance(delay=40){if(enhanceTimer)clearTimeout(enhanceTimer);enhanceTimer=setTimeout(()=>{enhanceTimer=0;enhance();},delay);}
-  function start(){enhance();globalThis.addEventListener('vvvtm-ui-ready',()=>scheduleEnhance(0));globalThis.addEventListener('vvvtm-content-rendered',()=>scheduleEnhance(0));document.addEventListener('click',e=>{if(e.target.closest?.('#vvvtm-s5-archive-button')){e.preventDefault();e.stopPropagation();openPanel();return;}if(e.target?.id==='vvvtm-s5-archive-overlay')closePanel();},true);console.info('[0-32·P41-S10] 永久档案顶部按钮 + CardVault桥v2已加载；U1.7改为0-32自有UI事件驱动，无全局DOM观察器。');}
+  function start(){enhance();globalThis.addEventListener('vvvtm-ui-ready',()=>scheduleEnhance(0));globalThis.addEventListener('vvvtm-content-rendered',()=>scheduleEnhance(0));document.addEventListener('click',e=>{if(e.target.closest?.('#vvvtm-s5-archive-button')){e.preventDefault();e.stopPropagation();openPanel();return;}if(e.target?.id==='vvvtm-s5-archive-overlay')closePanel();},true);console.info('[0-32·P41-S10] Đã nạp nút hồ sơ vĩnh viễn trên đầu trang + cầu nối CardVault v2; U1.7 chuyển sang chạy theo sự kiện UI của chính 0-32, không dùng bộ quan sát DOM toàn cục.');}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

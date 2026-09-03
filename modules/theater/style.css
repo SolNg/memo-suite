@@ -10,7 +10,7 @@
     --vvvtm-danger: #fb7185;
 }
 
-/* R9S1P13 AI剧情接力：正文底部只保留单一入口按钮；点击进入独立高级控制页。 */
+/* R9S1P13 Tiếp sức cốt truyện bằng AI: dưới chân chính văn chỉ giữ một nút vào duy nhất; bấm vào sẽ mở trang điều khiển nâng cao riêng. */
 .vvv-relay-bar{
     --relay-fg:var(--SmartThemeBodyColor,#eeeef4);
     --relay-muted:rgba(230,226,242,.58);
@@ -310,7 +310,7 @@ html.vvvtm-open { overflow: hidden !important; }
 @media (max-width:760px){ .summary-custom-range>* { flex:1; min-width:120px; } .summary-custom-range input { width:100%; } }
 
 
-/* v0.4.3 手机入口与 iOS WebView 兼容修复 */
+/* v0.4.3 Sửa tương thích lối vào điện thoại và iOS WebView */
 #vvvtm-fab {
     isolation:isolate !important;
     box-sizing:border-box !important;
@@ -358,7 +358,7 @@ html.vvvtm-open { overflow: hidden !important; }
 }
 
 /* ========================================================================== */
-/* v0.5.0 · 回复末尾角色手机 / 角色世界 + 角色世界总览                        */
+/* v0.5.0 · Điện thoại nhân vật / thế giới nhân vật ở cuối câu trả lời + tổng quan thế giới nhân vật   */
 /* ========================================================================== */
 .vvvtm-inline-loading {
     margin-top: 14px; padding: 11px 13px; display:flex; align-items:center; gap:10px;
@@ -450,7 +450,7 @@ html.vvvtm-open { overflow: hidden !important; }
 }
 
 /* ========================================================================== */
-/* v0.6.0 可交互实体角色手机 + 稳定折叠角色世界                              */
+/* v0.6.0 Điện thoại nhân vật tương tác được + thế giới nhân vật gập ổn định               */
 /* ========================================================================== */
 html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-phone-dashboard { display:flex; flex-direction:column; gap:14px; }
@@ -593,7 +593,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 
 
-/* v0.7.3：明确加减号折叠，内容区绝不触发收起 */
+/* v0.7.3: dấu cộng/trừ gập rõ ràng, vùng nội dung không bao giờ tự thu lại */
 .vvvtm-phone-fold { border-top:1px solid rgba(255,255,255,.075); }
 .vvvtm-inline-phone-item { display:grid;grid-template-columns:34px 1fr;gap:9px;padding:9px 10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.035); }
 .vvvtm-inline-phone-item>span { font-size:22px; }
@@ -611,7 +611,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-world-fold-toggle { cursor:default!important; }
 
 
-/* v0.8.0：正文状态折叠、时空自适应通讯、人物外观 */
+/* v0.8.0: gập trạng thái chính văn, liên lạc thích ứng không-thời gian, ngoại hình nhân vật */
 .vvvtm-counter-note { margin:8px 2px 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;color:#aaa4b8;background:rgba(255,255,255,.025);font-size:12px;line-height:1.55; }
 .vvvtm-setting-chip { margin:10px 12px;padding:8px 11px;border-radius:999px;border:1px solid rgba(196,181,253,.22);background:rgba(124,58,237,.08);color:#cfc7e8;font-size:11px;line-height:1.45; }
 .vvvtm-inline-success { margin:10px 12px;padding:10px 12px;border:1px solid rgba(74,222,128,.28);border-radius:12px;background:rgba(34,197,94,.08);color:#b8efca;line-height:1.5; }
@@ -651,7 +651,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 
 
 /* ========================================================================== */
-/* v0.9.0：顶部导航、自动补齐进度、微信/短信、主题中心                         */
+/* v0.9.0: điều hướng trên cùng, tiến độ tự bù, WeChat/SMS, trung tâm chủ đề            */
 /* ========================================================================== */
 #vvvtm-fab{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 #vvvtm-topnav-button{cursor:pointer}
@@ -678,7 +678,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 
 
 /* ========================================================================== */
-/* v0.9.1：自定义顶部头像 + 手机三应用 + 折叠按钮统一且状态持久               */
+/* v0.9.1: ảnh đại diện tùy chỉnh + ba ứng dụng điện thoại + nút gập đồng nhất, giữ trạng thái */
 /* ========================================================================== */
 #vvvtm-topnav-button .vvvtm-nav-avatar{
     width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;
@@ -689,7 +689,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 #vvvtm-topnav-button .drawer-toggle{display:flex!important;align-items:center!important;justify-content:center!important}
 #vvvtm-wand-entry .vvvtm-wand-avatar{width:22px;height:22px;flex:0 0 22px;border-radius:7px;background:url('./assets/vvv_icon.jpg') center 13%/145% auto no-repeat;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
-/* 新结构不再依赖 details，防止插件刷新时“刚展开又自己收起来” */
+/* Cấu trúc mới không còn phụ thuộc vào details, tránh cảnh “vừa mở ra đã tự thu lại” khi tiện ích tải lại */
 .vvvtm-info-fold{border-top:1px solid rgba(255,255,255,.075);background:transparent}
 .vvvtm-info-fold .vvvtm-world-fold-toggle{width:100%;border:0!important;border-radius:0!important;padding:12px 14px!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto 30px;align-items:center;gap:8px;background:transparent!important;color:inherit!important}
 .vvvtm-info-fold .vvvtm-world-fold-toggle>span{font-weight:800;min-width:0}
@@ -710,7 +710,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-os-apps{overflow-y:auto;overscroll-behavior:contain;padding-bottom:4px;scrollbar-width:none}
 .vvvtm-os-apps::-webkit-scrollbar{display:none}
 
-/* v0.9.3 当前区域自适应通讯提示 */
+/* v0.9.3 Gợi ý liên lạc thích ứng theo khu vực hiện tại */
 .vvvtm-phone-era-note{
   position:relative;z-index:2;margin:0 4px;padding:10px 12px;border-radius:16px;
   background:rgba(255,255,255,.62);border:1px solid rgba(92,82,111,.12);
@@ -718,13 +718,13 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 .vvvtm-phone-era-note b{font-size:13px}.vvvtm-phone-era-note small{font-size:10px;line-height:1.45;opacity:.72}
 
-/* v0.9.3-r3 微信群增强 */
+/* v0.9.3-r3 Tăng cường nhóm WeChat */
 .vvvtm-group-sender{display:block;font-size:.72rem;opacity:.72;margin:0 0 .2rem;}
 .vvvtm-contact-avatar.group{font-size:1rem;}
 
 
 /* ========================================================================== */
-/* v0.9.3-r6：不改原布局的精修 + 来电界面 + 旧档接管进度                     */
+/* v0.9.3-r6: tinh chỉnh không đổi bố cục gốc + màn hình cuộc gọi đến + tiến độ tiếp quản hồ sơ cũ */
 /* ========================================================================== */
 .vvvtm-shell{background:
   radial-gradient(circle at 12% -8%,rgba(124,58,237,.18),transparent 28%),
@@ -746,7 +746,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 @media(max-width:760px){.vvvtm-shell{border-radius:18px}.vvvtm-content{padding:10px}.vvvtm-call-sheet{min-height:min(620px,78vh);border-radius:34px}.vvvtm-call-sheet-actions{gap:52px}.vvvtm-settings-columns{grid-template-columns:1fr!important}}
 
 /* ========================================================================== */
-/* v0.9.3-r8：旧档完整回放、常驻进度与危险操作区                              */
+/* v0.9.3-r8: phát lại trọn vẹn hồ sơ cũ, thanh tiến độ thường trực và khu thao tác nguy hiểm  */
 /* ========================================================================== */
 .vvvtm-overview-takeover-progress{margin-top:12px;padding:11px 12px;border:1px solid rgba(167,139,250,.16);border-radius:13px;background:rgba(124,58,237,.055)}
 .vvvtm-danger-zone{border-color:rgba(251,113,133,.14)!important;background:linear-gradient(145deg,rgba(127,29,29,.07),rgba(15,23,42,.30))!important}
@@ -754,7 +754,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 @media(max-width:760px){.vvvtm-takeover-card .vvvtm-section-title>div:last-child{display:flex;flex-wrap:wrap;gap:7px}.vvvtm-overview-takeover-progress{margin-top:10px}}
 
 /* ========================================================================== */
-/* v0.9.3-r9：2万层长期档案分页 / 时代总结 / 冷热检索                       */
+/* v0.9.3-r9: phân trang hồ sơ dài 20.000 tầng / tổng kết thời đại / truy xuất nóng-lạnh   */
 /* ========================================================================== */
 .vvvtm-pager{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:10px 0;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
 .vvvtm-pager button{min-width:34px}.vvvtm-pager small{opacity:.72;white-space:nowrap}.vvvtm-pager b{font-variant-numeric:tabular-nums}
@@ -771,7 +771,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvv-relay-settings-modal [data-config-status]{display:block;margin:8px 0;color:#aaa5bf;line-height:1.5}
 @media(max-width:600px){#vvv-relay-settings-modal [data-relay-api-fields]{grid-template-columns:1fr}}
 
-/* R9S1P13：独立 API 设置可读性 + 模型获取 */
+/* R9S1P13: cải thiện khả năng đọc phần cài đặt API riêng + lấy danh sách mô hình */
 #vvv-relay-settings-modal [hidden]{display:none!important}
 #vvv-relay-settings-modal>section{width:min(820px,96vw);padding:0;overflow:hidden;background:linear-gradient(150deg,rgba(22,20,34,.995),rgba(12,12,19,.998));border-color:rgba(173,140,255,.27)}
 #vvv-relay-settings-modal>section>header{position:sticky;top:0;z-index:3;margin:0;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(180deg,rgba(32,27,49,.98),rgba(20,18,30,.94));backdrop-filter:blur(18px)}
@@ -829,12 +829,12 @@ html.vvvtm-phone-open { overflow:hidden !important; }
   #vvv-relay-settings-modal>section>header,#vvv-relay-settings-modal>section>footer{padding-left:15px;padding-right:15px}
 }
 
-/* R9S1P13：记忆健康面板中的失败记录允许文字换行，按钮保持可点。 */
+/* R9S1P13: bản ghi lỗi trong bảng sức khỏe ký ức được xuống dòng, nút vẫn bấm được. */
 .vvvtm-list-item:has([data-memory-reextract-floor]) { gap:10px; align-items:center; flex-wrap:wrap; }
 .vvvtm-list-item [data-memory-reextract-floor] { flex:0 0 auto; }
 
 
-/* R9S1P15 · 0-32 控制层融合：只增加控制层/卡池/账本/四重Flash的样式，不改P14已验证的VisualViewport定位。 */
+/* R9S1P15 · Hợp nhất lớp điều khiển 0-32: chỉ thêm kiểu cho lớp điều khiển/kho thẻ/sổ cái/Flash bốn tầng, không đổi định vị VisualViewport đã kiểm chứng ở P14. */
 .vvv-relay-control-box{margin:14px 0 2px;padding:13px 14px;border:1px solid rgba(167,139,250,.16);border-radius:16px;background:linear-gradient(135deg,rgba(126,78,235,.08),rgba(255,255,255,.018));display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center}
 .vvv-relay-control-box>div{display:grid;gap:2px}.vvv-relay-control-box>div b{font-size:12px;color:#eee8fa}.vvv-relay-control-box>div small{font-size:9.5px;color:#8f879d}.vvv-relay-control-box button{appearance:none;border:1px solid rgba(172,143,255,.22);border-radius:11px;background:rgba(127,82,226,.14);color:#efe8fb;padding:8px 10px;font-size:10px;font-weight:700}.vvv-relay-control-box p{grid-column:1/-1;margin:0;padding:9px 10px;border-radius:10px;background:rgba(0,0,0,.18);color:#bdb4cc;font-size:10px;line-height:1.55}
 #vvv-relay-settings-modal .vvv-relay-control-settings h3,#vvv-relay-settings-modal .vvv-relay-ledger-settings h3,#vvv-relay-settings-modal .vvv-relay-fourflash-settings h3{margin:0 0 12px;color:#f0eafa;font-size:14px}
@@ -845,9 +845,9 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvv-relay-settings-modal .vvv-relay-fourflash-settings{border-color:rgba(255,190,70,.22);background:linear-gradient(145deg,rgba(255,177,43,.07),rgba(127,82,226,.06))}#vvv-relay-settings-modal .vvv-relay-fourflash-settings p{margin:8px 0!important;padding:9px 10px!important;font-size:10.5px!important}#vvv-relay-settings-modal [data-fourflash-status]{display:block;color:#bdb4c8;font-size:10.5px;line-height:1.5}
 @media(max-width:600px){.vvv-relay-control-box{grid-template-columns:1fr}.vvv-relay-control-box button{width:100%}.vvv-relay-control-box p{grid-column:1}}
 
-/* 0-32 R9S1P16 · AI剧情接力设置页滚动修复 scrollfix1
-   只修设置窗口滚轮/触摸上下滚动，不改接力、记忆、API、四重Flash逻辑。
-   header/footer 继续 sticky，中间内容由同一 section 负责滚动。 */
+/* 0-32 R9S1P16 · Sửa cuộn trang cài đặt Tiếp sức cốt truyện bằng AI, scrollfix1
+   Chỉ sửa cuộn chuột/chạm lên xuống trong cửa sổ cài đặt, không đổi logic tiếp sức, ký ức, API hay Flash bốn tầng.
+   header/footer vẫn sticky, phần nội dung giữa do chính section đó cuộn. */
 #vvv-relay-settings-modal > section{
     overflow-x:hidden!important;
     overflow-y:auto!important;
@@ -870,9 +870,9 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 
 /* ==========================================================================
-   0-32 · 永不落幕的剧场 — 灰雾 / 黄铜 / 塔罗会 UI Skin
-   仅视觉层：不修改记忆、检索、API、四重Flash、NPC、手机、接力逻辑。
-   设计关键词：灰雾、古旧黄铜、深墨、秘仪圆环、羊皮纸、克制的猩红。
+   0-32 · Sân Khấu Không Bao Giờ Hạ Màn — Giao diện Sương Xám / Đồng Thau / Hội Tarot
+   Chỉ là lớp thị giác: không đụng tới logic ký ức, truy xuất, API, Flash bốn tầng, NPC, điện thoại hay tiếp sức.
+   Từ khóa thiết kế: sương xám, đồng thau cũ kỹ, mực thẫm, vòng tròn bí nghi, giấy da, sắc đỏ thẫm tiết chế.
    ========================================================================== */
 
 :root{
@@ -893,7 +893,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     --vvvtm-wine:#6d2932;
 }
 
-/* 全局灰雾背景 */
+/* Nền sương xám toàn cục */
 #vvvtm-modal{
     background:
         radial-gradient(ellipse at 50% -10%,rgba(190,199,193,.14),transparent 42%),
@@ -925,7 +925,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 .vvvtm-shell>*{position:relative;z-index:1}
 
-/* 标题 / 导航：古籍 + 黄铜铭牌 */
+/* Tiêu đề / điều hướng: thư tịch cổ + biển đồng */
 .vvvtm-head{
     min-height:74px!important;
     border-bottom-color:rgba(196,166,105,.22)!important;
@@ -974,7 +974,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     box-shadow:inset 0 -2px 0 rgba(196,166,105,.72),0 7px 20px rgba(0,0,0,.12)!important;
 }
 
-/* 卡片像密封档案 */
+/* Thẻ nội dung trông như hồ sơ niêm phong */
 .vvvtm-card{
     border-color:rgba(196,166,105,.18)!important;
     border-radius:15px!important;
@@ -996,7 +996,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     font-weight:400;
 }
 
-/* 设置项做“封印档案行” */
+/* Mục cài đặt làm thành “dòng hồ sơ niêm ấn” */
 .vvvtm-setting{
     border-bottom-color:rgba(196,166,105,.12)!important;
 }
@@ -1005,7 +1005,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 .vvvtm-setting small,.vvvtm-form-grid label span{color:#8e8b82!important}
 
-/* 控件：深墨 + 黄铜边 */
+/* Điều khiển: mực thẫm + viền đồng thau */
 .vvvtm-shell input,
 .vvvtm-shell textarea,
 .vvvtm-shell select{
@@ -1024,7 +1024,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     accent-color:#b99a60;
 }
 
-/* 按钮：旧黄铜刻印 */
+/* Nút bấm: khắc đồng thau cũ */
 .vvvtm-shell button{
     border-color:rgba(196,166,105,.20)!important;
     color:#ddd4c0!important;
@@ -1047,7 +1047,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     background:rgba(92,31,36,.20)!important;
 }
 
-/* 数据 / 时间线 / 关系 */
+/* Dữ liệu / dòng thời gian / quan hệ */
 .vvvtm-stat strong{color:#dbc38e!important;font-family:Georgia,serif}
 .vvvtm-timeline .dot{
     background:#b99a60!important;
@@ -1079,7 +1079,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     border-top-color:#c4a569!important;
 }
 
-/* 正文底部的 0-32 折叠卡：像灰雾中的档案 */
+/* Thẻ gập 0-32 dưới chân chính văn: như hồ sơ trong màn sương xám */
 .vvvtm-inline-extra{
     border-color:rgba(196,166,105,.25)!important;
     background:
@@ -1107,7 +1107,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-inline-panel>summary:after{color:#c4a569!important}
 .vvvtm-inline-body{background:rgba(3,5,5,.16)!important}
 
-/* AI剧情接力：从霓虹紫改成“灰雾议会” */
+/* Tiếp sức cốt truyện bằng AI: đổi từ tím neon sang “nghị hội sương xám” */
 .vvv-relay-launch{
     border-color:rgba(196,166,105,.33)!important;
     color:#eee6d4!important;
@@ -1234,7 +1234,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     background:linear-gradient(to bottom,rgba(14,17,16,.80),rgba(11,14,13,.985) 30%)!important;
 }
 
-/* 设置弹窗滚动条也统一成黄铜 */
+/* Thanh cuộn của hộp thoại cài đặt cũng đồng bộ màu đồng thau */
 #vvv-relay-settings-modal > section::-webkit-scrollbar-thumb,
 .vvvtm-content::-webkit-scrollbar-thumb{
     background:rgba(196,166,105,.30)!important;
@@ -1243,7 +1243,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     scrollbar-color:rgba(196,166,105,.32) transparent;
 }
 
-/* 手机端仍保持轻量，不增加昂贵动画 */
+/* Trên điện thoại vẫn giữ nhẹ, không thêm hiệu ứng tốn tài nguyên */
 @media(max-width:760px){
     .vvvtm-shell::before{opacity:.15}
     .vvvtm-head strong{font-size:19px!important;letter-spacing:.025em}
@@ -1257,7 +1257,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     .vvvtm-shell *, .vvv-relay-command-shell *, .vvv-relay-launch{transition:none!important}
 }
 
-/* R9S1P19 · 0-32 发送栏常驻接力按钮 */
+/* R9S1P19 · Nút tiếp sức thường trực trên thanh gửi tin của 0-32 */
 .vvv-relay-bar{display:none!important;}
 #vvv-relay-dock-button{
     position:relative;
@@ -1334,7 +1334,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 
 
 
-/* R9S1P22 · 接力当前现实锁可视化 */
+/* R9S1P22 · Trực quan hóa khóa hiện thực của phần tiếp sức */
 .vvv-relay-reality-lock{
     display:flex;
     flex-wrap:wrap;
@@ -1370,12 +1370,12 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 
 
-/* R9S1P25：总结API自动补齐不再显示误导性的“10%卡住”；running阶段使用不定进度。 */
+/* R9S1P25: phần tự bù của API tổng kết không còn hiện mức “kẹt ở 10%” gây hiểu nhầm; giai đoạn running dùng tiến độ không xác định. */
 .vvvtm-inline-loading.indeterminate .vvvtm-fallback-progress-track{overflow:hidden;position:relative}
 .vvvtm-inline-loading.indeterminate .vvvtm-fallback-progress-track>i{width:34%!important;position:absolute;left:-34%;animation:vvvtm-fallback-indeterminate 1.15s ease-in-out infinite}
 @keyframes vvvtm-fallback-indeterminate{0%{left:-34%}55%{left:58%}100%{left:100%}}
 
-/* R9S1P27 · 剧情导演双端作用范围 */
+/* R9S1P27 · Phạm vi tác động hai đầu của Đạo diễn cốt truyện */
 #vvv-relay-settings-modal .vvv-relay-director-scope{
     margin:10px 0 12px;
     padding:12px 13px;
@@ -1405,9 +1405,9 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     color:#9f98aa;
     line-height:1.55;
 }
-\n\n/* ===== R9S1P37 · 手机接力预览不顶屏 ===== */\n#vvv-relay-preview{overscroll-behavior:none!important;touch-action:pan-y}\n#vvv-relay-preview>section{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}\n@media(max-width:760px){\n  #vvv-relay-preview{position:fixed!important;inset:auto!important;max-width:none!important;max-height:none!important;margin:0!important;transform:none!important;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))!important}\n  #vvv-relay-preview>section{width:calc(100% - 24px)!important;max-width:660px!important;max-height:78dvh!important;margin:0!important;overflow-x:hidden!important;overflow-y:auto!important}\n  #vvv-relay-preview textarea{min-height:150px;max-height:42dvh;resize:none}\n}\n
+\n\n/* ===== R9S1P37 · Xem trước tiếp sức trên điện thoại không đội màn hình ===== */\n#vvv-relay-preview{overscroll-behavior:none!important;touch-action:pan-y}\n#vvv-relay-preview>section{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}\n@media(max-width:760px){\n  #vvv-relay-preview{position:fixed!important;inset:auto!important;max-width:none!important;max-height:none!important;margin:0!important;transform:none!important;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))!important}\n  #vvv-relay-preview>section{width:calc(100% - 24px)!important;max-width:660px!important;max-height:78dvh!important;margin:0!important;overflow-x:hidden!important;overflow-y:auto!important}\n  #vvv-relay-preview textarea{min-height:150px;max-height:42dvh;resize:none}\n}\n
 
-/* ===== R9S1P39 · AI剧情接力写作视角三选一 ===== */
+/* ===== R9S1P39 · Ba lựa chọn ngôi kể cho Tiếp sức cốt truyện bằng AI ===== */
 .vvv-relay-perspective-box{
   margin:12px 0 2px;padding:12px 13px;border:1px solid rgba(196,166,105,.18);border-radius:15px;
   background:linear-gradient(135deg,rgba(196,166,105,.055),rgba(255,255,255,.016));
@@ -1436,7 +1436,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
   .vvv-relay-perspective-option i{width:21px;height:21px;font-size:9px}
 }
 
-/* R9S1P41-S4：iPhone17ProMax 标签页直接复用幕后七条的唯一完整手机，不再维护第二套手机管理器。 */
+/* R9S1P41-S4: tab iPhone17ProMax dùng lại đúng chiếc điện thoại đầy đủ duy nhất của Bảy điều hậu trường, không duy trì bộ quản lý điện thoại thứ hai. */
 .vvvtm-unified-phone-tab{display:grid;gap:12px;min-height:640px}
 .vvvtm-unified-phone-status{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid rgba(208,176,104,.24);border-radius:14px;background:rgba(12,13,15,.72)}
 .vvvtm-unified-phone-status>div{min-width:0}.vvvtm-unified-phone-status b{display:block}.vvvtm-unified-phone-status small{display:block;opacity:.72;margin-top:4px;line-height:1.5}
@@ -1447,7 +1447,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone.vvvtm-phone-docked .vvvtm-role-phone-buttons{display:none!important}
 @media(max-width:620px){.vvvtm-unified-phone-status{align-items:stretch;flex-direction:column}.vvvtm-unified-phone-status button{width:100%}#vvvtm-role-phone.vvvtm-phone-docked{padding:0!important;min-height:calc(100dvh - 220px)!important}#vvvtm-role-phone.vvvtm-phone-docked .vvvtm-role-device{width:100%!important;height:calc(100dvh - 220px)!important;min-height:560px!important;border-radius:24px!important;padding:8px!important}}
 
-/* R9S1P41-S6：手机主动通话 + 文字附件 */
+/* R9S1P41-S6: điện thoại chủ động gọi + đính kèm văn bản */
 .vvvtm-phone-head-actions{display:flex!important;align-items:center!important;gap:6px!important;white-space:nowrap!important}
 .vvvtm-phone-head-actions>button{width:auto!important;min-width:46px!important;padding:8px 10px!important}
 .vvvtm-phone-composer{flex-wrap:wrap!important}
@@ -1458,7 +1458,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-phone-attachment{display:flex!important;flex-direction:column!important;gap:3px!important;margin-top:6px!important;padding:9px 11px!important;border-radius:12px!important;background:rgba(255,255,255,.62)!important;border:1px solid rgba(140,110,120,.14)!important;text-align:left!important}
 .vvvtm-phone-attachment b{font-size:12px!important}.vvvtm-phone-attachment span{white-space:normal!important}.vvvtm-phone-attachment small{opacity:.62!important;font-size:10px!important}
 
-/* R9S1P41-S7：手机 UI 整体重构 —— 微信中性色、朋友圈、附件弹层、拨号页 */
+/* R9S1P41-S7: tái cấu trúc toàn bộ giao diện điện thoại — tông trung tính kiểu WeChat, Khoảnh khắc, lớp đính kèm, trang quay số */
 #vvvtm-role-phone .vvvtm-phone-app-page{background:#ededed!important;color:#191919!important}
 #vvvtm-role-phone .vvvtm-phone-app-head{grid-template-columns:44px minmax(0,1fr) auto!important;min-height:82px!important;padding:34px 14px 10px!important;background:rgba(247,247,247,.96)!important;border-bottom:1px solid #dedede!important;backdrop-filter:blur(22px)!important;color:#191919!important}
 #vvvtm-role-phone .vvvtm-phone-app-head>div{text-align:center!important;min-width:0!important}
@@ -1468,7 +1468,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-phone-head-actions{display:flex!important;align-items:center!important;justify-self:end!important;gap:6px!important;min-width:0!important}
 #vvvtm-role-phone .vvvtm-phone-head-actions>button{width:38px!important;min-width:38px!important;height:38px!important;padding:0!important;font-size:19px!important}
 
-/* 微信聊天：接近真实微信的白/绿体系，修正附件内部 span 被气泡样式污染的问题 */
+/* Chat WeChat: hệ trắng/xanh lá gần với WeChat thật, sửa lỗi span bên trong phần đính kèm bị kiểu bong bóng làm hỏng */
 #vvvtm-role-phone .vvvtm-chat-page{background:#ededed!important}
 #vvvtm-role-phone .vvvtm-phone-chat-log{padding:14px 12px 22px!important;gap:10px!important;background:#ededed!important}
 #vvvtm-role-phone .vvvtm-phone-chat-log article{max-width:86%!important;gap:4px!important}
@@ -1479,7 +1479,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-phone-chat-log article time{color:#9b9b9b!important;font-size:9px!important}
 #vvvtm-role-phone .vvvtm-group-sender{color:#8b8b8b!important;font-size:10px!important}
 
-/* 输入栏统一成微信风格：附件 / 输入 / 发送 同一行，手机宽度不挤压 */
+/* Thanh nhập thống nhất kiểu WeChat: đính kèm / nhập / gửi trên cùng một hàng, không bị bóp ở bề ngang điện thoại */
 #vvvtm-role-phone .vvvtm-phone-composer{display:grid!important;grid-template-columns:40px minmax(0,1fr) 58px!important;gap:7px!important;align-items:end!important;padding:9px 10px calc(16px + env(safe-area-inset-bottom))!important;background:#f7f7f7!important;border-top:1px solid #ddd!important;box-sizing:border-box!important}
 #vvvtm-role-phone .vvvtm-phone-composer textarea{width:100%!important;min-width:0!important;min-height:40px!important;max-height:96px!important;box-sizing:border-box!important;padding:9px 12px!important;border:1px solid #e1e1e1!important;border-radius:8px!important;background:#fff!important;color:#171717!important;-webkit-text-fill-color:#171717!important;font-size:14px!important;line-height:1.45!important;box-shadow:none!important;outline:none!important}
 #vvvtm-role-phone .vvvtm-phone-composer textarea::placeholder{color:#9c9c9c!important;-webkit-text-fill-color:#9c9c9c!important;opacity:1!important}
@@ -1493,7 +1493,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-attachment-draft-copy small{color:#888!important;margin-top:3px!important;font-size:10px!important}
 #vvvtm-role-phone .vvvtm-attachment-draft>button{width:28px!important;min-width:28px!important;height:28px!important;border-radius:50%!important;background:#f1f1f1!important;color:#666!important;padding:0!important}
 
-/* 聊天里的附件卡：可点击、可在手机内展开 */
+/* Thẻ đính kèm trong chat: bấm được, mở rộng ngay trong điện thoại */
 #vvvtm-role-phone .vvvtm-phone-attachment{width:min(260px,100%)!important;display:grid!important;grid-template-columns:42px minmax(0,1fr) 18px!important;align-items:center!important;gap:9px!important;margin-top:6px!important;padding:10px!important;border:0!important;border-radius:8px!important;background:#fff!important;color:#191919!important;text-align:left!important;box-shadow:none!important;cursor:pointer!important}
 #vvvtm-role-phone article.mine .vvvtm-phone-attachment{background:rgba(255,255,255,.92)!important}
 #vvvtm-role-phone .vvvtm-phone-attachment .vvvtm-attachment-icon{width:42px!important;height:42px!important;border-radius:9px!important;background:#f2f2f2!important;display:grid!important;place-items:center!important;font-size:22px!important;padding:0!important;box-shadow:none!important;color:#333!important}
@@ -1503,7 +1503,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-phone-attachment .vvvtm-attachment-copy small{margin-top:3px!important;color:#999!important;font-size:9px!important}
 #vvvtm-role-phone .vvvtm-attachment-chevron{padding:0!important;background:none!important;box-shadow:none!important;color:#bbb!important;font-size:22px!important}
 
-/* 手机内弹层：替代浏览器 prompt，移动端也直接在手机屏幕中操作 */
+/* Lớp nổi trong điện thoại: thay cho prompt của trình duyệt, trên di động cũng thao tác thẳng trong màn hình điện thoại */
 #vvvtm-role-phone .vvvtm-phone-sheet-backdrop{position:absolute!important;inset:0!important;z-index:40!important;display:flex!important;align-items:flex-end!important;background:rgba(0,0,0,.38)!important;backdrop-filter:blur(2px)!important}
 #vvvtm-role-phone .vvvtm-phone-sheet{width:100%!important;max-height:78%!important;overflow:auto!important;padding:16px 14px calc(18px + env(safe-area-inset-bottom))!important;border-radius:20px 20px 0 0!important;background:#fff!important;color:#191919!important;box-sizing:border-box!important;box-shadow:0 -18px 50px rgba(0,0,0,.18)!important}
 #vvvtm-role-phone .vvvtm-phone-sheet>header{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:10px!important;margin-bottom:14px!important}
@@ -1526,13 +1526,13 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-phone-attachment-preview>span{font-size:54px!important}
 #vvvtm-role-phone .vvvtm-phone-attachment-preview p{margin:0!important;white-space:pre-wrap!important;word-break:break-word!important;text-align:center!important;line-height:1.6!important;color:#222!important}
 
-/* 朋友圈：按微信朋友圈信息结构重做 */
+/* Khoảnh khắc: làm lại theo cấu trúc thông tin của WeChat Moments */
 #vvvtm-role-phone .vvvtm-moments-page{background:#fff!important}
 #vvvtm-role-phone .vvvtm-moments-page .wechat-head{background:rgba(247,247,247,.96)!important}
 #vvvtm-role-phone .vvvtm-moment-camera{font-size:18px!important}
 #vvvtm-role-phone .vvvtm-moments-feed{overflow:auto!important;background:#fff!important;padding-bottom:30px!important}
 #vvvtm-role-phone .vvvtm-moments-cover{height:190px!important;position:relative!important;background:linear-gradient(135deg,#53626a,#9ca7aa 52%,#c7d0d0)!important;margin-bottom:42px!important}
-#vvvtm-role-phone .vvvtm-moments-cover:before{content:'朋友圈'!important;position:absolute!important;left:18px!important;bottom:16px!important;color:rgba(255,255,255,.62)!important;font-size:12px!important;letter-spacing:.2em!important}
+#vvvtm-role-phone .vvvtm-moments-cover:before{content:'Khoảnh khắc'!important;position:absolute!important;left:18px!important;bottom:16px!important;color:rgba(255,255,255,.62)!important;font-size:12px!important;letter-spacing:.2em!important}
 #vvvtm-role-phone .vvvtm-moments-cover-shade{position:absolute!important;inset:0!important;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.3))!important}
 #vvvtm-role-phone .vvvtm-moments-profile{position:absolute!important;right:17px!important;bottom:-32px!important;display:flex!important;align-items:flex-end!important;gap:10px!important;color:#fff!important}
 #vvvtm-role-phone .vvvtm-moments-profile b{font-size:16px!important;text-shadow:0 1px 3px rgba(0,0,0,.45)!important;margin-bottom:42px!important}
@@ -1554,7 +1554,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-moment-comments p{margin:2px 0!important;color:#191919!important;white-space:pre-wrap!important}
 #vvvtm-role-phone .vvvtm-moment-comments b{color:#576b95!important;margin-right:5px!important}
 
-/* 拨号/通话页：不再出现被裁掉的“＋拨号” */
+/* Trang quay số/cuộc gọi: không còn cảnh nút “＋ quay số” bị cắt mất */
 #vvvtm-role-phone .vvvtm-calls-page{position:relative!important;background:#f2f2f7!important}
 #vvvtm-role-phone .ios-call-head{background:rgba(249,249,249,.96)!important}
 #vvvtm-role-phone .vvvtm-call-add{border-radius:50%!important;color:#007aff!important;font-size:28px!important;background:transparent!important}
@@ -1596,7 +1596,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 
 
-/* R9S1P41-S8：手机生态重构 —— 淘宝 / 饿了么 / 支付 / 日历 / 双向短信 / 系统App */
+/* R9S1P41-S8: tái cấu trúc hệ sinh thái điện thoại — Taobao / Ele.me / thanh toán / lịch / SMS hai chiều / App hệ thống */
 #vvvtm-role-phone .vvvtm-phone-app.orange>span{background:linear-gradient(145deg,#ffb36a,#ff6b22)!important;color:#fff!important;font-weight:900!important}
 #vvvtm-role-phone .vvvtm-phone-app.cyan>span{background:linear-gradient(145deg,#8de8ff,#31aee8)!important;color:#fff!important;font-weight:900!important}
 #vvvtm-role-phone .vvvtm-phone-app.red>span{background:linear-gradient(145deg,#ffb4b4,#ff6868)!important;color:#fff!important}
@@ -1607,14 +1607,14 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-phone-head-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important}
 #vvvtm-role-phone .vvvtm-phone-head-actions button{width:auto!important;min-width:34px!important;padding:0 7px!important;font-size:13px!important}
 
-/* 双向短信 */
+/* SMS hai chiều */
 #vvvtm-role-phone .vvvtm-sms-page,#vvvtm-role-phone .vvvtm-sms-thread{background:#f5f5f7!important}
 #vvvtm-role-phone .sms-chat article.mine{background:#2f80ed!important;color:#fff!important}
 #vvvtm-role-phone .sms-chat article.theirs{background:#fff!important;color:#151515!important}
 #vvvtm-role-phone .sms-chat article small{display:block!important;font-size:9px!important;opacity:.65!important;margin-top:4px!important}
 #vvvtm-role-phone .sms-list>button{background:#fff!important;border-radius:0!important}
 
-/* 淘宝 */
+/* Taobao */
 #vvvtm-role-phone .vvvtm-taobao-page{background:#f5f5f5!important}
 #vvvtm-role-phone .taobao-head{background:linear-gradient(135deg,#ff7a18,#ff4d16)!important;color:#fff!important;border-bottom:0!important}
 #vvvtm-role-phone .taobao-head b,#vvvtm-role-phone .taobao-head small{color:#fff!important}
@@ -1647,7 +1647,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-cart-total{margin-right:auto!important;color:#666!important}
 #vvvtm-role-phone .vvvtm-cart-total b{color:#ff4d16!important}
 
-/* 饿了么 */
+/* Ele.me */
 #vvvtm-role-phone .vvvtm-eleme-page{background:#f5f7fa!important}
 #vvvtm-role-phone .eleme-head{background:linear-gradient(135deg,#28b9f4,#118ee9)!important;color:#fff!important;border-bottom:0!important}
 #vvvtm-role-phone .eleme-head b,#vvvtm-role-phone .eleme-head small{color:#fff!important}
@@ -1671,7 +1671,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-food-cartbar small{color:#ddd!important;margin-top:2px!important}
 #vvvtm-role-phone .vvvtm-food-cartbar button{border:0!important;border-radius:16px!important;padding:10px 16px!important;background:#22b9f5!important;color:#fff!important;font-weight:800!important}
 
-/* 支付宝 / 微信支付 */
+/* Alipay / WeChat Pay */
 #vvvtm-role-phone .vvvtm-wallet-page{background:#f4f5f7!important}
 #vvvtm-role-phone .vvvtm-wallet-page>main{overflow:auto!important}
 #vvvtm-role-phone .alipay-wallet .wallet-head{background:#1677ff!important;color:#fff!important}
@@ -1699,7 +1699,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-pay-account-switch button.active{border-color:#1677ff!important;background:#eef5ff!important;color:#1677ff!important;font-weight:800!important}
 #vvvtm-role-phone .vvvtm-safe-note{font-size:10px!important;color:#999!important;line-height:1.5!important}
 
-/* 日历 */
+/* Lịch */
 #vvvtm-role-phone .vvvtm-calendar-page{background:#fff!important}
 #vvvtm-role-phone .vvvtm-calendar-main{overflow:auto!important;padding:10px!important;color:#222!important}
 #vvvtm-role-phone .vvvtm-calendar-toolbar{display:grid!important;grid-template-columns:36px 1fr 36px!important;align-items:center!important;text-align:center!important;margin-bottom:10px!important}
@@ -1717,7 +1717,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-calendar-events b,#vvvtm-role-phone .vvvtm-calendar-events small{display:block!important;color:#222!important}
 #vvvtm-role-phone .vvvtm-calendar-events small{color:#999!important;margin-top:3px!important}
 
-/* 通知 / 物流 / 相册 / 备忘 / 天气 / 地图 */
+/* Thông báo / vận chuyển / thư viện ảnh / ghi nhớ / thời tiết / bản đồ */
 #vvvtm-role-phone .vvvtm-notify-list,#vvvtm-role-phone .vvvtm-logistics-page>main,#vvvtm-role-phone .vvvtm-gallery-page>main,#vvvtm-role-phone .vvvtm-notes-page>main,#vvvtm-role-phone .vvvtm-map-page>main{overflow:auto!important;padding:10px!important}
 #vvvtm-role-phone .vvvtm-notify-list article,#vvvtm-role-phone .vvvtm-logistics-page article,#vvvtm-role-phone .vvvtm-gallery-page article,#vvvtm-role-phone .vvvtm-notes-page article,#vvvtm-role-phone .vvvtm-map-page article{display:grid!important;grid-template-columns:42px 1fr!important;gap:9px!important;padding:10px!important;margin-bottom:8px!important;border-radius:12px!important;background:#fff!important;color:#222!important;box-shadow:0 1px 5px rgba(0,0,0,.04)!important}
 #vvvtm-role-phone .vvvtm-notify-list article>span,#vvvtm-role-phone .vvvtm-logistics-page article>span,#vvvtm-role-phone .vvvtm-gallery-page article>span,#vvvtm-role-phone .vvvtm-map-page article>span{width:42px!important;height:42px!important;border-radius:11px!important;display:grid!important;place-items:center!important;background:#f0f2f5!important;font-size:20px!important}
@@ -1730,7 +1730,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 #vvvtm-role-phone .vvvtm-weather-page>main>b{font-size:16px!important}
 #vvvtm-role-phone .vvvtm-weather-page>main>p,#vvvtm-role-phone .vvvtm-weather-page>main>small{color:#888!important}
 
-/* 手机小屏与移动端 */
+/* Màn hình nhỏ và thiết bị di động */
 @media(max-width:560px){
   #vvvtm-role-phone .vvvtm-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding-left:7px!important;padding-right:7px!important}
   #vvvtm-role-phone .vvvtm-product-card>span{height:82px!important;font-size:40px!important}
@@ -1741,7 +1741,7 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 
 #vvvtm-role-phone .taobao-head,#vvvtm-role-phone .eleme-head,#vvvtm-role-phone .wallet-head{grid-template-columns:38px minmax(0,1fr) auto!important}
 
-/* R9S1P41-S9：超大规模拟真手机生态 */
+/* R9S1P41-S9: hệ sinh thái điện thoại mô phỏng quy mô cực lớn */
 #vvvtm-role-phone .vvvtm-phone-app.yellow>span{background:linear-gradient(145deg,#ffe972,#ffca28)!important;color:#2b2618!important;font-weight:900!important}
 #vvvtm-role-phone .vvvtm-jd-page{background:#f5f5f5!important}
 #vvvtm-role-phone .jd-head{background:#fff!important}

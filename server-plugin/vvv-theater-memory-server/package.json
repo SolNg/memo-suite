@@ -4,5 +4,5 @@
   "private": true,
   "type": "module",
   "main": "index.mjs",
-  "description": "U1.7.15 R21 服务端助手：保留账号隔离的记忆、手机和NovelAI能力，支持主记忆签名桥接、预设历史快照与360张内置表情。"
+  "description": "Trợ lý máy chủ U1.7.15 R21: giữ nguyên khả năng ký ức, điện thoại và NovelAI được cách ly theo tài khoản; hỗ trợ cầu nối chữ ký ký ức chính, ảnh chụp lịch sử preset và 360 nhãn dán dựng sẵn."
 }

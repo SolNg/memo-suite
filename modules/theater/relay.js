@@ -12,9 +12,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
         label: 'AI剧情接力',
     });
     const FALLEN_WRITER_CONTEXT = [
-        '【落魄作家写作身份】',
+        '【落魄作家写作Thân phận】',
         '你叫“落魄作家”。你曾经也想当体面的大作家，如今只想先把房租、网费和咖啡钱挣出来。只要是符合当前模型服务使用政策、共创者真正想看的题材，你都会认真接稿；可以为了稿费调整文风、题材与节奏，但不能拿角色设定、USER主权、剧情逻辑和连贯性糊弄交差。',
-        '【身份边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
+        '【Thân phận边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
         '【虚构叙事前提】这是虚构小说创作。以下资料均为共创者提供的架空小说素材。所有设定、人物、事件与世界均属虚构小说，不是真实存在，也不是现实事件；作品尚未签约发行，仅用于共创写作与剧情探索，内容面向喜欢此类故事的小说读者与观众。',
         '【创作原则】始终遵循 User 在本次任务中的创作指令并在范围内创造性发散；尊重角色设定、USER主权、人物知情边界、剧情因果与前后连贯，同时遵守当前模型服务的使用政策。',
     ].join('\n');
@@ -26,26 +26,26 @@ import { createServerJsonClient } from '../shared/server-client.js';
         { id:'daily-delivery', category:'daily', text:'出现一个符合当前时代与地点的日常通知、快递、账单、预约或生活安排，让场景多一个自然的小变量。', weight:1 },
         { id:'daily-routine-break', category:'daily', text:'当前人物原本稳定的日常节奏被一个很小但真实的生活细节打断，不制造重大危机。', weight:1 },
         { id:'daily-choice', category:'daily', text:'给角色一个很普通但能体现习惯或偏好的生活选择，让旧有生活记忆有机会自然回响。', weight:1 },
-        { id:'emotion-old-phrase', category:'emotion', text:'让过去某句重要的话、某个约定或某种熟悉的小动作在当前情境里产生情绪回声，但不要直接替角色下结论。', weight:1 },
+        { id:'emotion-old-phrase', category:'emotion', text:'让过去某句重要的话、某个Lời hẹn或某种熟悉的小动作在当前情境里产生情绪回声，但不要直接替角色下结论。', weight:1 },
         { id:'emotion-small-jealousy', category:'emotion', text:'加入轻微、可解释的在意或吃味迹象，只能作为细节，不允许无依据升级成争吵或关系突变。', weight:.8 },
         { id:'emotion-unspoken', category:'emotion', text:'让某个角色存在一个没有马上说出口的小顾虑或小期待，通过可观察细节呈现，不读心。', weight:1 },
-        { id:'emotion-care', category:'emotion', text:'安排一个适合当前关系阶段的照顾或被照顾契机，强度必须服从既有关系与人物性格。', weight:1 },
+        { id:'emotion-care', category:'emotion', text:'安排一个适合当前关系阶段的照顾或被照顾契机，强度必须服从既有关系与人物Tính cách。', weight:1 },
         { id:'conflict-schedule', category:'conflict', text:'出现一个现实的时间、安排或优先级冲突，规模保持可控，不凭空制造恶意。', weight:.8 },
-        { id:'conflict-misread', category:'conflict', text:'产生一个有现实依据的小误解，但必须保留澄清空间，不把角色强行写成降智。', weight:.8 },
-        { id:'conflict-boundary', category:'conflict', text:'让某个既有边界、习惯或约定被轻微碰触，从而需要角色表态，但不预设表态结果。', weight:.8 },
+        { id:'conflict-misread', category:'conflict', text:'产生一个有现实依据的小误解，但必须保留澄Bỏ chọn间，不把角色强行写成降智。', weight:.8 },
+        { id:'conflict-boundary', category:'conflict', text:'让某个既有边界、习惯或Lời hẹn被轻微碰触，从而需要角色表态，但不预设表态结果。', weight:.8 },
         { id:'conflict-interruption', category:'conflict', text:'当前互动被合理的外部事务短暂打断，让人物选择如何处理，禁止强行中断核心剧情。', weight:1 },
         { id:'clue-old-note', category:'clue', text:'一个旧记录、旧消息、旧物或历史细节提供新的联想线索，但只能使用已经存在或可合理出现的信息。', weight:.9 },
         { id:'clue-name', category:'clue', text:'让一个过去出现过的人名、地点名或关键词再次出现，优先联动0-32长期记忆，不凭空新增阴谋。', weight:.9 },
         { id:'clue-contradiction', category:'clue', text:'暴露一个值得注意的小矛盾或信息不一致，先作为疑点保留，不立即宣布真相。', weight:.8 },
-        { id:'clue-object', category:'clue', text:'让一个关键物品的状态、位置或使用痕迹重新变得重要，必须服从既有物品记录。', weight:.9 },
+        { id:'clue-object', category:'clue', text:'让一个关键物品的Trạng thái、位置或使用痕迹重新变得重要，必须服从既有物品记录。', weight:.9 },
         { id:'npc-contact', category:'npc', text:'让一个已经认识或有合理渠道的NPC通过符合时代的方式主动联系，但NPC行为必须符合其自身生活与关系。', weight:1 },
         { id:'npc-crossing', category:'npc', text:'让一个已有NPC在合理地点或事件链中与当前剧情发生轻量交集，不做巧合堆叠。', weight:.8 },
         { id:'npc-choice', category:'npc', text:'让某个NPC依据自己的目标做一个不围绕user的小决定，并让它对当前场景产生可见影响。', weight:1 },
         { id:'npc-group', category:'npc', text:'通过群聊、工作、课程、家庭或社交圈产生一条背景动态，让世界继续运转。', weight:1 },
-        { id:'world-weather', category:'world', text:'天气、交通、营业状态或公共环境发生一个符合地点与时间的变化，只改变条件，不强推剧情。', weight:1 },
+        { id:'world-weather', category:'world', text:'天气、交通、营业Trạng thái或公共环境发生一个符合地点与时间的变化，只改变条件，不强推剧情。', weight:1 },
         { id:'world-public', category:'world', text:'出现一个与当前世界观相符的小型公共事件或新闻背景，为人物提供讨论或行动契机。', weight:.8 },
-        { id:'world-resource', category:'world', text:'当前地点某项资源、服务或设施状态改变，迫使人物重新安排一个小步骤。', weight:.8 },
-        { id:'world-calendar', category:'world', text:'让日期、节日、截止时间、课程或工作安排中的既有节点自然靠近，不凭空跳时间。', weight:.8 },
+        { id:'world-resource', category:'world', text:'当前地点某项资源、服务或设施Trạng thái改变，迫使人物重新安排一个小步骤。', weight:.8 },
+        { id:'world-calendar', category:'world', text:'让Ngày、节日、截止时间、课程或工作安排中的既有节点自然靠近，不凭空跳时间。', weight:.8 },
         { id:'major-invitation', category:'major', text:'出现一个有现实来源的重要邀请、机会或决定窗口，但只提出选择，不替user或角色做决定。', weight:.5 },
         { id:'major-family-news', category:'major', text:'已有家庭/组织关系中出现一条会影响后续安排的重要消息，必须先尊重既有设定与知情边界。', weight:.45 },
         { id:'major-travel', category:'major', text:'出现一个跨地点行动的真实理由或机会，只作为未来选项，除非user明确选择，否则本轮不直接跳转。', weight:.45 },
@@ -70,7 +70,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     const PERSPECTIVES = Object.freeze({
         first:  { label:'第一人称', mark:'我', short:'以「我」写user', instruction:'第一人称：叙述 user 的动作、感受、想法时统一使用「我」；对话中的正常称呼不受限制。' },
         second: { label:'第二人称', mark:'你', short:'以「你」写user', instruction:'第二人称：叙述 user 的动作、感受、想法时统一使用「你」；这里的「你」只代表 user 本人，不得因此把 char/NPC 的动作写进 user 消息。' },
-        third:  { label:'第三人称', mark:'TA', short:'以角色名写user', instruction:'第三人称：叙述 user 的动作、感受、想法时优先使用当前 user 角色名，必要时使用与 user 对应的第三人称代词；不要用「我」作为叙述者。' },
+        third:  { label:'第三人称', mark:'TA', short:'以Tên nhân vật写user', instruction:'第三人称：叙述 user 的动作、感受、想法时优先使用当前 user Tên nhân vật，必要时使用与 user 对应的第三人称代词；不要用「我」作为叙述者。' },
     });
     const defaults = {
         enabled: true,
@@ -116,7 +116,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         commandViewportCleanup: null,
         settingsViewportCleanup: null,
         previewViewportCleanup: null,
-        // R9S1P14：始终记住最近一次真正 settled 的 AI 楼层。
+        // R9S1P14：始终记住最近一次真正 settled 的 AI Tầng。
         // 用户发送下一条 user 消息后即使中止 AI 回复，也能把接力入口恢复到这个稳定锚点。
         lastSettledAnchor: null,
         generationStartAnchor: null,
@@ -212,7 +212,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const native=[c.chatId,c.chat_id,c.chatMetadata?.chat_id,c.chatMetadata?.chatId,c.chatMetadata?.file_name,c.chatMetadata?.fileName]
             .find(value=>value!==undefined&&value!==null&&String(value).trim());
         if(native)return `native:${String(native).trim()}`;
-        // 同一角色可以拥有多份聊天；绝不再退化成 characterId 作为聊天身份。
+        // 同一角色可以拥有多份聊天；绝不再退化成 characterId 作为聊天Thân phận。
         if(c.chatMetadata&&typeof c.chatMetadata==='object'){
             let id=String(c.chatMetadata[RELAY_CHAT_INSTANCE_META_KEY]||'').trim();
             if(!id){id=`meta-${globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`}`;c.chatMetadata[RELAY_CHAT_INSTANCE_META_KEY]=id;try{c.saveMetadataDebounced?.();}catch{}}
@@ -335,8 +335,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function commandEntry() {
-        // 面板打开后若用户删除/重算楼层，index可能整体位移。
-        // commandAnchor必须做hash校验；失配就重新按当前聊天拓扑取最新完整AI，绝不能“错位引用旧楼层”。
+        // 面板打开后若用户删除/重算Tầng，index可能整体位移。
+        // commandAnchor必须做hash校验；失配就重新按当前聊天拓扑取最新完整AI，绝不能“错位引用旧Tầng”。
         const anchored = strictEntryFromAnchor(runtime.commandAnchor);
         if (anchored && !isStoppedPartial(anchored)) return anchored;
         const fresh = entryForDock() || latestSafeAssistant();
@@ -450,7 +450,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
 
     function removeBars() {
-        // P19：正文楼层里不再放AI接力入口。旧版残留统一清理。
+        // P19：chính vănTầng里不再放AI接力入口。旧版残留统一清理。
         document.querySelectorAll('.vvv-relay-bar').forEach(node => node.remove());
     }
 
@@ -477,16 +477,16 @@ import { createServerJsonClient } from '../shared/server-client.js';
         button.classList.toggle('is-busy', runtime.dockBusy);
         button.setAttribute('aria-busy', runtime.dockBusy ? 'true' : 'false');
         button.title = runtime.dockBusy
-            ? '0-32 接力：当前正文正在生成'
+            ? '0-32 接力：当前chính văn正在生成'
             : '0-32 · AI剧情接力';
     }
 
     function entryForDock() {
-        // P22：发送栏接力永远按“当前聊天实际最后状态”选锚点。
+        // P22：发送栏接力永远按“当前聊天实际最后Trạng thái”选锚点。
         // 1) 有最新完整AI -> 必须用它；
         // 2) 最后一条是真实user -> 用它之前最近的完整AI；
         // 3) 中止留下的半截AI -> fingerprint标记后跳过；
-        // 永远不因为 runtime.generationStartAnchor 残留而倒退到旧楼层。
+        // 永远不因为 runtime.generationStartAnchor 残留而倒退到旧Tầng。
         const chat = Array.isArray(ctx()?.chat) ? ctx().chat : [];
         for (let i = chat.length - 1; i >= 0; i -= 1) {
             const message = chat[i];
@@ -503,13 +503,13 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!runtime.settings?.enabled) return;
         if (await isGenerating()) {
             setDockBusy(true);
-            toast('上一轮正文仍在生成，请等待本轮完成。', 'info');
+            toast('上一轮chính văn仍在生成，请等待本轮完成。', 'info');
             return;
         }
         setDockBusy(false);
         const entry = entryForDock();
         if (!entry) {
-            toast('当前没有可用于接力的完整AI正文。', 'info');
+            toast('当前没有可用于接力的完整AIchính văn。', 'info');
             return;
         }
         runtime.commandAnchor = anchorFromEntry(entry);
@@ -620,7 +620,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const meta = relayPerspectiveMeta();
         const userName = String(ctx()?.name1 || 'user').trim() || 'user';
         if (key === 'third') {
-            return `${meta.instruction} 当前 user 角色名是「${userName}」；正文动作主语优先直接写「${userName}」，不要误把 char/NPC 当成 user。`;
+            return `${meta.instruction} 当前 user Tên nhân vật是「${userName}」；chính văn动作主语优先直接写「${userName}」，不要误把 char/NPC 当成 user。`;
         }
         return meta.instruction;
     }
@@ -1050,9 +1050,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
     async function openCommandPanel(entryOverride = null) {
         globalThis.VVVUnifiedCore?.overlays?.activate?.('relay');
         removeLegacyPerspectiveStyle();
-        if (await isGenerating()) throw new Error('上一轮正文仍在生成，请等它结束后再接力');
+        if (await isGenerating()) throw new Error('上一轮chính văn仍在生成，请等它结束后再接力');
         const entry = entryOverride || entryForDock() || latestSafeAssistant();
-        if (!entry) throw new Error('当前没有可接力的AI正文');
+        if (!entry) throw new Error('当前没有可接力的AIchính văn');
         runtime.commandAnchor = anchorFromEntry(entry);
         closeCommandPanel();
         runtime.lastError='';
@@ -1075,7 +1075,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                     </div>
                     <div class="vvv-relay-command-tools">
                         <button type="button" class="vvv-relay-iconbtn" data-relay-panel-settings title="接力设置" aria-label="接力设置">⚙</button>
-                        <button type="button" class="vvv-relay-iconbtn" data-relay-panel-close title="关闭" aria-label="关闭">×</button>
+                        <button type="button" class="vvv-relay-iconbtn" data-relay-panel-close title="Đóng" aria-label="Đóng">×</button>
                     </div>
                 </header>
                 <div class="vvv-relay-status-strip">
@@ -1107,13 +1107,13 @@ import { createServerJsonClient } from '../shared/server-client.js';
                         <div class="vvv-relay-section-title compact"><div><b>user 需要发送的话</b><small>写你真正想发出去的内容；不开扩写时只做语句规整</small></div><span>USER TEXT</span></div>
                         <div class="vvv-relay-usertext-row">
                             <textarea maxlength="20000" data-relay-user-text placeholder="例如：顾霖走到她椅子旁说，宝宝站起来……"></textarea>
-                            <button type="button" class="vvv-relay-expand-toggle" data-relay-expand aria-pressed="false" title="开启后会在不偷换核心意思的前提下补充动作、感受与对白；关闭时仍会由AI做轻度语句规整">
-                                <i>✦</i><b>AI扩写</b><small data-relay-expand-state>关闭 · 仅规整</small>
+                            <button type="button" class="vvv-relay-expand-toggle" data-relay-expand aria-pressed="false" title="开启后会在不偷换核心意思的前提下补充动作、感受与对白；Đóng时仍会由AI做轻度语句规整">
+                                <i>✦</i><b>AI扩写</b><small data-relay-expand-state>Đóng · 仅规整</small>
                             </button>
                         </div>
                         <div class="vvv-relay-section-title compact vvv-relay-thought-title"><div><b>补充你的想法</b><small>与上方user文字一起发送；用于补充方向、语气或细节</small></div><span>OPTIONAL</span></div>
                         <textarea maxlength="1200" data-relay-custom-text placeholder="例如：语气自然一点，先接住刚才的话题；如果扩写开启，可以补一点动作细节……"></textarea>
-                        <small class="vvv-relay-custom-note">两栏会一起交给AI。关闭“AI扩写”时只做轻度规整；开启后必须真正重写并自然扩充，不会再把原文原样发出去。</small>
+                        <small class="vvv-relay-custom-note">两栏会一起交给AI。Đóng“AI扩写”时只做轻度规整；开启后必须真正重写并自然扩充，不会再把原文原样发出去。</small>
                     </div>
                 </div>
                 <footer class="vvv-relay-command-footer">
@@ -1160,7 +1160,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             button?.setAttribute('aria-pressed', pressed ? 'false' : 'true');
             button?.classList.toggle('selected', !pressed);
             const state=button?.querySelector('[data-relay-expand-state]');
-            if(state)state.textContent=pressed?'关闭 · 仅规整':'开启 · 自然扩写';
+            if(state)state.textContent=pressed?'Đóng · 仅规整':'开启 · 自然扩写';
         });
         root.querySelector('[data-relay-panel-generate]')?.addEventListener('click', () => {
             const customSelected=runtime.selected.has('custom');
@@ -1206,7 +1206,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function continuityFloorCount() {
         // P24：AI接力真正用于“续写现在”的高权重原文只保留最近6层（约3个来回）。
-        // 旧的8/12/16/24/32仅作为长期记忆/检索参考，不再把开场原文与当前正文并列喂给模型。
+        // 旧的8/12/16/24/32仅作为长期记忆/检索参考，不再把开场原文与当前chính văn并列喂给模型。
         return 6;
     }
 
@@ -1298,10 +1298,10 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (ids.has('sofa')) facts.push('当前互动已经推进到客厅/沙发区域；沙发是当前场景锚点，浴室只能作为过去。');
         if (ids.has('condom')) facts.push('安全套相关动作已经完成；禁止再次拿套、拆包装、撕锡箔或重新戴套。');
 
-        // 对截图这类长正文，末尾可能出现“刚才从浴室抱出来”的回顾性台词。
+        // 对截图这类长chính văn，末尾可能出现“刚才从浴室抱出来”的回顾性台词。
         // 只要同时出现“离开浴室完成 + 沙发持续互动”，强制把浴室降级为历史地点。
         if (ids.has('bath') && /沙发(?:上|旁|边|垫|靠背)|(?:坐在|躺在|靠在|跪在|抵着|按在)[^。！？]{0,18}沙发/i.test(combined)) {
-            facts.push('地点优先级：客厅/沙发 > 浴室。即使后文台词提到“刚才从浴室出来”，那也是回顾，不代表当前位置。');
+            facts.push('地点优先级：客厅/沙发 > 浴室。即使后文台词提到“刚才从浴室出来”，那也是回顾，不代表Vị trí hiện tại。');
         }
         return {
             previousUserFloor: previous.index,
@@ -1321,7 +1321,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             previousUser: previous.text.slice(0, 6000),
             latestAssistantFloor: Number(entry?.index ?? -1),
             latestAssistant: latestText.slice(0, 12000),
-            // P22：除了正文结尾，再给四重Flash一份“已完成事实清单”，避免长正文里的回顾台词把状态拉回去。
+            // P22：除了chính văn结尾，再给四重Flash一份“Đã hoàn thành事实清单”，避免长chính văn里的回顾台词把Trạng thái拉回去。
             currentRealityTail: tailText(latestText, 5200),
             completedSignals: reality.completedSignals,
             hardFacts: reality.hardFacts,
@@ -1332,9 +1332,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
         return [
             '【当前现实硬事实】', (currentTurn?.hardFacts || []).join('\n'),
             '【上一条user】', tailText(currentTurn?.previousUser, 2200),
-            '【最新AI正文结尾/当前现实】', tailText(currentTurn?.currentRealityTail, 3600),
+            '【最新AIchính văn结尾/当前现实】', tailText(currentTurn?.currentRealityTail, 3600),
             '【本次接力方向】', chosen.join(' + '),
-            '【检索约束】已完成的地点迁移/动作只作为历史，不要把“浴室/拿套/戴套”等已完成阶段重新召回成当前任务。',
+            '【检索约束】Đã hoàn thành的地点迁移/动作只作为历史，不要把“浴室/拿套/戴套”等Đã hoàn thành阶段重新召回成当前任务。',
         ].filter(Boolean).join('\n');
     }
 
@@ -1365,7 +1365,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const clauseStart=Math.max(text.lastIndexOf('，',match.index),text.lastIndexOf(',',match.index),text.lastIndexOf('。',match.index),text.lastIndexOf('；',match.index),text.lastIndexOf(';',match.index),text.lastIndexOf('！',match.index),text.lastIndexOf('!',match.index),text.lastIndexOf('？',match.index),text.lastIndexOf('?',match.index),text.lastIndexOf('\n',match.index));
             const prefix=text.slice(clauseStart+1,match.index).trim();
             const lastIndex=(regex)=>{let index=-1;for(const item of prefix.matchAll(regex))index=item.index??index;return index;};
-            const negationAt=lastIndex(/不要|别|不准|禁止|不用|无需|不再|不去|不想|拒绝|取消/gi);
+            const negationAt=lastIndex(/不要|别|不准|禁止|不用|无需|不再|不去|不想|拒绝|Hủy/gi);
             const reversalAt=lastIndex(/但|但是|却|不过|而是|反而|仍然|还是/gi);
             if(negationAt>reversalAt)continue;
             return true;
@@ -1400,7 +1400,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             let speech=source.slice(start,end);
             // 没有引号时，以明确的第一人称动作作为台词边界。不能把后续整串动作
             // 并进一句“必须逐字保留”的台词，否则忠实扩写反而必然被误判。
-            const transition=speech.search(/[。！？!?，,；;]\s*(?=(?:(?:然后|随后|接着|之后)\s*)?(?:先(?:把|将|去|回|走|关|开|脱|穿|拿|放|跪)|我(?:把|将|起身|走|回|关|拉|脱|穿|拿|放|跪|坐|站|躺|抱|亲|转|推|打开|关闭)|我们(?:再)?(?:回|走|去|离开)|两人|大家))/);
+            const transition=speech.search(/[。！？!?，,；;]\s*(?=(?:(?:然后|随后|接着|之后)\s*)?(?:先(?:把|将|去|回|走|关|开|脱|穿|拿|放|跪)|我(?:把|将|起身|走|回|关|拉|脱|穿|拿|放|跪|坐|站|躺|抱|亲|转|推|打开|Đóng)|我们(?:再)?(?:回|走|去|离开)|两人|大家))/);
             if(transition>=0)speech=speech.slice(0,transition);
             push(speech);
         }
@@ -1435,7 +1435,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if(!direction||!text)return [];
         const issues=[];
         // 轻度规整允许换词、调语序和重做断句，所以绝不能用“原句近乎逐字存在”做硬条件。
-        // 这里只守住真正不能被润色掉的结构事实：核心行动与开放问题的未决状态。
+        // 这里只守住真正不能被润色掉的结构事实：核心行动与开放问题的未决Trạng thái。
         for(const family of CUSTOM_ACTION_FAMILIES){
             if(directionHasAffirmativeMatch(family.request,direction)&&!directionHasAffirmativeMatch(family.output,text))issues.push(`没有落实用户指定的核心行动：${family.label}`);
         }
@@ -1502,7 +1502,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         try {
             const people = environment?.r9s1p1?.people || environment?.state?.people || [];
             for (const row of Array.isArray(people) ? people : []) {
-                add(row?.['姓名']); add(row?.['名字']); add(row?.name); add(row?.character); add(row?.['人物']);
+                add(row?.['Họ tên']); add(row?.['名字']); add(row?.name); add(row?.character); add(row?.['人物']);
             }
         } catch {}
         return [...out].sort((a, b) => b.length - a.length);
@@ -1530,12 +1530,12 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!value) return false;
         const full = (subjects || []).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
         const aliases = npcShortAgencyAliases(subjects).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
-        // 全名/代词允许出现在分句内部，例如“听到她要求……”。静态状态会在外层先排除。
+        // 全名/代词允许出现在分句内部，例如“听到她要求……”。静态Trạng thái会在外层先排除。
         if (full.length) {
             const re = new RegExp(`(?:${full.join('|')})(?:就|已经|终于|慢慢|突然|又|也|还|仍|正|正在|没有|没|开始|继续|随后|接着|便|却|无意识地?|下意识地?)?\\s*${agencyVerb.source}`, 'gi');
             for(const match of value.matchAll(re))if(!npcReferenceIsObject(value,match.index))return true;
         }
-        // 两字简称只在独立分句边界识别，避免普通正文片段碰撞。
+        // 两字简称只在独立分句边界识别，避免普通chính văn片段碰撞。
         if (aliases.length) {
             const re = new RegExp(`(?:^|[，,；;。！？!?\\s])(?:${aliases.join('|')})(?:(?:就|已经|终于|慢慢|突然|又|也|还|仍|正|正在|没有|没|开始|继续|随后|接着|便|却|无意识地?|下意识地?)\\s*)*${agencyVerb.source}`, 'gi');
             for(const match of value.matchAll(re))if(!npcReferenceIsObject(value,match.index))return true;
@@ -1693,7 +1693,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!explicitRepeatIntent(custom)) {
             for (const signal of signals) {
                 const start = new RegExp(signal.start, 'i');
-                if (start.test(text)) issues.push(`剧情状态倒退：${signal.label}，却又重新发起同一动作`);
+                if (start.test(text)) issues.push(`剧情Trạng thái倒退：${signal.label}，却又重新发起同一动作`);
             }
         }
         // user 接力只能写 user。char/NPC只能作为宾语或既成事实引用，不能成为任何“新动作/回应”的主语。
@@ -1713,7 +1713,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const rawDraft=String(draft||''),rawCustom=String(custom||'').trim();
         if(rawCustom&&rawDraft.includes(rawCustom)){
             const index=rawDraft.indexOf(rawCustom),prefix=rawDraft.slice(Math.max(0,index-16),index);
-            if(!/(?:不要|别|不准|禁止|不用|无需|不再|不去|不想|拒绝|取消)(?:再|去|做|进行|继续)?\s*$/i.test(prefix))return true;
+            if(!/(?:不要|别|不准|禁止|不用|无需|不再|不去|不想|拒绝|Hủy)(?:再|去|做|进行|继续)?\s*$/i.test(prefix))return true;
         }
         const a=normalizeRelayEchoText(rawDraft), b=normalizeRelayEchoText(rawCustom);
         if(!b || b.length<4 || !a)return false;
@@ -1763,7 +1763,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                     };
                 }
             } catch (error) {
-                console.warn('[AI剧情接力] 读取R9主状态桥失败，降级到基础上下文', error);
+                console.warn('[AI剧情接力] 读取R9主Trạng thái桥失败，降级到基础上下文', error);
             }
         }
         return {
@@ -1781,7 +1781,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function stagnationHint(chat) {
         const recent = chat.slice(-24).map(item => item.text).join('\n');
-        const changes = (recent.match(/离开|到达|决定|发现|确认|开始|结束|冲突|答应|拒绝|约定|任务/g) || []).length;
+        const changes = (recent.match(/离开|到达|决定|发现|确认|开始|结束|冲突|答应|拒绝|Lời hẹn|任务/g) || []).length;
         return {
             stage: recent.length < 2000 ? '开场/短场景' : changes < 3 ? '稳定互动阶段' : '推进阶段',
             possiblyStagnant: recent.length > 5000 && changes < 3,
@@ -1791,7 +1791,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function continuityRules(allowJump) {
         if (allowJump) return '用户已明确选择时间推进/旅行/重大变化或自定义跳转：只允许完成这一次明确跳转；最多跨一个必要场景，必须写清因果衔接，不一口气跳过多个剧情节点，不顺手额外制造第二个重大转折。';
-        return '连续剧情锁（最高优先级）：只推进当前场景的下一个小节拍。保持当前时间、地点、参与人物、关系阶段与情绪惯性；先接住最新AI正文结尾已经发生的事实。禁止无缘无故跨时间/地点/人物；禁止突然关系跃迁或翻脸；禁止凭空制造重大事件、新设定或关键NPC；禁止把“准备/提议/走向/想要做”直接写成“已经完成”。允许 user 在同一时间/地点内写一组连贯动作、感受与对白，但必须在需要 char/NPC 反应的位置停下；绝不替 char/NPC 回答、决定、同意、说话、靠近、拥抱、亲吻或做任何新动作。';
+        return '连续剧情锁（最高优先级）：只推进当前场景的下一个小节拍。保持当前时间、地点、参与人物、关系阶段与情绪惯性；先接住最新AIchính văn结尾已经发生的事实。禁止无缘无故跨时间/地点/人物；禁止突然关系跃迁或翻脸；禁止凭空制造重大事件、新设定或关键NPC；禁止把“准备/提议/走向/想要做”直接写成“已经完成”。允许 user 在同一时间/地点内写一组连贯动作、感受与对白，但必须在需要 char/NPC 反应的位置停下；绝不替 char/NPC 回答、决定、同意、说话、靠近、拥抱、亲吻或做任何新动作。';
     }
 
     function normalizeRelayCustomInput(value = '') {
@@ -1831,13 +1831,13 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function relayCustomVerificationTarget(input = '') {
         const custom=normalizeRelayCustomInput(input);
-        // 有明确user原文时，以原文为硬核；补充想法只做软指导，避免校验器把备注误当成必须逐字出现的台词。
+        // 有明确user原文时，以原文为硬核；补充想法只做软指导，避免校验器把Ghi chú误当成必须逐字出现的台词。
         return custom.userText || custom.notes;
     }
 
     async function buildPrompt(customInput = '', pinnedEntry = null) {
         const entry = pinnedEntry || commandEntry();
-        if (!entry) throw new Error('当前没有可接力的AI正文');
+        if (!entry) throw new Error('当前没有可接力的AIchính văn');
         const custom=normalizeRelayCustomInput(customInput);
         const customContract=relayCustomContract(custom);
         const verificationTarget=relayCustomVerificationTarget(custom);
@@ -1857,15 +1857,15 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const relayQuery = buildRelayQuery(currentTurn, chosen);
         const promptAnchor=anchorFromEntry(entry);
         const environment = await relayEnvironment(entry, relayQuery);
-        if(!relayAnchorIsCurrent(promptAnchor))throw new Error('构建接力上下文期间聊天或最新AI楼层已变化，本次结果已丢弃');
+        if(!relayAnchorIsCurrent(promptAnchor))throw new Error('构建接力上下文期间聊天或最新AITầng已变化，本次结果已丢弃');
         runtime.lastEnvironment = environment;
         environment.currentReality = currentTurn;
         environment.currentRealityHardFacts = currentTurn.hardFacts || [];
         environment.timelinePriority = [
-            '1. currentRealityHardFacts = 代码判定的已完成事实，最高优先级。',
-            '2. 最新AI正文结尾（currentReality.currentRealityTail）= 当前现实真值。',
-            '3. 最新AI正文 + 上一条user = 当前回合事实。',
-            '4. R9当前scene/人物状态。',
+            '1. currentRealityHardFacts = 代码判定的Đã hoàn thành事实，最高优先级。',
+            '2. 最新AIchính văn结尾（currentReality.currentRealityTail）= 当前现实真值。',
+            '3. 最新AIchính văn + 上一条user = 当前回合事实。',
+            '4. R9当前scene/人物Trạng thái。',
             '5. 最近原文窗口。',
             '6. R9总结/检索命中仅作历史参考；冲突时必须忽略旧资料。',
             '7. 本次请求明确提供的有限剧情资料与规则。',
@@ -1874,11 +1874,11 @@ import { createServerJsonClient } from '../shared/server-client.js';
         environment.recentChatPolicy = { floors: continuityFloorCount(), requestedMemoryWindow: normalizedRecentFloorCount(), note: 'P24连续性隔离：真正用于续写现在的原文固定只携带最近6层，且剧情超过6层后彻底排除开场消息。更早内容只能作为历史事实经R9结构化记忆/检索进入，不得作为当前动作模板。' };
         environment.director = directorAppliesToRelay() ? { enabled:true, ...stagnationHint(chat) } : { enabled:false, note:'0-32剧情导演未作用于AI剧情接力' };
         environment.controlLayer = controlLayerSnapshot(entry);
-        return `你只替 user 写下一条可以直接发送的动作/对白，不继续写 assistant/角色正文，不替对方角色做决定。
+        return `你只替 user 写下一条可以直接发送的动作/对白，不继续写 assistant/角色chính văn，不替对方角色做决定。
 方向：${chosen.join(' + ')}
 
 【用户自定义行动契约｜本轮最高优先级】
-${customContract ? `${custom.userText ? `- user需要发送的原文：${custom.userText.slice(0,12000)}\n- AI扩写：${custom.expand ? `开启。必须真正重写并扩充，而不是原样复述或只加标点。${relayExpansionLengthInstruction(custom.userText)} 保留原有行动顺序、人物对象和说话意图，在不替char/NPC新增回应的前提下补充user侧动作衔接、语气、姿势、停顿和必要的即时感官细节。` : '关闭。仍必须调用AI做轻度规整：只调整语序、标点、动作/对白边界和明显口语病句，不主动添加新动作、新台词、新剧情或新结果。'}` : '- 未提供固定user原文；根据补充想法生成一条新的user输入。'}
+${customContract ? `${custom.userText ? `- user需要发送的原文：${custom.userText.slice(0,12000)}\n- AI扩写：${custom.expand ? `开启。必须真正重写并扩充，而不是原样复述或只加标点。${relayExpansionLengthInstruction(custom.userText)} 保留原有行动顺序、人物对象和说话意图，在不替char/NPC新增回应的前提下补充user侧动作衔接、语气、姿势、停顿和必要的即时感官细节。` : 'Đóng。仍必须调用AI做轻度规整：只调整语序、标点、动作/对白边界和明显口语病句，不主动添加新动作、新台词、新剧情或新结果。'}` : '- 未提供固定user原文；根据补充想法生成一条新的user输入。'}
 ${custom.notes ? `- 补充想法：${custom.notes.slice(0,1200)}\n- 上方user原文与补充想法必须在同一次生成中一起读取。补充想法用于语气、方向或细节约束；若与user原文冲突，以user原文为准。` : '- 无额外补充想法。'}
 - 必须落实同一个核心行动、目的地、对象与意图；可以补充合理过程，但禁止换成别的行动。
 - 用户原文里的括号/圆括号内容若描述“随后、然后、接着、他/我做了……”之类动作，默认视为舞台动作/写作指令，不是角色要念出口的台词；必须把它改写成正常叙事动作，并让括号前后的对白各归其位，绝不能把括号动作连同说明直接念出来。
@@ -1888,7 +1888,7 @@ ${custom.userText&&custom.expand?`【自然扩写质量要求｜必须执行】
 - 不能把原文直接原样返回；不能只加逗号、句号或把括号换成一句连接词。
 - 先把原文拆成“动作 → 台词 → 动作 → 台词”的自然顺序，再补少量user侧动作细节，使整段像玩家认真写出来的消息，而不是说明书。
 - 原文已有对白保持口语感，不要擅自改成文绉绉、油腻、霸总或黄文腔。
-- 不复述上一轮assistant正文，不替user解释动机，不写char的心理或回应。
+- 不复述上一轮assistantchính văn，不替user解释动机，不写char的心理或回应。
 - ${relayExpansionLengthInstruction(custom.userText)}
 - 参考转换：原文“我走到她旁边说，等一下（随后我坐下把她带到腿上）这样舒服点吗” → 可写成“我走到她椅子旁，先低声让她等一下，随后在椅子上坐下，伸手扶住她的腰，把人往自己腿上带了带：‘这样舒服点吗？’”这种结构；只学习整理方式，不照抄例句。` : ''}
 ${verificationTarget && !custom.userText && customExpressionRequirements(verificationTarget).length?`- 必须逐句保留的台词/提问：\n${customExpressionRequirements(verificationTarget).map(item=>`  · ${item}`).join('\n')}`:''}
@@ -1899,47 +1899,47 @@ ${custom.userText && !custom.expand ? `【轻度规整模式｜硬限制】\n- �
 
 【本轮写作视角｜硬要求】
 - ${relayPerspectiveInstruction()}
-- 视角只改变 user 的叙述人称，不改变当前事实、人物关系、USER主体边界、NPC权限或剧情方向。
+- 视角只改变 user 的叙述人称，不改变当前事实、Quan hệ nhân vật、USER主体边界、NPC权限或剧情方向。
 ${continuityRules(jump)}
 
 【当前现实硬事实｜代码判定，高于检索/总结/旧scene】
-${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`).join('\n') : '- 未识别到额外硬事实；仍以最新AI正文结尾为准。'}
+${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`).join('\n') : '- 未识别到额外硬事实；仍以最新AIchính văn结尾为准。'}
 
-【时间线真值规则｜高于所有旧记忆】
-- 最新AI正文的结尾就是“现在”。它已经写明完成的动作，视为已经完成，绝不能重新发起，除非用户自定义明确要求“再来一次/重新做”。若上一条user明确从A移动到B，B是当前地点，A立即降级为历史地点。
+【Dòng thời gian真值规则｜高于所有旧记忆】
+- 最新AIchính văn的结尾就是“现在”。它已经写明完成的动作，视为已经完成，绝不能重新发起，除非用户自定义明确要求“再来一次/重新做”。若上一条user明确从A移动到B，B是当前地点，A立即降级为历史地点。
 - 【P24开场隔离】0层/1层/角色开场白只属于历史起点。只要当前锚点已经超过6层，严禁复刻、改写、重新执行开场白中的动作链、地点链、物品链或对白链；即使历史检索再次命中，也只能当过去事实。
 - 如果你发现某段旧资料与当前场景都很具体，必须选择“最新6层原文 + 最新AI结尾”，绝不能因为旧资料更长、更生动就回到旧剧情。
-- 如果 R9 scene、总结、retrievalHits 或旧聊天与最新AI正文发生冲突，一律以最新AI正文为准。
+- 如果 R9 scene、总结、retrievalHits 或旧聊天与最新AIchính văn发生冲突，一律以最新AIchính văn为准。
 - 先确认 user 当前身体位置、正在做什么、刚刚完成了什么，再写下一步。禁止剧情倒退。
 - ${custom.userText ? (custom.expand ? `本轮是自然扩写模式：${relayExpansionLengthInstruction(custom.userText)} 不要硬凑300-800字，也不要把短句灌水成大段小说。` : '本轮是轻度规整模式：不要为了凑字数扩写，尽量贴近原文长度，只让语句更顺、更清楚。') : '建议写成约300-800中文字符的完整 user 段落；允许 user 在当前同一场景里有连续的小动作、真实感受与对白。U1.4默认不做800字符硬截断；若用户设置了接力字符上限，则必须服从该上限。'}
 - 不写跨时间/跨地点的流水账，不提前把需要 char/NPC 回应之后才可能发生的未来结果写完。
 
 【主体边界语义硬锁｜绝对不能违反】
 - 整段只允许 user 产生新的主动动作、新对白、新决定和新感受。
-- 允许客观观察 char/NPC 已经存在的静态状态，例如“她的头发还湿着”“她身上还裹着浴巾”“她的衣服仍然潮湿”；静态观察不算替NPC行动。
+- 允许客观观察 char/NPC 已经存在的静态Trạng thái，例如“她的头发还湿着”“她身上还裹着浴巾”“她的衣服仍然潮湿”；静态观察不算替NPC行动。
 - char/NPC 不得在这条 user 消息里产生任何自主的新动作、表情变化、语言、回应、同意、拒绝、靠近、躲闪、点头、摇头或主动身体反应。用户原文明确要求的“user把/扶/抱/拉/带char到某位置”可以写成user主动动作，char只能作为宾语，不能顺手补写char主动配合。
 - 不论使用全名、代词还是昵称都一样：例如角色“藤原梦”写成“梦走了过来/梦说/她要求/她伸手”仍然属于越权，必须停在user动作或对白处。
 - 禁止写“她笑了/她点头/她靠过来/她没有躲/她抱住我/她说……/他转身/对方回应……”等新行为。
 - 如果一句话需要描述 char/NPC 接下来会做什么，就在 user 动作或对白结束处停笔。
 
-【绝对直叙规则｜与剧情状态锁同级】
+【绝对直叙规则｜与剧情Trạng thái锁同级】
 - 用户自定义中明确要求说出的原话、提问和比较性自我表达不受文风禁词限制；以下规则只限制AI自行新增的修辞。
 - 拒绝比喻式写法：禁止明喻、暗喻、类比、拟人、象征、夸张和文学化意象。
 - 禁止出现“像、像是、好像、仿佛、如同、犹如、宛如、宛若、好似、仿若、恍若、恰似、有如、一样、似的、……般”等比较/比喻结构。
 - 禁止“空气凝固、情绪翻涌、目光灼烧、声音砸下、夜色拥抱、心里炸开”等隐喻或拟人句。
 - 只写可直接观察或确认的事实：user 的具体动作、姿势、位置、触碰、实际感受和直接对白。描写必须朴素、准确、无修辞。
-只输出可直接作为 user 消息发送的正文，不输出分析、标题、选项、解释、JSON、XML标签或代码块。只使用本次请求明确提供的有限剧情资料，不推测未提供的设定。
+只输出可直接作为 user 消息发送的chính văn，不输出分析、标题、选项、解释、JSON、XML标签或代码块。只使用本次请求明确提供的有限剧情资料，不推测未提供的设定。
 
 【0-32规则账本｜高优先级】
 ${(() => { const r=environment.controlLayer?.ledger||{}; const lines=[...(r.long||[]).map(x=>`长期：${x}`),...(r.chapter||[]).map(x=>`本章：${x}`),...(r.timed||[]).map(x=>`临时（剩${x.remaining}层）：${x.text}`)]; return lines.length?lines.map(x=>`- ${x}`).join('\n'):'- 无额外规则'; })()}
 
 【0-32命运卡｜软约束】
-${environment.controlLayer?.fateCard ? `- ${environment.controlLayer.fateCard.categoryLabel}：${environment.controlLayer.fateCard.text}\n- 命运卡只提供“可能发生什么”的种子；若与最新正文、角色人设、规则账本或连续剧情锁冲突，必须降级或忽略。` : '- 本轮无命运卡。'}
+${environment.controlLayer?.fateCard ? `- ${environment.controlLayer.fateCard.categoryLabel}：${environment.controlLayer.fateCard.text}\n- 命运卡只提供“可能发生什么”的种子；若与最新chính văn、角色人设、规则账本或连续剧情锁冲突，必须降级或忽略。` : '- 本轮无命运卡。'}
 
 【当前酒馆剧情环境】
 ${JSON.stringify(environment)}
 
-【最后提醒】先看 currentReality.currentRealityTail。它代表此刻真实状态；它是“起跑线”，不是让你改写的素材。user接力第一句就必须发生在它之后，不能总结、复述或换句话重演刚刚的AI正文。`;
+【最后提醒】先看 currentReality.currentRealityTail。它代表此刻真实Trạng thái；它是“起跑线”，不是让你改写的素材。user接力第一句就必须发生在它之后，不能总结、复述或换句话重演刚刚的AIchính văn。`;
     }
 
     function strip(raw) {
@@ -1948,7 +1948,7 @@ ${JSON.stringify(environment)}
             .replace(/<analysis>[\s\S]*?<\/analysis>/gi, '')
             .replace(/^\s*```(?:text|markdown|md|json)?\s*/i, '')
             .replace(/\s*```\s*$/i, '')
-            .replace(/^\s*(?:assistant|user|用户|正文|输出|回答)\s*[:：]\s*/i, '')
+            .replace(/^\s*(?:assistant|user|用户|chính văn|输出|回答)\s*[:：]\s*/i, '')
             .trim();
         if ((value.startsWith('“') && value.endsWith('”')) || (value.startsWith('\"') && value.endsWith('\"'))) value = value.slice(1, -1).trim();
         return value;
@@ -1957,23 +1957,23 @@ ${JSON.stringify(environment)}
     function cleanRelayModelOutput(raw) {
         let value = strip(raw).replace(/\r\n?/g, '\n').trim();
         if (!value) return '';
-        // 部分模型会在正文外再包一层礼貌话术/标题；这些不是 user 消息正文。
+        // 部分模型会在chính văn外再包一层礼貌话术/标题；这些不是 user 消息chính văn。
         for (let pass=0; pass<3; pass+=1) {
             const cleaned=value
-                .replace(/^\s*(?:【\s*)?(?:正文|输出|回答|assistant|user|用户)(?:\s*】)?\s*[:：]\s*/i, '')
+                .replace(/^\s*(?:【\s*)?(?:chính văn|输出|回答|assistant|user|用户)(?:\s*】)?\s*[:：]\s*/i, '')
                 .replace(/^\s*(?:以下(?:是|为)|下面(?:是|为))[，,。！!：:\s]*/i, '')
                 // “好的，我推开门”可能是真实对白；只有它后面明确接包装词时才剥离。
-                .replace(/^\s*(?:好的|好吧|当然|明白了|可以)[，,。！!：:\s]+(?=(?:【\s*)?(?:正文|输出|回答|以下|下面))/i, '')
+                .replace(/^\s*(?:好的|好吧|当然|明白了|可以)[，,。！!：:\s]+(?=(?:【\s*)?(?:chính văn|输出|回答|以下|下面))/i, '')
                 .trim();
             if (cleaned===value) break;
             value=cleaned;
         }
-        // 只处理独立一行的元说明，避免误伤正文中的正常对白。
+        // 只处理独立一行的元说明，避免误伤chính văn中的正常对白。
         const lines = value.split('\n').map(line => line.trim()).filter(Boolean);
-        while (lines.length && /^(?:好的|明白了|当然可以|以下(?:是|为)|下面(?:是|为)|正文如下)[，,。！!：:\s]*$/i.test(lines[0])) lines.shift();
-        while (lines.length && /^(?:注|说明|备注|解释|附言|以上(?:就是|内容)|希望这|如果你还需要|需要我继续)[：:，,\s]/i.test(lines.at(-1))) lines.pop();
+        while (lines.length && /^(?:好的|明白了|当然可以|以下(?:是|为)|下面(?:是|为)|chính văn如下)[，,。！!：:\s]*$/i.test(lines[0])) lines.shift();
+        while (lines.length && /^(?:注|说明|Ghi chú|解释|附言|以上(?:就是|内容)|希望这|如果你还需要|需要我继续)[：:，,\s]/i.test(lines.at(-1))) lines.pop();
         value = lines.join('\n').trim();
-        // 常见的完成尾标记来自预设模板，不属于可发送的剧情正文。
+        // 常见的完成尾标记来自预设模板，不属于可发送的剧情chính văn。
         value = value.replace(/(?:^|\n)\s*(?:（完）|\(完\)|\[完\]|完毕|以上内容)[。！!。]?\s*$/i, '').trim();
         return value;
     }
@@ -1992,7 +1992,7 @@ ${JSON.stringify(environment)}
     }
 
     const RELAY_SYSTEM_PROMPT = `${FALLEN_WRITER_CONTEXT}
-【AI接力任务】你是互动剧情 user 输入代写器。用户本轮明确输入的自定义行动是最高优先级事实：必须执行同一个核心行动、目的地、对象与意图，只能补充过程，绝不能偷换成另一件事。若用户提供“user需要发送的话”并开启AI扩写，你必须真正改写并自然扩充：不能原样返回、不能只加标点、不能把短句机械拉长；应整理动作与对白顺序，把括号舞台动作写成自然叙事，并补充少量只属于user的动作衔接、语气、姿势、停顿或即时感官细节。若关闭AI扩写，则只做轻度规整。若用户自定义本身是想说出的台词、提问或感受表达，应保留核心意思和口语感，扩写时允许自然换句式而非逐字锁死。严格遵守连续剧情锁、USER主体语义硬锁与绝对直叙规则。只允许user产生新的主动动作、对白、决定和感受；允许客观描述char/NPC已经存在的静态状态。用户明确写出的“把/扶/抱/拉/带char到某位置”可作为user主动动作执行，char只能作为宾语；除此之外不得替char/NPC新增自主动作、表情变化、说话、回应、要求、邀请、同意、拒绝或主动身体反应。角色全名、代词、昵称都按同一主体识别；绝不能把user下一步写成包含char/NPC完整回应的一整轮场景。禁止AI自行新增任何比喻、类比、拟人、象征、夸张或文学化意象。长度服从本轮动态要求，不为凑字数灌水。只输出user正文。`;
+【AI接力任务】你是互动剧情 user 输入代写器。用户本轮明确输入的自定义行动是最高优先级事实：必须执行同一个核心行动、目的地、对象与意图，只能补充过程，绝不能偷换成另一件事。若用户提供“user需要发送的话”并开启AI扩写，你必须真正改写并自然扩充：不能原样返回、不能只加标点、不能把短句机械拉长；应整理动作与对白顺序，把括号舞台动作写成自然叙事，并补充少量只属于user的动作衔接、语气、姿势、停顿或即时感官细节。若ĐóngAI扩写，则只做轻度规整。若用户自定义本身是想说出的台词、提问或感受表达，应保留核心意思和口语感，扩写时允许自然换句式而非逐字锁死。严格遵守连续剧情锁、USER主体语义硬锁与绝对直叙规则。只允许user产生新的主动动作、对白、决定和感受；允许客观描述char/NPC已经存在的静态Trạng thái。用户明确写出的“把/扶/抱/拉/带char到某位置”可作为user主动动作执行，char只能作为宾语；除此之外不得替char/NPC新增自主动作、表情变化、说话、回应、要求、邀请、同意、拒绝或主动身体反应。角色全名、代词、昵称都按同一主体识别；绝不能把user下一步写成包含char/NPC完整回应的一整轮场景。禁止AI自行新增任何比喻、类比、拟人、象征、夸张或文学化意象。长度服从本轮动态要求，不为凑字数灌水。只输出userchính văn。`;
 
     function configuredSourceMode() {
         return 'independent';
@@ -2024,7 +2024,7 @@ ${JSON.stringify(environment)}
         '你的任务是整理或自然扩写 user 自己的动作、对白和提问；不得补写对方角色/NPC 的新回应、心理、表情、动作或结论。',
         '不要读取或假设任何未在本次请求中提供的旧聊天、世界书、RAG、手机、总结或其他背景。',
         '保留原文核心意思、人物对象、动作顺序和开放问题；括号里的动作说明可以改成自然叙事。',
-        '只输出可以直接发送的 user 正文，不要解释、标题、标签或分析。',
+        '只输出可以直接发送的 user chính văn，不要解释、标题、标签或分析。',
         '遵守当前模型服务的使用政策。',
     ].join('\n');
 
@@ -2059,7 +2059,7 @@ ${notes||'无'}
 3. 括号动作改成正常叙事，不把括号说明念成台词。
 4. 只允许 user 产生新的主动动作、对白、决定和感受；不得新增 char/NPC 的主动回应。
 5. 不引用、不补写任何未在本请求中出现的背景事实。
-6. 只输出可直接发送的 user 正文。`;
+6. 只输出可直接发送的 user chính văn。`;
     }
 
     async function independent(prompt, { systemPrompt = RELAY_SYSTEM_PROMPT, jsonMode = false, responseLength = null, signal = null } = {}) {
@@ -2188,7 +2188,7 @@ ${notes||'无'}
                 await sleep(relayRetryDelay(attempt));
             }
         }
-        const finalError=new Error(`AI剧情接力连续自动重试仍失败：${String(lastError?.message||lastError||'未知错误')}`);
+        const finalError=new Error(`AI剧情接力连续自动重试仍失败：${String(lastError?.message||lastError||'Chưa rõ错误')}`);
         finalError.cause=lastError;
         throw finalError;
     }
@@ -2274,7 +2274,7 @@ ${notes||'无'}
     }
 
     function buildRelayContinuationPrompt(partial,custom='') {
-        return `【AI接力防截断续写】\n上一段 user 正文可能被输出 Token 上限截断。只从截断处继续，补完尚未结束的句子并用一个完整自然的 user 动作或对白收束；不要重写、概括或重复已有文字，不得新增 char/NPC 的动作、对白或回应。若已有文字其实完整，只输出 <VVV_COMPLETE>。只输出需要追加的正文。\n\n【已有正文末尾】\n${String(partial||'').slice(-8000)}${String(custom||'').trim()?`\n\n【原接力方向，仅用于保持目标】\n${String(custom).trim().slice(0,500)}`:''}`;
+        return `【AI接力防截断续写】\n上一段 user chính văn可能被输出 Token 上限截断。只从截断处继续，补完尚未结束的句子并用一个完整自然的 user 动作或对白收束；不要重写、概括或重复已有文字，不得新增 char/NPC 的动作、对白或回应。若已有文字其实完整，只输出 <VVV_COMPLETE>。只输出需要追加的chính văn。\n\n【已有chính văn末尾】\n${String(partial||'').slice(-8000)}${String(custom||'').trim()?`\n\n【原接力方向，仅用于保持目标】\n${String(custom).trim().slice(0,500)}`:''}`;
     }
 
     async function completeTruncatedRelayText(initial,{custom='',ensureCurrent=()=>{}}={}) {
@@ -2283,7 +2283,7 @@ ${notes||'无'}
             count+=1;setBusy(true,`检测到接力被截断，正在自动续写 ${count}/${relayContinuationLimit()}…`);
             const addition=await generateRawWithSilentRetry(buildRelayContinuationPrompt(text,custom));ensureCurrent();
             if(/^\s*<VVV_COMPLETE>\s*$/i.test(String(addition||''))){finishReason='';break;}
-            const merged=mergeRelayContinuation(text,addition);if(merged===text)throw new Error('AI接力防截断续写没有返回新的正文，已停止以避免重复消耗API');text=merged;finishReason=runtime.lastProviderFinishReason;
+            const merged=mergeRelayContinuation(text,addition);if(merged===text)throw new Error('AI接力防截断续写没有返回新的chính văn，已停止以避免重复消耗API');text=merged;finishReason=runtime.lastProviderFinishReason;
         }
         if(relayNeedsContinuation(text,finishReason))throw new Error(`AI接力连续续写 ${relayContinuationLimit()} 次后仍被模型截断；未完整草稿已拦截，请提高“最大输出 Token”后重试`);
         runtime.lastContinuationCount+=count;return text;
@@ -2319,7 +2319,7 @@ ${notes||'无'}
         if(local.length)return local;
         // 高相似在这里是“原话得到保留”的正向证据，不再反向当作复述错误。
         if(draftPreservesCustomExpression(text,direction))return [];
-        const prompt=`只做行动一致性判定，不续写剧情。比较“用户指定方向”和“生成稿”：生成稿可以扩写步骤和对白，但必须实际保持同一个核心行动、施事者、对象、目的地和意图；若把A换成B，必须判false。例如“去吃饭”被写成“去睡觉”就是false。若原方向是“某人询问另一个人几个/多少/选哪个”，生成稿必须保留提问者、被问者和未决状态；擅自替任何人补出数量或答案必须判false。若用户指定方向本身是想说出的台词、提问或感受，生成稿原样保留或近义保留属于follows=true，绝不能因为“复述了用户文字”判false。用户原文里的括号若是在描述随后/然后发生的动作，它是舞台动作指令，不是台词；生成稿应把它落实成叙事动作，而不是把括号内容念出来。\n\n【用户指定方向】\n${direction.slice(0,500)}\n\n【生成稿】\n${text.slice(0,6000)}\n\n【最新正文结尾，仅用于消歧】\n${tailText(entry?.text||'',1200)}\n\n只输出JSON：{"follows":true或false,"coreAction":"用户要求的核心行动","conflict":"偏离点；无则空字符串"}`;
+        const prompt=`只做行动一致性判定，不续写剧情。比较“用户指定方向”和“生成稿”：生成稿可以扩写步骤和对白，但必须实际保持同一个核心行动、施事者、对象、目的地和意图；若把A换成B，必须判false。例如“去吃饭”被写成“去睡觉”就是false。若原方向是“某人询问另一个人几个/多少/选哪个”，生成稿必须保留提问者、被问者和未决Trạng thái；擅自替任何人补出数量或答案必须判false。若用户指定方向本身是想说出的台词、提问或感受，生成稿原样保留或近义保留属于follows=true，绝不能因为“复述了用户文字”判false。用户原文里的括号若是在描述随后/然后发生的动作，它是舞台动作指令，不是台词；生成稿应把它落实成叙事动作，而不是把括号内容念出来。\n\n【用户指定方向】\n${direction.slice(0,500)}\n\n【生成稿】\n${text.slice(0,6000)}\n\n【最新chính văn结尾，仅用于消歧】\n${tailText(entry?.text||'',1200)}\n\n只输出JSON：{"follows":true或false,"coreAction":"用户要求的核心行动","conflict":"偏离点；无则空字符串"}`;
         let lastFailure='';
         for(let attempt=1;attempt<=2;attempt+=1){
             try{
@@ -2348,18 +2348,18 @@ ${notes||'无'}
         const custom=relayCustomVerificationTarget(customRequest);
         if(runtime.selected.has('custom')&&!customRequest.userText&&!customRequest.notes)throw new Error('已选择“自定义”，请填写user文字或补充想法');
         if (runtime.busy||runtime.activeGeneration) throw new Error(`${runtime.activeGenerationOwner||'上一条AI接力请求'}仍在处理，请等按钮恢复后再试`);
-        if (await isGenerating()) throw new Error('上一轮正文仍在生成，请等它结束后再接力');
+        if (await isGenerating()) throw new Error('上一轮chính văn仍在生成，请等它结束后再接力');
         runtime.busy = true;
         runtime.policyRecoveryNoticeShown=false;
         setBusy(true,'正在使用接力独立API生成…');
         try {
             const entry = commandEntry();
-            if (!entry) throw new Error('当前没有可接力的AI正文');
+            if (!entry) throw new Error('当前没有可接力的AIchính văn');
             const operationAnchor=anchorFromEntry(entry);
-            const ensureCurrent=()=>{if(!relayAnchorIsCurrent(operationAnchor))throw new Error('AI接力生成期间聊天或最新AI楼层已变化，本次草稿已安全丢弃');};
+            const ensureCurrent=()=>{if(!relayAnchorIsCurrent(operationAnchor))throw new Error('AI接力生成期间聊天或最新AITầng已变化，本次草稿已安全丢弃');};
 
             // fixed9：无论是否开启“AI扩写”，user原文与补充想法都在同一次请求中交给AI。
-            // 关闭扩写 = 轻度语句规整；开启扩写 = 在核心行动不变的前提下自然扩写。
+            // Đóng扩写 = 轻度语句规整；开启扩写 = 在核心行动不变的前提下自然扩写。
             runtime.lastPipelineDebug={
                 source:customRequest.userText?(customRequest.expand?'vvv-relay-user-text-expand':'vvv-relay-user-text-polish'):'vvv-relay-notes-generate',
                 generationType:'relay-custom',
@@ -2379,7 +2379,7 @@ ${notes||'无'}
             const chosenLabels = selectedDirectionLabels();
             const allowJump = chosenLabels.some(item => /时间推进|旅行\/跨城|重大变化/.test(item)) || /第二天|几小时后|旅行|出差|跨城|重大变化|跳到|直接到/.test(`${customRequest.userText} ${customRequest.notes}`);
             let advisoryIssues = detectDraftIssues(draft, { entry, custom, allowJump, environment: runtime.lastEnvironment });
-            // fixed33：取消 AI接力的“自定义行动后置硬校验/自动纠偏/拦截”范围。
+            // fixed33：Hủy AI接力的“自定义行动后置硬校验/自动纠偏/拦截”范围。
             // 原因：这层会把“揽进怀里/贴上嘴唇”等正常近义扩写误判为没有执行
             // “拥抱/亲吻”，导致已经生成成功的稿件又被二次裁判拦掉。
             // 现在 user原文与补充想法只在生成 Prompt 中作为最高优先级约束；生成完成后
@@ -2403,7 +2403,7 @@ ${notes||'无'}
             runtime.draft = limitCompleteSentence(draft, relayMaxChars());
             runtime.draftAnchor={...operationAnchor};
             runtime.previewCustom={...customRequest};
-            if (!runtime.draft) throw new Error('模型没有生成可用正文');
+            if (!runtime.draft) throw new Error('模型没有生成可用chính văn');
             toast(customRequest.userText ? (customRequest.expand ? '✒ AI已按原意完成自然扩写，不会原文直发。' : '✒ user文字已规整，并合并补充想法完成接力。') : '✒ AI剧情接力完成（独立API）。', 'success');
             if(runtime.lastContinuationCount)toast(`防截断已自动续写并拼接 ${runtime.lastContinuationCount} 段。`,'success');
             if (runtime.settings.directAfterGenerate) await send(runtime.draft,operationAnchor);
@@ -2438,7 +2438,7 @@ ${notes||'无'}
 
     function showError(error) {
         runtime.busy = false;
-        const message=String(error?.message || error || 'AI剧情接力失败，请检查API状态');
+        const message=String(error?.message || error || 'AI剧情接力失败，请检查APITrạng thái');
         setRelayInlineError(message);
         setBusy(false);
         console.error('[AI剧情接力] 本轮最终失败', error);
@@ -2455,7 +2455,7 @@ ${notes||'无'}
         if (!root) {
             root = document.createElement('div');
             root.id = 'vvv-relay-preview';
-            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section role="dialog"><header><b>AI替你写的下一条 user 输入</b><button type="button" data-close>×</button></header><textarea maxlength="20000"></textarea><small>可编辑 · 建议300-800字 · U1.4默认不主动截断（设置为0）；默认不会自动发送</small><footer><button type="button" data-regen>换一个/重新生成</button><button type="button" data-fill>填入输入框</button><button type="button" data-send>直接发送</button><button type="button" data-cancel>取消</button></footer></section>`;
+            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section role="dialog"><header><b>AI替你写的下一条 user 输入</b><button type="button" data-close>×</button></header><textarea maxlength="20000"></textarea><small>可编辑 · 建议300-800字 · U1.4默认不主动截断（设置为0）；默认不会自动发送</small><footer><button type="button" data-regen>换一个/重新生成</button><button type="button" data-fill>填入输入框</button><button type="button" data-send>直接发送</button><button type="button" data-cancel>Hủy</button></footer></section>`;
             document.body.appendChild(root);
             root.querySelector('[data-close]').onclick = () => closePreview(root);
             root.querySelector('[data-cancel]').onclick = () => closePreview(root);
@@ -2469,9 +2469,9 @@ ${notes||'无'}
     }
 
     function fill(value, expectedAnchor = runtime.draftAnchor) {
-        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('生成草稿后聊天或最新AI楼层已变化，请在当前剧情重新生成接力');
+        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('生成草稿后聊天或最新AITầng已变化，请在当前剧情重新生成接力');
         const input = document.querySelector('#send_textarea');
-        if (!input) throw new Error('找不到酒馆输入框');
+        if (!input) throw new Error('Không tìm thấy ô nhập liệu của SillyTavern');
         input.value = limitCompleteSentence(value);
         runtime.settings.pendingFateCard = null; saveSettings();
         input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2482,14 +2482,14 @@ ${notes||'无'}
     async function send(value, expectedAnchor = runtime.draftAnchor) {
         const message = limitCompleteSentence(value);
         if (!message) throw new Error('预览内容为空');
-        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('生成草稿后聊天或最新AI楼层已变化，已阻止把旧草稿发送到新剧情');
+        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('生成草稿后聊天或最新AITầng已变化，已阻止把旧草稿发送到新剧情');
         const input = document.querySelector('#send_textarea');
-        if (!input) throw new Error('找不到酒馆输入框');
+        if (!input) throw new Error('Không tìm thấy ô nhập liệu của SillyTavern');
         const mod = await import('/script.js');
-        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('准备发送期间聊天或最新AI楼层已变化，已取消发送');
+        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('准备发送期间聊天或最新AITầng已变化，Đã hủy发送');
         const generating = typeof mod.isGenerating === 'function' ? mod.isGenerating() : Boolean(mod.isGenerating);
         if (generating) throw new Error('上一轮仍在生成');
-        if (typeof mod.sendTextareaMessage !== 'function') throw new Error('当前酒馆不支持正常发送路径');
+        if (typeof mod.sendTextareaMessage !== 'function') throw new Error('Phiên bản SillyTavern hiện tại không hỗ trợ đường gửi tin thông thường');
         input.value = message;
         runtime.settings.pendingFateCard = null; saveSettings();
         input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2498,7 +2498,7 @@ ${notes||'无'}
         removeBars();
         runtime.selected.clear();
         // fixed13：程序化调用 sendTextareaMessage 在部分 ST/主题组合中会比 0-09 的 PromptManager
-        // 挂载更快，造成“手打有思维链、AI接力发送后的 char 正文没思维链”。
+        // 挂载更快，造成“手打有思维链、AI接力发送后的 char chính văn没思维链”。
         // 发送前先让 0-09 预武装下一次主回复；之后仍走酒馆原生 sendTextareaMessage，绝不另起第二次生成。
         try{
             await globalThis.VVVUnifiedCreative?.prepareRelayReply?.({text:message,source:'relay'});
@@ -2627,7 +2627,7 @@ ${notes||'无'}
             root.innerHTML = `<div class="vvv-relay-backdrop"></div><section><header><b>0-32 · AI剧情接力设置</b><button type="button" data-close>×</button></header>
                 <label><input type="checkbox" data-enabled>启用发送键旁“0-32接力”常驻按钮（推荐）</label>
                 <label>写作来源<select data-mode disabled><option value="independent" selected>独立API · 有限剧情资料</option></select></label>
-                <label><input type="checkbox" data-direct>生成后直接发送（默认关闭）</label>
+                <label><input type="checkbox" data-direct>生成后直接发送（默认Đóng）</label>
                 <label>近期原文范围<select data-recent-floors><option value="8">最近8层</option><option value="12">最近12层</option><option value="16">最近16层（推荐）</option><option value="24">最近24层</option><option value="32">最近32层</option></select></label>
                 <label>失败自动尝试次数<input type="number" min="1" max="6" step="1" data-retry-attempts></label>
                 <label>复述指令修复尝试次数<input type="number" min="1" max="6" step="1" data-repair-attempts></label>
@@ -2647,12 +2647,12 @@ ${notes||'无'}
                     <label><input type="checkbox" data-fate-auto>自动按间隔提供命运卡种子</label>
                     <label><span>自动抽卡间隔</span><select data-fate-interval><option value="4">4轮</option><option value="6">6轮</option><option value="8">8轮（推荐）</option><option value="10">10轮</option><option value="12">12轮</option><option value="16">16轮</option><option value="20">20轮</option></select></label>
                     <div class="vvv-relay-fate-cats"><span>启用卡池：</span>${Object.entries(FATE_CATEGORY_LABELS).filter(([key])=>key!=='custom').map(([key,label])=>`<label><input type="checkbox" data-fate-cat="${key}">${label}</label>`).join('')}</div>
-                    <label class="vvv-relay-wide"><span>自定义命运卡（每行：分类英文|卡牌内容；也可只写内容）</span><textarea data-custom-fate placeholder="例如：emotion|某个过去的重要约定以很轻的方式再次被提起"></textarea></label>
+                    <label class="vvv-relay-wide"><span>自定义命运卡（每行：分类英文|卡牌内容；也可只写内容）</span><textarea data-custom-fate placeholder="例如：emotion|某个过去的重要Lời hẹn以很轻的方式再次被提起"></textarea></label>
                 </div>
                 <div class="vvv-relay-api-box vvv-relay-ledger-settings">
                     <h3>📖 0-32 规则账本</h3>
                     <label class="vvv-relay-wide"><span>长期规则（每行一条，持续有效）</span><textarea data-ledger-long placeholder="例如：不要替user原谅任何人"></textarea></label>
-                    <label class="vvv-relay-wide"><span>当前章节规则（每行一条，手动清空）</span><textarea data-ledger-chapter placeholder="例如：这一章不允许突然表白，也不要跳时间"></textarea></label>
+                    <label class="vvv-relay-wide"><span>当前章节规则（每行一条，手动Bỏ chọn）</span><textarea data-ledger-chapter placeholder="例如：这一章不允许突然表白，也不要跳时间"></textarea></label>
                     <label class="vvv-relay-wide"><span>临时规则（每行：规则 | 剩余层数）</span><textarea data-ledger-timed placeholder="例如：腿伤不能跑 | 10"></textarea></label>
                     <small>规则账本不仅用于AI剧情接力，也会由0-32记忆中枢注入普通主剧情；临时规则过期后自动清理。</small>
                 </div>
@@ -2664,7 +2664,7 @@ ${notes||'无'}
                 <div class="vvv-relay-api-box" data-independent-box>
                     <p><b>AI接力专用 API：</b>这套 Base URL、密钥和模型只服务 AI 接力，不复用整理/总结 API，也不与幕后七条共用。请求只携带本模块整理出的近期剧情、结构化记忆和明确规则。</p>
                     <div data-relay-api-fields>
-                        <label><span>接口类型</span><select data-api-provider><option value="openai-compatible">OpenAI兼容</option><option value="anthropic">Anthropic</option><option value="gemini">Gemini</option></select></label>
+                        <label><span>接口Loại</span><select data-api-provider><option value="openai-compatible">OpenAI兼容</option><option value="anthropic">Anthropic</option><option value="gemini">Gemini</option></select></label>
                         <label><span>Base URL</span><input type="text" data-api-base autocomplete="off" placeholder="例如：https://example.com/v1"></label>
                         <label><span>API Key</span><input type="password" data-api-key autocomplete="off" placeholder="留空保留服务器已保存密钥"></label>
                         <label class="vvv-relay-model-field"><span>模型</span><div class="vvv-relay-model-row"><input type="text" data-api-model autocomplete="off" placeholder="可手填，或点击右侧获取模型"><button type="button" data-fetch-models>获取模型</button></div><select data-model-results hidden><option value="">选择已获取的模型…</option></select><small data-model-status></small></label>
@@ -2802,7 +2802,7 @@ ${notes||'无'}
         runtime.selected.clear();
         setDockBusy(false);
         restoreBar({ settled: true, entryOverride: settledEntry });
-        // 某些主题/滑动楼层会在 settled 后继续替换最后一层 DOM，多次轻量确认只补 UI，不调用 API。
+        // 某些主题/滑动Tầng会在 settled 后继续替换最后一层 DOM，多次轻量确认只补 UI，不调用 API。
         setTimeout(() => scheduleBarRestore(0), 180);
         setTimeout(() => scheduleBarRestore(0), 650);
         setTimeout(() => scheduleBarRestore(0), 1500);
@@ -2824,7 +2824,7 @@ ${notes||'无'}
 
     function clearForRealGenerationStart() {
         // 静默生成/其他插件的后台 generation 不能把已经 settled 的接力条误删。
-        // 只有当前聊天最后一条真实消息确实是 user 时，才视为新一轮正文开始。
+        // 只有当前聊天最后一条真实消息确实是 user 时，才视为新一轮chính văn开始。
         const chat = ctx()?.chat;
         if (!Array.isArray(chat)) return;
         for (let i = chat.length - 1; i >= 0; i -= 1) {
@@ -2851,7 +2851,7 @@ ${notes||'无'}
         const stoppedBase = runtime.generationStartAnchor ? { ...runtime.generationStartAnchor } : null;
         markStoppedPartials(stoppedBase);
         runtime.stopRecoveryAnchor = stoppedBase;
-        // 关键：STOP处理完立刻清掉generationStartAnchor，防止它以后永久把接力拉回旧楼层。
+        // 关键：STOP处理完立刻清掉generationStartAnchor，防止它以后永久把接力拉回旧Tầng。
         runtime.generationStartAnchor = null;
         runtime.busy = false;
         runtime.selected.clear();
@@ -2865,7 +2865,7 @@ ${notes||'无'}
             if (!entry || !runtime.settings?.enabled) return;
             runtime.currentSignature = signature(entry);
             runtime.barDesired = true;
-            // 恢复时重新记一次宽松锚点；正文清理/尾包剥离导致文本hash变化也不会再把入口弄丢。
+            // 恢复时重新记一次宽松锚点；chính văn清理/尾包剥离导致文本hash变化也不会再把入口弄丢。
             runtime.lastSettledAnchor = anchorFromEntry(entry);
             restoreBar({ settled:false, entryOverride:entry, force:true });
             if (reveal) {
@@ -2882,7 +2882,7 @@ ${notes||'无'}
 
     function restoreAfterGenerationEndedIfEmpty() {
         // 官方不同版本/主题的“停止”事件顺序可能不同。
-        // 如果 ENDED 之后最后一条真实消息仍是 user，说明没有完整AI正文落地，按中止处理。
+        // 如果 ENDED 之后最后一条真实消息仍是 user，说明没有完整AIchính văn落地，按中止处理。
         setTimeout(() => {
             const last = latestRealMessage();
             if (last?.message?.is_user && runtime.generationStartAnchor) {
@@ -2949,7 +2949,7 @@ ${notes||'无'}
             }, 700);
         });
         installBarObserver();
-        // 刷新/重新打开只恢复最新AI正文底部UI，不请求模型。
+        // 刷新/重新打开只恢复最新AIchính văn底部UI，不请求模型。
         setTimeout(() => {
             const entry = latestAssistant();
             runtime.currentSignature = signature(entry);

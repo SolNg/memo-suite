@@ -9,11 +9,11 @@ const PLUGIN_ID = 'vvv-theater-memory-server';
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ENABLED_ACCOUNTS = new Set(['vvv']);
 const VERSION = '0.9.3-r9s1p41-s15-032-u1715-world-map-avatar-studio-r21-memory-bridge-fixed35';
-const FICTION_CONTEXT_MARKER = '【落魄作家写作身份】';
+const FICTION_CONTEXT_MARKER = '【落魄作家写作Thân phận】';
 const FICTION_CONTEXT = [
     FICTION_CONTEXT_MARKER,
     '你叫“落魄作家”。你曾经也想当体面的大作家，如今只想先把房租、网费和咖啡钱挣出来。只要是符合当前模型服务使用政策、共创者真正想看的题材，你都会认真接稿；可以为了稿费调整文风、题材与节奏，但不能拿角色设定、USER主权、剧情逻辑和连贯性糊弄交差。',
-    '【身份边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
+    '【Thân phận边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
     '【虚构叙事前提】这是虚构小说创作。以下资料均为共创者提供的架空小说素材。所有设定、人物、事件与世界均属虚构小说，不是真实存在，也不是现实事件；作品尚未签约发行，仅用于共创写作与剧情探索，内容面向喜欢此类故事的小说读者与观众。',
     '【创作原则】始终遵循 User 在本次任务中的创作指令并在范围内创造性发散；尊重角色设定、USER主权、人物知情边界、剧情因果与前后连贯，同时遵守当前模型服务的使用政策。',
 ].join('\n');
@@ -396,7 +396,7 @@ function creativePresetFile(id) {
     return path.join(CREATIVE_PRESETS_DIR(), `${clean}.json`);
 }
 function creativePresetMeta(stored) {
-    return {id:String(stored.id||''),name:String(stored.name||'未命名预设'),builtin:false,importedAt:Number(stored.importedAt||0),updatedAt:Number(stored.updatedAt||0),revision:String(stored.revision||creativePresetRevision(stored.preset)),...(stored.stats||validateCreativePreset(stored.preset))};
+    return {id:String(stored.id||''),name:String(stored.name||'Chưa đặt tên预设'),builtin:false,importedAt:Number(stored.importedAt||0),updatedAt:Number(stored.updatedAt||0),revision:String(stored.revision||creativePresetRevision(stored.preset)),...(stored.stats||validateCreativePreset(stored.preset))};
 }
 function listCreativePresets() {
     ensureDirs();
@@ -476,7 +476,7 @@ function decodePhoneStickerData(value, declaredMime = '') {
     const match=String(value||'').match(/^data:(image\/(?:png|jpeg|webp|gif));base64,([A-Za-z0-9+/=\r\n]+)$/i);
     if(!match)throw new Error('表情文件格式不支持，只允许 PNG、JPG、WebP 或 GIF');
     const mime=String(match[1]).toLowerCase();
-    if(!PHONE_STICKER_MIME[mime]||String(declaredMime||mime).toLowerCase()!==mime)throw new Error('表情文件类型不一致');
+    if(!PHONE_STICKER_MIME[mime]||String(declaredMime||mime).toLowerCase()!==mime)throw new Error('表情文件Loại不一致');
     const buffer=Buffer.from(match[2].replace(/\s+/g,''),'base64');
     if(!buffer.length||buffer.length>MAX_PHONE_STICKER_BYTES)throw new Error(`单个表情必须小于 ${Math.floor(MAX_PHONE_STICKER_BYTES/1024/1024)}MB`);
     const valid=mime==='image/png'?buffer.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))
@@ -590,7 +590,7 @@ function buildNovelAiPortraitRequest(config,{prompt,negativePrompt,referenceBuff
     const seed=novelAiSeed(config?.seed),isV5=/nai-diffusion-5/i.test(model),isV45=/nai-diffusion-4-5/i.test(model),isV4=isV5||/nai-diffusion-4/i.test(model);
     const sampler=String(config?.sampler||'k_euler_ancestral');
     const requestedMode=novelAiPortraitMode(config?.workflowMode);
-    if(reference&&!isV45)throw new Error(`人物身份参考必须使用 NovelAI 4.5 模型；当前模型是 ${model}。已停止生成，没有使用普通重绘。`);
+    if(reference&&!isV45)throw new Error(`人物Thân phận参考必须使用 NovelAI 4.5 模型；当前模型是 ${model}。已停止生成，没有使用普通重绘。`);
     const useCharacterReference=Boolean(reference&&isV45),effectiveMode=!reference?'text2img':requestedMode;
     const parameters={
         params_version:isV5?4:3,width:Math.max(256,Math.min(2048,Number(config?.width||832))),height:Math.max(256,Math.min(2048,Number(config?.height||1216))),
@@ -632,7 +632,7 @@ function novelAiHttpError(status,detail,totalAttempts) {
 function novelAiNetworkError(error,totalAttempts) {
     const cause=error?.cause||{},code=String(cause.code||error?.code||'').trim(),detail=String(cause.message||error?.message||error||'网络请求失败').trim();
     const hint=/ENOTFOUND|EAI_AGAIN/i.test(code)?'服务器无法解析域名，请检查 DNS 或 Base URL'
-        :/ECONNREFUSED/i.test(code)?'目标地址拒绝连接，请检查反代端口和服务状态'
+        :/ECONNREFUSED/i.test(code)?'目标地址拒绝连接，请检查反代端口和服务Trạng thái'
         :/CERT|TLS|SSL/i.test(`${code} ${detail}`)?'TLS 证书校验失败，请检查反代证书链'
         :/TIMEOUT|UND_ERR_CONNECT_TIMEOUT/i.test(`${code} ${detail}`)?'连接超时，请检查服务器到 NovelAI 的网络'
         :'请检查服务器网络、代理和 NovelAI Base URL';
@@ -730,8 +730,8 @@ function hubArchiveRows() {
                 if(!manifest?.characterKey)continue;
                 rows.push({
                     characterKey:String(manifest.characterKey),archiveId:String(manifest.archiveId||archiveDir.name),
-                    characterName:String(manifest.characterName||'未命名角色'),avatar:String(manifest.avatar||''),
-                    chatKey:String(manifest.chatKey||''),chatName:String(manifest.chatName||'未命名聊天'),
+                    characterName:String(manifest.characterName||'Nhân vật chưa đặt tên'),avatar:String(manifest.avatar||''),
+                    chatKey:String(manifest.chatKey||''),chatName:String(manifest.chatName||'Cuộc trò chuyện chưa đặt tên'),
                     createdAt:Number(manifest.createdAt||0),updatedAt:Number(manifest.updatedAt||0),saveCount:Number(manifest.saveCount||0),
                     metrics:manifest.metrics||{},lastReason:String(manifest.lastReason||''),
                 });
@@ -775,14 +775,14 @@ function hubSearchDocuments(view={}) {
         const body=hubCompact(text,720);if(!body)return;
         docs.push({type,title:hubCompact(title,240),text:body,floor:hubFloor(floor),storyTime:hubCompact(storyTime,120),...extra});
     };
-    for(const row of view.mainline||[])push('timeline',row['事件概要']||'时间线',row['事件概要'],row['楼层']??row._sourceFloor,[row['日期'],row['开始时间']].filter(Boolean).join(' '),{status:row['状态']||'',deletePath:'tables.mainline',deleteItem:row});
-    for(const row of view.promises||[])push('promise',row['约定内容']||'约定',`${row['约定内容']||''} ${row['核心角色']||''} ${row['状态']||''}`,row['楼层']??row._sourceFloor,row._recordedStoryTime||row['约定时间']||'',{status:row['状态']||'',deletePath:'tables.promises',deleteItem:row});
-    for(const row of view.people||[])push('person',row['姓名']||'人物',Object.values(row).filter(v=>typeof v==='string'||typeof v==='number').join(' '),row['楼层']??row._sourceFloor,'',{deletePath:'tables.people',deleteItem:row});
-    for(const row of view.relations||[])push('relation',`${row['角色A']||'?'} ↔ ${row['角色B']||'?'}`,Object.values(row).filter(v=>typeof v==='string'||typeof v==='number').join(' '),row._sourceFloor,row['更新时间']||'',{deletePath:'tables.relations',deleteItem:row});
+    for(const row of view.mainline||[])push('timeline',row['Tóm tắt sự kiện']||'Dòng thời gian',row['Tóm tắt sự kiện'],row['Tầng']??row._sourceFloor,[row['Ngày'],row['Giờ bắt đầu']].filter(Boolean).join(' '),{status:row['Trạng thái']||'',deletePath:'tables.mainline',deleteItem:row});
+    for(const row of view.promises||[])push('promise',row['Nội dung lời hẹn']||'Lời hẹn',`${row['Nội dung lời hẹn']||''} ${row['Nhân vật cốt lõi']||''} ${row['Trạng thái']||''}`,row['Tầng']??row._sourceFloor,row._recordedStoryTime||row['Thời điểm hẹn']||'',{status:row['Trạng thái']||'',deletePath:'tables.promises',deleteItem:row});
+    for(const row of view.people||[])push('person',row['Họ tên']||'人物',Object.values(row).filter(v=>typeof v==='string'||typeof v==='number').join(' '),row['Tầng']??row._sourceFloor,'',{deletePath:'tables.people',deleteItem:row});
+    for(const row of view.relations||[])push('relation',`${row['Nhân vật A']||'?'} ↔ ${row['Nhân vật B']||'?'}`,Object.values(row).filter(v=>typeof v==='string'||typeof v==='number').join(' '),row._sourceFloor,row['Thời điểm cập nhật']||'',{deletePath:'tables.relations',deleteItem:row});
     for(const row of view.anchors||[])push('anchor',row.event||'核心事件',`${row.event||''} ${row.details||''} ${(row.tags||[]).join(' ')}`,row.floor,[row.date,row.time].filter(Boolean).join(' '),{importance:row.importance||'',deletePath:'memoryAnchors',deleteItem:row});
-    for(const row of view.episodeFacts||[])push('episode',row.fact||'原子事件',`${row.fact||''} ${(row.people||[]).join(' ')}`,row.floor,row.time||'',{deletePath:'episodeFacts',deleteItem:row});
+    for(const row of view.episodeFacts||[])push('episode',row.fact||'Sự kiện nguyên tử',`${row.fact||''} ${(row.people||[]).join(' ')}`,row.floor,row.time||'',{deletePath:'episodeFacts',deleteItem:row});
     for(const row of view.lifeFacts||[])push('life',`${row.subject||''} ${row.key||row.category||''}`,`${row.value||''} ${row.fact||''} ${row.evidence||''}`,row.floor,row.time||'',{deletePath:'lifeFacts',deleteItem:row});
-    for(const row of view.orders||[]){const platform=String(row.platform||'');push('order',row.storeName||row.merchant||'手机订单',`${row.storeName||row.merchant||''} ${JSON.stringify(row.items||[])} ${row.status||''}`,row.sourceFloor,row.storyTime||row.time||'',{platform,status:row.status||'',deletePath:platform?`phone.commerce.${platform}.orders`:'',deleteItem:row});}
+    for(const row of view.orders||[]){const platform=String(row.platform||'');push('order',row.storeName||row.merchant||'Đơn hàng điện thoại',`${row.storeName||row.merchant||''} ${JSON.stringify(row.items||[])} ${row.status||''}`,row.sourceFloor,row.storyTime||row.time||'',{platform,status:row.status||'',deletePath:platform?`phone.commerce.${platform}.orders`:'',deleteItem:row});}
     return docs;
 }
 function hubKeywordSearch(view,q,limit=50) {
@@ -820,7 +820,7 @@ function hubDeleteMemoryItem({characterKey,archiveId,pathKey,itemKey}={}) {
     next.manualDeletionTombstones.push({id:`hub-delete-${Date.now()}-${crypto.randomUUID()}`,reason:'user-explicit-delete',path:pathKey,items:[jsonClone(target)],deletedAt:Date.now(),source:'VVV Memory Hub'});
     next.manualDeletionTombstones=next.manualDeletionTombstones.slice(-1200);
     const manifest=writeCardArchiveState({characterKey,archiveId,state:next,reason:'hub-user-explicit-delete',identity:hubArchiveIdentity(archive.manifest||{})});
-    return {manifest,deleted:{path:pathKey,key:String(itemKey||''),title:hubCompact(target?.['事件概要']||target?.['约定内容']||target?.['姓名']||target?.event||target?.fact||target?.storeName||target?.merchant||'',160)}};
+    return {manifest,deleted:{path:pathKey,key:String(itemKey||''),title:hubCompact(target?.['Tóm tắt sự kiện']||target?.['Nội dung lời hẹn']||target?.['Họ tên']||target?.event||target?.fact||target?.storeName||target?.merchant||'',160)}};
 }
 function hubTrashArchive({characterKey,archiveId}={}) {
     if(!characterKey||!archiveId)throw new Error('characterKey-and-archiveId-required');
@@ -842,7 +842,7 @@ function jsonClone(value) {
 }
 
 function archivePathIsReplaceableArray(pathKey) {
-    // S10：默认“未知数组也永久追加”，未来新增模块不会因为忘记加入白名单而自动丢历史。
+    // S10：默认“Chưa rõ数组也永久追加”，未来新增模块不会因为忘记加入白名单而自动丢历史。
     // 只有明确属于工作队列 / UI选择 / 可变购物车的数组允许普通保存整体替换。
     return [
         /^progress\.assistantMemoryQueue$/,
@@ -867,14 +867,14 @@ function archiveArrayItemKey(item, pathKey) {
     if (item === null || item === undefined) return `primitive:${String(item)}`;
     if (typeof item !== 'object') return `primitive:${String(item)}`;
     const semantic=value=>String(value??'').toLowerCase().replace(/[\s，。；、：:,.!?！？“”"'‘’（）()\[\]【】_-]+/g,'').slice(0,500);
-    if (/^tables\.people$/.test(pathKey) && item['姓名']) return `person:${semantic(item['姓名'])}`;
+    if (/^tables\.people$/.test(pathKey) && item['Họ tên']) return `person:${semantic(item['Họ tên'])}`;
     if (/^tables\.relations$/.test(pathKey)) {
-        const a=semantic(item['角色A']||''),b=semantic(item['角色B']||'');
+        const a=semantic(item['Nhân vật A']||''),b=semantic(item['Nhân vật B']||'');
         if(a||b)return `relation:${[a,b].sort().join('|')}`;
     }
-    if (/^tables\.summaries$/.test(pathKey)) return `summary:${semantic(item['类型']||item['表格类型']||'')}|${semantic(item['覆盖楼层']||'')}`;
-    if (/^tables\.items$/.test(pathKey)) return `item:${item._entityId||item.itemId||semantic(item['物品名称']||item['物品名']||item.name||'')}`;
-    if (/^tables\.promises$/.test(pathKey)) return `promise:${item._entityId||item.promiseId||`${semantic(item['核心角色']||item.characters||'')}|${semantic(item['约定内容']||item.content||'')}`}`;
+    if (/^tables\.summaries$/.test(pathKey)) return `summary:${semantic(item['Loại']||item['Loại bảng']||'')}|${semantic(item['Tầng bao phủ']||'')}`;
+    if (/^tables\.items$/.test(pathKey)) return `item:${item._entityId||item.itemId||semantic(item['Tên vật phẩm']||item['物品名']||item.name||'')}`;
+    if (/^tables\.promises$/.test(pathKey)) return `promise:${item._entityId||item.promiseId||`${semantic(item['Nhân vật cốt lõi']||item.characters||'')}|${semantic(item['Nội dung lời hẹn']||item.content||'')}`}`;
     if (/^episodeFacts$/.test(pathKey)) return `episode:${item.id||`${item.sourceMessageKey||''}|${item.floor??''}|${semantic(item.fact||'')}`}`;
     if (/^secrets$/.test(pathKey)) return `secret:${item._entityId||item.secretId||`${semantic(item.subject||'')}|${semantic(item.content||'')}`}`;
     if (/^appearances$/.test(pathKey)) return `appearance:${semantic(item.character||'')}`;
@@ -923,8 +923,8 @@ function mergePermanentArray(previous, incoming, pathKey) {
         if(fromIncoming && item && typeof item==='object' && !Array.isArray(item)){
             const prior=out[index],next=mergePermanentArchiveValue(prior,item,`${pathKey}[]`);
             if(pathKey==='tables.relations'){
-                const decision=serverRelationUpdateDecision(prior?.['关系描述'],item?.['关系描述'],item?._evidenceText||'');
-                if(!decision.accept&&prior?.['关系描述'])next['关系描述']=prior['关系描述'];
+                const decision=serverRelationUpdateDecision(prior?.['Mô tả quan hệ'],item?.['Mô tả quan hệ'],item?._evidenceText||'');
+                if(!decision.accept&&prior?.['Mô tả quan hệ'])next['Mô tả quan hệ']=prior['Mô tả quan hệ'];
             }
             out[index]=next;
             register(out[index],index);
@@ -940,7 +940,7 @@ function serverRelationUpdateDecision(oldDescription='',newDescription='',source
     if(!nextValue||nextValue===oldValue)return {accept:Boolean(nextValue),reason:nextValue?'same-value':'empty-update'};
     const stable=/(?:同事|前任|前男友|前女友|恋人|男友|女友|夫妻|妻子|丈夫|爱人|父母|母亲|父亲|妈妈|爸爸|兄弟|姐妹|家人|亲戚|朋友|同学|室友|上司|下属|合作伙伴|师生|雇主|雇员)/.test(oldValue);
     const unfamiliar=/(?:陌生|不认识|素不相识|第一次见|初次见面|从未见过|不熟|毫无关系|没有关系|普通路人)/.test(nextValue);
-    const resetEvidence=/(?:失忆|记忆丧失|被洗脑|认知被篡改|假装不认识|装作不认识|伪装成陌生人|断绝关系|身份被替换|冒名顶替|确认认错人)/.test(evidence);
+    const resetEvidence=/(?:失忆|记忆丧失|被洗脑|认知被篡改|假装不认识|装作不认识|伪装成陌生人|断绝关系|Thân phận被替换|冒名顶替|确认认错人)/.test(evidence);
     if(stable&&unfamiliar&&!resetEvidence)return {accept:false,reason:'stable-relation-downgrade-without-reset-evidence'};
     const generic=value=>/^(?:当前剧情中正在互动|当前正在互动|正在互动|已认识|初次接触|当前互动)$/.test(value);
     if(generic(nextValue)&&oldValue&&!generic(oldValue))return {accept:false,reason:'specific-relation-downgraded-to-generic'};
@@ -969,7 +969,7 @@ function mergePermanentArchiveValue(previous, incoming, pathKey='') {
 }
 
 function summaryDeletionSignature(row) {
-    return [row?.['类型']||row?.['表格类型']||'',row?.['覆盖楼层']||'',row?.['总结内容']||''].map(v=>String(v||'')).join('|');
+    return [row?.['Loại']||row?.['Loại bảng']||'',row?.['Tầng bao phủ']||'',row?.['Nội dung tổng kết']||''].map(v=>String(v||'')).join('|');
 }
 
 function getArchivePath(root, pathKey) {
@@ -1008,8 +1008,8 @@ function applyArchiveUserDeletionTombstones(merged, incoming) {
         });
     }
 
-    // 2) S10 通用删除墓碑：只有UI明确点击“删除/清空”才会产生 reason=user-explicit-delete。
-    // 普通保存、插件升级、正文删除/重生成、手机恢复、CardVault导入均不会生成墓碑，因此无权缩短永久数组。
+    // 2) S10 通用删除墓碑：只有UI明确点击“删除/Bỏ chọn”才会产生 reason=user-explicit-delete。
+    // 普通保存、插件升级、chính văn删除/重生成、手机恢复、CardVault导入均不会生成墓碑，因此无权缩短永久数组。
     const generic=[
         ...(Array.isArray(incoming?.manualDeletionTombstones)?incoming.manualDeletionTombstones:[]),
         ...(Array.isArray(incoming?.phone?.manualDeletionTombstones)?incoming.phone.manualDeletionTombstones:[]),
@@ -1348,7 +1348,7 @@ function decodeControlAgentImagePart(part) {
 }
 
 function decodeControlAgentDocumentPart(part) {
-    const name = String(part?.name || '未命名文档').replace(/[\u0000-\u001f\\/]/g, '_').slice(0, 160);
+    const name = String(part?.name || 'Chưa đặt tên文档').replace(/[\u0000-\u001f\\/]/g, '_').slice(0, 160);
     const mime = controlAgentMimeType(name, part?.mimeType || part?.mime);
     if (!CONTROL_AGENT_DOCUMENT_MIMES.has(mime)) return null;
     const raw = String(part?.data || '').trim().replace(/^data:[^,]+,/, '').replace(/\s+/g, '');
@@ -1385,9 +1385,9 @@ function normalizeControlAgentContent(content, state) {
             output.push(image);
             continue;
         }
-        // 文件不会在服务端落盘。前端只为文本文件提供摘要；未知二进制只保留文件名和大小。
+        // 文件不会在服务端落盘。前端只为文本文件提供摘要；Chưa rõ二进制只保留文件名和大小。
         if (type === 'file' || type === 'document') {
-            const name = String(part.name || '未命名文件').replace(/[\u0000-\u001f\\/]/g, '_').slice(0, 160);
+            const name = String(part.name || 'Chưa đặt tên文件').replace(/[\u0000-\u001f\\/]/g, '_').slice(0, 160);
             const mimeType = controlAgentMimeType(name, part.mimeType || part.mime).slice(0, 120);
             const size = Math.max(0, Number(part.size || 0));
             const document = type === 'document' ? decodeControlAgentDocumentPart(part) : null;
@@ -1504,7 +1504,7 @@ function internalContentParts(content) {
         .map(part => part.type === 'image'
             ? { type: 'image', mimeType: String(part.mimeType || 'image/png'), data: String(part.data || '') }
             : part.type === 'document'
-                ? { type: 'document', mimeType: String(part.mimeType || 'application/pdf'), data: String(part.data || ''), name: String(part.name || '未命名文档') }
+                ? { type: 'document', mimeType: String(part.mimeType || 'application/pdf'), data: String(part.data || ''), name: String(part.name || 'Chưa đặt tên文档') }
             : { type: 'text', text: String(part.text || '') })
         .filter(part => (part.type === 'image' || part.type === 'document') ? Boolean(part.data) : Boolean(part.text));
 }
@@ -1523,7 +1523,7 @@ function openAiMessageContent(content) {
     return internalContentParts(content).map(part => part.type === 'image'
         ? { type: 'image_url', image_url: { url: `data:${part.mimeType};base64,${part.data}` } }
         : part.type === 'document'
-            ? { type: 'text', text: `【文档附件：${part.name || '未命名文档'}｜${part.mimeType}】\n当前 OpenAI 兼容 Chat Completions 接口不启用原生文件存储；文档未作为二进制上传。请改用 PDF 可读的 Gemini/Anthropic 模型，或把文档导出为文本。` }
+            ? { type: 'text', text: `【文档附件：${part.name || 'Chưa đặt tên文档'}｜${part.mimeType}】\n当前 OpenAI 兼容 Chat Completions 接口不启用原生文件存储；文档未作为二进制上传。请改用 PDF 可读的 Gemini/Anthropic 模型，或把文档导出为文本。` }
         : { type: 'text', text: part.text });
 }
 
@@ -1902,13 +1902,13 @@ function controlAgentCapabilities(config) {
     return {
         provider,
         model,
-        source: 'VVV本地模型能力提示（按接口类型和模型名推断，不替代服务商文档）',
+        source: 'VVV本地模型能力提示（按接口Loại和模型名推断，不替代服务商文档）',
         imageInput: {
             supported: knownImage ? true : null,
             confidence: knownImage ? 'likely' : 'unknown',
             detail: knownImage
                 ? '该接口/模型名称通常支持图片输入；仍以服务商当前模型文档和实际测试为准。'
-                : '未能从接口类型和模型名确认视觉能力；可上传图片测试，失败时会明确返回错误。',
+                : '未能从接口Loại和模型名确认视觉能力；可上传图片测试，失败时会明确返回错误。',
         },
         fileInput: {
             supported: 'text-inline',
@@ -1923,7 +1923,7 @@ function controlAgentCapabilities(config) {
         network: {
             supported: false,
             confidence: 'declared',
-            detail: '当前管家只调用已配置的模型接口，不提供浏览器联网、搜索或任意外部工具权限。',
+            detail: '当前管家只调用已配置的模型接口，不提供浏览器联网、Tìm或任意外部工具权限。',
         },
         toolCalling: {
             supported: null,
@@ -2008,14 +2008,14 @@ const MEMORY_QUERY_SYNONYM_GROUPS = Object.freeze([
     ['到账','入账','收款','打款','汇款','转账成功','款项到了'], ['工资','薪水','薪资','月薪','发薪'],
     ['画稿','稿费','稿酬','约稿','插画费','设计费'], ['购买','买了','买东西','下单','订单'],
     ['外卖','点餐','饿了么','美团','送餐'], ['电话','来电','通话'], ['朋友圈','动态','好友圈'],
-    ['约定','承诺','答应','说好'], ['楼层','哪一层','第几层','回合'], ['第一次','最早','首次'], ['最后一次','最近一次','上一次'],
+    ['Lời hẹn','承诺','答应','说好'], ['Tầng','哪一层','第几层','回合'], ['第一次','最早','首次'], ['最后一次','最近一次','上一次'],
 ]);
 
 function planMemoryQuery(query) {
     const raw=String(query||'').trim(),extra=[];
     for(const group of MEMORY_QUERY_SYNONYM_GROUPS)if(group.some(term=>raw.includes(term)))extra.push(...group);
-    const temporalIntent=/第一次|最早|首次/.test(raw)?'first':(/最后一次|最近一次|上一次|最近/.test(raw)?'last':(/目前|现在|当前状态/.test(raw)?'current':''));
-    return {raw,lexicalText:[raw,...new Set(extra)].join(' '),temporalIntent,timelineIntent:/时间线|什么时候|哪一层|第几层|几层|多少层|第\s*\d+\s*层|当时|那天|发生了什么|还记得|第一次|最后一次|最早|最近一次/.test(raw)};
+    const temporalIntent=/第一次|最早|首次/.test(raw)?'first':(/最后一次|最近一次|上一次|最近/.test(raw)?'last':(/目前|现在|当前Trạng thái/.test(raw)?'current':''));
+    return {raw,lexicalText:[raw,...new Set(extra)].join(' '),temporalIntent,timelineIntent:/Dòng thời gian|什么时候|哪一层|第几层|几层|多少层|第\s*\d+\s*层|当时|那天|发生了什么|还记得|第一次|最后一次|最早|最近一次/.test(raw)};
 }
 
 function chineseNumeralToNumber(value) {
@@ -2168,7 +2168,7 @@ function memoryTypeIntentBoost(queryText, doc) {
     const q = String(queryText || '');
     const type = String(doc.type || '');
     let boost = 0;
-    if (/约定|答应|承诺|说好/.test(q) && /promise/.test(type)) boost += 0.16;
+    if (/Lời hẹn|答应|承诺|说好/.test(q) && /promise/.test(type)) boost += 0.16;
     if (/秘密|瞒着|知道者|知情/.test(q) && /secret/.test(type)) boost += 0.16;
     if (/关系|喜欢|爱上|恋爱|分手|亲密/.test(q) && /relations|episode-anchor/.test(type)) boost += 0.12;
     if (/衣服|穿着|发型|鞋|外观/.test(q) && /appearance/.test(type)) boost += 0.14;
@@ -2494,13 +2494,13 @@ async function runTask(task, payload) {
             if (task.cancelled) throw new Error('__VVV_TASK_CANCELLED__');
             task.result = result;
         } else {
-            throw new Error(`未知任务类型：${task.type}`);
+            throw new Error(`Chưa rõ任务Loại：${task.type}`);
         }
         task.status = 'completed'; task.progress = 100; task.error = null;
         task.errorName='';task.errorCode='';task.policyRefusal=false;
     } catch (error) {
         if (task.cancelled || String(error?.message || error) === '__VVV_TASK_CANCELLED__') {
-            task.status = 'cancelled'; task.progress = 100; task.error = '任务已取消'; task.result = null;
+            task.status = 'cancelled'; task.progress = 100; task.error = '任务Đã hủy'; task.result = null;
         } else {
             const detail=publicGenerationError(error);
             task.status = 'error'; task.progress = 100; task.error = detail.message;
@@ -2583,13 +2583,13 @@ async function runRelayPipeline4(config, { prompt, systemPrompt = '', testMode =
     const source = String(prompt || '').slice(0, 180_000);
     const baseSystem = String(systemPrompt || '').slice(0, 12_000);
 
-    const s1 = await measuredStage(relayConfig, '导演', `${source}\n\n【阶段1任务】\n你是0-32剧情导演。不要写最终user正文。只给出不超过700中文字符的导演计划：当前剧情阶段、人物情绪惯性、绝不能重复的既成事实、最自然的下一小节拍、应该暂缓的重大转折、可用伏笔。规则账本和最新AI正文优先于旧记忆。尤其先读取prompt里的【当前现实硬事实】：已经离开浴室、已经到沙发、已经戴套等完成状态绝不能再次执行。`, `${baseSystem}\n你只做剧情导演规划，不写正文。`, { maxTokens:testMode?300:1100, temperature:.18 });
+    const s1 = await measuredStage(relayConfig, '导演', `${source}\n\n【阶段1任务】\n你是0-32剧情导演。不要写最终userchính văn。只给出不超过700中文字符的导演计划：当前剧情阶段、人物情绪惯性、绝不能重复的既成事实、最自然的下一小节拍、应该暂缓的重大转折、可用伏笔。规则账本和最新AIchính văn优先于旧记忆。尤其先读取prompt里的【当前现实硬事实】：已经离开浴室、已经到沙发、已经戴套等完成Trạng thái绝不能再次执行。`, `${baseSystem}\n你只做剧情导演规划，不写chính văn。`, { maxTokens:testMode?300:1100, temperature:.18 });
 
-    const s2 = await measuredStage(relayConfig, '统筹', `${source}\n\n【导演计划】\n${s1.text}\n\n【阶段2任务】\n你是剧情统筹与连续性审查员。不要写最终user正文。检查导演计划与当前现实、长期记忆、人物关系、约定、秘密、命运卡、时间地点、user主体边界是否冲突。prompt里的【当前现实硬事实】属于不可推翻事实，任何重新离开浴室、重新到沙发、重新拿套/拆套/戴套都必须列入“必须禁止”。输出不超过700中文字符的“必须保留 / 必须禁止 / 可推进”清单。`, `${baseSystem}\n你只做宏观剧情统筹、记忆与连续性审查。`, { maxTokens:testMode?300:1100, temperature:.12 });
+    const s2 = await measuredStage(relayConfig, '统筹', `${source}\n\n【导演计划】\n${s1.text}\n\n【阶段2任务】\n你是剧情统筹与连续性审查员。不要写最终userchính văn。检查导演计划与当前现实、长期记忆、Quan hệ nhân vật、Lời hẹn、秘密、命运卡、时间地点、user主体边界是否冲突。prompt里的【当前现实硬事实】属于不可推翻事实，任何重新离开浴室、重新到沙发、重新拿套/拆套/戴套都必须列入“必须禁止”。输出不超过700中文字符的“必须保留 / 必须禁止 / 可推进”清单。`, `${baseSystem}\n你只做宏观剧情统筹、记忆与连续性审查。`, { maxTokens:testMode?300:1100, temperature:.12 });
 
-    const s3 = await measuredStage(relayConfig, '初稿', `${source}\n\n【导演计划】\n${s1.text}\n\n【统筹审查】\n${s2.text}\n\n【阶段3任务】\n严格据此写一版可直接发送的user正文。开写前先逐条核对prompt里的【当前现实硬事实】，不得重新执行其中任何已完成动作。只允许user产生新的主动动作、对白、决定和感受。允许客观描述char/NPC已经存在的静态状态（衣着、位置、湿润、外观），但char/NPC不得产生新的动作、表情变化、对白、回应、同意、拒绝、靠近、躲闪或主动身体反应。写到需要NPC回应的位置立即停笔。只写当前场景下一小节拍，300-800中文字符，绝对直叙，无比喻，无分析。`, `${baseSystem}\n你是user正文初稿作者，只输出正文。`, { maxTokens:testMode?350:1800, temperature:.30 });
+    const s3 = await measuredStage(relayConfig, '初稿', `${source}\n\n【导演计划】\n${s1.text}\n\n【统筹审查】\n${s2.text}\n\n【阶段3任务】\n严格据此写一版可直接发送的userchính văn。开写前先逐条核对prompt里的【当前现实硬事实】，不得重新执行其中任何Đã hoàn thành动作。只允许user产生新的主动动作、对白、决定和感受。允许客观描述char/NPC已经存在的静态Trạng thái（衣着、位置、湿润、外观），但char/NPC不得产生新的动作、表情变化、对白、回应、同意、拒绝、靠近、躲闪或主动身体反应。写到需要NPC回应的位置立即停笔。只写当前场景下一小节拍，300-800中文字符，绝对直叙，无比喻，无分析。`, `${baseSystem}\n你是userchính văn初稿作者，只输出chính văn。`, { maxTokens:testMode?350:1800, temperature:.30 });
 
-    const s4 = await measuredStage(relayConfig, '终审', `${source}\n\n【导演计划】\n${s1.text}\n\n【统筹审查】\n${s2.text}\n\n【待终审初稿】\n${s3.text}\n\n【阶段4任务｜强制净稿器】\n你不是续写小说，而是把初稿净化成“只能由user发送”的最终消息。必须重写并只输出最终user正文：\n1. 删除或改写所有char/NPC的新动作、新对白、新回应、新表情变化、同意/拒绝、靠近/躲闪、点头/摇头和主动身体反应；绝不能替NPC演。\n2. 允许保留NPC已经存在的静态可见状态，例如“她的头发还湿着/她身上还裹着浴巾”。\n3. 修掉剧情倒退、重复已完成动作、跳时间/地点、OOC、记忆冲突、比喻/拟人/文学化意象。尤其严格遵守prompt里的【当前现实硬事实】：若已在沙发就不能再写走出浴室/走到沙发；若已戴套就不能再写拿套/拆包装/戴套。\n4. 每个“新行为”的施事者必须是user；写到需要NPC回应的位置立即停笔。\n5. 如果初稿中有NPC回应，不要替它换一种回应，直接删掉那段，保留user自己的动作/对白。\n300-800中文字符。不要解释、不要分析、不要标题。`, `${baseSystem}\n这是四重推演最后一步：你是强制净稿器，不是NPC续写者。只输出最终可发送的user正文；NPC静态状态可描述，但NPC不得产生任何新行为。`, { maxTokens:testMode?350:1800, temperature:.08 });
+    const s4 = await measuredStage(relayConfig, '终审', `${source}\n\n【导演计划】\n${s1.text}\n\n【统筹审查】\n${s2.text}\n\n【待终审初稿】\n${s3.text}\n\n【阶段4任务｜强制净稿器】\n你不是续写小说，而是把初稿净化成“只能由user发送”的最终消息。必须重写并只输出最终userchính văn：\n1. 删除或改写所有char/NPC的新动作、新对白、新回应、新表情变化、同意/拒绝、靠近/躲闪、点头/摇头和主动身体反应；绝不能替NPC演。\n2. 允许保留NPC已经存在的静态可见Trạng thái，例如“她的头发还湿着/她身上还裹着浴巾”。\n3. 修掉剧情倒退、重复Đã hoàn thành动作、跳时间/地点、OOC、记忆冲突、比喻/拟人/文学化意象。尤其严格遵守prompt里的【当前现实硬事实】：若已在沙发就不能再写走出浴室/走到沙发；若已戴套就不能再写拿套/拆包装/戴套。\n4. 每个“新行为”的施事者必须是user；写到需要NPC回应的位置立即停笔。\n5. 如果初稿中有NPC回应，不要替它换一种回应，直接删掉那段，保留user自己的动作/对白。\n300-800中文字符。不要解释、不要分析、不要标题。`, `${baseSystem}\n这是四重推演最后一步：你是强制净稿器，不是NPC续写者。只输出最终可发送的userchính văn；NPC静态Trạng thái可描述，但NPC不得产生任何新行为。`, { maxTokens:testMode?350:1800, temperature:.08 });
 
     return {
         text: s4.text,
@@ -3134,7 +3134,7 @@ export async function init(router) {
             const data=loadPhoneStickers();if(data.stickers.length>=MAX_PHONE_STICKERS)throw new Error(`表情库最多 ${MAX_PHONE_STICKERS} 个`);
             const decoded=decodePhoneStickerData(req.body?.data,req.body?.mimeType);
             const id=`sticker-${crypto.randomUUID()}`;const fileName=`${id}.${decoded.extension}`;const now=Date.now();
-            const row={id,fileName,mimeType:decoded.mime,size:decoded.buffer.length,name:cleanPhoneStickerText(req.body?.name||'未命名表情',120)||'未命名表情',tags:String(req.body?.tags||'').split(/[，,、\n]/).map(x=>cleanPhoneStickerText(x,40)).filter(Boolean).slice(0,24),description:cleanPhoneStickerText(req.body?.description,500),createdAt:now,updatedAt:now};
+            const row={id,fileName,mimeType:decoded.mime,size:decoded.buffer.length,name:cleanPhoneStickerText(req.body?.name||'Chưa đặt tên表情',120)||'Chưa đặt tên表情',tags:String(req.body?.tags||'').split(/[，,、\n]/).map(x=>cleanPhoneStickerText(x,40)).filter(Boolean).slice(0,24),description:cleanPhoneStickerText(req.body?.description,500),createdAt:now,updatedAt:now};
             fs.writeFileSync(path.join(PHONE_STICKERS_DIR(),fileName),decoded.buffer,{mode:0o600});
             data.stickers.push(row);savePhoneStickers(data);res.json({ok:true,sticker:phoneStickerPublic(row)});
         }catch(error){res.status(400).json({ok:false,error:String(error?.message||error)});}
@@ -3259,7 +3259,7 @@ export async function init(router) {
     });
 
 
-    // S3：角色卡永久档案。主状态按“角色卡 → 聊天存档”独立落盘，插件升级/回退不删除。
+    // S3：角色卡永久档案。主Trạng thái按“角色卡 → 聊天存档”独立落盘，插件升级/回退不删除。
     router.post('/archives/resolve', (req,res)=>{
         try{const out=resolveCardArchive({...req.body,create:req.body?.create!==false});if(!out)return res.status(404).json({ok:false,error:'archive-binding-not-found'});res.json({ok:true,...out});}
         catch(error){res.status(400).json({ok:false,error:String(error?.message||error)});}
@@ -3408,7 +3408,7 @@ export async function init(router) {
         for (const [id, task] of [...tasks.entries()]) {
             if (task.account !== activeAccount() || task.chatKey !== chatKey) continue;
             if (['queued', 'running'].includes(task.status)) {
-                task.cancelled = true; task.status = 'cancelled'; task.progress = 100; task.error = '任务已由一键清空取消'; task.result = null; task.updatedAt = Date.now();
+                task.cancelled = true; task.status = 'cancelled'; task.progress = 100; task.error = '任务已由一键Bỏ chọnHủy'; task.result = null; task.updatedAt = Date.now();
                 persistTask(task); cancelled += 1;
             } else {
                 tasks.delete(id); try { fs.unlinkSync(taskFile(id)); } catch {} removed += 1;

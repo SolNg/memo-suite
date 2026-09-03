@@ -22,7 +22,7 @@ assert.ok(theater.includes("const MODULE = 'vvv_theater_memory'"),'0-32 settings
 assert.ok(relay.includes('vvv_story_relay'),'relay settings id changed');
 assert.ok(relay.includes('VVVTheaterMemoryBridge'),'relay lost memory bridge');
 assert.ok(relay.includes('completeTruncatedRelayText'),'relay anti-truncation lost');
-assert.ok(qaPrompt.includes('【VVV作者场外问答｜本轮暂停角色扮演】'),'author marker changed');
+assert.ok(qaPrompt.includes('【VVV HỎI ĐÁP NGOÀI LỀ VỚI TÁC GIẢ｜TẠM DỪNG NHẬP VAI LƯỢT NÀY】'),'author marker changed');
 assert.ok(qa.includes('injectAuthorQaPrompt'),'standalone author QA injector missing');
 assert.ok(qa.includes("await mod.Generate('regenerate')"),'author answer recovery missing');
 assert.ok(hub.includes("const API='/api/plugins/vvv-theater-memory-server'"),'Memory Hub endpoint changed');

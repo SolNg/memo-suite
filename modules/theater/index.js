@@ -15,42 +15,42 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     // compatibility-marker: fixed41-generation-order-guard
     // compatibility-marker: fixed40-new-chat-turn-guard
     // compatibility-marker: fixed39-single-world-complete
-    // compatibility-marker: fixed38-no-phone-contact-remarks (去备注行为继续保留)
+    // compatibility-marker: fixed38-no-phone-contact-remarks (去Ghi chú行为继续保留)
     const INDEX_DOCUMENT_SCHEMA_REVISION = 8;
     const SOURCE_POLICY = 'independent-scoped-v1';
     const STAGE_SUMMARY_FORMAT_VERSION = 3;
     const COMPANION_COMPLETENESS_REVISION = 3;
     const SERVER_BASE = '/api/plugins/vvv-theater-memory-server';
     const FALLEN_WRITER_CONTEXT = [
-        '【落魄作家写作身份】',
+        '【落魄作家写作Thân phận】',
         '你叫“落魄作家”。你曾经也想当体面的大作家，如今只想先把房租、网费和咖啡钱挣出来。只要是符合当前模型服务使用政策、共创者真正想看的题材，你都会认真接稿；可以为了稿费调整文风、题材与节奏，但不能拿角色设定、USER主权、剧情逻辑和连贯性糊弄交差。',
-        '【身份边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
+        '【Thân phận边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
         '【虚构叙事前提】这是虚构小说创作。以下资料均为共创者提供的架空小说素材。所有设定、人物、事件与世界均属虚构小说，不是真实存在，也不是现实事件；作品尚未签约发行，仅用于共创写作与剧情探索，内容面向喜欢此类故事的小说读者与观众。',
         '【创作原则】始终遵循 User 在本次任务中的创作指令并在范围内创造性发散；尊重角色设定、USER主权、人物知情边界、剧情因果与前后连贯，同时遵守当前模型服务的使用政策。',
     ].join('\n');
     const COMPANION_FINAL_CONTRACT = [
         '【幕后七条最终执行契约｜独立资料边界】',
-        '本请求只使用调用方明确提供的当前正文、有限记忆、已确认角色资料、【0-32 强读世界书】摘录和任务规则；禁止自行读取或请求酒馆预设、Persona或Prompt Manager编译结果。角色世界书只能使用调用方本轮明确提供的强读摘录。最终输出不是代写user正文，而是幕后七条JSON。',
+        '本请求只使用调用方明确提供的当前chính văn、有限记忆、已确认角色资料、【0-32 强读世界书】摘录和任务规则；禁止自行读取或请求酒馆预设、Persona或Prompt Manager编译结果。角色世界书只能使用调用方本轮明确提供的强读摘录。最终输出不是代写userchính văn，而是幕后七条JSON。',
         '必须保留顶层键 setting、scene、promises、secrets、appearances、memory、story、phone、world，禁止省略后半段键或改成中文键名。',
         '当前镜头存在角色时 appearances 至少给出1名角色的当前外观；现代智能手机且已有角色时 story.moments 与 story.diary 各至少1条低影响生活内容。',
         '通讯可用且手机生态开启时 phone 至少产生1条符合人物动机的低影响通讯；存在镜头外NPC且世界自治开启时 world.events 至少推进要求数量的真实日常。',
-        'story.reactions是对已经存在的朋友圈动态做互动补丁；每个待处理momentId都必须原样回填，NPC必须先看见附件和正文，才可按人设决定点赞或留言。',
-        '纪念日只在已有或本轮明确出现日期依据时填写，禁止为了凑数伪造重大日期。只输出合法JSON对象。',
-        'promises只写明确成立且仍待兑现或进行中的约定。动作摘录、人物反应、台词提示、<user_input>/共创者确认、写作任务和仅仅提到“答应/约定”的叙述都不得写入promises。',
+        'story.reactions是对已经存在的朋友圈动态做互动补丁；每个待处理momentId都必须原样回填，NPC必须先看见附件和chính văn，才可按人设决定点赞或留言。',
+        '纪念日只在已有或本轮明确出现Ngày依据时填写，禁止为了凑数伪造重大Ngày。只输出合法JSON对象。',
+        'promises只写明确成立且仍Chờ thực hiện或Đang diễn ra的Lời hẹn。动作摘录、人物反应、台词提示、<user_input>/共创者确认、写作任务和仅仅提到“答应/Lời hẹn”的叙述都不得写入promises。',
     ].join('\n');
     const COMPANION_REPAIR_FINAL_CONTRACT = [
         '【幕后缺失栏目定向补写契约】',
-        '本次只补 appearances、story、phone、world 四个顶层键，不写正文，不重复setting/scene/promises/secrets/memory；story可能包含对既有朋友圈的reactions补丁。',
+        '本次只补 appearances、story、phone、world 四个顶层键，不写chính văn，不重复setting/scene/promises/secrets/memory；story可能包含对既有朋友圈的reactions补丁。',
         '严格使用英文键名和指定数组结构；必须满足任务列出的最低数量。纪念日没有依据可以为空，其余被点名的栏目不得再次返回空数组。',
         '只输出一个合法JSON对象，不要Markdown、解释或对象外文字。',
     ].join('\n');
     const MEMORY_IMPERSONATE_FINAL_CONTRACT = [
         '【整理/总结最终执行契约｜仅处理本次提供的记忆资料】',
-        '本请求只处理调用方提供的目标AI回复、有限记忆资料和任务规则；最终输出是后台记忆资料，不是user正文，也不是assistant续写。',
+        '本请求只处理调用方提供的目标AI回复、有限记忆资料和任务规则；最终输出是后台记忆资料，不是userchính văn，也不是assistant续写。',
         '本任务只整理已经发生的虚构小说剧情，不把素材当作现实事件；禁止新增动作、改写既成事实或替{{user}}做决定。',
-        '即时整理的目标AI回复只要包含实质剧情，mainline必须且只能输出1条60至260字的剧情概括；不得返回空mainline，也不得拿旧记忆、约定、人物状态或其他局部字段顶替主线。',
+        '即时整理的目标AI回复只要包含实质剧情，mainline必须且只能输出1条60至260字的剧情概括；不得返回空mainline，也不得拿旧记忆、Lời hẹn、人物Trạng thái或其他局部字段顶替主线。',
         '必须逐项保留本轮已确认的承诺、日程、饮食、家务、购物、地点、穿着和金额等原子事实；不得为压缩篇幅把同一句中的后半段事实丢掉。',
-        '上一条user输入只是上下文；只有被本轮AI/角色回复明确确认或承接的事实才能落库，并且统一归属当前AI楼层，禁止生成user楼层记忆。',
+        '上一条user输入只是上下文；只有被本轮AI/角色回复明确确认或承接的事实才能落库，并且统一归属当前AITầng，禁止生成userTầng记忆。',
         '严格服从本轮末尾的JSON或总结格式要求；不要输出Markdown代码围栏、解释、拒绝说明或对象外文字。',
     ].join('\n');
     const ARCHIVE_BINDING_META_KEY = 'vvv_theater_archive_binding_v1';
@@ -61,25 +61,25 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     const chatRuntimeIds = new WeakMap();
 
     const TABLE_DEFS = {
-        mainline: { title: '主线剧情', columns: ['日期', '开始时间', '完结时间', '事件概要', '状态', '楼层'] },
-        branches: { title: '支线追踪', columns: ['状态', '支线名', '开始时间', '完结时间', '事件追踪', '关键NPC', '楼层'] },
-        states: { title: '角色状态', columns: ['角色名', '状态变化', '时间', '原因', '当前位置', '楼层'] },
-        people: { title: '人物档案', columns: ['姓名', '年龄', '身份', '地点', '性格', '备注'] },
-        relations: { title: '人物关系', columns: ['角色A', '角色B', '关系描述', '情感态度', '更新时间'] },
-        world: { title: '世界设定', columns: ['设定名', '类型', '详细说明', '影响范围'] },
-        items: { title: '物品追踪', columns: ['物品名称', '物品描述', '当前位置', '持有者', '状态', '重要程度', '备注'] },
-        promises: { title: '约定', columns: ['约定时间', '约定内容', '核心角色', '状态', '楼层'] },
-        summaries: { title: '记忆总结', columns: ['类型', '状态', '总结内容', '覆盖楼层', '模型', '生成时间', '锁定'] },
+        mainline: { title: '主线剧情', columns: ['Ngày', 'Giờ bắt đầu', 'Giờ kết thúc', 'Tóm tắt sự kiện', 'Trạng thái', 'Tầng'] },
+        branches: { title: '支线追踪', columns: ['Trạng thái', '支线名', 'Giờ bắt đầu', 'Giờ kết thúc', '事件追踪', '关键NPC', 'Tầng'] },
+        states: { title: '角色Trạng thái', columns: ['Tên nhân vật', 'Trạng thái变化', '时间', '原因', 'Vị trí hiện tại', 'Tầng'] },
+        people: { title: '人物档案', columns: ['Họ tên', 'Tuổi', 'Thân phận', '地点', 'Tính cách', 'Ghi chú'] },
+        relations: { title: 'Quan hệ nhân vật', columns: ['Nhân vật A', 'Nhân vật B', 'Mô tả quan hệ', 'Thái độ tình cảm', 'Thời điểm cập nhật'] },
+        world: { title: '世界设定', columns: ['设定名', 'Loại', '详细说明', '影响范围'] },
+        items: { title: '物品追踪', columns: ['Tên vật phẩm', 'Mô tả vật phẩm', 'Vị trí hiện tại', 'Người sở hữu', 'Trạng thái', 'Mức quan trọng', 'Ghi chú'] },
+        promises: { title: 'Lời hẹn', columns: ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái', 'Tầng'] },
+        summaries: { title: '记忆总结', columns: ['Loại', 'Trạng thái', 'Nội dung tổng kết', 'Tầng bao phủ', '模型', 'Thời điểm tạo', '锁定'] },
     };
 
     const TABLE_ORDER = Object.keys(TABLE_DEFS);
     const TAB_DEFS = [
-        ['overview', '总览'],
+        ['overview', 'Tổng quan'],
         ['tables', '剧情记忆'],
-        ['timeline', '时间线'],
+        ['timeline', 'Dòng thời gian'],
         ['characters', '人物'],
         ['relations', '关系'],
-        ['secrets', '约定与秘密'],
+        ['secrets', 'Lời hẹn与秘密'],
         ['summary', '总结中心'],
         ['retrieval', '检索中心'],
         ['phone', '通讯终端'],
@@ -173,7 +173,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         ecologyRepairRunning: false,
         companionTimer: null,
         companionQueuedFloor: -1,
-        // R9S1P41：AI整理 / 幕后七条失败后自动续试；按楼层保存七条重试计时器，避免一个失败楼层吃掉后续楼层。
+        // R9S1P41：AI整理 / 幕后七条失败后自动续试；按Tầng保存七条重试计时器，避免一个失败Tầng吃掉后续Tầng。
         extractRetryTimer: null,
         extractRetryAttempt: 0,
         // 幕后七条晚到时，主记忆队列可能正被另一条请求占用；保留一个
@@ -229,14 +229,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         // R9S1：聊天打开/历史消息渲染阶段绝不允许误触发AI任务。
         generationActive: false,
         liveUserPending: false,
-        // fixed40：真实轮必须绑定到一个明确存在的 user 楼层。新存档/开场白初始化即使误发 normal GENERATION_STARTED，
-        // 也没有资格启动 0-32 自动整理。regenerate/swipe/continue 则重新绑定最近真实 user 楼层。
+        // fixed40：真实轮必须绑定到一个明确存在的 user Tầng。新存档/开场白初始化即使误发 normal GENERATION_STARTED，
+        // 也没有资格启动 0-32 自动整理。regenerate/swipe/continue 则重新绑定最近真实 user Tầng。
         liveUserFloor: -1,
         liveTurnChatKey: '',
         liveGenerationType: '',
-        // fixed41：GENERATION_STARTED 可能早于 USER_MESSAGE_RENDERED。先记住前台生成已开始，等待真实 user 楼层落盘。
+        // fixed41：GENERATION_STARTED 可能早于 USER_MESSAGE_RENDERED。先记住前台生成已开始，等待真实 user Tầng落盘。
         foregroundAwaitingUser: false,
-        // U1.7.10：每次真实正文生成递增。旧轮若还在等“停止→发送”复位，下一轮开始后会立即失效。
+        // U1.7.10：每次真实chính văn生成递增。旧轮若还在等“停止→发送”复位，下一轮开始后会立即失效。
         mainGenerationSerial: 0,
         baselineChatLength: 0,
         messageKeySnapshot: [],
@@ -255,7 +255,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         portraitReferencePayloads: new Map(),
         portraitObservedImages: new Set(),
         portraitImageObserver: null,
-        // fixed32：首轮角色社会关系独立API建档只允许单任务运行；完成后缓存到当前聊天永久状态。
+        // fixed32：首轮角色社会关系独立API建档只允许单任务运行；完成后缓存到当前聊天永久Trạng thái。
         sourceRosterAiPromise: null,
         // fixed34：小手机实时聊天按联系人/本轮问题定向读取绑定世界书。只做本地索引缓存，不新增API消耗。
         phoneWorldBookSnapshotCache: null,
@@ -299,7 +299,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const native = nativeChatId(ctx);
         if (native) return `native:${native}`;
 
-        // 旧版用 characterId + chat.length 当 key。两个新聊天只要同角色、同楼层数就会撞 key，
+        // 旧版用 characterId + chat.length 当 key。两个新聊天只要同角色、同Tầng数就会撞 key，
         // 从而把旧聊天的 localStorage / 检索索引带进新聊天。v0.8.0 改为真正的聊天实例 ID。
         if (ctx.chatMetadata && typeof ctx.chatMetadata === 'object') {
             let id = String(ctx.chatMetadata[CHAT_INSTANCE_META_KEY] || '').trim();
@@ -332,7 +332,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function currentCharacterArchiveIdentity(ctx = context()) {
         const characterId = String(ctx?.characterId ?? ctx?.character_id ?? ctx?.chatMetadata?.character_id ?? '').trim();
-        const characterName = String(ctx?.name2 ?? ctx?.characterName ?? ctx?.chatMetadata?.character_name ?? '未命名角色').trim() || '未命名角色';
+        const characterName = String(ctx?.name2 ?? ctx?.characterName ?? ctx?.chatMetadata?.character_name ?? 'Nhân vật chưa đặt tên').trim() || 'Nhân vật chưa đặt tên';
         const avatar = String(ctx?.characters?.[ctx?.characterId]?.avatar ?? ctx?.chatMetadata?.avatar ?? '').trim();
         const characterKey = characterId ? `character-id:${characterId}` : `character-name:${characterName}|avatar:${avatar}`;
         const chatKey = getChatKey(ctx);
@@ -420,7 +420,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             return result;
         } catch(error) {
             console.warn('[0-32永久档案] 写入失败',error);
-            if(chatScopeIsCurrent(scope) && Date.now()-Number(stateRuntime.archiveSaveNoticeAt||0)>10000){stateRuntime.archiveSaveNoticeAt=Date.now();toast(`📁 永久档案写入失败：${error.message}`,'warn');}
+            if(chatScopeIsCurrent(scope) && Date.now()-Number(stateRuntime.archiveSaveNoticeAt||0)>10000){stateRuntime.archiveSaveNoticeAt=Date.now();toast(`📁 Hồ sơ vĩnh viễn写入失败：${error.message}`,'warn');}
             return null;
         }
     }
@@ -530,7 +530,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             episodeFacts: [],
             // P13：长期生活认知。和事件锚点分开保存，避免把‘某次吃了什么’错误等价成永久偏好。
             lifeFacts: [],
-            // 被拒绝的低证据关系/身份/物品写入保留在隔离区，便于追查而不污染活动事实。
+            // 被拒绝的低证据关系/Thân phận/物品写入保留在隔离区，便于追查而不污染活动事实。
             factConflicts: [],
             memoryHealth: {
                 attempts: [], totalTurns: 0, coveredTurns: 0, failedTurns: 0, rescuedTurns: 0,
@@ -538,7 +538,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 lastAuditFloor: -1, lastFailureFloor: -1, lastSuccessFloor: -1,
             },
             npcRegistry: [],
-            // fixed32：角色卡/世界书人物名册。第一轮正文完成后用幕后七条独立API做一次实体建档；
+            // fixed32：角色卡/世界书人物名册。第一轮chính văn完成后用幕后七条独立API做一次实体建档；
             // 世界书/角色卡内容指纹不变时后续直接复用，不再每轮烧API。
             sourceRosterAi: {
                 schemaVersion: 1,
@@ -625,7 +625,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 walletTools: { transfers:[], redPackets:[], splitBills:[], subscriptions:[], creditBills:[], transferMigrationVersion:0 },
                 manualDeletionTombstones: [],
                 historyPolicy: { appendOnly:true, version:2, nextSeq:1 },
-                // fixed37：父母微信生活脉冲。按剧情楼层稀疏触发，避免每轮轰炸；只保存调度状态，不伪造固定台词。
+                // fixed37：父母微信生活脉冲。按剧情Tầng稀疏触发，避免每轮轰炸；只保存调度Trạng thái，不伪造固定台词。
                 parentPulse: { enabled:true, lastFloor:-1, nextFloor:-1, lastContact:'', cursor:0, lastAt:0 },
                 finance: {
                     openingBalances: { alipay: 0, wechat: 0 },
@@ -646,7 +646,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             chapters: [],
             diagnostics: [],
             diceHistory: [],
-            // S10：只有用户明确点击删除/清空时才产生墓碑；普通升级/同步绝无删除权限。
+            // S10：只有用户明确点击删除/Bỏ chọn时才产生墓碑；普通升级/同步绝无删除权限。
             manualDeletionTombstones: [],
             directorInstruction: '',
             progress: {
@@ -701,7 +701,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             auditLog: [],
             settings: {
                 enabled: true,
-                // P13：先本地审计；若真漏记，补抓在 settled 之后后台执行，绝不阻塞正文收尾。
+                // P13：先本地审计；若真漏记，补抓在 settled 之后后台执行，绝不阻塞chính văn收尾。
                 detailRescueEnabled: true,
                 detailRescueMaxCandidates: 16,
                 detailRescueTimeoutMs: 30000,
@@ -734,7 +734,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 vectorWeight: 0.6,
                 lexicalWeight: 0.4,
                 // R9S1P14 / 0-32：VCP式联想记忆。不是复制VCP源码；
-                // 使用标签图谱 + 记忆引力 + 跨类型共振，在服务器端二次重排。
+                // 使用标签图谱 + 记忆引力 + 跨Loại共振，在服务器端二次重排。
                 vcpMemoryEnabled: true,
                 vcpTagWeight: 0.18,
                 vcpGraphWeight: 0.12,
@@ -862,8 +862,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         for (const key of ['contacts', 'contactProfiles', 'wechat', 'wechatGroups', 'channelGroups', 'sms', 'messages', 'moments', 'notes', 'calls', 'albums', 'threads', 'groupThreads', 'groupProfiles', 'diary', 'anniversaries', 'pendingOutgoing', 'notifications', 'calendarEvents', 'financeEvents', 'activityEvents', 'knowledgeLedger', 'storyLedger', 'acquaintanceLedger', 'callReceipts', 'npcActivities', 'orderEvents', 'realtimeEvents', 'manualDeletionTombstones']) {
             if (!Array.isArray(merged.phone[key])) merged.phone[key] = [];
         }
-        // fixed39：手机与正文统一故事线；fixed38去备注逻辑继续保留。
-        // fixed38：微信联系人不再维护/展示“备注”。旧聊天里已经生成的备注在载入时直接清掉，
+        // fixed39：手机与chính văn统一故事线；fixed38去Ghi chú逻辑继续保留。
+        // fixed38：微信联系人不再维护/展示“Ghi chú”。旧聊天里已经生成的Ghi chú在载入时直接清掉，
         // 但保留 rosterRelation / rosterRole / identity 等结构化关系字段供父母脉冲、群组和实时回复判断使用。
         for (const profile of merged.phone.contactProfiles) if (profile && typeof profile === 'object') delete profile.remark;
         for (const row of merged.sourceRosterAi.rows) if (row && typeof row === 'object') row.remark='';
@@ -919,7 +919,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 availability:'active', source:'legacy-contact-migration', createdAt:Date.now(), updatedAt:Date.now(),
             })).filter(item=>item.name);
         }
-        // 把旧版 messages 尽量迁到微信；旧 moments/notes/anniversaries 迁到正文折叠资料。
+        // 把旧版 messages 尽量迁到微信；旧 moments/notes/anniversaries 迁到chính văn折叠资料。
         if (!merged.phone.wechat.length && merged.phone.messages.length) merged.phone.wechat = merged.phone.messages.map(item => ({ ...item, migratedFrom:'messages' }));
         if (!merged.storyExtras.moments.length && merged.phone.moments.length) merged.storyExtras.moments = merged.phone.moments.map(item => ({ ...item, migratedFrom:'phone-moments' }));
         if (!merged.storyExtras.diary.length && (merged.phone.diary.length || merged.phone.notes.length)) merged.storyExtras.diary = [...merged.phone.diary, ...merged.phone.notes].map(item => ({ ...item, migratedFrom:'phone-diary' }));
@@ -1021,17 +1021,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         merged.progress.archiveGuardNotified = false;
         if (input?.settings?.removeDuplicateAssistantReplies === undefined) merged.settings.removeDuplicateAssistantReplies = true;
         if (input?.settings?.companionAlwaysShowShell === undefined) merged.settings.companionAlwaysShowShell = true;
-        // 历史聊天打开始终只读；旧版本遗留的开启值也必须关闭。
+        // 历史聊天打开始终只读；旧版本遗留的开启值也必须Đóng。
         merged.settings.autoRepairHistoricalMemoryOnChatOpen = false;
         merged.tables.summaries = merged.tables.summaries.map(row => {
             if (!row || typeof row !== 'object') return row;
             return {
                 ...row,
-                '类型': row['类型'] || row['表格类型'] || '阶段总结',
-                '状态': row['状态'] || '已完成',
-                '模型': row['模型'] || (row['表格类型'] ? '旧版导入' : ''),
+                'Loại': row['Loại'] || row['Loại bảng'] || '阶段总结',
+                'Trạng thái': row['Trạng thái'] || 'Đã hoàn thành',
+                '模型': row['模型'] || (row['Loại bảng'] ? '旧版导入' : ''),
                 '锁定': row['锁定'] || '否',
-                '隐藏状态': row['隐藏状态'] || (row._hiddenRange ? '已隐藏' : '未隐藏'),
+                '隐藏Trạng thái': row['隐藏Trạng thái'] || (row._hiddenRange ? '已隐藏' : '未隐藏'),
                 _id: row._id || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
                 _history: Array.isArray(row._history) ? row._history : [],
             };
@@ -1041,10 +1041,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }
         merged.progress.summaryInterval = Math.max(5, Number(merged.progress.summaryInterval || merged.settings.summaryEvery || 20));
         compactCurrentStateCollections(merged);
-        // U1.6.2：旧档/恢复档可能已经有70、80层结构化记录，但旧progress仍停在0，导致总览“即时记忆0”并让P13误判整轮未提取。
-        // 这里只从真实已保存结构化记录反推“最高已见记忆楼层”，不生成任何新记忆，也不改总结进度。
+        // U1.6.2：旧档/恢复档可能已经有70、80层结构化记录，但旧progress仍停在0，导致Tổng quan“即时记忆0”并让P13误判整轮未提取。
+        // 这里只从真实已保存结构化记录反推“最高已见记忆Tầng”，不生成任何新记忆，也不改总结进度。
         const floorCandidates=[];const pushFloor=value=>{const n=Number(value);if(Number.isFinite(n)&&n>=0)floorCandidates.push(n);};
-        for(const key of ['mainline','branches','states','promises'])for(const row of merged.tables?.[key]||[]){pushFloor(row?._sourceFloor);pushFloor(row?.['楼层']);}
+        for(const key of ['mainline','branches','states','promises'])for(const row of merged.tables?.[key]||[]){pushFloor(row?._sourceFloor);pushFloor(row?.['Tầng']);}
         for(const row of merged.memoryAnchors||[])pushFloor(row?.floor);
         for(const row of merged.lifeFacts||[]){pushFloor(row?.lastFloor);pushFloor(row?.firstFloor);for(const f of row?.evidenceFloors||[])pushFloor(f);}
         for(const row of merged.chapters||[]){pushFloor(row?.endFloor);pushFloor(row?._sourceFloor);}
@@ -1117,7 +1117,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         next.migration = {
             importedGaigai: true,
             importedAt: nowText(),
-            sourceVersion: String(oldData.v ?? oldData.version ?? '未知'),
+            sourceVersion: String(oldData.v ?? oldData.version ?? 'Chưa rõ'),
         };
         next.updatedAt = Date.now();
         return next;
@@ -1147,7 +1147,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function stateContentMetrics(data) {
         if (!data || typeof data !== 'object') return { score:0, rows:0, summaries:0, anchors:0, phone:0, world:0, maxFloor:-1 };
         const rows = countRows(data);
-        const summaries = Array.isArray(data?.tables?.summaries) ? data.tables.summaries.filter(row => String(row?.['总结内容'] || '').trim()).length : 0;
+        const summaries = Array.isArray(data?.tables?.summaries) ? data.tables.summaries.filter(row => String(row?.['Nội dung tổng kết'] || '').trim()).length : 0;
         const anchors = Array.isArray(data?.memoryAnchors) ? data.memoryAnchors.length : 0;
         const lifeFacts = Array.isArray(data?.lifeFacts) ? data.lifeFacts.length : 0;
         const episodeFacts = Array.isArray(data?.episodeFacts) ? data.episodeFacts.length : 0;
@@ -1155,7 +1155,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const world = (Array.isArray(data?.characterWorld?.events)?data.characterWorld.events.length:0) + (Array.isArray(data?.characterWorld?.characters)?data.characterWorld.characters.length:0);
         const floors = [];
         for (const table of Object.values(data?.tables || {})) for (const row of Array.isArray(table)?table:[]) {
-            const nums = String(row?.['覆盖楼层'] ?? row?.['楼层'] ?? row?._sourceFloor ?? '').match(/\d+/g)?.map(Number) || [];
+            const nums = String(row?.['Tầng bao phủ'] ?? row?.['Tầng'] ?? row?._sourceFloor ?? '').match(/\d+/g)?.map(Number) || [];
             floors.push(...nums);
         }
         const maxFloor = floors.length ? Math.max(...floors) : Number(data?.progress?.maxObservedFloor ?? -1);
@@ -1210,7 +1210,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const key=scope?.serverChatKey;
         if(!key)throw new Error('安全快照缺少聊天作用域');
         const rawBytes=new TextEncoder().encode(rawText);
-        // 很小的数据直接POST；较大状态改用压缩+小分片。整个上传固定使用捕获的serverChatKey，切聊天也不会串包。
+        // 很小的数据直接POST；较大Trạng thái改用压缩+小分片。整个上传固定使用捕获的serverChatKey，切聊天也不会串包。
         if(rawBytes.length <= 18000) {
             return serverFetch(`/states/${encodeURIComponent(key)}/snapshot`, { method:'POST', body:JSON.stringify({ state, reason }) });
         }
@@ -1265,7 +1265,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     async function applySafetySnapshotData(data, scope, { saveReason='restore-safety-snapshot', label='安全快照', silent=false }={}) {
         if (!data?.state) throw new Error('安全快照不存在或已损坏');
-        if(!chatScopeIsCurrent(scope))throw new Error('读取快照期间已切换聊天，已取消恢复');
+        if(!chatScopeIsCurrent(scope))throw new Error('读取快照期间已切换聊天，Đã hủy恢复');
         assertSafetySnapshotArchive(data,scope.serverChatKey);
         const currentKey=scope.chatKey;
         const oldIdentity=String(data.state.chatIdentity||'');
@@ -1312,20 +1312,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     async function chooseSafetySnapshotHistory() {
         const scope=captureChatScope();
         const data = await serverFetch(`/states/${encodeURIComponent(scope.serverChatKey)}/history`);
-        if(!chatScopeIsCurrent(scope))throw new Error('读取历史期间已切换聊天，已取消操作');
+        if(!chatScopeIsCurrent(scope))throw new Error('读取历史期间已切换聊天，Đã hủy操作');
         const history = Array.isArray(data?.history) ? data.history : [];
         if (!history.length) throw new Error('当前聊天还没有服务器安全快照');
         const lines = history.map((item, index) => {
-            const time = item.createdAt ? new Date(Number(item.createdAt)).toLocaleString() : '未知时间';
+            const time = item.createdAt ? new Date(Number(item.createdAt)).toLocaleString() : 'Chưa rõ时间';
             const m = item.metrics || {};
             return `${index + 1}. ${time}｜${item.reason || 'auto'}｜记忆${m.rows ?? '?'} 总结${m.summaries ?? '?'} 手机${m.phone ?? '?'}`;
         });
-        const answer = prompt(`选择要恢复的安全快照（1-${history.length}）：\n\n${lines.join('\n')}\n\n取消则不恢复。`, '1');
+        const answer = prompt(`选择要恢复的安全快照（1-${history.length}）：\n\n${lines.join('\n')}\n\nHủy则不恢复。`, '1');
         if (answer == null) return false;
         const index = Number(answer) - 1;
         if (!Number.isInteger(index) || index < 0 || index >= history.length) throw new Error('输入的快照序号无效');
         const target = history[index];
-        if (!confirm(`确定恢复第 ${index + 1} 份快照吗？\n\n${lines[index]}\n\n恢复前，当前状态会再保存一份保险快照；真实聊天不会改变。`)) return false;
+        if (!confirm(`确定恢复第 ${index + 1} 份快照吗？\n\n${lines[index]}\n\n恢复前，当前Trạng thái会再保存一份保险快照；真实聊天不会改变。`)) return false;
         await createSafetySnapshot('before-history-restore', { force:true, scope });
         if(!chatScopeIsCurrent(scope))return false;
         return restoreSafetySnapshotById(target.id);
@@ -1340,11 +1340,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function memoryStateArrayKey(item,pathKey='') {
         if(item===null||item===undefined||typeof item!=='object')return `primitive:${String(item)}`;
         const semantic=value=>String(value??'').toLowerCase().replace(/[\s，。；、：:,.!?！？“”"'‘’（）()\[\]【】_\-—–]+/g,'').slice(0,600);
-        if(pathKey==='tables.people')return `person:${semantic(item['姓名']||item.name||'')}`;
-        if(pathKey==='tables.relations'){const a=semantic(item['角色A']||item.a||''),b=semantic(item['角色B']||item.b||'');return `relation:${[a,b].sort().join('|')}`;}
-        if(pathKey==='tables.summaries')return `summary:${semantic(item['类型']||item['表格类型']||'')}|${semantic(item['覆盖楼层']||'')}`;
-        if(pathKey==='tables.items')return `item:${item._entityId||item.itemId||semantic(item['物品名称']||item.name||'')}`;
-        if(pathKey==='tables.promises')return `promise:${item._entityId||item.promiseId||`${semantic(item['核心角色']||item.characters||'')}|${semantic(item['约定内容']||item.content||'')}`}`;
+        if(pathKey==='tables.people')return `person:${semantic(item['Họ tên']||item.name||'')}`;
+        if(pathKey==='tables.relations'){const a=semantic(item['Nhân vật A']||item.a||''),b=semantic(item['Nhân vật B']||item.b||'');return `relation:${[a,b].sort().join('|')}`;}
+        if(pathKey==='tables.summaries')return `summary:${semantic(item['Loại']||item['Loại bảng']||'')}|${semantic(item['Tầng bao phủ']||'')}`;
+        if(pathKey==='tables.items')return `item:${item._entityId||item.itemId||semantic(item['Tên vật phẩm']||item.name||'')}`;
+        if(pathKey==='tables.promises')return `promise:${item._entityId||item.promiseId||`${semantic(item['Nhân vật cốt lõi']||item.characters||'')}|${semantic(item['Nội dung lời hẹn']||item.content||'')}`}`;
         if(pathKey==='episodeFacts')return `episode:${item.id||`${item.sourceMessageKey||''}|${item.floor??''}|${semantic(item.fact||'')}`}`;
         if(pathKey==='lifeFacts')return `life:${item.id||`${semantic(item.subject||'')}|${semantic(item.key||item.category||'')}|${semantic(item.value||item.fact||'')}`}`;
         if(pathKey==='secrets')return `secret:${item._entityId||item.secretId||item.id||`${semantic(item.subject||'')}|${semantic(item.content||'')}`}`;
@@ -1367,10 +1367,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 for(const item of newValue){const key=memoryStateArrayKey(item,path),index=positions.get(key);if(index===undefined){positions.set(key,out.length);out.push(clone(item));continue;}
                     const previous=out[index],next=mergeValue(previous,item,`${path}[]`);
                     if(path==='tables.relations'){
-                        const decision=relationUpdateDecision({oldDescription:previous?.['关系描述'],newDescription:item?.['关系描述'],sourceText:item?._evidenceText||''});
-                        if(!decision.accept&&item?.['关系描述']!==previous?.['关系描述']){next['关系描述']=previous['关系描述'];conflicts.push({id:`merge-conflict-${conflicts.length+1}`,kind:'relation',reason:decision.reason,active:clone(previous),incoming:clone(item),createdAt:compactText(incoming.updatedAt||'',120)});}
+                        const decision=relationUpdateDecision({oldDescription:previous?.['Mô tả quan hệ'],newDescription:item?.['Mô tả quan hệ'],sourceText:item?._evidenceText||''});
+                        if(!decision.accept&&item?.['Mô tả quan hệ']!==previous?.['Mô tả quan hệ']){next['Mô tả quan hệ']=previous['Mô tả quan hệ'];conflicts.push({id:`merge-conflict-${conflicts.length+1}`,kind:'relation',reason:decision.reason,active:clone(previous),incoming:clone(item),createdAt:compactText(incoming.updatedAt||'',120)});}
                     }
-                    if(path==='tables.people'&&previous?.['身份']&&item?.['身份']&&/^(?:未知|路人|陌生人|群聊成员|具体身份待确认)/.test(String(item['身份'])))next['身份']=previous['身份'];
+                    if(path==='tables.people'&&previous?.['Thân phận']&&item?.['Thân phận']&&/^(?:Chưa rõ|路人|陌生人|群聊成员|具体Thân phận待确认)/.test(String(item['Thân phận'])))next['Thân phận']=previous['Thân phận'];
                     out[index]=next;
                 }
                 return out;
@@ -1395,16 +1395,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const sourceText=row=>{const key=compactText(row?._lastUpdateMessageKey||row?._sourceMessageKey,320);let floor=Number(row?._lastUpdateFloor??row?._sourceFloor??-1);if(key){const found=chat.findIndex(message=>messageStableKey(message)===key);if(found>=0)floor=found;}return {floor,text:messageText(chat[floor]),messageKey:key||messageStableKey(chat[floor])};};
         let relationRepairs=0,itemRepairs=0;
         for(const row of state.tables?.relations||[]){
-            const current=compactText(row?.['关系描述'],800),history=Array.isArray(row?._history)?row._history:[];
+            const current=compactText(row?.['Mô tả quan hệ'],800),history=Array.isArray(row?._history)?row._history:[];
             if(!/(?:陌生|不认识|素不相识|第一次见|初次见面|从未见过|不熟|普通路人)/.test(current)||!history.length)continue;
-            const previous=[...history].reverse().find(item=>/(?:同事|前任|前男友|前女友|恋人|男友|女友|夫妻|家人|亲戚|朋友|同学|室友|上司|下属)/.test(String(item?.['关系描述']||'')));
-            if(!previous)continue;const source=sourceText(row),decision=relationUpdateDecision({oldDescription:previous['关系描述'],newDescription:current,sourceText:source.text});if(decision.accept)continue;
+            const previous=[...history].reverse().find(item=>/(?:同事|前任|前男友|前女友|恋人|男友|女友|夫妻|家人|亲戚|朋友|同学|室友|上司|下属)/.test(String(item?.['Mô tả quan hệ']||'')));
+            if(!previous)continue;const source=sourceText(row),decision=relationUpdateDecision({oldDescription:previous['Mô tả quan hệ'],newDescription:current,sourceText:source.text});if(decision.accept)continue;
             quarantineFactConflict('legacy-relation',previous,row,{floor:source.floor,sourceMessageKey:source.messageKey,sourceText:source.text,reason:decision.reason});
             const retained=history.filter(item=>item!==previous);Object.assign(row,clone(previous));row._history=retained;row._integrityRestoredAt=nowText();relationRepairs+=1;
         }
         const kept=[];
         for(const row of state.tables?.items||[]){
-            const name=compactText(row?.['物品名称'],240),bound=Number.isFinite(Number(row?._sourceFloor))||Boolean(row?._sourceMessageKey),highMeaning=/(?:婚戒|戒指|钥匙|证件|身份证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
+            const name=compactText(row?.['Tên vật phẩm'],240),bound=Number.isFinite(Number(row?._sourceFloor))||Boolean(row?._sourceMessageKey),highMeaning=/(?:婚戒|戒指|钥匙|证件|Thân phận证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
             if(!highMeaning||row?._acquisitionEvidence||historyRecordIsManual(row)||!bound){kept.push(row);continue;}
             const source=sourceText(row);let evidence=itemAcquisitionEvidence(name,source.text),evidenceFloor=source.floor,evidenceMessageKey=source.messageKey;
             if(!evidence){for(let floor=chat.length-1;floor>=0;floor-=1){const text=messageText(chat[floor]),candidate=itemAcquisitionEvidence(name,text);if(!candidate)continue;evidence=candidate;evidenceFloor=floor;evidenceMessageKey=messageStableKey(chat[floor]);break;}}
@@ -1497,12 +1497,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             }
             if(!chatScopeIsCurrent(scope))return null;
 
-            // 从这里开始全部同步执行，先完成本地规范化，再一次性发布到runtime，避免半成品状态被其它聊天看见。
+            // 从这里开始全部同步执行，先完成本地规范化，再一次性发布到runtime，避免半成品Trạng thái被其它聊天看见。
             const selectedPromiseCount = Array.isArray(selected?.data?.tables?.promises) ? selected.data.tables.promises.length : 0;
             const selectedPromiseFingerprint = JSON.stringify(selected?.data?.tables?.promises || []);
             const nextState = normalizeState(selected?.data || null);
-            // 打开或切换聊天时，旧会话里持久化的队列/重试只作为历史状态，不得自动续跑。
-            // 下一次真实新回复只处理它锁定的AI楼层，避免旧队列把几十层前的正文误写成当前层表格。
+            // 打开或切换聊天时，旧会话里持久化的队列/重试只作为历史Trạng thái，不得自动续跑。
+            // 下一次真实新回复只处理它锁定的AITầng，避免旧队列把几十层前的chính văn误写成当前层表格。
             nextState.progress.assistantMemoryQueue = [];
             nextState.progress.extractRetryPending = false;
             nextState.progress.extractRetryAttempt = 0;
@@ -1526,7 +1526,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             nextState.chatIdentity = currentKey;
             if (selected?.data?.chatAnchor && anchor && selected.data.chatAnchor !== anchor) {
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({ time:nowText(), type:'anchor-changed', note:'聊天锚点变化，保留原记忆并更新锚点；未执行清空。' });
+                nextState.auditLog.push({ time:nowText(), type:'anchor-changed', note:'聊天锚点变化，保留原记忆并更新锚点；未执行Bỏ chọn。' });
             }
             nextState.chatAnchor = anchor;
             nextState.progress.maxObservedFloor = Math.max(Number(nextState.progress.maxObservedFloor ?? -1), chat.length - 1);
@@ -1536,7 +1536,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 : {changed:false,added:[],repaired:[]};
             if(mainlineCoverage.changed){
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({time:nowText(),type:'r55-extract-source-lock-backfill',note:`已补齐AI楼层主线：新增 ${mainlineCoverage.added.join('、')||'无'}；修复空白 ${mainlineCoverage.repaired.join('、')||'无'}`});
+                nextState.auditLog.push({time:nowText(),type:'r55-extract-source-lock-backfill',note:`已补齐AITầng主线：新增 ${mainlineCoverage.added.join('、')||'无'}；修复空白 ${mainlineCoverage.repaired.join('、')||'无'}`});
             }
             if(legacyIntegrityRepair.changed){
                 nextState.auditLog ||= [];
@@ -1558,7 +1558,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if (selected?.source === 'safety' || selected?.source === 'migration') {
                 await saveState({ immediate:true, refresh:false, reason:`load-${selected.source}`, allowDestructive:true, forceSnapshot:true });
                 if(!chatScopeIsCurrent(scope))return null;
-                if (selected.source === 'safety' && notifyMigration) toast('当前聊天记忆主状态缺失，已从服务器安全快照恢复', 'warn');
+                if (selected.source === 'safety' && notifyMigration) toast('当前聊天记忆主Trạng thái缺失，已从服务器安全快照恢复', 'warn');
             } else if (hasUserMessage && selected) {
                 await savePermanentArchiveState(selected.source==='merged'?'load-merged-device-sources':(rawArchive?'load-normalized-state':'initial-bind-from-existing-state'),{stateSnapshot:authoritativeSnapshot,scope});
                 if(!chatScopeIsCurrent(scope))return null;
@@ -1597,11 +1597,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const promiseStateBefore = JSON.stringify(stateRuntime.state.tables?.promises || []);
         compactCurrentStateCollections(stateRuntime.state);
         if (promiseStateBefore !== JSON.stringify(stateRuntime.state.tables?.promises || [])) {
-            logAudit('约定表自愈', '保存前已清理非实体约定并合并重复条目。');
+            logAudit('Lời hẹn表自愈', '保存前已清理非实体Lời hẹn并合并重复条目。');
         }
 
-        // 每次保存先把“当前聊天身份”焊进状态；后面的持久化一律只用本次不可变快照，
-        // 这样即使420ms内切换聊天，A聊天的定时器也绝不会把B聊天状态写回A。
+        // 每次保存先把“当前聊天Thân phận”焊进Trạng thái；后面的持久化一律只用本次不可变快照，
+        // 这样即使420ms内切换聊天，A聊天的定时器也绝不会把B聊天Trạng thái写回A。
         stateRuntime.state.updatedAt=Date.now();
         stateRuntime.state.chatIdentity=scope.chatKey;
         stateRuntime.state.chatAnchor=scope.chatAnchor;
@@ -1629,7 +1629,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
         const snapshot=clone(stateRuntime.state);
         const serialized=JSON.stringify(snapshot);
-        // 同步更新当前内存metadata镜像，避免下一次同步逻辑在持久化定时器执行前看到旧状态。
+        // 同步更新当前内存metadata镜像，避免下一次同步逻辑在持久化定时器执行前看到旧Trạng thái。
         if(chatScopeIsCurrent(scope)&&ctx?.chatMetadata)ctx.chatMetadata[META_KEY]=clone(snapshot);
 
         const perform=async()=>{
@@ -1741,7 +1741,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function semanticText(value, max = 1200) {
         return compactText(value, max).toLowerCase()
             .replace(/[\s\p{P}\p{S}]+/gu, '')
-            .replace(/(?:已经|仍然|目前|当前|将会|准备|决定|答应|承诺|约定|说好|表示|计划)/g, '');
+            .replace(/(?:已经|仍然|目前|当前|将会|准备|决定|答应|承诺|Lời hẹn|说好|表示|计划)/g, '');
     }
 
     function semanticBigrams(value) {
@@ -1770,11 +1770,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return (2 * common) / (left.size + right.size);
     }
 
-    function historySnapshot(row, fields, reason = '状态更新') {
+    function historySnapshot(row, fields, reason = 'Trạng thái更新') {
         return {
             ...Object.fromEntries(fields.map(key => [key, row?.[key] ?? ''])),
-            floor: Number(row?._lastSeenFloor ?? row?._sourceFloor ?? row?.['楼层'] ?? -1),
-            time: row?._lastUpdatedAt || row?.updatedAt || row?.['更新时间'] || nowText(),
+            floor: Number(row?._lastSeenFloor ?? row?._sourceFloor ?? row?.['Tầng'] ?? -1),
+            time: row?._lastUpdatedAt || row?.updatedAt || row?.['Thời điểm cập nhật'] || nowText(),
             reason,
         };
     }
@@ -1787,7 +1787,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseClosedStatus(value) {
-        return /(?:已兑现|已履行|默认已履行|已完成|完成|取消|失效|拒绝|未履行后关闭)/.test(compactText(value, 120));
+        return /(?:Đã thực hiện|已履行|默认已履行|Đã hoàn thành|完成|Hủy|失效|拒绝|未履行后Đóng)/.test(compactText(value, 120));
     }
 
     function promiseParticipantKey(value) {
@@ -1795,11 +1795,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseRecordContent(item) {
-        return compactText(item?.content ?? item?.['约定内容'], 1200);
+        return compactText(item?.content ?? item?.['Nội dung lời hẹn'], 1200);
     }
 
     function promiseRecordCharacters(item) {
-        return compactText(item?.characters ?? item?.['核心角色'], 300);
+        return compactText(item?.characters ?? item?.['Nhân vật cốt lõi'], 300);
     }
 
     function promiseMoneyAmounts(value) {
@@ -1833,10 +1833,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseEvidenceMatchScore(row, evidence) {
-        if (!row || promiseClosedStatus(row['状态'])) return -1;
-        const evidenceFloor=Number(evidence?.floor??evidence?._floor),promiseFloor=Number(row?._firstSeenFloor??row?._sourceFloor??row?.['楼层']);
+        if (!row || promiseClosedStatus(row['Trạng thái'])) return -1;
+        const evidenceFloor=Number(evidence?.floor??evidence?._floor),promiseFloor=Number(row?._firstSeenFloor??row?._sourceFloor??row?.['Tầng']);
         if(Number.isFinite(evidenceFloor)&&evidenceFloor>=0&&Number.isFinite(promiseFloor)&&promiseFloor>=0&&evidenceFloor<promiseFloor)return -1;
-        const content = `${row['约定时间'] || ''} ${promiseRecordContent(row)}`;
+        const content = `${row['Thời điểm hẹn'] || ''} ${promiseRecordContent(row)}`;
         if (!/(?:到账|入账|收款|打款|汇款|转账|结算|发放|支付|给付|工资|薪资|稿费|稿酬|奖金|报销|退款|货款|尾款)/.test(content)) return -1;
         const evidenceAmount = Math.abs(Number(evidence?.amount || 0));
         const promisedAmounts = promiseMoneyAmounts(content);
@@ -1866,21 +1866,21 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!ranked.length) return 0;
         const bestScore = ranked[0].score;
         const selected = ranked.filter(item => item.score >= Math.max(0.8, bestScore - 0.02));
-        // 只有缺少人物/事项信息时才允许0.62的单条金额强匹配；多条同额约定必须保持未决，避免误关闭。
+        // 只有缺少人物/事项信息时才允许0.62的单条金额强匹配；多条同额Lời hẹn必须保持未决，避免误Đóng。
         if (bestScore < 0.8 && ranked.length !== 1) return 0;
         if(selected.length>1&&!promiseEvidenceParticipantKeys(normalizedEvidence).size)return 0;
         let changed = 0;
         for (const { row } of selected) {
             row._history = Array.isArray(row._history) ? row._history : [];
-            row._history.push(historySnapshot(row, ['约定时间','约定内容','核心角色','状态'], '真实到账证据已履行约定'));
-            row['状态'] = '已履行';
+            row._history.push(historySnapshot(row, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], '真实到账证据已履行Lời hẹn'));
+            row['Trạng thái'] = '已履行';
             row._completionFloor = Number(currentFloor);
             row._completionEvidence = {
                 kind:compactText(normalizedEvidence.kind || 'finance-transaction', 80), id:compactText(normalizedEvidence.id, 180),
                 amount:Math.abs(Number(normalizedEvidence.amount || 0)), title:compactText(normalizedEvidence.title, 240),
                 counterparty:compactText(normalizedEvidence.counterparty, 160), floor:Number(currentFloor), time:compactText(normalizedEvidence.time, 120),
             };
-            row._statusReason = `第${Number.isFinite(Number(currentFloor)) ? Number(currentFloor) : '?'}层检测到${compactText(normalizedEvidence.title || '款项到账', 120)} ${s8MoneyText(Math.abs(Number(normalizedEvidence.amount || 0)))}，旧的待到账约定已由真实交易证据覆盖。`;
+            row._statusReason = `第${Number.isFinite(Number(currentFloor)) ? Number(currentFloor) : '?'}层检测到${compactText(normalizedEvidence.title || '款项到账', 120)} ${s8MoneyText(Math.abs(Number(normalizedEvidence.amount || 0)))}，旧的待到账Lời hẹn已由真实交易证据覆盖。`;
             row._lastEvidenceFloor = Number(currentFloor); row._lastUpdatedAt = nowText(); changed += 1;
         }
         return changed;
@@ -1899,7 +1899,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function extractedEntityId(value) {
-        const id=compactText(value,180);return /(?:沿用|留空|未分配|新约定|新物品|新秘密)/.test(id)?'':id;
+        const id=compactText(value,180);return /(?:沿用|留空|未分配|新Lời hẹn|新物品|新秘密)/.test(id)?'':id;
     }
 
     function promiseObjectId(item) {
@@ -1924,12 +1924,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function isMemoryMetaPromiseContent(value) {
         const text = compactText(value, 1400);
         if (!text) return false;
-        // 只拦截高置信度的后台规则、写作脚手架和“提到约定”的剧情摘录，避免误删用户手工维护的普通约定。
+        // 只拦截高置信度的后台规则、写作脚手架和“提到Lời hẹn”的剧情摘录，避免误删用户手工维护的普通Lời hẹn。
         if (/USER\s*主权|不替\s*(?:\{\{?\s*user\s*\}?\}|<user>|user)|不创造[^。！？!?\n]{0,80}(?:发言|对白|举动|动作)|(?:只|仅)输出[^。！？!?\n]{0,24}(?:严格\s*)?JSON|严格\s*JSON|后台(?:提示|规则|指令|整理|输出|任务|引擎|七条)|系统(?:规则|提示|指令)|导演(?:指令|提示)|提示词|Impersonate/i.test(text)) return true;
         if (/<\/?user_input\b|共创者|输入解析|原子事实覆盖清单|本次目标|创作(?:确认|要求|任务)/i.test(text)) return true;
         if (/^(?:动作|反应|镜头|描写|旁白|场景|剧情摘录|台词|输出|任务|指令)\s*[:：]/.test(text)) return true;
-        if (/(?:对|看到|听到|关于)[^。！？!?\n]{0,48}(?:答应|承诺|约定|说好)[^。！？!?\n]{0,48}(?:反应|回应|态度|描写)/.test(text)) return true;
-        if (/(?:答应|承诺|约定|说好)(?:完|过)[^。！？!?\n]{0,50}(?:之后|以后|后)/.test(text)) return true;
+        if (/(?:对|看到|听到|关于)[^。！？!?\n]{0,48}(?:答应|承诺|Lời hẹn|说好)[^。！？!?\n]{0,48}(?:反应|回应|态度|描写)/.test(text)) return true;
+        if (/(?:答应|承诺|Lời hẹn|说好)(?:完|过)[^。！？!?\n]{0,50}(?:之后|以后|后)/.test(text)) return true;
         return false;
     }
 
@@ -1939,10 +1939,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function promiseContentIsConcrete(value, item = {}) {
         const text = compactText(value, 1400);
         if (!text || isMemoryMetaPromiseContent(text)) return false;
-        const explicitCommitment = /(?:答应|承诺|约定|说好|保证|负责|要求|让|付清|结算|尾款|定金|到账|支付|发放|还款|归还)/.test(text);
+        const explicitCommitment = /(?:答应|承诺|Lời hẹn|说好|保证|负责|要求|让|付清|结算|尾款|定金|到账|支付|发放|还款|归还)/.test(text);
         const directive = /(?:必须|需要|得|不许|别|请)/.test(text);
         const strongCommitment = explicitCommitment || directive;
-        if (/(?:很自然|不矫情|符合人设|轻松互动|给出[^。！？!?\n]{0,24}互动|人物反应|角色反应|表现出|体现出|描写|镜头|场景推进|剧情推进)/.test(text) && !explicitCommitment) return false;
+        if (/(?:很自然|不矫情|符合人设|轻松互动|给出[^。！？!?\n]{0,24}互动|人物反应|角色反应|表现出|体现出|描写|镜头|场景推进|Thúc đẩy cốt truyện)/.test(text) && !explicitCommitment) return false;
         const action = /(?:别走|不要走|留下|留宿|过夜|来(?:一趟|一下)?|过来|到场|锁(?:好|上)?门|陪伴|守着|叫醒|送[^。！？!?\n]{0,20}(?:学校|上学|值日)|(?:买|带)[^。！？!?\n]{0,24}(?:早餐|早饭|豆浆|油条|东西|用品|礼物|药|衣|鞋)|家长会|会议|见面|赴约|吃饭|用餐|做饭|晚饭|早餐|接送|接[^。！？!?\n]{0,12}(?:回家|放学|下班)|下单|洗碗|收拾|打扫|清理|整理|烧|炒|喝|吃|看电影|拿[^。！？!?\n]{0,20}(?:电脑|笔记本|资料)|处理[^。！？!?\n]{0,24}(?:项目|参数|工作)|完成|联系|回家|出门)/.test(text);
         const temporal = /(?:今天|今晚|今早|明天|后天|早上|上午|晚上|稍后|待会|等下|下班后|放学后|回去后|接下来|之后|每周|每天|长期|一辈子|永远|截止|到账)/.test(text);
         const financial = /(?:工资|薪水|薪资|稿费|稿酬|奖金|报销|退款|货款|尾款|定金|转账|打款|汇款|支付|发放|还款|归还|元|万)/.test(text);
@@ -1974,7 +1974,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseTemporalKeys(item) {
-        const text = [item?.time, item?.due, item?.deadline, item?.['约定时间'], promiseRecordContent(item)].map(value => compactText(value, 300)).filter(Boolean).join(' ');
+        const text = [item?.time, item?.due, item?.deadline, item?.['Thời điểm hẹn'], promiseRecordContent(item)].map(value => compactText(value, 300)).filter(Boolean).join(' ');
         const rules = [
             ['day:today', /今天|今晚|今早/], ['day:tomorrow', /明天|明早|明晚/], ['day:day-after-tomorrow', /后天/],
             ['period:morning', /今早|明早|(?:今天|明天|后天)(?:早上|上午)/],
@@ -2015,7 +2015,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function promiseLexicalKeys(value) {
         const text = compactText(value, 1200).toLowerCase()
-            .replace(/(?:答应|承诺|约定|说好|要求|保证|负责|需要|必须|应该|得|请|会|要|将|准备|计划|今天|今晚|今早|明天|后天|早上|上午|晚上|稍后|待会|等下|之后|接下来|每周|每天|长期|一辈子|永远|截止|并|且|和|与|把|给|在|去|来|过来|到|前往|陪|让|买|购买|下单|做|烧|炒|煮|炖|吃|喝|支付|付款|处理|完成)/g, '');
+            .replace(/(?:答应|承诺|Lời hẹn|说好|要求|保证|负责|需要|必须|应该|得|请|会|要|将|准备|计划|今天|今晚|今早|明天|后天|早上|上午|晚上|稍后|待会|等下|之后|接下来|每周|每天|长期|一辈子|永远|截止|并|且|和|与|把|给|在|去|来|过来|到|前往|陪|让|买|购买|下单|做|烧|炒|煮|炖|吃|喝|支付|付款|处理|完成)/g, '');
         return semanticBigrams(text);
     }
 
@@ -2077,7 +2077,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             // preserve the closed lifecycle instead of creating a new open row.
             if (!promiseParticipantsCompatible(characters, promiseRecordCharacters(row))) continue;
             const score = promiseSnapshotSimilarity(item, row);
-            const closed = promiseClosedStatus(row?.status ?? row?.['状态']);
+            const closed = promiseClosedStatus(row?.status ?? row?.['Trạng thái']);
             const required = closed ? 0.78 : 0.68;
             if (score >= required && score > bestScore) { bestScore = score; best = row; }
         }
@@ -2090,11 +2090,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const content = promiseRecordContent(item);
         if (!content || !promiseContentIsConcrete(content, item)) return false;
         const incoming = {
-            '约定时间': compactText(item?.time ?? item?.['约定时间'], 220),
-            '约定内容': content,
-            '核心角色': compactText(item?.characters ?? item?.['核心角色'], 300),
-            '状态': compactText(item?.status ?? item?.['状态'] ?? '待兑现', 120) || '待兑现',
-            '楼层': String(item?.floor ?? floor ?? ''),
+            'Thời điểm hẹn': compactText(item?.time ?? item?.['Thời điểm hẹn'], 220),
+            'Nội dung lời hẹn': content,
+            'Nhân vật cốt lõi': compactText(item?.characters ?? item?.['Nhân vật cốt lõi'], 300),
+            'Trạng thái': compactText(item?.status ?? item?.['Trạng thái'] ?? 'Chờ thực hiện', 120) || 'Chờ thực hiện',
+            'Tầng': String(item?.floor ?? floor ?? ''),
             _sourceFloor: Number(floor), _sourceMessageKey: sourceMessageKey,
             _lastSeenFloor: Number(floor), _lastUpdatedAt: nowText(),
             _firstSeenFloor:Number(floor), _lastEvidenceFloor:Number(floor),
@@ -2110,17 +2110,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             rows.push(incoming);
             return true;
         }
-        if(promiseClosedStatus(existing['状态'])&&!promiseClosedStatus(incoming['状态'])){
+        if(promiseClosedStatus(existing['Trạng thái'])&&!promiseClosedStatus(incoming['Trạng thái'])){
             existing._lastSeenFloor=Number(floor);existing._repeatAfterClosureCount=Number(existing._repeatAfterClosureCount||0)+1;existing._lastRepeatedAfterClosureAt=nowText();
             return true;
         }
-        const meaningfulChange=pushHistoryIfChanged(existing, ['约定时间','约定内容','核心角色','状态'], incoming, '约定状态/表述更新');
-        for (const key of ['约定时间','约定内容','核心角色','状态','楼层']) if (compactText(incoming[key], 1400)) existing[key] = incoming[key];
+        const meaningfulChange=pushHistoryIfChanged(existing, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], incoming, 'Lời hẹnTrạng thái/表述更新');
+        for (const key of ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái','Tầng']) if (compactText(incoming[key], 1400)) existing[key] = incoming[key];
         existing._entityId ||= promiseObjectId(item) || uid('promise');
         existing._recordedStoryTime ||= incoming._recordedStoryTime || (typeof storyTimeForFloor==='function'?storyTimeForFloor(existing._firstSeenFloor ?? floor).label:'');
         existing._promiseKind = incoming._promiseKind || existing._promiseKind;
         existing._due = incoming._due || existing._due || '';
-        const firstCandidates=[existing._firstSeenFloor,existing._sourceFloor,existing['楼层'],floor].map(Number).filter(Number.isFinite);
+        const firstCandidates=[existing._firstSeenFloor,existing._sourceFloor,existing['Tầng'],floor].map(Number).filter(Number.isFinite);
         existing._firstSeenFloor=firstCandidates.length?Math.min(...firstCandidates):Number(floor);
         if(meaningfulChange)existing._lastEvidenceFloor=Number(floor);else if(!Number.isFinite(Number(existing._lastEvidenceFloor)))existing._lastEvidenceFloor=existing._firstSeenFloor;
         existing._lastSeenFloor = Number(floor); existing._lastUpdatedAt = nowText();
@@ -2130,25 +2130,25 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     // UI 侧的明确确认不依赖剧情文本或后台分类器；只改变当前实体的生命周期，
     // 并保留历史快照，供回溯和后续检索使用。_manualCompleted 也作为去重锚点，
-    // 防止下一轮模型换一种措辞后把同一条约定重新打开。
+    // 防止下一轮模型换一种措辞后把同一条Lời hẹn重新打开。
     function markPromiseCompleted(row, floor = -1) {
-        if (!row || typeof row !== 'object' || promiseClosedStatus(row['状态'])) return false;
+        if (!row || typeof row !== 'object' || promiseClosedStatus(row['Trạng thái'])) return false;
         row._history = Array.isArray(row._history) ? row._history : [];
-        row._history.push(historySnapshot(row, ['约定时间', '约定内容', '核心角色', '状态'], '用户手动标记约定已完成'));
+        row._history.push(historySnapshot(row, ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái'], '用户手动标记Lời hẹnĐã hoàn thành'));
         row._entityId ||= promiseObjectId(row) || uid('promise');
         const requestedFloor = Number(floor);
         const chatFloor = Number(context()?.chat?.length) - 1;
-        const fallbackFloor = Number(row?.['楼层']);
+        const fallbackFloor = Number(row?.['Tầng']);
         const completionFloor = Number.isFinite(requestedFloor) && requestedFloor >= 0
             ? requestedFloor
             : (Number.isFinite(chatFloor) && chatFloor >= 0 ? chatFloor : (Number.isFinite(fallbackFloor) ? fallbackFloor : -1));
         const completionTime = nowText();
-        row['状态'] = '已完成';
+        row['Trạng thái'] = 'Đã hoàn thành';
         row._manualCompleted = true;
         row._completionMode = 'manual';
         row._completionFloor = completionFloor;
         row._manualCompletedAt = completionTime;
-        row._statusReason = `用户手动标记约定已完成${completionFloor >= 0 ? `（第${completionFloor}层）` : ''}`;
+        row._statusReason = `用户手动标记Lời hẹnĐã hoàn thành${completionFloor >= 0 ? `（第${completionFloor}层）` : ''}`;
         row._completionEvidence = {
             kind: 'manual-ui',
             id: row._entityId,
@@ -2174,7 +2174,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             : null;
         if (!explicitId && Array.isArray(rows) && Number.isInteger(numeric)) row = rows[numeric];
         if (!row) {
-            toast('找不到这条约定，可能已被删除或聊天已切换', 'warn');
+            toast('找不到这条Lời hẹn，可能已被删除或聊天已切换', 'warn');
             return false;
         }
         const resolvedIndex = Array.isArray(rows) ? rows.indexOf(row) : -1;
@@ -2189,11 +2189,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             inputs.forEach(input => { row[input.dataset.cell] = input.value.trim(); });
         }
         if (!markPromiseCompleted(row)) {
-            toast('这条约定已经关闭，无需重复完成', 'info');
+            toast('这条Lời hẹn已经Đóng，无需重复完成', 'info');
             return false;
         }
         await saveState({ immediate: true, refresh: true, reason: 'manual-promise-complete' });
-        toast('约定已手动完成', 'success');
+        toast('Lời hẹn已手动完成', 'success');
         return true;
     }
 
@@ -2241,12 +2241,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ? (Array.isArray(rows) ? rows.find(candidate => promiseEntityId(candidate) === explicitId) : null)
             : promiseRowForItem(source);
         if (!row) {
-            toast('找不到这条约定，可能已被删除或聊天已切换', 'warn');
+            toast('找不到这条Lời hẹn，可能已被删除或聊天已切换', 'warn');
             return false;
         }
         const requestedFloor = Number(sidecarFloor);
         if (!markPromiseCompleted(row, Number.isFinite(requestedFloor) && requestedFloor >= 0 ? requestedFloor : -1)) {
-            toast('这条约定已经关闭，无需重复完成', 'info');
+            toast('这条Lời hẹn已经Đóng，无需重复完成', 'info');
             return false;
         }
         await saveState({ immediate: true, refresh: true, reason: 'manual-promise-complete' });
@@ -2254,13 +2254,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         // current state so a manually completed item disappears immediately.
         const floor = Number(sidecarFloor);
         if (Number.isFinite(floor) && floor >= 0) decorateCompanionOutput(floor);
-        toast('约定已手动完成', 'success');
+        toast('Lời hẹn已手动完成', 'success');
         return true;
     }
 
     function itemAcquisitionEvidence(itemName,sourceText) {
         const name=compactText(itemName,240),text=compactText(sourceText,18000);if(!name||!text)return null;
-        const significant=/(?:婚戒|戒指|钥匙|证件|身份证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
+        const significant=/(?:婚戒|戒指|钥匙|证件|Thân phận证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
         const compact=value=>String(value||'').replace(/[\s“”"'‘’（）()]/g,'');
         const normalizedName=compact(name),normalizedText=compact(text);
         const nameTokens=[normalizedName,...(normalizedName.match(/[一-鿿]{2,8}(?:戒指|钥匙|证|卡|手机|电脑|相机)/g)||[])];
@@ -2274,26 +2274,26 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function upsertItemSnapshot(item, floor = -1, sourceMessageKey = '') {
         const rows = stateRuntime.state?.tables?.items;
         if (!Array.isArray(rows)) return false;
-        const name = compactText(item?.name ?? item?.['物品名称'], 240);
+        const name = compactText(item?.name ?? item?.['Tên vật phẩm'], 240);
         if (!name) return false;
         const explicitId = extractedEntityId(item?.itemId ?? item?._entityId ?? item?.id);
         let existing = explicitId ? rows.find(row => compactText(row?._entityId, 180) === explicitId) : null;
-        if (!existing) existing = rows.find(row => semanticText(row?.['物品名称'], 240) === semanticText(name, 240));
+        if (!existing) existing = rows.find(row => semanticText(row?.['Tên vật phẩm'], 240) === semanticText(name, 240));
         const incoming = {
-            '物品名称':name, '物品描述':compactText(item?.description ?? item?.['物品描述'], 1200),
-            '当前位置':compactText(item?.location ?? item?.['当前位置'], 300), '持有者':compactText(item?.holder ?? item?.['持有者'], 240),
-            '状态':compactText(item?.status ?? item?.['状态'], 180), '重要程度':compactText(item?.importance ?? item?.['重要程度'], 120),
-            '备注':compactText(item?.note ?? item?.['备注'], 900), _sourceFloor:Number(floor), _sourceMessageKey:sourceMessageKey,
+            'Tên vật phẩm':name, 'Mô tả vật phẩm':compactText(item?.description ?? item?.['Mô tả vật phẩm'], 1200),
+            'Vị trí hiện tại':compactText(item?.location ?? item?.['Vị trí hiện tại'], 300), 'Người sở hữu':compactText(item?.holder ?? item?.['Người sở hữu'], 240),
+            'Trạng thái':compactText(item?.status ?? item?.['Trạng thái'], 180), 'Mức quan trọng':compactText(item?.importance ?? item?.['Mức quan trọng'], 120),
+            'Ghi chú':compactText(item?.note ?? item?.['Ghi chú'], 900), _sourceFloor:Number(floor), _sourceMessageKey:sourceMessageKey,
             _lastSeenFloor:Number(floor), _lastUpdatedAt:nowText(),
         };
         const sourceText=messageText(context()?.chat?.[Number(floor)]),acquisition=itemAcquisitionEvidence(name,sourceText);
-        const highMeaning=/(?:婚戒|戒指|钥匙|证件|身份证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
+        const highMeaning=/(?:婚戒|戒指|钥匙|证件|Thân phận证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
         if (!existing) {
             if(highMeaning&&!acquisition){quarantineFactConflict('item-acquisition',null,incoming,{floor,sourceMessageKey,sourceText,reason:'important-item-without-acquisition-source'});return false;}
             rows.push({...incoming,_entityId:explicitId||uid('item'),_history:[],_acquisitionEvidence:acquisition||null,_evidenceRank:acquisition?80:45}); return true;
         }
-        pushHistoryIfChanged(existing, ['物品描述','当前位置','持有者','状态','重要程度','备注'], incoming, '物品状态/流转更新');
-        for (const key of ['物品名称','物品描述','当前位置','持有者','状态','重要程度','备注']) if (compactText(incoming[key], 1400)) existing[key]=incoming[key];
+        pushHistoryIfChanged(existing, ['Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'], incoming, '物品Trạng thái/流转更新');
+        for (const key of ['Tên vật phẩm','Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú']) if (compactText(incoming[key], 1400)) existing[key]=incoming[key];
         existing._entityId ||= explicitId || uid('item'); existing._lastSeenFloor=Number(floor); existing._lastUpdatedAt=nowText();
         if(acquisition&&!existing._acquisitionEvidence)existing._acquisitionEvidence=acquisition;
         return true;
@@ -2352,45 +2352,45 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             return out;
         };
         state.tables ||= {};
-        state.tables.people=mergeRows(state.tables.people,row=>npcNameKey(row?.['姓名']),['姓名','年龄','身份','地点','性格','备注'],'person',(field,current,incoming)=>{
-            if(field!=='身份')return incoming[field];
-            return mergeIdentityDescription(current?.['身份'],incoming?.['身份'],incoming?._evidenceText||'');
+        state.tables.people=mergeRows(state.tables.people,row=>npcNameKey(row?.['Họ tên']),['Họ tên','Tuổi','Thân phận','地点','Tính cách','Ghi chú'],'person',(field,current,incoming)=>{
+            if(field!=='Thân phận')return incoming[field];
+            return mergeIdentityDescription(current?.['Thân phận'],incoming?.['Thân phận'],incoming?._evidenceText||'');
         });
         state.tables.relations=mergeRows(state.tables.relations,row=>{
-            const pair=[npcNameKey(row?.['角色A']),npcNameKey(row?.['角色B'])].filter(Boolean).sort();return pair.length===2?pair.join('↔'):'';
-        },['角色A','角色B','关系描述','情感态度','_psychologyChange','更新时间'],'relation',(field,current,incoming)=>{
-            if(field!=='关系描述')return incoming[field];
-            const decision=relationUpdateDecision({oldDescription:current?.['关系描述'],newDescription:incoming?.['关系描述'],sourceText:incoming?._evidenceText||''});
-            if(decision.accept)return incoming['关系描述'];
+            const pair=[npcNameKey(row?.['Nhân vật A']),npcNameKey(row?.['Nhân vật B'])].filter(Boolean).sort();return pair.length===2?pair.join('↔'):'';
+        },['Nhân vật A','Nhân vật B','Mô tả quan hệ','Thái độ tình cảm','_psychologyChange','Thời điểm cập nhật'],'relation',(field,current,incoming)=>{
+            if(field!=='Mô tả quan hệ')return incoming[field];
+            const decision=relationUpdateDecision({oldDescription:current?.['Mô tả quan hệ'],newDescription:incoming?.['Mô tả quan hệ'],sourceText:incoming?._evidenceText||''});
+            if(decision.accept)return incoming['Mô tả quan hệ'];
             state.factConflicts=Array.isArray(state.factConflicts)?state.factConflicts:[];
-            const signature=`compact-relation|${npcNameKey(current?.['角色A'])}|${npcNameKey(current?.['角色B'])}|${decision.reason}|${npcNameKey(incoming?.['关系描述'])}`;
+            const signature=`compact-relation|${npcNameKey(current?.['Nhân vật A'])}|${npcNameKey(current?.['Nhân vật B'])}|${decision.reason}|${npcNameKey(incoming?.['Mô tả quan hệ'])}`;
             if(!state.factConflicts.some(row=>row?.signature===signature))state.factConflicts.push({id:uid('fact-conflict'),kind:'relation-compaction',reason:decision.reason,active:clone(current),incoming:clone(incoming),signature,createdAt:nowText()});
-            return current['关系描述'];
+            return current['Mô tả quan hệ'];
         });
-        state.tables.items=mergeRows(state.tables.items,row=>semanticText(row?.['物品名称'],240),['物品名称','物品描述','当前位置','持有者','状态','重要程度','备注'],'item');
+        state.tables.items=mergeRows(state.tables.items,row=>semanticText(row?.['Tên vật phẩm'],240),['Tên vật phẩm','Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'],'item');
 
         const compactedPromises=[];
         for(const original of Array.isArray(state.tables.promises)?state.tables.promises:[]){
-            if(!original||typeof original!=='object'||!compactText(original['约定内容'],1200))continue;
-            if(!promiseContentIsConcrete(original['约定内容'], original))continue;
+            if(!original||typeof original!=='object'||!compactText(original['Nội dung lời hẹn'],1200))continue;
+            if(!promiseContentIsConcrete(original['Nội dung lời hẹn'], original))continue;
             const row={...original,_history:Array.isArray(original._history)?[...original._history]:[]};
             let existing=null,bestScore=0;
             const explicit=promiseObjectId(row);
             if(explicit){existing=compactedPromises.find(item=>promiseObjectId(item)===explicit)||null;if(existing)bestScore=1;}
             for(const item of compactedPromises){
                 if(existing)break;
-                if(!promiseParticipantsCompatible(row['核心角色'],item['核心角色']))continue;
+                if(!promiseParticipantsCompatible(row['Nhân vật cốt lõi'],item['Nhân vật cốt lõi']))continue;
                 const score=promiseSnapshotSimilarity(row,item);
                 if(score>bestScore){bestScore=score;existing=item;}
             }
-            if(!existing||bestScore<0.68){row._entityId ||= uid('promise');row._promiseKind ||= promiseKind(row['约定内容']);row._firstSeenFloor=Number(row._firstSeenFloor??row._sourceFloor??row['楼层']??-1);row._lastEvidenceFloor=Number(row._lastEvidenceFloor??row._firstSeenFloor);compactedPromises.push(row);continue;}
+            if(!existing||bestScore<0.68){row._entityId ||= uid('promise');row._promiseKind ||= promiseKind(row['Nội dung lời hẹn']);row._firstSeenFloor=Number(row._firstSeenFloor??row._sourceFloor??row['Tầng']??-1);row._lastEvidenceFloor=Number(row._lastEvidenceFloor??row._firstSeenFloor);compactedPromises.push(row);continue;}
             const incoming=row;
-            if(promiseClosedStatus(existing['状态'])&&!promiseClosedStatus(incoming['状态'])){existing._lastSeenFloor=Math.max(Number(existing._lastSeenFloor??-1),Number(incoming._lastSeenFloor??incoming._sourceFloor??incoming['楼层']??-1));existing._repeatAfterClosureCount=Number(existing._repeatAfterClosureCount||0)+1;continue;}
-            const meaningfulChange=pushHistoryIfChanged(existing,['约定时间','约定内容','核心角色','状态'],incoming,'U1.6旧重复约定合并');
-            for(const field of ['约定时间','约定内容','核心角色','状态','楼层'])if(compactText(incoming[field],1400))existing[field]=incoming[field];
+            if(promiseClosedStatus(existing['Trạng thái'])&&!promiseClosedStatus(incoming['Trạng thái'])){existing._lastSeenFloor=Math.max(Number(existing._lastSeenFloor??-1),Number(incoming._lastSeenFloor??incoming._sourceFloor??incoming['Tầng']??-1));existing._repeatAfterClosureCount=Number(existing._repeatAfterClosureCount||0)+1;continue;}
+            const meaningfulChange=pushHistoryIfChanged(existing,['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],incoming,'U1.6旧重复Lời hẹn合并');
+            for(const field of ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái','Tầng'])if(compactText(incoming[field],1400))existing[field]=incoming[field];
             existing._history=[...(existing._history||[]),...(incoming._history||[])];
-            // 合并旧档重复项时保留手动完成元数据；否则若手动关闭的副本排在后面，
-            // 合并后会只剩“已完成”文本而失去防重复锚点。
+            // 合并旧档重复项时保留手动完成元数据；否则若手动Đóng的副本排在后面，
+            // 合并后会只剩“Đã hoàn thành”文本而失去防重复锚点。
             // Manual completion is an explicit user decision. Never let a later
             // model snapshot carrying `_manualCompleted:false` or empty metadata
             // reopen/erase that decision; fill missing proof only from incoming
@@ -2414,7 +2414,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             // is encountered later in the compact pass. Keep that lifecycle
             // state closed and retain the explicit completion proof.
             if (existing._manualCompleted) {
-                existing['状态'] = '已完成';
+                existing['Trạng thái'] = 'Đã hoàn thành';
                 existing._completionMode ||= 'manual';
                 existing._completionEvidence ||= {
                     kind: 'manual-ui',
@@ -2424,11 +2424,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 };
             }
             existing._lastSeenFloor=Math.max(Number(existing._lastSeenFloor??existing._sourceFloor??-1),Number(incoming._lastSeenFloor??incoming._sourceFloor??-1));
-            const firstCandidates=[existing._firstSeenFloor,existing._sourceFloor,existing['楼层'],incoming._firstSeenFloor,incoming._sourceFloor,incoming['楼层']].map(Number).filter(Number.isFinite);
+            const firstCandidates=[existing._firstSeenFloor,existing._sourceFloor,existing['Tầng'],incoming._firstSeenFloor,incoming._sourceFloor,incoming['Tầng']].map(Number).filter(Number.isFinite);
             existing._firstSeenFloor=firstCandidates.length?Math.min(...firstCandidates):-1;
-            if(meaningfulChange)existing._lastEvidenceFloor=Math.max(Number(existing._lastEvidenceFloor??existing._firstSeenFloor),Number(incoming._lastEvidenceFloor??incoming._sourceFloor??incoming['楼层']??-1));
+            if(meaningfulChange)existing._lastEvidenceFloor=Math.max(Number(existing._lastEvidenceFloor??existing._firstSeenFloor),Number(incoming._lastEvidenceFloor??incoming._sourceFloor??incoming['Tầng']??-1));
             else if(!Number.isFinite(Number(existing._lastEvidenceFloor)))existing._lastEvidenceFloor=existing._firstSeenFloor;
-            existing._promiseKind ||= incoming._promiseKind || promiseKind(existing['约定内容']);
+            existing._promiseKind ||= incoming._promiseKind || promiseKind(existing['Nội dung lời hẹn']);
         }
         state.tables.promises=compactedPromises;
         state.secrets=mergeRows(state.secrets,row=>secretSubjectKey(row?.subject,row?.content),['subject','content','knowers','suspects','unknown'],'secret-entity');
@@ -2441,20 +2441,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const interval=Math.max(5,Number(state?.settings?.summaryEvery||20));
         const routineAge=Math.max(20,interval);
         let changed=0;
-        // 升级旧存档时回扫已存在的真实入账，修复“钱已到账，但旧约定仍显示明天到账”。
+        // 升级旧存档时回扫已存在的真实入账，修复“钱已到账，但旧Lời hẹn仍显示明天到账”。
         for(const tx of state?.phone?.finance?.transactions||[]){
             if(Number(tx?.amount||0)<=0)continue;
             changed+=reconcilePromiseEvidenceForState(state,{kind:'finance-transaction',...tx},Number(tx?._floor??currentFloor));
         }
         for(const row of rows){
-            if(promiseClosedStatus(row?.['状态']))continue;
-            row._promiseKind ||= promiseKind(row?.['约定内容']);
-            const evidenceFloor=Number(row?._lastEvidenceFloor??row?._firstSeenFloor??row?._sourceFloor??row?.['楼层']??-1);
+            if(promiseClosedStatus(row?.['Trạng thái']))continue;
+            row._promiseKind ||= promiseKind(row?.['Nội dung lời hẹn']);
+            const evidenceFloor=Number(row?._lastEvidenceFloor??row?._firstSeenFloor??row?._sourceFloor??row?.['Tầng']??-1);
             const age=Number.isFinite(evidenceFloor)&&evidenceFloor>=0?Math.max(0,Number(currentFloor)-evidenceFloor):0;
             if(row._promiseKind==='短期日常'&&age>=routineAge){
                 row._history=Array.isArray(row._history)?row._history:[];
-                row._history.push(historySnapshot(row,['约定时间','约定内容','核心角色','状态'],'超过一个阶段未再被剧情提及，短期日常事项默认已履行'));
-                row['状态']='默认已履行';row._statusReason=`截至第${currentFloor}层，距最后确认${age}层且属于短期日常事项；如剧情明确未完成可手动改回。`;row._lastUpdatedAt=nowText();changed+=1;
+                row._history.push(historySnapshot(row,['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],'超过一个阶段未再被剧情提及，短期日常事项默认已履行'));
+                row['Trạng thái']='默认已履行';row._statusReason=`截至第${currentFloor}层，距最后确认${age}层且属于短期日常事项；如剧情明确未完成可手动改回。`;row._lastUpdatedAt=nowText();changed+=1;
             }
         }
         return changed;
@@ -2466,7 +2466,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         for (const key of ['mainline', 'branches', 'states', 'people', 'relations', 'world', 'items', 'promises', 'secrets', 'chapters', 'anchors', 'lifeFacts']) {
             if (!Array.isArray(result[key])) result[key] = [];
         }
-        result.promises = result.promises.filter(item => promiseContentIsConcrete(item?.content ?? item?.['约定内容'], item));
+        result.promises = result.promises.filter(item => promiseContentIsConcrete(item?.content ?? item?.['Nội dung lời hẹn'], item));
         result.scene = result.scene && typeof result.scene === 'object' ? result.scene : {};
         return result;
     }
@@ -2497,7 +2497,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if (flatMatch.index >= 60) { cut = Math.min(cut, flatMatch.index); break; }
         }
         raw = raw.slice(0, cut)
-            .replace(/^\s*(?:详情|事件概要|摘要)\s*[:：]\s*/i,'')
+            .replace(/^\s*(?:详情|Tóm tắt sự kiện|摘要)\s*[:：]\s*/i,'')
             .trim();
         let text = sanitizeRetrievalDocumentText(raw).replace(/\s+/g,' ').trim();
         if (!text) return '';
@@ -2510,7 +2510,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function assistantMainlineSummary(item) {
-        const value=item?.summary ?? item?.event ?? item?.['事件概要'];
+        const value=item?.summary ?? item?.event ?? item?.['Tóm tắt sự kiện'];
         return value !== null && typeof value === 'object' ? '' : compactText(value, 360);
     }
 
@@ -2519,7 +2519,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if(!text)return true;
         const startsInternal=/^\s*(?:\[|【)?(?:模式检测|输入强调|叙事视角|头部分析|写作定位|写作原则|最高优先级|共创者(?:要求|确认)|输出要求|任务规则)(?:\]|】|[:：\s-])/i.test(text);
         const markers=text.match(/(?:\[(?:模式检测|输入强调|叙事视角|头部分析)[^\]]*\]|【(?:模式检测|输入强调|叙事视角|头部分析|写作任务|输出规则)[^】]*】|STEP\s*[.．:]?\s*\d+|<user_input>|\[\/user_input\])/gi)||[];
-        const procedural=/(?:正文必须从|只输出(?:最终|正文|JSON)|不要解释|写作流程|角色信息差|共创者操控|本轮需直接承接|开写前先|必须保留\s*\/\s*必须禁止)/i.test(text);
+        const procedural=/(?:chính văn必须从|只输出(?:最终|chính văn|JSON)|不要解释|写作流程|角色信息差|共创者操控|本轮需直接承接|开写前先|必须保留\s*\/\s*必须禁止)/i.test(text);
         return startsInternal||markers.length>=2||(markers.length>=1&&procedural);
     }
 
@@ -2560,7 +2560,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!evidence || recentEventSummaryLooksInternal(evidence)) return null;
         const storyTime=typeof storyTimeFromMessage==='function'?storyTimeFromMessage(message):{date:'',time:'',label:''};
         return {
-            date:storyTime.date, start:storyTime.time, summary:evidence, status:'进行中',
+            date:storyTime.date, start:storyTime.time, summary:evidence, status:'Đang diễn ra',
             _storyTime:storyTime.label,
             _deterministicFallback:true,
             _fallbackSource:'assistant-message-evidence',
@@ -2578,7 +2578,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const rows = state?.tables?.mainline;
         if (!Array.isArray(rows)) return [];
         const matches = rows.filter(row => {
-            const rowFloor=resolvedMemoryFloor(row?._sourceFloor,resolvedMemoryFloor(row?.['楼层'],-1));
+            const rowFloor=resolvedMemoryFloor(row?._sourceFloor,resolvedMemoryFloor(row?.['Tầng'],-1));
             if(rowFloor===floor)return true;
             return rowFloor<0 && sourceMessageKey && row?._sourceMessageKey===sourceMessageKey;
         });
@@ -2588,7 +2588,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function assistantMainlineNeedsModelRepair(state, floor, message) {
         const sourceMessageKey = messageStableKey(message);
         return assistantMainlineRows(state, floor, sourceMessageKey)
-            .some(row => row?._assistantOnce === true && (row?._deterministicFallback === true || recentEventSummaryLooksInternal(row?.['事件概要'])));
+            .some(row => row?._assistantOnce === true && (row?._deterministicFallback === true || recentEventSummaryLooksInternal(row?.['Tóm tắt sự kiện'])));
     }
 
     // A sidecar can be complete while the core memory write was never started
@@ -2604,13 +2604,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 && String(state?.progress?.lastExtractedAssistantSignature || '') === String(sourceSignature || ''));
         return assistantMainlineRows(state, floor, sourceMessageKey).some(row => {
             const summary = assistantMainlineSummary(row);
-            // 楼层号会在重Roll/编辑后复用；只有明确绑定当前正文签名的
+            // Tầng号会在重Roll/编辑后复用；只有明确绑定当前chính văn签名的
             // 结构化主线，才可以抑制本轮缺口检测。旧版本没有签名的行
-            // 允许被当前正文重新整理，避免“旧人设/旧剧情”冒充新记忆。
+            // 允许被当前chính văn重新整理，避免“旧人设/旧剧情”冒充新记忆。
             return row?._assistantOnce === true
                 && (String(row?._sourceBoundSignature || '') === String(sourceSignature || '')
-                    // 兼容已完成整理的旧主线：旧行没有签名时，只能由
-                    // 当前正文的完成标记/进度签名为它背书；重Roll后
+                    // 兼容Đã hoàn thành整理的旧主线：旧行没有签名时，只能由
+                    // 当前chính văn的完成标记/进度签名为它背书；重Roll后
                     // 这些标记会失配，于是旧摘要不会压住新记忆。
                     || (!row?._sourceBoundSignature && processedByCurrentSignature))
                 && Boolean(summary)
@@ -2624,12 +2624,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const sourceMessageKey = messageStableKey(message);
         const sourceStoryTime = typeof storyTimeFromMessage==='function'?storyTimeFromMessage(message):{date:'',time:'',label:''};
         const incoming = {
-            '日期': compactText(item?.date ?? item?.['日期'],120) || sourceStoryTime.date || '',
-            '开始时间': compactText(item?.start ?? item?.['开始时间'],80) || sourceStoryTime.time || '',
-            '完结时间': item?.end ?? item?.['完结时间'] ?? '',
-            '事件概要': summary,
-            '状态': item?.status ?? item?.['状态'] ?? '进行中',
-            '楼层': String(floor),
+            'Ngày': compactText(item?.date ?? item?.['Ngày'],120) || sourceStoryTime.date || '',
+            'Giờ bắt đầu': compactText(item?.start ?? item?.['Giờ bắt đầu'],80) || sourceStoryTime.time || '',
+            'Giờ kết thúc': item?.end ?? item?.['Giờ kết thúc'] ?? '',
+            'Tóm tắt sự kiện': summary,
+            'Trạng thái': item?.status ?? item?.['Trạng thái'] ?? 'Đang diễn ra',
+            'Tầng': String(floor),
             _sourceFloor:floor, _sourceMessageKey:sourceMessageKey, _sourceBoundSignature:messageSignature(floor, message), _assistantOnce:true,
             _storyTime: sourceStoryTime.label || compactText(item?._storyTime,120),
         };
@@ -2660,7 +2660,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function assistantEvidenceFloors(row) {
         if (!row || typeof row !== 'object') return [];
-        const direct=[row._sourceFloor,row['楼层'],row.floor,row._lastEvidenceFloor,row._lastSeenFloor,row.firstFloor,row.lastFloor];
+        const direct=[row._sourceFloor,row['Tầng'],row.floor,row._lastEvidenceFloor,row._lastSeenFloor,row.firstFloor,row.lastFloor];
         const evidence=Array.isArray(row.evidenceFloors)?row.evidenceFloors:[];
         return [...new Set([...direct,...evidence].map(value=>resolvedMemoryFloor(value,-1)).filter(value=>value>=0))];
     }
@@ -2712,7 +2712,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const evidenceIndex=buildAssistantFloorEvidenceIndex(state);
         const mainlineByFloor=new Map(),mainlineByMessageKey=new Map();
         for(const row of state.tables.mainline){
-            const rowFloor=resolvedMemoryFloor(row?._sourceFloor,resolvedMemoryFloor(row?.['楼层'],-1));
+            const rowFloor=resolvedMemoryFloor(row?._sourceFloor,resolvedMemoryFloor(row?.['Tầng'],-1));
             const map=rowFloor>=0?mainlineByFloor:mainlineByMessageKey;
             const key=rowFloor>=0?rowFloor:compactText(row?._sourceMessageKey,240);
             if(key===''||key===null||key===undefined)continue;
@@ -2731,8 +2731,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const existing = existingRows[0] || null;
             const sourceRepair = existing && assistantMainlineSummary(existing) && (
                 assistantMainlineNeedsSourceRepair(existing)
-                || recentEventSummaryLooksInternal(existing?.['事件概要'])
-                // 旧版主线没有绑定正文签名；仅当旧行明确写过签名且
+                || recentEventSummaryLooksInternal(existing?.['Tóm tắt sự kiện'])
+                // 旧版主线没有绑定chính văn签名；仅当旧行明确写过签名且
                 // 与当前回复冲突时才修复。无签名旧档无法证明冲突，
                 // 应保留其历史摘要，避免长聊天载入时批量改写。
                 || (String(existing?._sourceBoundSignature || '')
@@ -2779,7 +2779,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (hasRequestedFloor && Number.isInteger(requestedFloor)) {
             const modelCandidates = data.mainline.filter(item => assistantMainlineSummary(item));
             const modelMainline = modelCandidates.find(item => !recentEventSummaryLooksInternal(assistantMainlineSummary(item)) && assistantMainlineGroundedInMessage(item, chat[floor]));
-            if (!modelMainline && modelCandidates.length) logAudit('主线来源拦截',`第${floor}层模型主线与目标AI正文缺少文本证据，已改用该层正文保底。`);
+            if (!modelMainline && modelCandidates.length) logAudit('主线来源拦截',`第${floor}层模型主线与目标AIchính văn缺少文本证据，已改用该层chính văn保底。`);
             data.mainline = [modelMainline || buildDeterministicAssistantMainline(floor, chat[floor])].filter(Boolean);
         }
         const ensured = ensurePeopleRelationSnapshots({ people:data.people, relations:data.relations });
@@ -2788,23 +2788,23 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const f = String(floor);
         data.mainline.forEach(item => upsertAssistantMainline(item, floor, chat[floor], s));
         data.branches.forEach(item => uniquePush(s.tables.branches, {
-            '状态': item.status ?? '进行中', '支线名': item.name ?? '', '开始时间': item.start ?? '',
-            '完结时间': item.end ?? '', '事件追踪': item.tracking ?? item.summary ?? '', '关键NPC': item.npcs ?? '', '楼层': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+            'Trạng thái': item.status ?? 'Đang diễn ra', '支线名': item.name ?? '', 'Giờ bắt đầu': item.start ?? '',
+            'Giờ kết thúc': item.end ?? '', '事件追踪': item.tracking ?? item.summary ?? '', '关键NPC': item.npcs ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, row => `${row['支线名']}|${row['事件追踪']}`));
         data.states.forEach(item => uniquePush(s.tables.states, {
-            '角色名': item.name ?? '', '状态变化': item.change ?? item.state ?? '', '时间': item.time ?? '',
-            '原因': item.reason ?? '', '当前位置': item.location ?? '', '楼层': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['角色名']}|${row['状态变化']}|${row['时间']}`));
+            'Tên nhân vật': item.name ?? '', 'Trạng thái变化': item.change ?? item.state ?? '', '时间': item.time ?? '',
+            '原因': item.reason ?? '', 'Vị trí hiện tại': item.location ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+        }, row => `${row['Tên nhân vật']}|${row['Trạng thái变化']}|${row['时间']}`));
         data.people.forEach(item => {
             const canonical = registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor) || compactText(item?.name,120);
             if (!canonical) return;
-            const incoming = { '姓名':canonical, '年龄':item.age??'', '身份':item.identity??'', '地点':item.location??'', '性格':item.personality??'', '备注':item.note??'', _sourceFloor:Number(item?.floor??floor), _sourceMessageKey:sourceMessageKey };
-            const existing=s.tables.people.find(row=>npcNameKey(row?.['姓名'])===npcNameKey(canonical));
-            if(!existing)s.tables.people.push(incoming);else{if(String(incoming['身份']||'').trim())existing['身份']=mergeIdentityDescription(existing['身份'],incoming['身份'],messageText(chat[floor]));for(const key of ['年龄','地点','性格','备注'])if(String(incoming[key]||'').trim())existing[key]=incoming[key];existing['姓名']=canonical;}
+            const incoming = { 'Họ tên':canonical, 'Tuổi':item.age??'', 'Thân phận':item.identity??'', '地点':item.location??'', 'Tính cách':item.personality??'', 'Ghi chú':item.note??'', _sourceFloor:Number(item?.floor??floor), _sourceMessageKey:sourceMessageKey };
+            const existing=s.tables.people.find(row=>npcNameKey(row?.['Họ tên'])===npcNameKey(canonical));
+            if(!existing)s.tables.people.push(incoming);else{if(String(incoming['Thân phận']||'').trim())existing['Thân phận']=mergeIdentityDescription(existing['Thân phận'],incoming['Thân phận'],messageText(chat[floor]));for(const key of ['Tuổi','地点','Tính cách','Ghi chú'])if(String(incoming[key]||'').trim())existing[key]=incoming[key];existing['Họ tên']=canonical;}
         });
         data.relations.forEach(item => upsertRelationSnapshot(item, floor, sourceMessageKey));
         data.world.forEach(item => uniquePush(s.tables.world, {
-            '设定名': item.name ?? '', '类型': item.type ?? '', '详细说明': item.description ?? '', '影响范围': item.scope ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+            '设定名': item.name ?? '', 'Loại': item.type ?? '', '详细说明': item.description ?? '', '影响范围': item.scope ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, row => `${row['设定名']}|${row['详细说明']}`));
         data.items.forEach(item => upsertItemSnapshot(item, floor, sourceMessageKey));
         data.promises.forEach(item => upsertPromiseSnapshot(item, floor, sourceMessageKey));
@@ -2820,7 +2820,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         mergeMemoryAnchors(data.anchors, floor);
         mergeLifeFacts(data.lifeFacts, floor);
         // U1.7.2：主“每条AI回复一次”记忆API同样没有改写现实的权限。
-        // 旧版这里直接信任data.scene，正是背景年份（如1000年历史）可能污染scene.time并持续影响后续状态的另一条入口。
+        // 旧版这里直接信任data.scene，正是背景年份（如1000年历史）可能污染scene.time并持续影响后续Trạng thái的另一条入口。
         const safeReality=sanitizeCompanionReality({},data.scene||{});
         const safeScene=safeReality.scene||{};
         for (const key of Object.keys(s.scene)) {
@@ -2852,7 +2852,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         setBusy(true, '正在合并时代总结…');
         try {
             const sourceSummaryIds = rows.map(row => row._id).filter(Boolean);
-            const sourceRanges = rows.map(row => row['覆盖楼层']);
+            const sourceRanges = rows.map(row => row['Tầng bao phủ']);
             const rangeLabel = `${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}`;
             const result = await runFeature('eraSummary', eraSummaryPrompt(rows), {
                 kind: 'eraSummary', sourceSummaryIds, sourceRanges, rangeLabel,
@@ -2891,7 +2891,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     // P41-S1：正常游玩和旧档回放统一使用“每条AI回复一次”的记忆规则。
-    // user消息仅作为上下文，不单独触发即时简记，也不生成user时间线。
+    // user消息仅作为上下文，不单独触发即时简记，也不生成userDòng thời gian。
     function assistantEntryAtFloor(floor) {
         const chat = context()?.chat || [];
         const index = Number(floor);
@@ -2919,7 +2919,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!entry) return '';
         const user = previousUserEntryForAssistant(entry.index);
         const contextPart = user
-            ? `【仅供理解上下文的user输入｜第${user.index}层｜禁止单独记忆/禁止生成时间线】\n${memoryNarrativeText(user.message).slice(0,7000)}\n\n`
+            ? `【仅供理解上下文的user输入｜第${user.index}层｜禁止单独记忆/禁止Thời điểm tạo线】\n${memoryNarrativeText(user.message).slice(0,7000)}\n\n`
             : '';
         return `${contextPart}【唯一记忆目标：AI/角色回复｜第${entry.index}层】\n${memoryNarrativeText(entry.message).slice(0,18000)}`;
     }
@@ -3096,8 +3096,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     async function flushAutoExtract(targetFloor=null,targetSignature='') {
         clearTimeout(stateRuntime.autoTimer);
         const scope=captureChatScope();const st=stateRuntime.state;
-        if(!st?.settings?.enabled){stateRuntime.memoryPipelineNotice='记忆中枢已关闭；本轮未启动主记忆整理';return false;}
-        if(!st.settings.autoExtract){stateRuntime.memoryPipelineNotice='即时记忆已关闭；可点击“AI整理”或“重建本层”手动运行';return false;}
+        if(!st?.settings?.enabled){stateRuntime.memoryPipelineNotice='记忆中枢已Đóng；本轮未启动主记忆整理';return false;}
+        if(!st.settings.autoExtract){stateRuntime.memoryPipelineNotice='即时记忆已Đóng；可点击“AI整理”或“重建本层”手动运行';return false;}
         const entry=hasExplicitFloorTarget(targetFloor)?assistantEntryAtFloor(targetFloor):latestAssistantMemoryCandidate();
         if(!entry||targetSignature&&entry.signature!==targetSignature){stateRuntime.memoryPipelineNotice='没有锁定到本轮AI回复，主记忆未启动';return false;}
         if(parseMemoryTag()){
@@ -3142,7 +3142,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             addDiagnostic('抢{{user}}动作', 'AI可能替{{user}}做出了动作、决定或发言。', floor);
         }
         if (/(过了几天|几日后|不久后|许久以后|转眼间|后来某天)/.test(text)) {
-            addDiagnostic('时间模糊', '出现了模糊时间推进，建议补充具体日期或与上一事件的间隔。', floor);
+            addDiagnostic('时间模糊', '出现了模糊时间推进，建议补充具体Ngày或与上一事件的间隔。', floor);
         }
         const previous = [...chat.slice(0, -1)].reverse().find(message => !message.is_user && !message.is_system);
         if (previous) {
@@ -3257,7 +3257,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         toast(message,type);
         if(fullscreen&&type==='success')showPipelineCompletionOverlay();
         try{
-            if(globalThis.document?.hidden&&globalThis.Notification?.permission==='granted')new globalThis.Notification('0-32 · 永不落幕的剧场',{body:String(message||'后台任务已完成'),tag:'vvvtm-memory-pipeline'});
+            if(globalThis.document?.hidden&&globalThis.Notification?.permission==='granted')new globalThis.Notification('0-32 · 永不落幕的剧场',{body:String(message||'后台任务Đã hoàn thành'),tag:'vvvtm-memory-pipeline'});
         }catch{}
     }
 
@@ -3307,7 +3307,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const calibration=activeTimeCalibration();
         const overlay=document.createElement('div');
         overlay.id='vvvtm-time-calibration';
-        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-time-calibration-title"><header><div><b id="vvvtm-time-calibration-title">校准剧情时间</b><small>${calibration?'当前使用手动时间锚点':'当前由剧情状态机自动识别'}</small></div><button type="button" data-time-calibration-close aria-label="关闭" title="关闭">×</button></header><label><span>自定义剧情时间</span><input id="vvvtm-time-calibration-input" maxlength="180" value="${esc(effectiveStoryTime())}" placeholder="例如：2026年9月26日 08:40"></label><footer><button type="button" data-time-calibration-device>使用设备当前时间</button><button type="button" data-time-calibration-auto ${calibration?'':'disabled'}>恢复自动识别</button><button type="button" data-time-calibration-save>应用校准</button></footer></section>`;
+        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-time-calibration-title"><header><div><b id="vvvtm-time-calibration-title">校准剧情时间</b><small>${calibration?'当前使用手动时间锚点':'当前由剧情Trạng thái机自动识别'}</small></div><button type="button" data-time-calibration-close aria-label="Đóng" title="Đóng">×</button></header><label><span>自定义剧情时间</span><input id="vvvtm-time-calibration-input" maxlength="180" value="${esc(effectiveStoryTime())}" placeholder="例如：2026年9月26日 08:40"></label><footer><button type="button" data-time-calibration-device>使用设备当前时间</button><button type="button" data-time-calibration-auto ${calibration?'':'disabled'}>恢复自动识别</button><button type="button" data-time-calibration-save>应用校准</button></footer></section>`;
         const close=mountTransientDialog(overlay,{focusSelector:'#vvvtm-time-calibration-input',mobileFocusSelector:'[data-time-calibration-close]',select:true,restoreFocusTarget:replacementFocus});
         overlay.querySelector('[data-time-calibration-close]')?.addEventListener('click',close);
         overlay.querySelector('[data-time-calibration-device]')?.addEventListener('click',()=>{const input=overlay.querySelector('#vvvtm-time-calibration-input');if(input){input.value=deviceTimeCalibrationValue();input.focus({preventScroll:true});}});
@@ -3475,7 +3475,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                         <div class="vvvtm-head-actions">
                             <button data-action="memory-hub">🧠 Memory Hub</button>
                             <button data-action="ai-extract">✨ AI整理</button>
-                            <button data-action="unhide-all">👁 取消隐藏</button>
+                            <button data-action="unhide-all">👁 Hủy隐藏</button>
                             <button data-action="export">导出</button>
                             <button data-action="close" class="icon">×</button>
                         </div>
@@ -3577,33 +3577,33 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function listRecent(key, mainColumn, floorColumn, filter = () => true) {
         const rows = stateRuntime.state.tables[key].filter(filter).slice(-6).reverse();
-        if (!rows.length) return '<div class="vvvtm-empty">暂无记录</div>';
+        if (!rows.length) return '<div class="vvvtm-empty">Chưa có记录</div>';
         return `<div class="vvvtm-list">${rows.map(row => {
             const floor=row[floorColumn];
             const hasFloor=floor!==undefined&&floor!==null&&String(floor)!=='';
             if(key==='mainline'&&hasFloor){
                 const invalid=recentEventSummaryLooksInternal(row[mainColumn]);
                 const stamp=timelineRowStamp(row);
-                return `<button type="button" class="vvvtm-list-item vvvtm-recent-event ${invalid?'invalid':''}" data-recent-event-floor="${esc(floor)}"><span><b class="vvvtm-story-stamp">${esc(stamp)}</b>${invalid?'摘要异常，点击进入重新提取':esc(row[mainColumn] || '未命名')}</span><small>${esc(`${floor}层`)} <b aria-hidden="true">›</b></small></button>`;
+                return `<button type="button" class="vvvtm-list-item vvvtm-recent-event ${invalid?'invalid':''}" data-recent-event-floor="${esc(floor)}"><span><b class="vvvtm-story-stamp">${esc(stamp)}</b>${invalid?'摘要异常，点击进入重新提取':esc(row[mainColumn] || 'Chưa đặt tên')}</span><small>${esc(`${floor}层`)} <b aria-hidden="true">›</b></small></button>`;
             }
-            return `<button type="button" class="vvvtm-list-item" ${hasFloor?`data-jump="${esc(floor)}"`:''}><span>${esc(row[mainColumn] || '未命名')}</span><small>${hasFloor?esc(`${floor}层`):''}</small></button>`;
+            return `<button type="button" class="vvvtm-list-item" ${hasFloor?`data-jump="${esc(floor)}"`:''}><span>${esc(row[mainColumn] || 'Chưa đặt tên')}</span><small>${hasFloor?esc(`${floor}层`):''}</small></button>`;
         }).join('')}</div>`;
     }
 
     function listRecentPromises() {
         const source = Array.isArray(stateRuntime.state?.tables?.promises) ? stateRuntime.state.tables.promises : [];
         const rows = source.map((row, index) => ({ row, index }))
-            .filter(({ row }) => !promiseClosedStatus(row?.['状态']))
+            .filter(({ row }) => !promiseClosedStatus(row?.['Trạng thái']))
             .slice(-6).reverse();
-        if (!rows.length) return '<div class="vvvtm-empty">暂无待兑现约定</div>';
+        if (!rows.length) return '<div class="vvvtm-empty">Chưa cóLời hẹn chờ thực hiện</div>';
         return `<div class="vvvtm-list vvvtm-promise-list">${rows.map(({ row, index }) => {
-            const floor = row?.['楼层'];
+            const floor = row?.['Tầng'];
             const hasFloor = floor !== undefined && floor !== null && String(floor) !== '';
             const recorded=promiseRecordedStamp(row);
-            const due=compactText(row?._due || row?.['约定时间'],120);
-            const meta = [`记录于 ${recorded}`, due ? `兑现 ${due}` : '', row?.['状态'] || '待兑现', hasFloor ? `${floor}层` : ''].filter(Boolean).join(' · ');
+            const due=compactText(row?._due || row?.['Thời điểm hẹn'],120);
+            const meta = [`记录于 ${recorded}`, due ? `兑现 ${due}` : '', row?.['Trạng thái'] || 'Chờ thực hiện', hasFloor ? `${floor}层` : ''].filter(Boolean).join(' · ');
             const promiseId = promiseEntityId(row, { create: true });
-            return `<div class="vvvtm-list-item vvvtm-promise-item"><button type="button" class="vvvtm-promise-jump" ${hasFloor ? `data-jump="${esc(floor)}"` : ''}><span><b class="vvvtm-story-stamp">${esc(recorded)}</b>${esc(row?.['约定内容'] || '未命名约定')}</span><small>${esc(meta)}</small></button><button type="button" class="vvvtm-promise-complete" data-promise-complete-index="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="完成约定：${esc(row?.['约定内容'] || '未命名约定')}" title="立即标记为已完成">完成</button></div>`;
+            return `<div class="vvvtm-list-item vvvtm-promise-item"><button type="button" class="vvvtm-promise-jump" ${hasFloor ? `data-jump="${esc(floor)}"` : ''}><span><b class="vvvtm-story-stamp">${esc(recorded)}</b>${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}</span><small>${esc(meta)}</small></button><button type="button" class="vvvtm-promise-complete" data-promise-complete-index="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="完成Lời hẹn：${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}" title="立即标记为Đã hoàn thành">完成</button></div>`;
         }).join('')}</div>`;
     }
 
@@ -3613,10 +3613,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const row=assistantMainlineRows(stateRuntime.state,numeric,entry?messageStableKey(entry.message):'').find(item=>item?._assistantOnce===true);
         if(!entry||!row){toast(`第 ${numeric} 层没有可重新提取的自动事件`,'warn');return;}
         const replacementFocus=closeTransientOverlayById('vvvtm-recent-event-dialog',{restoreFocus:false});
-        const invalid=recentEventSummaryLooksInternal(row['事件概要']);
+        const invalid=recentEventSummaryLooksInternal(row['Tóm tắt sự kiện']);
         const overlay=document.createElement('div');
         overlay.id='vvvtm-recent-event-dialog';
-        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-recent-event-title"><header><div><b id="vvvtm-recent-event-title">${esc(timelineRowStamp(row))} · 第 ${numeric} 层最近事件</b><small>${row._deterministicFallback?'原文保底摘要':'AI提取摘要'}</small></div><button type="button" data-recent-event-close aria-label="关闭" title="关闭">×</button></header>${invalid?'<div class="vvvtm-recent-event-warning">检测到内部写作流程文本。这条记录已暂停参与检索和下一轮记忆注入，请重新提取。</div>':`<p class="vvvtm-recent-event-detail">${esc(row['事件概要']||'未命名事件')}</p>`}<footer><button type="button" data-recent-event-jump>跳到原文</button><button type="button" data-recent-event-rerun>↻ 重新提取本条</button></footer></section>`;
+        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-recent-event-title"><header><div><b id="vvvtm-recent-event-title">${esc(timelineRowStamp(row))} · 第 ${numeric} 层Sự kiện gần đây</b><small>${row._deterministicFallback?'原文保底摘要':'AI提取摘要'}</small></div><button type="button" data-recent-event-close aria-label="Đóng" title="Đóng">×</button></header>${invalid?'<div class="vvvtm-recent-event-warning">检测到内部写作流程文本。这条记录已暂停参与检索和下一轮记忆注入，请重新提取。</div>':`<p class="vvvtm-recent-event-detail">${esc(row['Tóm tắt sự kiện']||'Sự kiện chưa đặt tên')}</p>`}<footer><button type="button" data-recent-event-jump>跳到原文</button><button type="button" data-recent-event-rerun>↻ 重新提取本条</button></footer></section>`;
         const close=mountTransientDialog(overlay,{focusSelector:'[data-recent-event-close]',restoreFocusTarget:replacementFocus});
         overlay.querySelector('[data-recent-event-close]')?.addEventListener('click',close);
         overlay.querySelector('[data-recent-event-jump]')?.addEventListener('click',()=>{close();jumpToFloor(numeric);});
@@ -3633,7 +3633,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         try{
             const result=await reExtractMemoryFloor(floor),remaining=Math.max(0,Number(result?.missing||0));
             if(!result?.success){
-                const message=result?.stale?`第 ${floor} 层修复期间切换了聊天，本次结果已丢弃`:remaining?`第 ${floor} 层已完成补抓，但仍有 ${remaining} 条遗漏，请查看本层原文或稍后重试`:`第 ${floor} 层修复未完成，请查看当前状态后重试`;
+                const message=result?.stale?`第 ${floor} 层修复期间切换了聊天，本次结果已丢弃`:remaining?`第 ${floor} 层Đã hoàn thành补抓，但仍有 ${remaining} 条遗漏，请查看本层原文或稍后重试`:`第 ${floor} 层修复未完成，请查看当前Trạng thái后重试`;
                 toast(message,'warn');
             }else{
                 toast(result.mode==='full'?`第 ${floor} 层整轮记忆已重建`:(result.mode==='noop'?`第 ${floor} 层复检已通过`:`第 ${floor} 层生活细节已精准补抓`),'success');
@@ -3680,10 +3680,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return `
             <section class="vvvtm-card table-card">
                 <div class="vvvtm-table-tabs">${TABLE_ORDER.map(tableKey => `<button data-table-key="${tableKey}" class="${key === tableKey ? 'active' : ''}">${TABLE_DEFS[tableKey].title}<small>${stateRuntime.state.tables[tableKey].length}</small></button>`).join('')}</div>
-                <div class="vvvtm-section-title table-tools"><div><h3>${def.title}</h3><p class="vvvtm-note">超长档案模式按页渲染，避免几千条记录一次性拖慢手机/浏览器。</p></div><div><button data-table-action="add">＋新增</button><button data-table-action="delete" class="danger-soft">删除选中</button><button data-table-action="clear" class="danger-soft">清空本表</button></div></div>
+                <div class="vvvtm-section-title table-tools"><div><h3>${def.title}</h3><p class="vvvtm-note">超长档案模式按页渲染，避免几千条记录一次性拖慢手机/浏览器。</p></div><div><button data-table-action="add">＋新增</button><button data-table-action="delete" class="danger-soft">删除选中</button><button data-table-action="clear" class="danger-soft">Bỏ chọn本表</button></div></div>
                 ${pagerMarkup(page)}
                 <div class="vvvtm-table-wrap"><table><thead><tr><th class="check"><input type="checkbox" id="vvvtm-check-all"></th>${def.columns.map(column => `<th>${esc(column)}</th>`).join('')}<th>操作</th></tr></thead><tbody>
-                    ${page.items.length ? page.items.map((row, offset) => { const index = page.start + offset; const promiseDone = key === 'promises' && promiseClosedStatus(row?.['状态']); const promiseId = key === 'promises' ? promiseEntityId(row, { create: true }) : ''; const promiseAction = key === 'promises' ? `<button type="button" class="vvvtm-promise-complete" data-promise-complete="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="${promiseDone ? '已完成' : `完成约定：${row?.['约定内容'] || '未命名约定'}`}" title="立即标记为已完成" ${promiseDone ? 'disabled' : ''}>${promiseDone ? '已完成' : '完成'}</button>` : ''; return `<tr data-row="${index}"><td class="check"><input type="checkbox" data-check-row="${index}"></td>${def.columns.map(column => `<td><textarea data-cell="${esc(column)}" data-row-index="${index}">${esc(row[column])}</textarea></td>`).join('')}<td><button data-row-save="${index}">保存</button>${promiseAction}${row['楼层'] !== undefined ? `<button data-jump="${esc(row['楼层'])}">跳转</button>` : ''}</td></tr>`; }).join('') : `<tr><td colspan="${def.columns.length + 2}" class="vvvtm-empty">暂无数据，点击新增或“AI整理”</td></tr>`}
+                    ${page.items.length ? page.items.map((row, offset) => { const index = page.start + offset; const promiseDone = key === 'promises' && promiseClosedStatus(row?.['Trạng thái']); const promiseId = key === 'promises' ? promiseEntityId(row, { create: true }) : ''; const promiseAction = key === 'promises' ? `<button type="button" class="vvvtm-promise-complete" data-promise-complete="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="${promiseDone ? 'Đã hoàn thành' : `完成Lời hẹn：${row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên'}`}" title="立即标记为Đã hoàn thành" ${promiseDone ? 'disabled' : ''}>${promiseDone ? 'Đã hoàn thành' : '完成'}</button>` : ''; return `<tr data-row="${index}"><td class="check"><input type="checkbox" data-check-row="${index}"></td>${def.columns.map(column => `<td><textarea data-cell="${esc(column)}" data-row-index="${index}">${esc(row[column])}</textarea></td>`).join('')}<td><button data-row-save="${index}">保存</button>${promiseAction}${row['Tầng'] !== undefined ? `<button data-jump="${esc(row['Tầng'])}">跳转</button>` : ''}</td></tr>`; }).join('') : `<tr><td colspan="${def.columns.length + 2}" class="vvvtm-empty">Chưa có数据，点击新增或“AI整理”</td></tr>`}
                 </tbody></table></div>
                 ${pagerMarkup(page)}
             </section>`;
@@ -3707,7 +3707,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
         });
         content.querySelector('[data-table-action="clear"]')?.addEventListener('click', () => {
-            if (!confirm(`确认清空“${TABLE_DEFS[stateRuntime.currentTable].title}”吗？`)) return;
+            if (!confirm(`确认Bỏ chọn“${TABLE_DEFS[stateRuntime.currentTable].title}”吗？`)) return;
             recordManualDeletion(`tables.${stateRuntime.currentTable}`, stateRuntime.state.tables[stateRuntime.currentTable]||[]);
             stateRuntime.state.tables[stateRuntime.currentTable] = [];
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
@@ -3739,45 +3739,45 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if (!done && button.isConnected) button.disabled = false;
             } catch (error) {
                 button.disabled = false;
-                toast(`完成约定失败：${error?.message || error}`, 'error');
+                toast(`完成Lời hẹn失败：${error?.message || error}`, 'error');
             }
         }));
     }
 
     function renderTimeline() {
         const rows = stateRuntime.state.tables.mainline.slice().reverse();
-        if (!rows.length) return '<div class="vvvtm-empty big">还没有时间线，点击右上角“AI整理”。</div>';
+        if (!rows.length) return '<div class="vvvtm-empty big">还没有Dòng thời gian，点击右上角“AI整理”。</div>';
         const page = pageSlice(rows, 'timeline');
-        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕰 时间线档案</h3><p class="vvvtm-note">时间线是一级长期检索源；R9只渲染当前页，2万层档案也不会一次性画出全部事件。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-timeline">${page.items.map(row => `<article><div class="dot"></div><div class="line"></div><div class="vvvtm-card"><small><b class="vvvtm-story-stamp">${esc(timelineRowStamp(row))}</b>${row['完结时间'] ? ` — ${esc(row['完结时间'])}` : ''}</small><h3>${esc(row['事件概要'] || '未命名事件')}</h3><p>${esc(row['状态'])}</p>${row['楼层'] !== undefined && row['楼层'] !== '' ? `<button data-jump="${esc(row['楼层'])}">跳到 ${esc(row['楼层'])} 层</button>` : ''}</div></article>`).join('')}</section>${pagerMarkup(page)}`;
+        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕰 Dòng thời gian档案</h3><p class="vvvtm-note">Dòng thời gian是一级长期检索源；R9只渲染当前页，2万层档案也不会一次性画出全部事件。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-timeline">${page.items.map(row => `<article><div class="dot"></div><div class="line"></div><div class="vvvtm-card"><small><b class="vvvtm-story-stamp">${esc(timelineRowStamp(row))}</b>${row['Giờ kết thúc'] ? ` — ${esc(row['Giờ kết thúc'])}` : ''}</small><h3>${esc(row['Tóm tắt sự kiện'] || 'Sự kiện chưa đặt tên')}</h3><p>${esc(row['Trạng thái'])}</p>${row['Tầng'] !== undefined && row['Tầng'] !== '' ? `<button data-jump="${esc(row['Tầng'])}">跳到 ${esc(row['Tầng'])} 层</button>` : ''}</div></article>`).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderCharacters() {
         const people = stateRuntime.state.tables.people;
         const states = stateRuntime.state.tables.states;
-        const names = [...new Set([...people.map(row => row['姓名']), ...states.map(row => row['角色名'])].filter(Boolean))];
-        if (!names.length) return '<div class="vvvtm-empty big">暂无人物资料。</div>';
+        const names = [...new Set([...people.map(row => row['Họ tên']), ...states.map(row => row['Tên nhân vật'])].filter(Boolean))];
+        if (!names.length) return '<div class="vvvtm-empty big">Chưa có nhân vật资料。</div>';
         const page = pageSlice(names, 'characters');
         return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>👥 人物档案</h3><p class="vvvtm-note">同一人物只保留当前人物档案；大量NPC按页显示。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-grid characters">${page.items.map(name => {
-            const profile = people.find(row => row['姓名'] === name) ?? {};
-            const recent = states.filter(row => row['角色名'] === name).at(-1) ?? {};
-            return `<article class="vvvtm-card character"><div class="avatar">${esc(name.slice(0, 1))}</div><div><h3>${esc(name)}</h3><p>${esc(profile['身份'] || '身份未记录')} · ${esc(profile['年龄'] || '年龄未知')}</p><dl><dt>位置</dt><dd>${esc(recent['当前位置'] || profile['地点'] || '未知')}</dd><dt>状态</dt><dd>${esc(recent['状态变化'] || '暂无')}</dd><dt>性格</dt><dd>${esc(profile['性格'] || '暂无')}</dd><dt>备注</dt><dd>${esc(profile['备注'] || recent['原因'] || '暂无')}</dd></dl></div></article>`;
+            const profile = people.find(row => row['Họ tên'] === name) ?? {};
+            const recent = states.filter(row => row['Tên nhân vật'] === name).at(-1) ?? {};
+            return `<article class="vvvtm-card character"><div class="avatar">${esc(name.slice(0, 1))}</div><div><h3>${esc(name)}</h3><p>${esc(profile['Thân phận'] || 'Chưa ghi thân phận')} · ${esc(profile['Tuổi'] || 'Chưa rõ tuổi')}</p><dl><dt>位置</dt><dd>${esc(recent['Vị trí hiện tại'] || profile['地点'] || 'Chưa rõ')}</dd><dt>Trạng thái</dt><dd>${esc(recent['Trạng thái变化'] || 'Chưa có')}</dd><dt>Tính cách</dt><dd>${esc(profile['Tính cách'] || 'Chưa có')}</dd><dt>Ghi chú</dt><dd>${esc(profile['Ghi chú'] || recent['原因'] || 'Chưa có')}</dd></dl></div></article>`;
         }).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderRelations() {
         const rows = stateRuntime.state.tables.relations;
-        if (!rows.length) return '<div class="vvvtm-empty big">暂无人物关系。</div>';
+        if (!rows.length) return '<div class="vvvtm-empty big">Chưa có nhân vật关系。</div>';
         const page = pageSlice(rows, 'relations');
-        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕸 人物关系</h3><p class="vvvtm-note">每一对人物只显示截至当前的关系与心理状态；发生变化时覆盖当前值，并把旧状态保存在可展开历史中。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-relation-map">${page.items.map(row => {
+        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕸 Quan hệ nhân vật</h3><p class="vvvtm-note">每一对人物只显示截至当前的关系与心理Trạng thái；发生变化时覆盖当前值，并把旧Trạng thái保存在可展开历史中。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-relation-map">${page.items.map(row => {
             const history=(row._history||[]).slice().reverse();
-            const historical=history.length?`<details class="vvvtm-relation-history"><summary>关系与心理变化历史（${history.length}）</summary>${history.map(item=>`<div><b>${esc(item['更新时间']||item.time||'时间未记录')}</b><span>${esc(item['关系描述']||'关系未记录')}</span><small>${esc(item['情感态度']||'心理未记录')}${item._psychologyChange?`；当时变化：${esc(item._psychologyChange)}`:''}${Number.isFinite(Number(item.floor))&&Number(item.floor)>=0?` · 第${esc(item.floor)}层`:''}</small></div>`).join('')}</details>`:'';
-            return `<article class="vvvtm-card relation"><div class="node">${esc(row['角色A'] || '?')}</div><div class="edge"><span>${esc(row['关系描述'] || '关系')}</span><i></i><small>${esc(row['情感态度']||'心理状态未记录')}${row._psychologyChange?`<br>本轮心理变化：${esc(row._psychologyChange)}`:''}</small></div><div class="node">${esc(row['角色B'] || '?')}</div>${historical}</article>`;
+            const historical=history.length?`<details class="vvvtm-relation-history"><summary>关系与心理变化历史（${history.length}）</summary>${history.map(item=>`<div><b>${esc(item['Thời điểm cập nhật']||item.time||'Chưa ghi giờ')}</b><span>${esc(item['Mô tả quan hệ']||'Chưa ghi quan hệ')}</span><small>${esc(item['Thái độ tình cảm']||'心理Chưa ghi nhận')}${item._psychologyChange?`；当时变化：${esc(item._psychologyChange)}`:''}${Number.isFinite(Number(item.floor))&&Number(item.floor)>=0?` · 第${esc(item.floor)}层`:''}</small></div>`).join('')}</details>`:'';
+            return `<article class="vvvtm-card relation"><div class="node">${esc(row['Nhân vật A'] || '?')}</div><div class="edge"><span>${esc(row['Mô tả quan hệ'] || '关系')}</span><i></i><small>${esc(row['Thái độ tình cảm']||'心理Trạng tháiChưa ghi nhận')}${row._psychologyChange?`<br>本轮心理变化：${esc(row._psychologyChange)}`:''}</small></div><div class="node">${esc(row['Nhân vật B'] || '?')}</div>${historical}</article>`;
         }).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderSecrets() {
         const rows = stateRuntime.state.secrets;
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔒 谁知道什么</h3><button data-secret-action="add">＋新增秘密</button></div><div class="vvvtm-secret-list">${rows.length ? rows.map((item, index) => `<article><input data-secret-field="subject" data-secret-index="${index}" value="${esc(item.subject)}" placeholder="秘密名称"><textarea data-secret-field="content" data-secret-index="${index}" placeholder="秘密内容">${esc(item.content)}</textarea><div class="vvvtm-form-grid"><label><span>明确知道</span><input data-secret-field="knowers" data-secret-index="${index}" value="${esc(item.knowers)}"></label><label><span>只是怀疑</span><input data-secret-field="suspects" data-secret-index="${index}" value="${esc(item.suspects)}"></label><label><span>明确不知道</span><input data-secret-field="unknown" data-secret-index="${index}" value="${esc(item.unknown)}"></label></div><div class="vvvtm-row-actions"><button data-secret-save="${index}">保存</button><button class="danger-soft" data-secret-delete="${index}">删除</button></div></article>`).join('') : '<div class="vvvtm-empty">暂无秘密记录</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔒 谁知道什么</h3><button data-secret-action="add">＋新增秘密</button></div><div class="vvvtm-secret-list">${rows.length ? rows.map((item, index) => `<article><input data-secret-field="subject" data-secret-index="${index}" value="${esc(item.subject)}" placeholder="秘密名称"><textarea data-secret-field="content" data-secret-index="${index}" placeholder="秘密内容">${esc(item.content)}</textarea><div class="vvvtm-form-grid"><label><span>明确知道</span><input data-secret-field="knowers" data-secret-index="${index}" value="${esc(item.knowers)}"></label><label><span>只是怀疑</span><input data-secret-field="suspects" data-secret-index="${index}" value="${esc(item.suspects)}"></label><label><span>明确不知道</span><input data-secret-field="unknown" data-secret-index="${index}" value="${esc(item.unknown)}"></label></div><div class="vvvtm-row-actions"><button data-secret-save="${index}">保存</button><button class="danger-soft" data-secret-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có秘密记录</div>'}</div></section>`;
     }
 
     function bindSecrets(content) {
@@ -3800,7 +3800,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function renderChapters() {
         const rows = stateRuntime.state.chapters;
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>📚 长篇章节锚点</h3><p class="vvvtm-note">保留这个功能：它不负责每轮剧情，只标记地点/人生阶段/主目标或重大关系阶段的切换，并参与长期检索。</p></div><button data-chapter-add>＋新增章节</button></div><div class="vvvtm-chapters">${rows.length ? rows.map((item, index) => `<article><div><small>${esc(item.time || '')} · ${esc(item.startFloor)}-${esc(item.endFloor)}层</small><input data-chapter-field="title" data-chapter-index="${index}" value="${esc(item.title)}"><textarea data-chapter-field="summary" data-chapter-index="${index}">${esc(item.summary)}</textarea></div><div><button data-jump="${esc(item.startFloor)}">跳转</button><button data-chapter-save="${index}">保存</button><button class="danger-soft" data-chapter-delete="${index}">删除</button></div></article>`).join('') : '<div class="vvvtm-empty">暂无章节</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>📚 长篇章节锚点</h3><p class="vvvtm-note">保留这个功能：它不负责每轮剧情，只标记地点/人生阶段/主目标或重大关系阶段的切换，并参与长期检索。</p></div><button data-chapter-add>＋新增章节</button></div><div class="vvvtm-chapters">${rows.length ? rows.map((item, index) => `<article><div><small>${esc(item.time || '')} · ${esc(item.startFloor)}-${esc(item.endFloor)}层</small><input data-chapter-field="title" data-chapter-index="${index}" value="${esc(item.title)}"><textarea data-chapter-field="summary" data-chapter-index="${index}">${esc(item.summary)}</textarea></div><div><button data-jump="${esc(item.startFloor)}">跳转</button><button data-chapter-save="${index}">保存</button><button class="danger-soft" data-chapter-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có章节</div>'}</div></section>`;
     }
 
     function bindChapters(content) {
@@ -3824,8 +3824,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
 
     // =====================================================================
-    // v0.7.4 历史数据结构入口（U1.7.10 已改为正文与幕后七条两个独立请求）
-    // 正文只负责可见正文；通讯终端、彼间私文等在正文完全收尾后由幕后七条独立API另行生成。
+    // v0.7.4 历史数据结构入口（U1.7.10 已改为chính văn与幕后七条两个独立请求）
+    // chính văn只负责可见chính văn；通讯终端、彼间私文等在chính văn完全收尾后由幕后七条独立API另行生成。
     // =====================================================================
     function uid(prefix = 'vvv') {
         return `${prefix}-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
@@ -3997,19 +3997,19 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function storyTimeForFloor(floor) {
         const numeric = Number.parseInt(String(floor),10);
         const rows = stateRuntime.state?.tables?.mainline || [];
-        const row = rows.find(item=>Number.parseInt(String(item?._sourceFloor ?? item?.['楼层']),10)===numeric);
-        let result = parseStoryDateTime(`${row?.['日期'] || ''} ${row?.['开始时间'] || ''}`);
+        const row = rows.find(item=>Number.parseInt(String(item?._sourceFloor ?? item?.['Tầng']),10)===numeric);
+        let result = parseStoryDateTime(`${row?.['Ngày'] || ''} ${row?.['Giờ bắt đầu'] || ''}`);
         const chat = context()?.chat || [];
         if (Number.isInteger(numeric) && numeric >= 0 && chat[numeric]) {
             const parsed = storyTimeFromMessage(chat[numeric]);
             result=mergeStoryDateTimeParts(result,parsed);
         }
         if (Number.isInteger(numeric) && numeric >= 0 && (!result.year||!result.month||!result.day||!result.time)) {
-            const previous = rows.filter(item=>Number.parseInt(String(item?._sourceFloor ?? item?.['楼层']),10)<=numeric).slice().sort((a,b)=>Number(b?._sourceFloor??b?.['楼层']??-1)-Number(a?._sourceFloor??a?.['楼层']??-1)).find(item=>{
-                const parsed=parseStoryDateTime(`${item?.['日期']||''} ${item?.['开始时间']||''}`);
+            const previous = rows.filter(item=>Number.parseInt(String(item?._sourceFloor ?? item?.['Tầng']),10)<=numeric).slice().sort((a,b)=>Number(b?._sourceFloor??b?.['Tầng']??-1)-Number(a?._sourceFloor??a?.['Tầng']??-1)).find(item=>{
+                const parsed=parseStoryDateTime(`${item?.['Ngày']||''} ${item?.['Giờ bắt đầu']||''}`);
                 return Boolean(parsed.year||parsed.month||parsed.day||parsed.time);
             });
-            if(previous)result=mergeStoryDateTimeParts(result,parseStoryDateTime(`${previous?.['日期']||''} ${previous?.['开始时间']||''}`));
+            if(previous)result=mergeStoryDateTimeParts(result,parseStoryDateTime(`${previous?.['Ngày']||''} ${previous?.['Giờ bắt đầu']||''}`));
         }
         if(result.label)return result;
         if (Number.isInteger(numeric) && numeric >= 0) return {year:'',month:'',day:'',time:'',date:'',label:''};
@@ -4017,24 +4017,24 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function timelineRowStamp(row) {
-        const floor = row?._sourceFloor ?? row?.['楼层'];
-        const parsed = parseStoryDateTime(`${row?.['日期'] || ''} ${row?.['开始时间'] || ''}`);
+        const floor = row?._sourceFloor ?? row?.['Tầng'];
+        const parsed = parseStoryDateTime(`${row?.['Ngày'] || ''} ${row?.['Giờ bắt đầu'] || ''}`);
         const fallback=storyTimeForFloor(floor);
-        return mergeStoryDateTimeParts(parsed,fallback).label || '时间未记录';
+        return mergeStoryDateTimeParts(parsed,fallback).label || 'Chưa ghi giờ';
     }
 
     function promiseRecordedStamp(row) {
         const stored = parseStoryDateTime(row?._recordedStoryTime || '');
-        const floor = row?._firstSeenFloor ?? row?._sourceFloor ?? row?.['楼层'];
+        const floor = row?._firstSeenFloor ?? row?._sourceFloor ?? row?.['Tầng'];
         const fallback=storyTimeForFloor(floor);
-        return mergeStoryDateTimeParts(stored,fallback).label || '时间未记录';
+        return mergeStoryDateTimeParts(stored,fallback).label || 'Chưa ghi giờ';
     }
 
     function phoneOrderStoryStamp(order) {
         const parsed=parseStoryDateTime(order?.storyTime || order?.createdStoryTime || '');
         const floor=order?.sourceFloor;
         const byFloor=storyTimeForFloor(floor);
-        return mergeStoryDateTimeParts(parsed,byFloor).label || compactText(order?.time,80) || '时间未记录';
+        return mergeStoryDateTimeParts(parsed,byFloor).label || compactText(order?.time,80) || 'Chưa ghi giờ';
     }
 
     function compactText(value, max = 1200) {
@@ -4085,9 +4085,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return null;
     }
 
-    // fixed40：自动记忆只认“本次真实生成明确绑定的 user 楼层”。
+    // fixed40：自动记忆只认“本次真实生成明确绑定的 user Tầng”。
     // 这和“聊天里历史上曾出现过 user”完全不同：新存档可能包含复制的 metadata、示例消息或开场初始化，
-    // 它们都不能把旧 assistant 楼层武装成一次新的自动整理任务。
+    // 它们都不能把旧 assistant Tầng武装成一次新的自动整理任务。
     function liveTurnUserEntry() {
         const chat=context()?.chat||[];
         const floor=Number(stateRuntime.liveUserFloor);
@@ -4174,7 +4174,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if(!item||typeof item!=='object')return NaN;
         const direct=[item._sourceFloor,item.floor,item._floor,item.sourceFloor,item.lastFloor,item.firstFloor,item.firstSeenFloor,item.lastSeenFloor,item.startFloor,item.endFloor];
         for(const value of direct){const n=Number(value);if(Number.isFinite(n))return n;}
-        const parsed=parseRange(item['覆盖楼层']??item['楼层']??'');
+        const parsed=parseRange(item['Tầng bao phủ']??item['Tầng']??'');
         return Number.isFinite(Number(parsed.end))?Number(parsed.end):NaN;
     }
 
@@ -4195,9 +4195,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             for(const item of list||[]){const rf=recordFloorForIntegrity(item);if(Number.isFinite(rf)&&rf>=floor)item._staleAfterHistoryMutation=staleMark;}
         }
         for(const row of s.tables?.summaries||[]){
-            const r=parseRange(row['覆盖楼层']);
-            if(Number.isFinite(Number(r.end))&&Number(r.end)>=floor&&/阶段总结|大总结|时代总结/.test(String(row['类型']||row['表格类型']||''))){
-                row._previousStatus=row._previousStatus||row['状态'];row['状态']='需重算';row._staleReason=`${reason}：第${floor}层起历史可能变化`;
+            const r=parseRange(row['Tầng bao phủ']);
+            if(Number.isFinite(Number(r.end))&&Number(r.end)>=floor&&/阶段总结|大总结|时代总结/.test(String(row['Loại']||row['Loại bảng']||''))){
+                row._previousStatus=row._previousStatus||row['Trạng thái'];row['Trạng thái']='需重算';row._staleReason=`${reason}：第${floor}层起历史可能变化`;
             }
         }
         logAudit('历史一致性保护',`${reason}，从第${floor}层起旧派生记忆已冻结，相关总结标记需重算`);
@@ -4222,7 +4222,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if(!Object.hasOwn(row,key))continue;
             const value=Number(row[key]);if(Number.isFinite(value)&&(!Number.isFinite(oldFloor)||value===oldFloor))row[key]=floor;
         }
-        if(Object.hasOwn(row,'楼层')&&Number.isFinite(Number(row['楼层']))&&(!Number.isFinite(oldFloor)||Number(row['楼层'])===oldFloor))row['楼层']=String(floor);
+        if(Object.hasOwn(row,'Tầng')&&Number.isFinite(Number(row['Tầng']))&&(!Number.isFinite(oldFloor)||Number(row['Tầng'])===oldFloor))row['Tầng']=String(floor);
         return row;
     }
 
@@ -4330,12 +4330,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         details.npcRegistry=npcRemoved;
 
         for(const row of state.tables?.summaries||[]){
-            const range=parseRange(row?.['覆盖楼层']);if(Number.isFinite(Number(range.end))&&Number(range.end)>=floor&&/阶段总结|大总结|时代总结/.test(String(row?.['类型']||row?.['表格类型']||''))){row._previousStatus=row._previousStatus||row['状态'];row['状态']='需重算';row._staleReason=`${reason}：第${floor}层起旧分支已清理`;row['生成时间']=nowText();delete row._orphanedByChatEdit;}
+            const range=parseRange(row?.['Tầng bao phủ']);if(Number.isFinite(Number(range.end))&&Number(range.end)>=floor&&/阶段总结|大总结|时代总结/.test(String(row?.['Loại']||row?.['Loại bảng']||''))){row._previousStatus=row._previousStatus||row['Trạng thái'];row['Trạng thái']='需重算';row._staleReason=`${reason}：第${floor}层起旧分支已清理`;row['Thời điểm tạo']=nowText();delete row._orphanedByChatEdit;}
         }
         for(const phoneList of [state.phone?.wechat,state.phone?.wechatGroups,state.phone?.channelGroups,state.phone?.sms,state.phone?.calls])for(const row of phoneList||[])clearHistoryMutationMarkers(row);
         if(!legacyOnly){
             state.memoryHealth ||= {};state.memoryHealth.attempts=(state.memoryHealth.attempts||[]).filter(item=>Number(item?.floor)<floor);
-            for(const job of state.summaryJobs||[])if(Number(job?.floor)>=floor||Number(job?.start)>=floor||Number(job?.end)>=floor){job.originalStatus=job.originalStatus||job.status;job.status='orphaned';job.applied=true;job.error=`${reason}：来源楼层已删除或改写`;job.updatedAt=Date.now();}
+            for(const job of state.summaryJobs||[])if(Number(job?.floor)>=floor||Number(job?.start)>=floor||Number(job?.end)>=floor){job.originalStatus=job.originalStatus||job.status;job.status='orphaned';job.applied=true;job.error=`${reason}：来源Tầng已删除或改写`;job.updatedAt=Date.now();}
             const p=state.progress||{};p.assistantMemoryQueue=[];p.lastExtractedMessage=Math.min(Number(p.lastExtractedMessage??-1),floor-1);p.lastExtractedAssistantFloor=Math.min(Number(p.lastExtractedAssistantFloor??-1),floor-1);p.lastExtractedAssistantSignature='';p.lastCompanionFloor=Math.min(Number(p.lastCompanionFloor??-1),floor-1);p.lastCompanionSignature='';p.extractRetryPending=false;p.extractRetryAttempt=0;p.extractRetryReason='';p.extractRetryChatIdentity='';p.extractRetryFloor=-1;p.extractRetrySignature='';p.extractRetryAt=0;p.extractDedupeFloor=-1;p.extractDedupeSignature='';p.extractDedupeGeneration=0;
         }
         rebuildCharacterWorldFromEvents();
@@ -4390,8 +4390,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             chat.splice(duplicateIndex,1);messageNodeForFloor(duplicateIndex)?.remove();
             await saveChatExtras(scope);
             if(!chatScopeIsCurrent(scope))return true;
-            decorateCompanionOutput(keepIndex);scheduleReindex();console.warn(`[vvv小剧场] 已清理重复AI楼层：删除${duplicateIndex}，保留${keepIndex}`);return true;
-        }catch(error){if(chatScopeIsCurrent(scope))console.warn('[vvv小剧场] 清理重复AI楼层失败',error);return false;}
+            decorateCompanionOutput(keepIndex);scheduleReindex();console.warn(`[vvv小剧场] 已清理重复AITầng：删除${duplicateIndex}，保留${keepIndex}`);return true;
+        }catch(error){if(chatScopeIsCurrent(scope))console.warn('[vvv小剧场] 清理重复AITầng失败',error);return false;}
         finally{if(stateRuntime.duplicateGuardToken===token){stateRuntime.duplicateGuardToken=null;stateRuntime.duplicateGuardRunning=false;}}
     }
 
@@ -4475,14 +4475,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const constant=entry.constant===true||entry.alwaysActive===true;
                 const order=Number(entry.order??entry.insertion_order??0)||0;
                 const score=book.boost+(constant?180:0)+(primary.length?120+Math.min(60,primary.length*12):0)+Math.max(-20,Math.min(40,order/10));
-                const title=compactText(entry.comment||entry.name||keys.join('、')||`条目 ${entry.uid??''}`,180)||'未命名条目';
+                const title=compactText(entry.comment||entry.name||keys.join('、')||`条目 ${entry.uid??''}`,180)||'Chưa đặt tên条目';
                 const content=String(entry.content||'').replace(/\u0000/g,'').replace(/\r\n?/g,'\n').trim().slice(0,5000);
                 if(content)candidates.push({book,title,content,score,constant,matched:primary.slice(0,8),uid:entry.uid});
             }
         }
         if(!candidates.length)return '';
         candidates.sort((a,b)=>b.score-a.score||Number(b.constant)-Number(a.constant)||String(a.book.name).localeCompare(String(b.book.name),'zh-CN'));
-        const lines=['【0-32 强读世界书｜高优先级硬设定】','以下内容来自当前角色/当前聊天/当前全局实际绑定的世界书。请主动读取并遵守；世界书中的静态设定优先于旧记忆或模型惯性，但最新user明确行动与本轮已发生剧情仍是当前现实。不要复述世界书，直接按设定继续剧情。'];
+        const lines=['【0-32 强读世界书｜高优先级硬设定】','以下内容来自当前角色/当前聊天/当前全局实际绑定的世界书。请主动读取并遵守；世界书中的静态设定优先于旧记忆或模型惯性，但最新user明确行动与本轮Đã xảy ra剧情仍是当前现实。不要复述世界书，直接按设定继续剧情。'];
         let used=lines.join('\n').length,accepted=0;
         for(const item of candidates){
             if(accepted>=80)break;
@@ -4497,10 +4497,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return lines.join('\n').slice(0,hardLimit);
     }
 
-    const SOURCE_ROSTER_GENERIC_TITLE = /^(?:人物|人物设定|角色|角色设定|npc|主要人物|配角|世界观|背景|关系|关系网|社交关系|群像|学校|公司|组织|家族|家庭|朋友|同学|室友|同事|附录|备注|其他|设定)$/i;
-    const SOURCE_ROSTER_BAD_NAME = /^(?:未知|无|暂无|男|女|男性|女性|成年|成年人|学生|老师|同学|室友|同事|朋友|好友|家人|父亲|母亲|哥哥|姐姐|弟弟|妹妹|上司|下属|老板|角色|人物|NPC|user|char|none|null|true|false|反馈|流程|预算|求助|往来|身边|争辩|温情|商场|插画|谈资|声线|身份|决定|机制|规则|规范|备注|说明)$/i;
+    const SOURCE_ROSTER_GENERIC_TITLE = /^(?:人物|人物设定|角色|角色设定|npc|主要人物|配角|世界观|背景|关系|关系网|社交关系|群像|学校|公司|组织|家族|家庭|朋友|同学|室友|同事|附录|Ghi chú|其他|设定)$/i;
+    const SOURCE_ROSTER_BAD_NAME = /^(?:Chưa rõ|无|Chưa có|男|女|男性|女性|成年|成年人|学生|老师|同学|室友|同事|朋友|好友|家人|父亲|母亲|哥哥|姐姐|弟弟|妹妹|上司|下属|老板|角色|人物|NPC|user|char|none|null|true|false|反馈|流程|预算|求助|往来|身边|争辩|温情|商场|插画|谈资|声线|Thân phận|决定|机制|规则|规范|Ghi chú|说明)$/i;
     const SOURCE_ROSTER_INDEX_TITLE = /^(?:[0-9０-９]{1,6}|第?[0-9０-９一二三四五六七八九十百千]{1,8}(?:号|条|章|节|项|层|页)?|(?:entry|item|npc|char)[-_ ]?[0-9]{1,6})$/i;
-    const SOURCE_ROSTER_SECTION_TITLE = /(?:背景|日常|规则|规范|机制|核心|设定|条件|结局|情感|肉体|分离|角色扮演|衣物|点缀|家庭生活|玩法|模式|说明|简介|章节|标题|表面|内在|癖好|配饰|附件|眼睛|性格|关系|习惯|状态|世界观|道德|伦理|禁忌|描写|细节|主题|内容|补充|备注|索引|分类|目录|流程|反馈|预算|求助|往来|身边|争辩|温情|商场|插画|谈资|声线|身份|判断|说话|吐槽|决定|专业联系|职业社交|工作流程|纹身|抽象曼波|template|schema|config|setting|surface|inner|daily|accessories|eyes|fetishes|relationships|temperament|complexes|anus)/i;
+    const SOURCE_ROSTER_SECTION_TITLE = /(?:背景|日常|规则|规范|机制|核心|设定|条件|结局|情感|肉体|分离|角色扮演|衣物|点缀|家庭生活|玩法|模式|说明|简介|章节|标题|表面|内在|癖好|配饰|附件|眼睛|Tính cách|关系|习惯|Trạng thái|世界观|道德|伦理|禁忌|描写|细节|主题|内容|补充|Ghi chú|索引|分类|目录|流程|反馈|预算|求助|往来|身边|争辩|温情|商场|插画|谈资|声线|Thân phận|判断|说话|吐槽|决定|专业联系|职业社交|工作流程|纹身|抽象曼波|template|schema|config|setting|surface|inner|daily|accessories|eyes|fetishes|relationships|temperament|complexes|anus)/i;
     const SOURCE_ROSTER_RELATION_TOKENS = [
         '外祖父','外祖母','祖父','祖母','爷爷','奶奶','外公','外婆','父亲','母亲','爸爸','妈妈','父母','继父','继母','岳父','岳母','公公','婆婆',
         '哥哥','姐姐','弟弟','妹妹','兄长','姊姊','兄弟','姐妹','小姨','姨妈','姨父','舅舅','舅妈','姑姑','姑父','叔叔','婶婶','伯父','伯母','堂兄','堂姐','堂弟','堂妹','表哥','表姐','表弟','表妹',
@@ -4510,11 +4510,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     ];
     const SOURCE_ROSTER_RELATION_PREFIX = new RegExp(`^(?:${SOURCE_ROSTER_RELATION_TOKENS.slice().sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')})[·・\\s_-]*`,'i');
     const SOURCE_ROSTER_PROSE_RELATION = `(?:${SOURCE_ROSTER_RELATION_TOKENS.slice().sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')})`;
-    const SOURCE_ROSTER_PROSE_BAD_STEM = /^(?:的|地|得|她|他|它|其|这|那|某|经营|负责|知道|喜欢|讨厌|觉得|认为|希望|要求|提醒|没有|不是|已经|仍然|通常|后来|现在|目前|因为|所以|如果|但是|而且|以及|一起|一个|一家|一位|两人|双方|关系|家庭|工作|生活|剧情|设定|世界|角色|朋友们|同事们|家人们|继续|开始|结束|进行|进入|出来|成为|保持|回到|留下|怀孕|裸体|说过|死后|谈话|推倒|尖叫|求助|交合|赤诚|成年|成熟|反馈|方向|方式|反应|镜像|混合体|那一夜|女儿|乳头|舌尖|嘴唇|旗帜|颜料|深处|子宫口|在床|也发现|最好了|与|和|又|可|会|全|身|声|往|求|进|需|流|反|预|争|频|抽|炫|身份|流程|反馈|预算|同行|自住|录音|混音|尊重|兴趣|创作|专业|职业|社交|联系|领域|空间|隐私|习惯|自由职业)/;
-    const SOURCE_ROSTER_NON_PERSON_TERM = /^(?:同行|自住|尊重兴趣|录音混音|录音|混音|音轨|音频|插画|设计|绘画|创作|创作习惯|创作领域|专业联系|职业社交|工作流程|自由职业|兴趣|隐私|个人空间|生活方式|核心机制|背景设定|角色设定|身份设定|关系设定|日常规则|道德规范)$/i;
-    // fixed31：不是继续扩“黑名单”，而是先拦截明显属于章节、状态、地点、动作、物品、时间、抽象概念的短语。
-    // 这些词即使碰巧以中文姓氏开头，也不能仅凭“长得像2-4字姓名”进入微信。
-    const SOURCE_ROSTER_SEMANTIC_NON_PERSON = /(?:费用|收费|预算|价格|金额|工资|收入|支出|成本|负担|环境|成长环境|背景|经历|阶段|时期|毕业后|毕业前|高一|高二|高三|大一|大二|大三|大四|相似的脸|相似|相称|支撑|意味|意义|性意味|录音|混音|音轨|音频|旋律|节奏|插画|绘画|设计|创作|工作流程|职业社交|专业联系|同行|自住|兴趣|尊重兴趣|习惯|隐私|自由职业|关系|状态|条件|结局|原则|规则|规范|机制|流程|反馈|方向|方式|反应|目标|任务|价值|观念|情绪|语气|口吻|声线|声音|身体|部位|乳头|嘴唇|舌尖|子宫|裸体|怀孕|谈话|对话|那一夜|女儿|脸|面|桥|公园|山道|道路|楼层|档口|店铺|商场|门店|学校|班级|年级|宿舍|社团|公会|战队|省|市|区|县|镇|乡|村|大道|街道|菜单|食物|面条|米线|汤面|地瓜|警告|通知|公告|大厅|客人|姑娘|媒体|NTR)/i;
+    const SOURCE_ROSTER_PROSE_BAD_STEM = /^(?:的|地|得|她|他|它|其|这|那|某|经营|负责|知道|喜欢|讨厌|觉得|认为|希望|要求|提醒|没有|不是|已经|仍然|通常|后来|现在|目前|因为|所以|如果|但是|而且|以及|一起|一个|一家|一位|两人|双方|关系|家庭|工作|生活|剧情|设定|世界|角色|朋友们|同事们|家人们|继续|开始|结束|进行|进入|出来|成为|保持|回到|留下|怀孕|裸体|说过|死后|谈话|推倒|尖叫|求助|交合|赤诚|成年|成熟|反馈|方向|方式|反应|镜像|混合体|那一夜|女儿|乳头|舌尖|嘴唇|旗帜|颜料|深处|子宫口|在床|也发现|最好了|与|和|又|可|会|全|身|声|往|求|进|需|流|反|预|争|频|抽|炫|Thân phận|流程|反馈|预算|同行|自住|录音|混音|尊重|兴趣|创作|专业|职业|社交|联系|领域|空间|隐私|习惯|自由职业)/;
+    const SOURCE_ROSTER_NON_PERSON_TERM = /^(?:同行|自住|尊重兴趣|录音混音|录音|混音|音轨|音频|插画|设计|绘画|创作|创作习惯|创作领域|专业联系|职业社交|工作流程|自由职业|兴趣|隐私|个人空间|生活方式|核心机制|背景设定|角色设定|Thân phận设定|关系设定|日常规则|道德规范)$/i;
+    // fixed31：不是继续扩“黑名单”，而是先拦截明显属于章节、Trạng thái、地点、动作、物品、时间、抽象概念的短语。
+    // 这些词即使碰巧以中文姓氏开头，也不能仅凭“长得像2-4字Họ tên”进入微信。
+    const SOURCE_ROSTER_SEMANTIC_NON_PERSON = /(?:费用|收费|预算|价格|金额|工资|收入|支出|成本|负担|环境|成长环境|背景|经历|阶段|时期|毕业后|毕业前|高一|高二|高三|大一|大二|大三|大四|相似的脸|相似|相称|支撑|意味|意义|性意味|录音|混音|音轨|音频|旋律|节奏|插画|绘画|设计|创作|工作流程|职业社交|专业联系|同行|自住|兴趣|尊重兴趣|习惯|隐私|自由职业|关系|Trạng thái|条件|结局|原则|规则|规范|机制|流程|反馈|方向|方式|反应|目标|任务|价值|观念|情绪|语气|口吻|声线|声音|身体|部位|乳头|嘴唇|舌尖|子宫|裸体|怀孕|谈话|对话|那一夜|女儿|脸|面|桥|公园|山道|道路|Tầng|档口|店铺|商场|门店|学校|班级|年级|宿舍|社团|公会|战队|省|市|区|县|镇|乡|村|大道|街道|菜单|食物|面条|米线|汤面|地瓜|警告|通知|公告|大厅|客人|姑娘|媒体|NTR)/i;
     const SOURCE_ROSTER_GEO_OR_ORG = /(?:省|自治区|特别行政区|市|区|县|镇|乡|村|街道|路|街|巷|小区|公寓|宿舍|寝室|公司|集团|工作室|门店|店铺|商店|学校|大学|学院|医院|诊所|机构|协会|社团|公会|战队|公园|广场|景区|山道|桥)$/;
     const SOURCE_ROSTER_COMMON_SURNAME = /^[赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻柏窦章云苏潘葛奚范彭郎鲁韦昌马苗凤花方俞任袁柳鲍史唐费廉岑薛雷贺倪汤滕殷罗毕郝邬安常乐于时傅皮卞齐康伍余元卜顾孟平黄和穆萧尹姚邵湛汪祁毛禹狄米贝明臧计伏成戴谈宋茅庞熊纪舒屈项祝董梁杜阮蓝闵席季麻强贾路娄危江童颜郭梅盛林刁钟徐邱骆高夏蔡田樊胡凌霍虞万支柯管卢莫房裘缪解应宗丁宣邓郁单杭洪包诸左石崔吉钮龚程嵇邢滑裴陆荣翁荀羊甄家封芮储靳汲糜段富巫乌焦巴牧山谷车侯全班仰秋仲伊宫宁仇栾甘厉祖武符刘景詹束龙叶幸司郜黎薄印宿白怀蒲从鄂索咸赖卓蔺屠蒙池乔胥苍双闻党翟谭贡劳姬申扶冉雍桑桂濮牛寿通边扈燕冀浦尚农温别庄晏柴瞿阎艾鱼容向古易慎戈廖终居衡步都耿满弘匡国文寇广东欧沃利蔚越隆师巩聂晁勾融辛阚那简饶曾沙鞠丰巢关蒯相查后荆红游竺权益桓]/;
     const SOURCE_ROSTER_COMPOUND_SURNAME = /^(?:欧阳|司马|上官|诸葛|东方|皇甫|尉迟|公孙|慕容|司徒|司空|夏侯|端木|长孙|宇文|令狐|轩辕|南宫)/;
@@ -4523,7 +4523,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function cleanSourceRosterName(value) {
         let name=compactText(value,80).replace(/^[\s`*_#>\-+【\[（(「『“\"']+|[\s`*_#>\-+】\]）)」』”\"',，。；;：:]+$/g,'').trim();
-        name=name.replace(/^(?:姓名|名字|角色名|人物名|name)\s*[:：]\s*/i,'').trim();
+        name=name.replace(/^(?:Họ tên|名字|Tên nhân vật|人物名|name)\s*[:：]\s*/i,'').trim();
         name=name.split(/[（(【\[|｜,，;；\/\\]/)[0].trim();
         name=name.replace(SOURCE_ROSTER_RELATION_PREFIX,'').trim();
         if(!name||SOURCE_ROSTER_INDEX_TITLE.test(name)||name.length<2||name.length>40||SOURCE_ROSTER_BAD_NAME.test(name)||SOURCE_ROSTER_GENERIC_TITLE.test(name))return '';
@@ -4549,8 +4549,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
 
-    // fixed31：自由文本中的“关系词 + 后续短语”不再直接视作姓名，并要求候选具备可追溯的人物证据。
-    // 中文自由文本候选默认必须像真实姓名；只有明确人物档案字段且同时有多项人物证据时才放宽。
+    // fixed31：自由文本中的“关系词 + 后续短语”不再直接视作Họ tên，并要求候选具备可追溯的人物证据。
+    // 中文自由文本候选默认必须像真实Họ tên；只有明确人物档案字段且同时有多项人物证据时才放宽。
     function sourceRosterStrictHumanName(value='', {schemaExplicit=false, evidence=''}={}) {
         const name=cleanSourceRosterName(value);if(!name)return false;
         if(/^[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}$/.test(name))return true;
@@ -4563,9 +4563,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if(schemaExplicit){
             const ev=compactText(evidence,900);
             const strong=[
-                /(?:年龄|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i,
+                /(?:Tuổi|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i,
                 /(?:性别|gender)\s*[:：]?\s*(?:男|女|male|female)/i,
-                /(?:身份|职业|occupation|job)\s*[:：]/i,
+                /(?:Thân phận|职业|occupation|job)\s*[:：]/i,
             ].filter(re=>re.test(ev)).length;
             return strong>=2;
         }
@@ -4575,9 +4575,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function sourceRosterDirectProfileEvidence(text='') {
         const value=compactText(text,1800);
         let score=0;
-        if(/(?:年龄|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i.test(value))score+=2;
+        if(/(?:Tuổi|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i.test(value))score+=2;
         if(/(?:性别|gender)\s*[:：]?\s*(?:男|女|male|female)/i.test(value))score+=2;
-        if(/(?:身份|职业|occupation|job)\s*[:：]\s*[^，,。；;\n]{1,40}/i.test(value))score+=2;
+        if(/(?:Thân phận|职业|occupation|job)\s*[:：]\s*[^，,。；;\n]{1,40}/i.test(value))score+=2;
         if(/(?:生日|出生|birth)\s*[:：]?\s*[^，,。；;\n]{2,40}/i.test(value))score+=1;
         if(/(?:身高|height)\s*[:：]?\s*\d{2,3}/i.test(value))score+=1;
         return score;
@@ -4598,9 +4598,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function sourceRosterConcretePersonEvidence(text='') {
         const value=compactText(text,1600);
         return [
-            /(?:年龄|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i,
+            /(?:Tuổi|age)\s*[:：]?\s*\d{1,3}|\d{1,3}\s*岁/i,
             /(?:性别|gender)\s*[:：]?\s*(?:男|女|male|female)/i,
-            /(?:身份|职业|occupation|job)\s*[:：]/i,
+            /(?:Thân phận|职业|occupation|job)\s*[:：]/i,
             new RegExp(`${SOURCE_ROSTER_PROSE_RELATION}\\s*[:：]`,'i'),
             /(?:与|和|同)\s*(?:\{\{user\}\}|user|\{\{char\}\}|char)\s*(?:的)?(?:关系|是|为)/i,
         ].filter(re=>re.test(value)).length;
@@ -4694,19 +4694,19 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function extractSourceRosterFromText(text, map, meta={}) {
         const value=String(text||'').replace(/\r\n?/g,'\n');if(!value.trim())return;
-        const relationRe=new RegExp(`(?:姓名|名字|角色名|人物名|name|${SOURCE_ROSTER_PROSE_RELATION})\\s*[:：]\\s*([^\\n]{1,80})`,'gi');
+        const relationRe=new RegExp(`(?:Họ tên|名字|Tên nhân vật|人物名|name|${SOURCE_ROSTER_PROSE_RELATION})\\s*[:：]\\s*([^\\n]{1,80})`,'gi');
         for(const m of value.matchAll(relationRe)){
             const raw=(m[1]||'').split(/[，,；;。]/)[0];
             const prefix=(m[0].split(/[:：]/)[0]||'').trim();
             const relation=sourceRosterSpecificRelation(prefix);
             const candidate=cleanSourceRosterName(raw);if(!candidate||!sourceRosterProperNameShape(candidate))continue;
-            const isNameField=/^(?:姓名|名字|角色名|人物名|name)$/i.test(prefix);
+            const isNameField=/^(?:Họ tên|名字|Tên nhân vật|人物名|name)$/i.test(prefix);
             if(isNameField){
                 if(!sourceRosterProseNameAllowed(candidate,{explicit:true}))continue;
             }else if(!sourceRosterStrictHumanName(candidate))continue;
             addSourceRosterCandidate(map,candidate,{...meta,evidenceKind:isNameField?'name-field':'relation-field',role:sourceRosterRoleText(prefix)||prefix,relation,remark:sourceRosterRemark(relation,m[0],meta),confidence:Math.max(Number(meta.confidence)||0,.96),evidence:m[0]});
         }
-        const yamlRe=/^\s*-?\s*(?:name|姓名|角色名|人物名|character)\s*[:：]\s*([^\n#]{2,60})/gim;
+        const yamlRe=/^\s*-?\s*(?:name|Họ tên|Tên nhân vật|人物名|character)\s*[:：]\s*([^\n#]{2,60})/gim;
         for(const m of value.matchAll(yamlRe)){
             const candidate=cleanSourceRosterName(m[1]);if(!candidate||!sourceRosterProperNameShape(candidate))continue;
             const near=value.slice(Math.max(0,m.index-80),Math.min(value.length,m.index+360)),relation=sourceRosterSpecificRelation(near);
@@ -4718,17 +4718,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const evidence=`${m[2]||''} ${m[3]||''}`.trim(),role=sourceRosterRoleText(evidence),relation=sourceRosterSpecificRelation(evidence);
             const profileEvidence=sourceRosterConcretePersonEvidence(evidence);
             if(!sourceRosterStrictHumanName(candidate,{schemaExplicit:true,evidence}))continue;
-            // fixed31：任意“标题：正文”不再因为正文里碰到一个工作/关系词就升级成人物。
-            // 至少需要3分直接人物档案证据，或明确关系备注。
+            // fixed31：任意“标题：chính văn”不再因为chính văn里碰到一个工作/关系词就升级成人物。
+            // 至少需要3分直接人物档案证据，或明确关系Ghi chú。
             if(profileEvidence<2&&sourceRosterDirectProfileEvidence(evidence)<3&&!relation)continue;
             addSourceRosterCandidate(map,candidate,{...meta,evidenceKind:'inline-profile',role,relation,remark:sourceRosterRemark(relation,evidence,meta),confidence:Math.max(Number(meta.confidence)||0,.92),evidence:m[0]});
         }
 
-        // fixed27：正文人物只从“明确的人际/职业称谓 + 姓名”“命名句”“句首姓名+年龄”三类强证据中提取。
-        // 不再让任意 2-6 个汉字在逗号/年龄附近变成人名，解决“流程、反馈、和独立判断、抽象曼波纹身”等污染。
+        // fixed27：chính văn人物只从“明确的人际/职业称谓 + Họ tên”“命名句”“句首Họ tên+Tuổi”三类强证据中提取。
+        // 不再让任意 2-6 个汉字在逗号/Tuổi附近变成人名，解决“流程、反馈、和独立判断、抽象曼波纹身”等污染。
         const relPattern=SOURCE_ROSTER_PROSE_RELATION;
         const personToken=`([\u3400-\u9fff·]{2,4}|[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}|[\u3040-\u30ffー・]{2,16})`;
-        const relationNamedRe=new RegExp(`(${relPattern})\s*(?:叫做|叫|名叫|名为|姓名是|名字叫|名字是)\s*${personToken}(?=\s*(?:[，,、；;。！？!?\n]|[（(]|\d{1,3}\s*岁|$))`,'gim');
+        const relationNamedRe=new RegExp(`(${relPattern})\s*(?:叫做|叫|名叫|名为|Họ tên是|名字叫|名字是)\s*${personToken}(?=\s*(?:[，,、；;。！？!?\n]|[（(]|\d{1,3}\s*岁|$))`,'gim');
         for(const m of value.matchAll(relationNamedRe)){
             const relation=compactText(m[1],40),candidate=cleanSourceRosterName(m[2]);
             if(!sourceRosterProseNameAllowed(candidate,{explicit:true})||SOURCE_ROSTER_PROSE_BAD_STEM.test(candidate))continue;
@@ -4758,7 +4758,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             addSourceRosterCandidate(map,candidate,{...meta,evidenceKind:'suffix-relation',role:sourceRosterRoleText(relation)||relation,relation,remark:sourceRosterRemark(relation,m[0],meta),confidence:Math.max(Number(meta.confidence)||0,.98),evidence:compactText(m[0],180)});
         }
 
-        const namedBodyRe=/(?:叫做|名叫|名为|姓名为|姓名是|名字叫|名字是)\s*([\u3400-\u9fff·]{2,4}|[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}|[\u3040-\u30ffー・]{2,16})(?=\s*(?:[，,、；;。！？!?\n]|[（(]|\d{1,3}\s*岁|$))/gim;
+        const namedBodyRe=/(?:叫做|名叫|名为|Họ tên为|Họ tên是|名字叫|名字是)\s*([\u3400-\u9fff·]{2,4}|[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}|[\u3040-\u30ffー・]{2,16})(?=\s*(?:[，,、；;。！？!?\n]|[（(]|\d{1,3}\s*岁|$))/gim;
         for(const m of value.matchAll(namedBodyRe)){
             const candidate=cleanSourceRosterName(m[1]);if(!sourceRosterStrictHumanName(candidate,{schemaExplicit:true,evidence:m[0]})&&!sourceRosterLikelyHumanName(candidate,{explicit:false}))continue;
             const at=Number(m.index||0),lineStart=Math.max(0,value.lastIndexOf('\n',at)+1),lineEnd=(()=>{const x=value.indexOf('\n',at);return x<0?value.length:x;})(),near=value.slice(lineStart,lineEnd),relation=sourceRosterSpecificRelation(near);
@@ -4777,13 +4777,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function sourceRosterKeywordCandidates(entry, map, meta={}) {
         const content=String(entry?.content||'');if(!content.trim())return;
-        // fixed25：world-info keys 是触发词，不是人物名单。只有正文显式把 key 声明为姓名时才接受。
+        // fixed25：world-info keys 是触发词，不是人物名单。只有chính văn显式把 key 声明为Họ tên时才接受。
         for(const key of worldBookKeywords(entry).slice(0,24)){
             const candidate=cleanSourceRosterName(key);if(!candidate||!sourceRosterProperNameShape(candidate))continue;
             const escaped=String(candidate).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-            const explicit=new RegExp(`(?:姓名|名字|角色名|人物名|name)\\s*[:：]\\s*${escaped}(?:\\s|$|[，,。；;])`,'i').test(content);
+            const explicit=new RegExp(`(?:Họ tên|名字|Tên nhân vật|人物名|name)\\s*[:：]\\s*${escaped}(?:\\s|$|[，,。；;])`,'i').test(content);
             if(!explicit)continue;
-            const near=`世界书显式姓名:${key}；${content.slice(0,220)}`,relation=sourceRosterSpecificRelation(content);
+            const near=`世界书显式Họ tên:${key}；${content.slice(0,220)}`,relation=sourceRosterSpecificRelation(content);
             addSourceRosterCandidate(map,candidate,{...meta,evidenceKind:'keyword-explicit',role:sourceRosterRoleText(content),relation,remark:sourceRosterRemark(relation,content,meta),confidence:Math.max(Number(meta.confidence)||0,.98),evidence:near});
         }
     }
@@ -4792,18 +4792,18 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const rawTitle=compactText(title,120),t=cleanSourceRosterName(rawTitle),body=String(content||'');
         if(!t||!sourceRosterProperNameShape(t))return false;
         const escaped=String(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        if(new RegExp(`(?:姓名|名字|角色名|人物名|name)\\s*[:：]\\s*${escaped}(?:\\s|$|[，,。；;])`,'i').test(body))return true;
+        if(new RegExp(`(?:Họ tên|名字|Tên nhân vật|人物名|name)\\s*[:：]\\s*${escaped}(?:\\s|$|[，,。；;])`,'i').test(body))return true;
         const hadRelationPrefix=SOURCE_ROSTER_RELATION_PREFIX.test(rawTitle);
         const titleAnnotated=/[（(][^）)\n]{1,40}[）)]/.test(rawTitle);
         const evidenceHits=sourceRosterConcretePersonEvidence(body);
         const directProfile=sourceRosterDirectProfileEvidence(body);
         // fixed31：世界书 comment/title 只是目录标签，默认绝不当联系人。
-        // 只有“标题本身像人名 + 正文具有明确人物档案字段”或标题带关系备注时才提升为人物。
+        // 只有“标题本身像人名 + chính văn具有明确人物档案字段”或标题带关系Ghi chú时才提升为人物。
         if(hadRelationPrefix||titleAnnotated){
             if(!sourceRosterLikelyHumanName(t,{explicit:true})&&!sourceRosterStrictHumanName(t,{schemaExplicit:true,evidence:body}))return false;
             return evidenceHits>=1||directProfile>=2;
         }
-        // 普通人物条目标题可以是少见姓氏/架空姓名，但必须有完整档案证据；目录词已由 cleanSourceRosterName 先行过滤。
+        // 普通人物条目标题可以是少见姓氏/架空Họ tên，但必须有完整档案证据；目录词已由 cleanSourceRosterName 先行过滤。
         return sourceRosterStrictHumanName(t,{schemaExplicit:true,evidence:body})&&directProfile>=4;
     }
 
@@ -4836,7 +4836,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if(/^[A-Z][A-Za-z.'·-]{1,30}(?:\s+[A-Z][A-Za-z.'·-]{1,30}){0,3}$/.test(name))return evidence;
         if(/^[\u3040-\u30ffー・]{2,16}$/.test(name))return evidence;
         if(!/^[\u3400-\u9fff·]{2,6}$/.test(name))return false;
-        // AI实体抽取允许架空姓氏，但必须同时有关系/身份证据；明显非人物语义仍由上方硬过滤。
+        // AI实体抽取允许架空姓氏，但必须同时有关系/Thân phận证据；明显非人物语义仍由上方硬过滤。
         return evidence;
     }
     function normalizeSourceRosterAiRows(payload={}, meta={}) {
@@ -4899,8 +4899,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             try{
                 await ensureCompanionIndependentApiReady();
                 const {charName,userName}=sourceRosterActiveNames();
-                const systemPrompt=`你是“角色社会关系实体建档器”。你的唯一任务是从用户提供的角色卡与绑定世界书资料中提取【明确存在、拥有具体姓名的人物】并结构化。你不是小说作者，不续写剧情，不补人名，不根据常识创造人物。目录、章节名、规则、地点、机构、抽象概念、身体部位、动作、状态、职业类别都不是人物。`;
-                const prompt=`【角色社会关系首轮建档】\n主角色：${charName||'未命名'}\nuser：${userName||'{{user}}'}\n\n请逐条阅读下面的角色卡与绑定世界书。只提取资料中【明确写出具体姓名】的人。\n\n硬规则：\n1. 绝对禁止把“费用、毕业后、相似的脸、成长环境、NTR、录音混音、湖南省、工作流程”等目录/概念/地点/动作当人物。\n2. 不允许因为出现“父亲/朋友/同事”等关系词就自己编一个名字；原文没名字就不要返回。\n3. 同一个人只返回一次。\n4. relationToChar写此人与主角色的关系，如“父亲/母亲/妹妹/同事/朋友”；relationToUser只在资料明确写出与user的关系时填写。\n5. 不生成微信联系人备注。不要把“某人的朋友/合作方/父亲/母亲”等关系拼进联系人显示名；关系只写 relationToChar / relationToUser / identity / groupTags。\n6. phoneEligible：明确死亡、历史人物、完全无联系方式者可false；其余角色卡/世界书中的现实社交人物通常true。\n7. groupTags只能从 family/friends/work/class/course/dorm/club/guild/other 中选；只按资料明确关系标注。\n8. evidence只摘录很短的原文证据，不要整段复制。\n\n只输出JSON对象：\n{"persons":[{"name":"姓名","relationToChar":"","relationToUser":"","identity":"","phoneEligible":true,"groupTags":["family"],"sourceBook":"","sourceEntry":"","evidence":"原文短证据","confidence":0.99}]}\n\n【资料开始】\n${String(snapshot?.material||'').slice(0,140000)}\n【资料结束】`;
+                const systemPrompt=`你是“角色社会关系实体建档器”。你的唯一任务是从用户提供的角色卡与绑定世界书资料中提取【明确存在、拥有具体Họ tên的人物】并结构化。你不是小说作者，不续写剧情，不补人名，不根据常识创造人物。目录、章节名、规则、地点、机构、抽象概念、身体部位、动作、Trạng thái、职业类别都不是人物。`;
+                const prompt=`【角色社会关系首轮建档】\n主角色：${charName||'Chưa đặt tên'}\nuser：${userName||'{{user}}'}\n\n请逐条阅读下面的角色卡与绑定世界书。只提取资料中【明确写出具体Họ tên】的人。\n\n硬规则：\n1. 绝对禁止把“费用、毕业后、相似的脸、成长环境、NTR、录音混音、湖南省、工作流程”等目录/概念/地点/动作当人物。\n2. 不允许因为出现“父亲/朋友/同事”等关系词就自己编一个名字；原文没名字就不要返回。\n3. 同一个人只返回一次。\n4. relationToChar写此人与主角色的关系，如“父亲/母亲/妹妹/同事/朋友”；relationToUser只在资料明确写出与user的关系时填写。\n5. 不生成微信联系人Ghi chú。不要把“某人的朋友/合作方/父亲/母亲”等关系拼进联系人显示名；关系只写 relationToChar / relationToUser / identity / groupTags。\n6. phoneEligible：明确死亡、历史人物、完全无联系方式者可false；其余角色卡/世界书中的现实社交人物通常true。\n7. groupTags只能从 family/friends/work/class/course/dorm/club/guild/other 中选；只按资料明确关系标注。\n8. evidence只摘录很短的原文证据，不要整段复制。\n\n只输出JSON对象：\n{"persons":[{"name":"Họ tên","relationToChar":"","relationToUser":"","identity":"","phoneEligible":true,"groupTags":["family"],"sourceBook":"","sourceEntry":"","evidence":"原文短证据","confidence":0.99}]}\n\n【资料开始】\n${String(snapshot?.material||'').slice(0,140000)}\n【资料结束】`;
                 const data=await callCompanionIndependentApi(prompt,{systemPrompt,jsonMode:true,responseLength:8000,generationType:'source-roster-bootstrap'});
                 const parsed=parseGeneratedJson(String(data?.text||'{}'));const rows=normalizeSourceRosterAiRows(parsed,{floor,generatedAt:Date.now()});
                 cache.status='complete';cache.rows=rows;cache.generatedAt=Date.now();cache.builtAtFloor=Number(floor);cache.model=compactText(data?.model||stateRuntime.serverConfig?.companion?.model||'',180);cache.provider=compactText(data?.provider||'companion-independent',120);cache.error='';
@@ -4992,7 +4992,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function phoneGroupProfileAllowed(profile, trusted=trustedPhoneSocialNameSet()) {
         const name=compactText(profile?.groupName,120);if(!phoneGroupNameLooksReal(name))return false;
         const type=compactText(profile?.type,40),source=compactText(profile?.source,160);
-        const generated=/(?:social-role-bootstrap|user原世界|角色卡\/世界书人物池|当前世界.*身份)/i.test(source)||SOURCE_ROSTER_AUTO_GROUP_NAMES.has(name);
+        const generated=/(?:social-role-bootstrap|user原世界|角色卡\/世界书人物池|当前世界.*Thân phận)/i.test(source)||SOURCE_ROSTER_AUTO_GROUP_NAMES.has(name);
         if(generated&&['class','course','dorm','club','guild'].includes(type)&&!phoneAutoGroupTypeEligible(type))return false;
         const members=[...new Set((profile?.members||[]).filter(member=>phoneSocialNameAllowed(member,trusted)).map(member=>cleanSourceRosterName(member)).filter(Boolean))];
         if(members.length>=2)return true;
@@ -5087,7 +5087,7 @@ ${scene.mood||''}`,12000);
         if(type==='dorm')return Boolean(stage.currentStudent&&stage.currentDorm);
         if(type==='club')return Boolean(stage.currentClub);
         if(type==='guild')return Boolean(stage.currentGuild);
-        // 工作/家人/朋友关系可以作为现实社交容器；学校/宿舍/社团/战队必须是“当前身份”才允许自动出现。
+        // 工作/家人/朋友关系可以作为现实社交容器；学校/宿舍/社团/战队必须是“当前Thân phận”才允许自动出现。
         if(type==='work')return Boolean(stage.currentWork||originSocialIdentityProfile().work);
         return ['family','friends'].includes(type);
     }
@@ -5098,7 +5098,7 @@ ${scene.mood||''}`,12000);
         const blocked=new Set();
         for(const row of phone.groupProfiles){
             const type=compactText(row?.type,40),source=compactText(row?.source,160),name=compactText(row?.groupName,120);
-            const generated=/(?:social-role-bootstrap|user原世界|角色卡\/世界书人物池|当前世界.*身份)/i.test(source)||SOURCE_ROSTER_AUTO_GROUP_NAMES.has(name);
+            const generated=/(?:social-role-bootstrap|user原世界|角色卡\/世界书人物池|当前世界.*Thân phận)/i.test(source)||SOURCE_ROSTER_AUTO_GROUP_NAMES.has(name);
             if(generated&&['class','course','dorm','club','guild'].includes(type)&&!phoneAutoGroupTypeEligible(type))blocked.add(name);
         }
         if(!blocked.size)return 0;
@@ -5177,7 +5177,7 @@ ${scene.mood||''}`,12000);
 
     function sourceCharacterRosterBrief(limit=48) {
         const rows=(stateRuntime.sourceCharacterRoster||[]).slice(0,Math.max(1,Number(limit)||48));
-        if(!rows.length)return '暂无可靠提取到的角色卡/世界书人物；本轮只使用已经在剧情/记忆中明确出现的人，不为填满手机而硬造新名字。';
+        if(!rows.length)return 'Chưa có可靠提取到的角色卡/世界书人物；本轮只使用已经在剧情/记忆中明确出现的人，不为填满手机而硬造新名字。';
         return rows.map(row=>`- ${row.name}${row.relation?`｜关系:${row.relation}`:''}${row.role?`｜关系线索:${row.role}`:''}${row.book?`｜世界书:${row.book}`:''}${row.entry?`｜条目:${row.entry}`:''}`).join('\n');
     }
 
@@ -5211,7 +5211,7 @@ ${scene.mood||''}`,12000);
         const fields=[
             `联系人：${compactText(contact,100)}`,
             row?.relation?`关系：${compactText(row.relation,100)}`:'',
-            row?.identity?`身份：${compactText(row.identity,180)}`:'',
+            row?.identity?`Thân phận：${compactText(row.identity,180)}`:'',
             row?.book?`来源世界书：${compactText(row.book,120)}`:'',
             row?.entry?`来源条目：${compactText(row.entry,160)}`:'',
             profile?.rosterRole?`通讯录关系：${compactText(profile.rosterRole,180)}`:'',
@@ -5254,7 +5254,7 @@ ${scene.mood||''}`,12000);
             if(tokenHits>=14)break;
         }
         if(tokenHits>=2)score+=Math.min(80,tokenHits*8);
-        if(/(?:固定事实|固定设定|固定排班|长期|每周|负责|任职|同事|店长|家人|父亲|母亲|工作|职业|约定)/.test(content)&&score>=30)score+=18;
+        if(/(?:固定事实|固定设定|固定排班|长期|每周|负责|任职|同事|店长|家人|父亲|母亲|工作|职业|Lời hẹn)/.test(content)&&score>=30)score+=18;
         return {score,reasons:[...new Set(reasons)].slice(0,5),tokenHits};
     }
     async function buildPhoneRelevantWorldBookFacts({mode='message',contact='',event={},history=[],maxEntries=5,maxChars=6500}={}) {
@@ -5275,7 +5275,7 @@ ${scene.mood||''}`,12000);
             const chosen=[];const seen=new Set();let used=0;
             for(const item of ranked){
                 if(chosen.length>=Math.max(1,Number(maxEntries)||5)||used>=maxChars)break;
-                const bookName=compactText(item?.book?.name||'',140),title=compactText(item?.title||'',180)||'未命名条目',key=`${worldBookNameKey(bookName)}|${title}`;if(seen.has(key))continue;seen.add(key);
+                const bookName=compactText(item?.book?.name||'',140),title=compactText(item?.title||'',180)||'Chưa đặt tên条目',key=`${worldBookNameKey(bookName)}|${title}`;if(seen.has(key))continue;seen.add(key);
                 const raw=String(item?.content||'').replace(/\r\n?/g,'\n').trim();if(!raw)continue;
                 const remain=Math.max(0,maxChars-used),body=raw.slice(0,Math.min(2600,remain));if(!body)break;
                 chosen.push(`【${compactText(item?.book?.source||'绑定世界书',60)}｜${bookName}｜${title}】\n${body}${raw.length>body.length?'\n…[本条为手机事实摘录，已截断]':''}`);
@@ -5283,7 +5283,7 @@ ${scene.mood||''}`,12000);
             }
             if(!chosen.length)return '';
             const profile=phoneWorldBookContactProfileText(contact);
-            return `${profile?`【当前联系人档案】\n${profile}\n\n`:''}【本轮手机定向世界书事实｜高优先级】\n${chosen.join('\n\n')}\n\n【使用规则】\n- 上述内容来自当前角色真正绑定的角色主世界书/附加世界书/聊天世界书，是本轮手机回答的高置信基础事实。\n- 若与普通旧摘要、手机历史或模型猜测冲突，优先遵守这里；只有更晚且明确发生的剧情事件才能覆盖旧设定。\n- “长期/固定事实”与“今天此刻的具体状态”必须区分：世界书只写固定排班但没写今天班次时，可以说有固定排班、今天需看实际安排，禁止反向声称“根本没有排班/不是这里的工作人员”。\n- 不知道的具体日期、班次、金额或结果就承认不知道，不为了顺着user问题而编造。`;
+            return `${profile?`【当前联系人档案】\n${profile}\n\n`:''}【本轮手机定向世界书事实｜高优先级】\n${chosen.join('\n\n')}\n\n【使用规则】\n- 上述内容来自当前角色真正绑定的角色主世界书/附加世界书/聊天世界书，是本轮手机回答的高置信基础事实。\n- 若与普通旧摘要、手机历史或模型猜测冲突，优先遵守这里；只有更晚且明确发生的剧情事件才能覆盖旧设定。\n- “长期/固定事实”与“今天此刻的具体Trạng thái”必须区分：世界书只写固定排班但没写今天班次时，可以说有固定排班、今天需看实际安排，禁止反向声称“根本没有排班/不是这里的工作人员”。\n- 不知道的具体Ngày、班次、金额或结果就承认不知道，不为了顺着user问题而编造。`;
         }catch(error){console.warn('[0-32·手机定向世界书] 本轮读取失败，继续使用老版结构化记忆主干',error);return '';}
     }
 
@@ -5344,7 +5344,7 @@ ${scene.mood||''}`,12000);
         const relayAnchorFloor = Number(options?.anchorFloor ?? entry?.index ?? -1);
         const relayContinuityFloors = Math.max(4, Math.min(8, Number(options?.continuityFloors || 6)));
         const relayExplicitHistory = /回忆|回想|想起|记得|当时|以前|过去|曾经|旧事|回顾|第\s*\d+\s*层/.test(relayQuery);
-        // 剧情接力不能沿用“上一条 user”单独检索的旧命中，否则最新 AI 正文已经完成的动作可能被旧意图拉回去。
+        // 剧情接力不能沿用“上一条 user”单独检索的旧命中，否则最新 AI chính văn已经完成的动作可能被旧意图拉回去。
         // 这里只为接力临时计算一次本地检索，不修改 stateRuntime.retrievalHits，避免影响主记忆链路。
         let relayRetrievalHits = clone((stateRuntime.retrievalHits || []).slice(0, retrievalTopK));
         if (relayQuery && s.settings?.retrievalEnabled) {
@@ -5370,8 +5370,8 @@ ${scene.mood||''}`,12000);
                 relayRetrievalHits = clone(localSearch(relayQuery).slice(0, retrievalTopK));
             }
         }
-        // P24 时间线隔离：接力不是“历史问答”。
-        // 离当前锚点超过连续窗口的旧叙事原文/时间线/章节，不允许以raw text进入接力上下文，
+        // P24 Dòng thời gian隔离：接力不是“历史问答”。
+        // 离当前锚点超过连续窗口的旧叙事原文/Dòng thời gian/章节，不允许以raw text进入接力上下文，
         // 否则模型会把0~1层开场当成更鲜明的续写模板。用户明确要求回忆时才放开。
         if (!relayExplicitHistory && Number.isFinite(relayAnchorFloor) && relayAnchorFloor >= 0) {
             const structuredFactTypes = new Set(['relation','relations','promise','promises','secret','life-fact','npc-identity','people']);
@@ -5395,9 +5395,9 @@ ${scene.mood||''}`,12000);
                 ...completedSummaryRows('大总结').slice(-3),
                 ...completedSummaryRows('阶段总结').slice(-6),
             ].map(row => ({
-                type: row['类型'] || row['表格类型'] || '',
-                range: row['覆盖楼层'] || '',
-                summary: compactText(row['总结内容'] || '', 3200),
+                type: row['Loại'] || row['Loại bảng'] || '',
+                range: row['Tầng bao phủ'] || '',
+                summary: compactText(row['Nội dung tổng kết'] || '', 3200),
                 usage: '历史摘要只读；若与最新6层冲突则忽略，禁止复播摘要中的动作链',
             })).filter(item => item.summary);
         } catch {}
@@ -5491,7 +5491,7 @@ ${scene.mood||''}`,12000);
         const family = /(家庭|家人|父母|妈妈|母亲|爸爸|父亲|兄弟|姐妹|亲戚|family|parents|siblings|relative)/i.test(raw);
         const friends = /(朋友|好友|闺蜜|发小|兄弟|朋友圈子|friends?|best friend|close friend)/i.test(raw);
         const guild = /(公会|组织群|游戏群|战队|guild|clan|gaming group|team chat)/i.test(raw);
-        // 原世界时代必须让明确年份/世界观压过“大学/手机”等身份词。
+        // 原世界时代必须让明确年份/世界观压过“大学/手机”等Thân phận词。
         // 例如“1900年香港大学学生”不能因为出现“大学”就被误判成2026现代人。
         const originEra = inferEraFromEvidence(raw);
         const modern = originEra.kind === 'modern' || (originEra.kind === 'unknown' && !fantasy && /(现代|当代|手机|微信|iPhone|Android|大学|本科|研究生|大一|大二|大三|大四|university|college|smartphone)/i.test(raw));
@@ -5533,13 +5533,13 @@ ${scene.mood||''}`,12000);
         const historicalTransition = lastMatch(/(?:回到|来到|穿越(?:到|进)?|传送(?:到|进)?|抵达)[^。！？\n]{0,32}((?:1[0-9]\d{2}|20\d{2}|21\d{2})年)/i,{ignoreNegated:true});
 
         // U1.7.2：孤立“1000年/1900年”不再自动等于当前时代。
-        // 必须是完整日期，或附近明确出现“当前/现在/背景/故事发生/时代/时间/穿越/抵达”等当前时空语义。
+        // 必须是完整Ngày，或附近明确出现“当前/现在/背景/故事发生/时代/时间/穿越/抵达”等当前时空语义。
         const yearCandidates=[];
         for(const m of text.matchAll(/(?:公元|西元)?\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*年/ig)) yearCandidates.push({index:m.index??-1,match:m,kind:'marked'});
         for(const m of text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))[-\/.](?:0?[1-9]|1[0-2])(?:[-\/.](?:0?[1-9]|[12]\d|3[01]))?/ig)) yearCandidates.push({index:m.index??-1,match:m,kind:'date'});
         const historicalRef=/(?:回忆|想起|记得|曾经|过去|当年|此前|从前|往事|旧事|历史|史料|资料|书中|照片|建校|成立|传承|已有|拥有|延续|距今|年前|寿命|活了|纪念)[^。！？\n]{0,30}$/i;
         const speculativeRef=/(?:如果|假如|假设|假定|要是|倘若|比如|例如|想象|可能|也许|计划|打算|故事里|小说里|小说中|梦里|梦中|提到|说起)[^。！？\n]{0,36}$/i;
-        const currentCue=/(?:当前|现在|如今|今日|今天|此刻|时间|日期|年代|时代|背景|故事发生|剧情发生|世界设定|设定为|穿越|抵达|来到|进入|回到|返回|醒来)/i;
+        const currentCue=/(?:当前|现在|如今|今日|今天|此刻|时间|Ngày|年代|时代|背景|故事发生|剧情发生|世界设定|设定为|穿越|抵达|来到|进入|回到|返回|醒来)/i;
         const contextualYears=yearCandidates.filter(hit=>{
             const at=hit.index; const before=text.slice(Math.max(0,at-42),at); const around=text.slice(Math.max(0,at-42),Math.min(text.length,at+72));
             const after=text.slice(Math.min(text.length,at+String(hit.match?.[0]||'').length),Math.min(text.length,at+String(hit.match?.[0]||'').length+24));
@@ -5572,7 +5572,7 @@ ${scene.mood||''}`,12000);
         if (decisive?.kind === 'year') { const y=byYear(); if(y)return y; }
 
         // U1.7.2：没有明确“穿越/当前年份”时，不再让一个关键词（例如“王国历史”“魔法游戏”）抢走当前时代。
-        // 对普通正文只按“生态证据”计分；现代数字生态出现多个强信号时优先判现代。
+        // 对普通chính văn只按“生态证据”计分；现代数字生态出现多个强信号时优先判现代。
         const countSignals = rx => (text.match(rx) || []).length;
         const modernScore = countSignals(/(?:现代|当代|微信|朋友圈|智能手机|手机|iPhone|Android|5G|4G|Wi-?Fi|互联网|网络|手机信号|信号恢复|直播|主播|粉丝|社交平台|短视频|APP|应用程序|二维码|外卖|快递|电商|网购|淘宝|京东|支付宝|微信支付|网约车|高铁|动车|地铁|笔记本电脑|电脑|键盘|电子邮件|邮箱|语音直播|视频通话)/ig);
         const futureScore = countSignals(/(?:未来|星际|太空殖民|宇宙时代|赛博都市|星舰|空间站|殖民星|量子通讯|个人终端)/ig);
@@ -5593,7 +5593,7 @@ ${scene.mood||''}`,12000);
     }
 
     function inferBaseEraFromCharacterCard() {
-        // 创作者备注可能用“现代社会/手机”举例说明写法，不属于角色实际世界观。
+        // 创作者Ghi chú可能用“现代社会/手机”举例说明写法，不属于角色实际世界观。
         const raw=characterSettingText(9000,{includeCreatorNotes:false});
         const cardRaw=characterCoreSettingText(6000);
         const cardExplicit=[];
@@ -5607,7 +5607,7 @@ ${scene.mood||''}`,12000);
         const explicitText=explicit.slice(-6).join('\n');
         let info=inferEraFromEvidence(explicitText);
         if(info.kind!=='unknown')return info;
-        // 角色卡经常同时包含“古代题材/历史回忆”和现代身份、设备设定。
+        // 角色卡经常同时包含“古代题材/历史回忆”和现代Thân phận、设备设定。
         // 只要卡面明确把故事落在现代社会，历史词汇只能算背景，不能把整张卡降成前现代。
         const modernCardAnchor=(cardRaw.match(/(?:现代社会|当代社会|现代背景|当代背景|现代都市|现代校园|现代职场|智能手机|iPhone|Android|微信|支付宝|互联网|社交平台|短视频|外卖|网购|二维码)/ig)||[]).length;
         const explicitNonModernCard=/(?:背景(?:设定)?|故事发生(?:于|在)?|剧情发生(?:于|在)?|当前(?:时代|世界|年代)|时代(?:背景|设定)?|世界(?:背景|设定)?)[^。！？\n]{0,80}(?:古代|中世纪|民国以前|清朝|明朝|宋朝|唐朝|王国|帝国|异世界|魔法|修仙)/i.test(cardRaw);
@@ -5628,7 +5628,7 @@ ${scene.mood||''}`,12000);
         const scene = stateRuntime.state?.scene || {};
         const sceneText = [scene.time, scene.location, scene.weather, scene.goal].filter(Boolean).join('｜');
         // 只看最近6层作为“此刻”的高权重证据，不把整张角色卡和user Persona混进当前时代判断。
-        return [`【当前scene】${sceneText || '未记录'}`, `【最近6层】\n${recentTranscript(6)}`].join('\n').slice(0, limit);
+        return [`【当前scene】${sceneText || 'Chưa ghi nhận'}`, `【最近6层】\n${recentTranscript(6)}`].join('\n').slice(0, limit);
     }
 
     function latestTransitionEvidence(limit = 6500) {
@@ -5683,7 +5683,7 @@ ${scene.mood||''}`,12000);
     }
 
     function inferConnectivityFromEvidence(raw) {
-        // fixed42：网络状态只能由“明确的设备/网络事实”裁决。
+        // fixed42：网络Trạng thái只能由“明确的设备/网络事实”裁决。
         // 旧版把“无法联络、与外界隔绝”这类普通叙事词也当成断网，容易把现代城市剧情误锁成离线。
         const text=String(raw||'');
         const hits=[];
@@ -5698,7 +5698,7 @@ ${scene.mood||''}`,12000);
                 hits.push({index,state,text:m[0]});
             }
         };
-        // 离线必须是“网络/信号/设备”本身的明确状态，不再接受泛化的人际“无法联络”。
+        // 离线必须是“网络/信号/设备”本身的明确Trạng thái，不再接受泛化的人际“无法联络”。
         collect(/(?:手机|蜂窝|移动网络|4G|5G|Wi[- ]?Fi|网络|信号)[^。！？\n]{0,22}(?:无信号|没有信号|断网|中断|断开|不可用|无法联网|无法连接|被屏蔽|屏蔽|无服务)/ig,'offline');
         collect(/(?:无信号|没有信号|断网了?|网络中断|网络断开|无法联网|信号被屏蔽|通信被屏蔽|手机无服务|无服务)/ig,'offline');
         // 在线恢复覆盖离线；兼容“网络连接稳定正常”“手机信号正常/满格”等自然说法。
@@ -5714,7 +5714,7 @@ ${scene.mood||''}`,12000);
         const transition = latestTransitionEvidence(6500);
         const worldTransition = latestWorldTransitionInfo();
         const prevWorld = stateRuntime.state?.worldTransit?.current || {};
-        // U1.7.2：最近真实正文优先于scene。scene可能正是上一次错误七条写入的污染源，不能拿污染结果证明自己。
+        // U1.7.2：最近真实chính văn优先于scene。scene可能正是上一次错误七条写入的污染源，不能拿污染结果证明自己。
         let eraInfo = inferEraFromEvidence(recentOnly);
         const baseEra = inferBaseEraFromCharacterCard();
         let usingStoredWorld = false;
@@ -5732,7 +5732,7 @@ ${scene.mood||''}`,12000);
         if (eraInfo.kind==='unknown' && activeNonModernTransition && worldTransition.kind==='historical') {
             eraInfo={era:'古代/前现代',technologyLevel:'preindustrial',kind:'ancient'};
         }
-        // 最近正文没有时代线索时：已经有迁移历史就延续已确认世界；没有迁移历史则优先角色卡基线。
+        // 最近chính văn没有时代线索时：已经有迁移历史就延续已确认世界；没有迁移历史则优先角色卡基线。
         if (eraInfo.kind === 'unknown' && worldTransition.kind && storedKind !== 'unknown') {
             eraInfo = { era:prevWorld.era || '', technologyLevel:prevWorld.technologyLevel, kind:storedKind }; usingStoredWorld = true;
         }
@@ -5740,13 +5740,13 @@ ${scene.mood||''}`,12000);
         if (eraInfo.kind === 'unknown' && storedKind !== 'unknown') { eraInfo={era:prevWorld.era||'',technologyLevel:prevWorld.technologyLevel,kind:storedKind};usingStoredWorld=true; }
         // 现代卡的旧 worldTransit/scene 可能已经被一次错误七条写成古代。
         // 没有“最近8层明确穿越/抵达非现代世界”时，卡面现代基线拥有更高优先级，
-        // 不再要求最近正文恰好出现两个手机词才允许自愈。
+        // 不再要求最近chính văn恰好出现两个手机词才允许自愈。
         if (baseEra.kind==='modern' && !activeNonModernTransition && !explicitRecentNonModernEra) {
             eraInfo={era:'现代',technologyLevel:'modern-digital',kind:'modern'};
             usingStoredWorld=false;
         }
-        // P30：最新正文的完整公历年份必须压过旧 sidecar/worldTransit 的残留时代。
-        // 例如当前状态栏已经明确写出 2026 年，但旧幕后卡仍保存“1000 年/书信往来”时，
+        // P30：最新chính văn的完整公历年份必须压过旧 sidecar/worldTransit 的残留时代。
+        // 例如当前Trạng thái栏已经明确写出 2026 年，但旧幕后卡仍保存“1000 年/书信往来”时，
         // 不能让历史 payload 把当前现实重新降级为前现代；只有最近明确穿越到非现代时代时才保留旧裁决。
         const trustedYear=trustedCurrentYearFromNarrative();
         if (Number.isFinite(trustedYear) && trustedYear>=2000 && trustedYear<2100
@@ -5761,7 +5761,7 @@ ${scene.mood||''}`,12000);
         }
         const raw = `${primary}\n【最近迁移证据】\n${transition}`;
         const location = compactText(stateRuntime.state?.scene?.location, 160);
-        // U1.7.2：网络状态按文本中“最后一次明确状态”裁决；“隧道里无信号→驶出隧道信号恢复”必须以恢复为准。
+        // U1.7.2：网络Trạng thái按文本中“最后一次明确Trạng thái”裁决；“隧道里无信号→驶出隧道信号恢复”必须以恢复为准。
         const connectivityState=inferConnectivityFromEvidence(primary);
         const noSignal = connectivityState==='offline';
         const transitionNow = worldTransition.floor >= Math.max(0, chatLength - 4);
@@ -5852,7 +5852,7 @@ ${scene.mood||''}`,12000);
         const current = inferCurrentWorldContext();
         const origin = originSocialIdentityProfile();
 
-        // 当前就是原世界时，学校/公司/宿舍等由origin身份档案负责；这里不再重复造一套“local”群。
+        // 当前就是原世界时，学校/公司/宿舍等由originThân phận档案负责；这里不再重复造一套“local”群。
         if (currentWorldMatchesOrigin(current)) {
             return { raw:'', student:false, dorm:false, club:false, work:false, schoolName:'', mayUseCardFallback:false, sameAsOrigin:true };
         }
@@ -5902,8 +5902,8 @@ ${scene.mood||''}`,12000);
         const sourceRows=(stateRuntime.sourceCharacterRoster||[]).filter(row=>sourceRosterMatchesGroup(row,type));
         sourceRows.forEach(row=>push(row.name));
         for (const row of s.tables?.people || []) {
-            const identity = `${row?.['身份']||''} ${row?.['备注']||''}`;
-            if (/(同学|学生|室友|舍友|班长|班委|辅导员|老师|教师|教授|助教|社团|学生会|同事|组员|项目|家人|亲友|朋友|好友|队友|公会|classmate|student|roommate|teacher|professor|assistant|coworker|friend|family|guild)/i.test(identity)) push(row?.['姓名']);
+            const identity = `${row?.['Thân phận']||''} ${row?.['Ghi chú']||''}`;
+            if (/(同学|学生|室友|舍友|班长|班委|辅导员|老师|教师|教授|助教|社团|学生会|同事|组员|项目|家人|亲友|朋友|好友|队友|公会|classmate|student|roommate|teacher|professor|assistant|coworker|friend|family|guild)/i.test(identity)) push(row?.['Họ tên']);
         }
         for (const entry of s.npcRegistry || []) {
             if (/(同学|学生|室友|班长|班委|辅导员|老师|教授|助教|社团|学生会|同事|组员|项目|家人|亲友|朋友|好友|队友|公会|角色卡\/世界书人物)/i.test(`${entry?.identity||''} ${entry?.source||''}`)) push(entry?.currentName);
@@ -5976,17 +5976,17 @@ ${scene.mood||''}`,12000);
             const prefix = profile.origin.schoolName ? `${profile.origin.schoolName}·` : '';
             const customClass = profile.origin.className && !/专业$/.test(profile.origin.className) ? profile.origin.className : '';
             const className = originChannel==='wechat' && customClass ? `${prefix}${customClass}群` : `${prefix}${originSuffix('class')}`;
-            add(className, 'class', '课程通知、作业、集合地点、同学日常与临时安排', 'high', 'user原世界学生身份', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-            if (profile.origin.university) add(`${prefix}${originSuffix('course')}`, 'course', '课程、作业、考试、学习资料与课程安排', 'high', 'user原世界大学/学院身份', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+            add(className, 'class', '课程通知、作业、集合地点、同学日常与临时安排', 'high', 'user原世界学生Thân phận', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+            if (profile.origin.university) add(`${prefix}${originSuffix('course')}`, 'course', '课程、作业、考试、学习资料与课程安排', 'high', 'user原世界大学/学院Thân phận', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         }
-        if (profile.origin.dorm && phoneAutoGroupTypeEligible('dorm')) add(originSuffix('dorm'),'dorm','宿舍日常、门禁/作息、卫生、吃饭与室友安排','high','user原世界宿舍身份',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.club && phoneAutoGroupTypeEligible('club')) add(originSuffix('club'),'club','活动安排、报名、会议/排练、物资与成员闲聊','medium','user原世界社团身份',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.work) add(originSuffix('work'),'work','会议、排班、进度、文件与同事日常','medium','user原世界职场身份',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.dorm && phoneAutoGroupTypeEligible('dorm')) add(originSuffix('dorm'),'dorm','宿舍日常、门禁/作息、卫生、吃饭与室友安排','high','user原世界宿舍Thân phận',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.club && phoneAutoGroupTypeEligible('club')) add(originSuffix('club'),'club','活动安排、报名、会议/排练、物资与成员闲聊','medium','user原世界社团Thân phận',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.work) add(originSuffix('work'),'work','会议、排班、进度、文件与同事日常','medium','user原世界职场Thân phận',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         if (profile.origin.family) add(originSuffix('family'),'family','家里安排、吃饭、出行、节日与亲友日常','medium','user原世界家庭关系',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         if (profile.origin.friends) add(originSuffix('friends'),'friends','约见、娱乐、出行、分享与朋友日常','medium','user原世界朋友关系',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         if (profile.origin.guild && phoneAutoGroupTypeEligible('guild')) add(originSuffix('guild'),'guild','组队、活动、排期、资源与成员闲聊','medium','user原世界群体',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
 
-        // 只有剧情明确加入“当前世界”的机构，才建立当地频道。只是穿越过去绝不会凭user原身份自动造当地班级群。
+        // 只有剧情明确加入“当前世界”的机构，才建立当地频道。只是穿越过去绝不会凭user原Thân phận自动造当地班级群。
         const localName = profile.local.schoolName || (profile.current.communicationType==='magic'?'当地学院':'当前机构');
         const labelByChannel = { magic:'传讯频道', telegram:'班级电报簿', letter:'班级通信簿', messenger:'班级传令簿', radio:'班级无线频道', terminal:'班级频道', landline:'班级联络簿', smartphone:'班级群', wechat:'班级群' };
         if (profile.local.student) {
@@ -6012,9 +6012,9 @@ ${scene.mood||''}`,12000);
         const names = new Set();
         const active = activeCharacterObject();
         names.add(compactText(active?.data?.name || active?.name || context()?.name2, 80));
-        (s.tables.people || []).forEach(row => names.add(compactText(row['姓名'], 80)));
-        (s.tables.states || []).forEach(row => names.add(compactText(row['角色名'], 80)));
-        (s.tables.relations || []).forEach(row => { names.add(compactText(row['角色A'], 80)); names.add(compactText(row['角色B'], 80)); });
+        (s.tables.people || []).forEach(row => names.add(compactText(row['Họ tên'], 80)));
+        (s.tables.states || []).forEach(row => names.add(compactText(row['Tên nhân vật'], 80)));
+        (s.tables.relations || []).forEach(row => { names.add(compactText(row['Nhân vật A'], 80)); names.add(compactText(row['Nhân vật B'], 80)); });
         (s.characterWorld?.characters || []).forEach(row => names.add(compactText(row.name, 80)));
         (s.phone?.contacts || []).forEach(row => names.add(compactText(typeof row === 'string' ? row : row?.name, 80)));
         (s.npcRegistry || []).forEach(row => { names.add(compactText(row?.currentName,80)); (row?.aliases||[]).forEach(alias=>names.add(compactText(alias,80))); });
@@ -6053,22 +6053,22 @@ ${scene.mood||''}`,12000);
     function worldStateBrief() {
         const world = stateRuntime.state.characterWorld || { characters: [], events: [] };
         const characters = (world.characters || []).slice(-30).map(item =>
-            `- ${item.name}｜位置:${item.location || '未知'}｜正在做:${item.activity || '未知'}｜目标:${item.goal || '未知'}｜状态:${item.mood || '未知'}｜更新:${item.time || item.updatedAt || ''}`
+            `- ${item.name}｜位置:${item.location || 'Chưa rõ'}｜正在做:${item.activity || 'Chưa rõ'}｜目标:${item.goal || 'Chưa rõ'}｜Trạng thái:${item.mood || 'Chưa rõ'}｜更新:${item.time || item.updatedAt || ''}`
         );
         const events = (world.events || []).slice(-16).map(item =>
-            `- ${item.time || ''}｜${item.character || '世界'}@${item.location || '未知'}：${item.activity || ''}${item.goal ? `；目标:${item.goal}` : ''}`
+            `- ${item.time || ''}｜${item.character || '世界'}@${item.location || 'Chưa rõ'}：${item.activity || ''}${item.goal ? `；目标:${item.goal}` : ''}`
         );
-        return `${characters.length ? `[角色当前生活状态]\n${characters.join('\n')}` : ''}${events.length ? `\n\n[近期镜头外动态]\n${events.join('\n')}` : ''}`.trim();
+        return `${characters.length ? `[角色当前生活Trạng thái]\n${characters.join('\n')}` : ''}${events.length ? `\n\n[近期镜头外动态]\n${events.join('\n')}` : ''}`.trim();
     }
 
     function canonicalCommunicationReason({available=true,communicationType='',technologyLevel='',inferred={}}={}) {
         // fixed42：说明文字和 available/networkState 共用同一个真值，禁止再出现“上面说在线、下面显示离线”。
         if (available === false) {
             if (communicationType === 'smartphone' || technologyLevel === 'modern-digital') return '当前地点明确检测到无信号、断网或通信屏蔽';
-            return '当前时空暂无可用远程通讯';
+            return '当前时空Chưa có可用远程通讯';
         }
         if (communicationType === 'smartphone' && technologyLevel === 'modern-digital') return '现代环境，手机信号与网络连接稳定正常';
-        if (communicationType === 'none') return '当前时空暂无可用远程通讯';
+        if (communicationType === 'none') return '当前时空Chưa có可用远程通讯';
         return inferred?.originReachable === false ? '当前通讯媒介可用；原世界网络不可达' : '当前通讯连接正常';
     }
 
@@ -6124,11 +6124,11 @@ ${scene.mood||''}`,12000);
         const normalized=normalizeCommunicationProfile(inferred,{skipTransit:true});
         const current=s.communicationProfile||{};
         const calibration=activeTimeCalibration(s);
-        const nextReason=calibration?'用户手动时间校准':'U1.7.2 当前现实状态机自动校正';
+        const nextReason=calibration?'用户手动时间校准':'U1.7.2 当前现实Trạng thái机自动校正';
         const keys=['worldKey','worldType','era','technologyLevel','communicationType','deviceLabel','available','networkState'];
         let changed=keys.some(k=>String(current?.[k]??'')!==String(normalized?.[k]??''));
         if(calibration&&current.reason!==nextReason)changed=true;
-        // 旧scene.time若被错误七条写成1000/1900之类，状态机纠正时代后也要去掉不兼容年份；不凭空猜一个新年份。
+        // 旧scene.time若被错误七条写成1000/1900之类，Trạng thái机纠正时代后也要去掉不兼容年份；不凭空猜一个新年份。
         const scene=s.scene||{};const sceneYear=strictGregorianYear(scene.time);
         const compatible=(year,level)=>!Number.isFinite(year)||level==='unknown'||(level==='future-networked'&&year>=2100)||(level==='modern-digital'&&year>=2000&&year<2100)||(level==='analog'&&year>=1950&&year<2000)||(level==='industrial-telegraph'&&year>=1850&&year<1950)||(level==='preindustrial'&&year<1850);
         if(Number.isFinite(sceneYear)&&!compatible(sceneYear,normalized.technologyLevel)&&!narrativeSupportsYear(sceneYear)){
@@ -6138,7 +6138,7 @@ ${scene.mood||''}`,12000);
         if(!changed)return false;
         s.communicationProfile={...current,...normalized,reason:nextReason,updatedAt:nowText()};
         updateWorldTransit(s.communicationProfile,floor>=0?floor:Math.max(-1,(context()?.chat?.length||0)-1));
-        logAudit('时空通讯自愈',`${current.worldType||'未知'} ${current.era||''}/${current.communicationType||''} → ${normalized.worldType||'未知'} ${normalized.era||''}/${normalized.communicationType||''}`);
+        logAudit('时空通讯自愈',`${current.worldType||'Chưa rõ'} ${current.era||''}/${current.communicationType||''} → ${normalized.worldType||'Chưa rõ'} ${normalized.era||''}/${normalized.communicationType||''}`);
         return true;
     }
 
@@ -6174,7 +6174,7 @@ ${scene.mood||''}`,12000);
 
 
     // P29：幕后七条API只能“汇报幕后”，不能自行改写当前现实。
-    // 时间/地点/世界/时代是高权限状态，必须由最新正文中的明确证据授权。
+    // 时间/地点/世界/时代是高权限Trạng thái，必须由最新chính văn中的明确证据授权。
     function strictGregorianYear(value) {
         const text=String(value||'');
         const marked=[...text.matchAll(/(?:公元|西元)?\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*年/ig)];
@@ -6209,7 +6209,7 @@ ${scene.mood||''}`,12000);
         const value=compactText(nextTime,180);
         if(calibration.mode!=='manual'||!calibration.value||!value||value===calibration.value)return false;
         stateRuntime.state.timeCalibration={...calibration,mode:'auto',value:'',previousSceneTime:calibration.value};
-        logAudit('时间校准自动交接',`正文已明确推进时间：${calibration.value} → ${value}`);
+        logAudit('时间校准自动交接',`chính văn已明确推进时间：${calibration.value} → ${value}`);
         return true;
     }
 
@@ -6225,7 +6225,7 @@ ${scene.mood||''}`,12000);
         const inferred=inferCurrentWorldContext();
         s.communicationProfile={...normalizeCommunicationProfile(inferred,{skipTransit:true}),reason:'用户手动时间校准',updatedAt:nowText()};
         updateWorldTransit(s.communicationProfile,floor);
-        logAudit('用户手动时间校准',`${previous||'未记录'} → ${next}`);
+        logAudit('用户手动时间校准',`${previous||'Chưa ghi nhận'} → ${next}`);
         await saveState({immediate:true,refresh:true,reason:'manual-time-calibration',forceSnapshot:true});
         renderTabs();decorateAllCompanionOutputs();
         return next;
@@ -6254,7 +6254,7 @@ ${scene.mood||''}`,12000);
         const chat=context()?.chat||[];
         const start=Math.max(0,chat.length-6);
         const historicalRef=/(?:回忆|想起|记得|曾经|过去|当年|此前|从前|往事|旧事|历史上|资料里|书中|照片里)[^。！？\n]{0,28}$/i;
-        const transition=/(?:回到|来到|进入|抵达|穿越(?:到|进)?|传送(?:到|进)?|醒来(?:时|后)?|现在(?:是|到了)?|如今(?:是|到了)?|当前(?:是|到了)?|时间(?:是|来到)?|日期(?:是|来到)?)/i;
+        const transition=/(?:回到|来到|进入|抵达|穿越(?:到|进)?|传送(?:到|进)?|醒来(?:时|后)?|现在(?:是|到了)?|如今(?:是|到了)?|当前(?:是|到了)?|时间(?:是|来到)?|Ngày(?:是|来到)?)/i;
         for(let i=chat.length-1;i>=start;i--){
             const text=messageText(chat[i]);
             const candidates=[];
@@ -6268,7 +6268,7 @@ ${scene.mood||''}`,12000);
                 const whole=m[0]||'';
                 const fullDate=/\d{4}\s*年\s*\d{1,2}\s*月|\d{4}[-\/.]\d{1,2}/.test(whole);
                 const nearby=text.slice(Math.max(0,at-32),Math.min(text.length,at+64));
-                // 完整日期、状态栏式日期、明确“现在/穿越/抵达”语句，才视作当前时间证据。
+                // 完整Ngày、Trạng thái栏式Ngày、明确“现在/穿越/抵达”语句，才视作当前时间证据。
                 if(fullDate || transition.test(nearby)) return Number(m[1]);
             }
         }
@@ -6279,7 +6279,7 @@ ${scene.mood||''}`,12000);
         if(!Number.isFinite(Number(year))) return false;
         const y=String(Math.trunc(Number(year)));
         const text=authorizedTimeEvidence(6);
-        const rx=new RegExp(`(?:回到|来到|进入|抵达|穿越(?:到|进)?|传送(?:到|进)?|醒来(?:时|后)?|现在(?:是|到了)?|如今(?:是|到了)?|当前(?:是|到了)?|时间(?:是|来到)?|日期(?:是|来到)?)[^。！？\\n]{0,48}(?:公元|西元)?\\s*${y}\\s*年|(?:公元|西元)?\\s*${y}\\s*年\\s*\\d{1,2}\\s*月|\\b${y}[-\\/.](?:0?[1-9]|1[0-2])`,'i');
+        const rx=new RegExp(`(?:回到|来到|进入|抵达|穿越(?:到|进)?|传送(?:到|进)?|醒来(?:时|后)?|现在(?:是|到了)?|如今(?:是|到了)?|当前(?:是|到了)?|时间(?:是|来到)?|Ngày(?:是|来到)?)[^。！？\\n]{0,48}(?:公元|西元)?\\s*${y}\\s*年|(?:公元|西元)?\\s*${y}\\s*年\\s*\\d{1,2}\\s*月|\\b${y}[-\\/.](?:0?[1-9]|1[0-2])`,'i');
         return rx.test(text) || trustedCurrentYearFromNarrative()===Number(year);
     }
 
@@ -6430,7 +6430,7 @@ ${scene.mood||''}`,12000);
         let currentYear=strictGregorianYear(current.time);
         const candidateYear=strictGregorianYear(candidate.time);
 
-        // 自愈：若最新正文明确给出当前年份，而旧scene已被历史错误污染，先把scene拉回正文年份。
+        // 自愈：若最新chính văn明确给出当前年份，而旧scene已被历史错误污染，先把scene拉回chính văn年份。
         if(Number.isFinite(narrativeYear) && Number.isFinite(currentYear) && narrativeYear!==currentYear){
             audit.push(`自愈当前年份：${currentYear}→${narrativeYear}`);
             current.time=replaceSceneYear(current.time,narrativeYear);
@@ -6448,7 +6448,7 @@ ${scene.mood||''}`,12000);
                     audit.push(`拒绝幕后七条改写年份：${baseline}→${candidateYear}`);
                     candidate.time='';
                 } else if(!Number.isFinite(baseline) && !narrativeSupportsYear(candidateYear)){
-                    audit.push(`拒绝无正文证据年份：${candidateYear}`);
+                    audit.push(`拒绝无chính văn证据年份：${candidateYear}`);
                     candidate.time='';
                 }
             }
@@ -6458,7 +6458,7 @@ ${scene.mood||''}`,12000);
             audit.push(`拒绝幕后七条改写地点：${current.location}→${candidate.location}`);
             candidate.location='';
         } else if(candidate.location && !current.location && !narrativeSupportsLocation(candidate.location)){
-            audit.push(`拒绝无正文证据地点：${candidate.location}`);
+            audit.push(`拒绝无chính văn证据地点：${candidate.location}`);
             candidate.location='';
         }
 
@@ -6466,7 +6466,7 @@ ${scene.mood||''}`,12000);
         for(const key of ['time','location','weather','mood','pace','goal']) if(candidate[key]) scene[key]=candidate[key];
         releaseTimeCalibrationIfSceneAdvanced(scene.time);
 
-        // U1.7.2：整个“现实层”都由本地状态机锁死。幕后模型只生成内容，不能再决定时代、世界、通讯类型、设备或在线状态。
+        // U1.7.2：整个“现实层”都由本地Trạng thái机锁死。幕后模型只生成内容，不能再决定时代、世界、通讯Loại、设备或在线Trạng thái。
         // 这一步专门封死“现代卡被七条JSON反写成1000年/书信往来”的污染路径。
         const inferred=inferCurrentWorldContext();
         const calibration=activeTimeCalibration();
@@ -6498,10 +6498,10 @@ ${scene.mood||''}`,12000);
         if (!Array.isArray(list)) return [];
         const cleaned = list.map(item => ({
             promiseId: promiseObjectId(item),
-            time: compactText(item?.time ?? item?.['约定时间'], 180),
-            content: compactText(item?.content ?? item?.['约定内容'], 800),
-            characters: compactText(item?.characters ?? item?.['核心角色'], 240),
-            status: compactText(item?.status ?? item?.['状态'] ?? '待兑现', 120),
+            time: compactText(item?.time ?? item?.['Thời điểm hẹn'], 180),
+            content: compactText(item?.content ?? item?.['Nội dung lời hẹn'], 800),
+            characters: compactText(item?.characters ?? item?.['Nhân vật cốt lõi'], 240),
+            status: compactText(item?.status ?? item?.['Trạng thái'] ?? 'Chờ thực hiện', 120),
             kind: compactText(item?.kind ?? item?.promiseKind, 80),
             due: compactText(item?.due ?? item?.deadline, 180),
         })).filter(item => item.content && promiseContentIsConcrete(item.content, item));
@@ -6562,10 +6562,10 @@ ${scene.mood||''}`,12000);
         if (!oldName || !newName || npcNameKey(oldName) === npcNameKey(newName)) return;
         const s = stateRuntime.state;
         const eq = value => npcNameKey(value) === npcNameKey(oldName);
-        (s.tables.people || []).forEach(row => { if (eq(row['姓名'])) row['姓名'] = newName; });
-        (s.tables.states || []).forEach(row => { if (eq(row['角色名'])) row['角色名'] = newName; });
-        (s.tables.relations || []).forEach(row => { if (eq(row['角色A'])) row['角色A'] = newName; if (eq(row['角色B'])) row['角色B'] = newName; });
-        (s.tables.items || []).forEach(row => { if (eq(row['持有者'])) row['持有者'] = newName; });
+        (s.tables.people || []).forEach(row => { if (eq(row['Họ tên'])) row['Họ tên'] = newName; });
+        (s.tables.states || []).forEach(row => { if (eq(row['Tên nhân vật'])) row['Tên nhân vật'] = newName; });
+        (s.tables.relations || []).forEach(row => { if (eq(row['Nhân vật A'])) row['Nhân vật A'] = newName; if (eq(row['Nhân vật B'])) row['Nhân vật B'] = newName; });
+        (s.tables.items || []).forEach(row => { if (eq(row['Người sở hữu'])) row['Người sở hữu'] = newName; });
         (s.appearances || []).forEach(item => { if (eq(item.character)) item.character = newName; });
         (s.characterWorld?.characters || []).forEach(item => { if (eq(item.name)) item.name = newName; });
         (s.characterWorld?.events || []).forEach(item => { if (eq(item.character)) item.character = newName; });
@@ -6593,8 +6593,8 @@ ${scene.mood||''}`,12000);
         if(!incoming)return oldIdentity;if(!oldIdentity)return incoming;
         if(npcNameKey(oldIdentity)===npcNameKey(incoming)||oldIdentity.includes(incoming))return oldIdentity;
         if(incoming.includes(oldIdentity))return incoming;
-        if(/^(?:身份未知|未知|普通人|路人|陌生人|群聊成员|具体身份待确认)/.test(incoming))return oldIdentity;
-        if(/(?:升职|降职|转正|离职|辞职|转岗|改名|身份曝光|真实身份|原来是|确认是)/.test(evidence))return incoming;
+        if(/^(?:Thân phậnChưa rõ|Chưa rõ|普通人|路人|陌生人|群聊成员|具体Thân phận待确认)/.test(incoming))return oldIdentity;
+        if(/(?:升职|降职|转正|离职|辞职|转岗|改名|Thân phận曝光|真实Thân phận|原来是|确认是)/.test(evidence))return incoming;
         return `${oldIdentity}；${incoming}`.split('；').filter((value,index,array)=>value&&array.indexOf(value)===index).join('；').slice(0,500);
     }
 
@@ -6638,16 +6638,16 @@ ${scene.mood||''}`,12000);
         const userName = compactText(context()?.name1 || '{{user}}',120) || '{{user}}';
         if (!clean || npcNameKey(clean) === npcNameKey(userName) || /^\{\{(?:user|char)\}\}$/i.test(clean)) return false;
         const s = stateRuntime.state;
-        if ((s.tables?.people || []).some(row => npcNameKey(row?.['姓名']) === npcNameKey(clean))) return false;
+        if ((s.tables?.people || []).some(row => npcNameKey(row?.['Họ tên']) === npcNameKey(clean))) return false;
         const profile = (s.phone?.groupProfiles || []).find(row => compactText(row?.groupName,120) === compactText(groupName,120));
         const identityMap = { class:'同学/班级群成员', course:'同学/课程群成员', campus:'校内群成员', dorm:'室友/宿舍群成员', club:'社团成员', work:'同事/工作群成员', project:'项目组成员', family:'家庭群成员', friends:'朋友群成员', guild:'公会/战队群成员' };
         s.tables.people.push({
-            '姓名':clean,
-            '年龄':'',
-            '身份':identityMap[profile?.type] || '群聊成员（具体身份待剧情确认）',
+            'Họ tên':clean,
+            'Tuổi':'',
+            'Thân phận':identityMap[profile?.type] || '群聊成员（具体Thân phận待剧情确认）',
             '地点':'',
-            '性格':'',
-            '备注':`由稳定群聊「${compactText(groupName,120)||'群聊'}」首次出现，低影响背景NPC；具体资料等待剧情明确。`,
+            'Tính cách':'',
+            'Ghi chú':`由稳定群聊「${compactText(groupName,120)||'群聊'}」首次出现，低影响背景NPC；具体资料等待剧情明确。`,
             _sourceFloor:Number(floor),
             _sourceMessageKey:messageStableKey(context()?.chat?.[Number(floor)]),
         });
@@ -6671,7 +6671,7 @@ ${scene.mood||''}`,12000);
                 date: compactText(raw?.date, 120), time: compactText(raw?.time, 120), floor,
                 type: compactText(raw?.type || 'episode', 80), people,
                 event, details,
-                // 仅供主记忆API彻底失败时保存该AI楼层的原文。正常模型锚点不产生此字段。
+                // 仅供主记忆API彻底失败时保存该AITầng的原文。正常模型锚点不产生此字段。
                 rawFallbackText: compactText(raw?.rawFallbackText, 18000),
                 tags: Array.isArray(raw?.tags) ? raw.tags.map(tag => compactText(tag,80)).filter(Boolean).slice(0,16) : [],
                 importance: ['core','high','normal','detail'].includes(String(raw?.importance||'').toLowerCase()) ? String(raw.importance).toLowerCase() : 'normal',
@@ -6767,7 +6767,7 @@ ${scene.mood||''}`,12000);
                 }
             }
         }
-        // S10 永久资料库：长期生活事实只允许新增/状态演进，不再因容量阈值自动淘汰。
+        // S10 永久资料库：长期Sự thật đời thường只允许新增/Trạng thái演进，不再因容量阈值自动淘汰。
         return changed;
     }
 
@@ -6781,8 +6781,8 @@ ${scene.mood||''}`,12000);
     function currentChatMemoryHealthAttempts({ limit = 0 } = {}) {
         const currentChat = getChatKey();
         const rows = (memoryHealthState().attempts || []).filter(item => !item?.chatIdentity || item.chatIdentity === currentChat);
-        // U1.6.3：编辑/重生成同一AI楼层时，旧signature审计仍保留在永久日志里，
-        // 但健康统计只认该楼层最后一次结果，避免同一楼层重复占“最近20轮”。
+        // U1.6.3：编辑/重生成同一AITầng时，旧signature审计仍保留在永久日志里，
+        // 但健康统计只认该Tầng最后一次结果，避免同一Tầng重复占“最近20轮”。
         const byFloor = new Map();
         for (const item of rows) {
             const floor = resolvedMemoryFloor(item?.floor, -1);
@@ -6822,13 +6822,13 @@ ${scene.mood||''}`,12000);
 
     function lifeDetailCategory(sentence) {
         const raw = String(sentence || '').trim();
-        // 只抓已经发生/明确陈述的生活事实；疑问、假设、比喻/惯用语不触发补抓。
+        // 只抓已经发生/明确陈述的Sự thật đời thường；疑问、假设、比喻/惯用语不触发补抓。
         if (!raw || /[？?]/.test(raw) || /^(?:如果|假如|假设|要是|万一|是否|要不要|能不能|可不可以|会不会)/.test(raw) || /(?:如果|假如|假设|要是|万一).{0,80}(?:就|那么|的话)/.test(raw)) return '';
         const s = raw.replace(/吃惊|吃亏|吃醋|吃瘪|吃苦|吃闭门羹|喝西北风/g, '');
         const abstractConsume = /(?:吃(?:了)?[^，。；！？!?]{0,10}(?:亏|苦头|闭门羹|耳光|巴掌|官司)|(?:不)?吃(?:了)?这一套|喝(?:了)?(?:西北风|口风|一肚子气)|吃醋|吃惊)/;
         if (abstractConsume.test(raw)) return '';
         if (/(?:买|购买)(?:了)?(?:一个|个)?(?:教训|关子|安心|放心|面子|人情|希望|梦想|快乐|自由)|不买账|买账/.test(s)) return '';
-        const completedAction='(?:答应|承诺|同意|约定|说好|接受|吃|喝|点单?|买|购买|下单|去|前往|到达|来到|回到|返回|穿|换上|戴上|套上|花|支付|付款|洗|收拾|打扫|刷|擦|清理|整理)';
+        const completedAction='(?:答应|承诺|同意|Lời hẹn|说好|接受|吃|喝|点单?|买|购买|下单|去|前往|到达|来到|回到|返回|穿|换上|戴上|套上|花|支付|付款|洗|收拾|打扫|刷|擦|清理|整理)';
         // Keep this regex as string concatenation. The test harness extracts
         // individual functions from this file and cannot safely parse a
         // template literal containing an interpolated regex fragment.
@@ -6840,22 +6840,22 @@ ${scene.mood||''}`,12000);
             + ')',
         );
         const hasDeniedCompletedAction=deniedCompletedAction.test(s);
-        // U1.6.2：计划/愿望不是“已经发生的生活细节”。旧P13会把“待会去买红豆面包 / 明天去市区”当成已完成事件，
+        // U1.6.2：计划/愿望不是“已经发生的生活细节”。旧P13会把“待会去买红豆面包 / 明天去市区”当成Đã hoàn thành事件，
         // 既把覆盖分母越滚越大，也可能把未来计划写成历史事实。只有句内同时存在明确完成证据时才继续识别。
         const futureIntent = /(?:打算|计划|准备(?:去|买|吃|喝|穿|换|点)|待会(?:儿)?|等会(?:儿)?|一会(?:儿)?|稍后|明天|后天|下次|回头|之后再|想去|想买|想吃|想喝|要去|要买|要吃|要喝|会去|将去|将要)/;
-        const completedEvidence = /(?:已经|刚刚|刚才|刚吃|刚喝|刚买|刚到|昨天|昨晚|前天|买了|购买了|下单了|吃了|喝了|去了|到达了|来到了|回到了|穿了|换上了|戴上了|花了|支付了|拿到了|领到了|完成了|答应(?:了)?|同意(?:了)?|承诺(?:了)?|约定(?:了)?|说好|接受(?:了)?|洗(?:了|完)|收拾(?:了|完)|打扫(?:了|完))/;
+        const completedEvidence = /(?:已经|刚刚|刚才|刚吃|刚喝|刚买|刚到|昨天|昨晚|前天|买了|购买了|下单了|吃了|喝了|去了|到达了|来到了|回到了|穿了|换上了|戴上了|花了|支付了|拿到了|领到了|完成了|答应(?:了)?|同意(?:了)?|承诺(?:了)?|Lời hẹn(?:了)?|说好|接受(?:了)?|洗(?:了|完)|收拾(?:了|完)|打扫(?:了|完))/;
         if (futureIntent.test(s) && !completedEvidence.test(s)) return '';
         // U1.7.2：P13只审计“已经发生/明确成立”的事实。旧版会把“也可以先去买…、绝不可能穿…、写到这里我想吃…”
         // 这类建议、假设、作者旁白和否定情境当成漏记，导致一键修复永远清不零。先在候选源头剔除伪事实。
         const speculativeIntent = /(?:也?可以(?:直接|先|去|让)?|不妨|建议|最好|应该|应当|不如|要不要|记得|别忘(?:了)?|先(?:去)?(?:吃|喝|买|点|穿|换|去)|以后|将来|即将|等[^，。；！？!?]{0,24}(?:再|后))/;
         const metaNarration = /(?:<\/?user_input\b|共创者|输入解析|写到这里|这章稿费|作者(?:说|觉得|想)|旁白|选项[:：]?|建议[:：]?|情境[:：]?|确认[:：]?|动作[:：]?|反应[:：]?|可以直接让|也可以先)/i;
-        const narrativeCommitmentReference = /(?:对|看到|听到|关于)[^，。；！？!?\n]{0,48}(?:答应|承诺|约定|说好)[^，。；！？!?\n]{0,48}(?:反应|回应|态度|描写)|(?:答应|承诺|约定|说好)(?:完|过)[^，。；！？!?\n]{0,50}(?:之后|以后|后)/;
+        const narrativeCommitmentReference = /(?:对|看到|听到|关于)[^，。；！？!?\n]{0,48}(?:答应|承诺|Lời hẹn|说好)[^，。；！？!?\n]{0,48}(?:反应|回应|态度|描写)|(?:答应|承诺|Lời hẹn|说好)(?:完|过)[^，。；！？!?\n]{0,50}(?:之后|以后|后)/;
         const negatedWear = /(?:绝不可能|不可能|不会|不能|没有|没|未|不|绝不)[^，。；！？!?]{0,18}(?:穿着|穿上|穿了|换上|戴上|套上)/;
         if (negatedWear.test(s)) return '';
         if (metaNarration.test(s) || narrativeCommitmentReference.test(s)) return '';
         if (speculativeIntent.test(s) && !completedEvidence.test(s)) return '';
 
-        const commitment = /(?:答应|承诺|同意|约定|说好|接受)(?:了)?[^，。；！？!?]{0,56}(?:参加|出席|代开|代为|帮|陪|接送|办理|处理|负责|照顾|去|做|完成|吃|喝|买|购买|洗|收拾|打扫|清理|整理)/;
+        const commitment = /(?:答应|承诺|同意|Lời hẹn|说好|接受)(?:了)?[^，。；！？!?]{0,56}(?:参加|出席|代开|代为|帮|陪|接送|办理|处理|负责|照顾|去|做|完成|吃|喝|买|购买|洗|收拾|打扫|清理|整理)/;
         if (commitment.test(s) && !hasDeniedCompletedAction) return 'commitment';
         const householdRoutine=/(?:洗|收拾|打扫|刷|擦|清理|整理)(?:了|完|好|干净)?[^，。；！？!?]{0,24}(?:碗|餐具|厨房|房间|衣服|家务|卫生|桌子|地面|垃圾)/.test(s)
             || /(?:把)?(?:碗|餐具|厨房|房间|衣服|家务|卫生|桌子|地面|垃圾)[^，。；！？!?]{0,16}(?:洗|收拾|打扫|刷|擦|清理|整理)(?:了|完|好|干净)/.test(s);
@@ -6874,7 +6874,7 @@ ${scene.mood||''}`,12000);
 
         if ((preferenceSpecific.test(s) && (hasNamedConsumable || genericWithPreference)) || (generalPreference.test(s) && hasNamedConsumable) || /(?:对|吃|喝).{0,20}(?:过敏|忌口)/.test(s)) return 'preference';
         if(hasDeniedCompletedAction)return '';
-        // 已发生的“吃/喝/点单”允许未知菜名进入保底；比只维护菜名字典更稳。上面的惯用语黑名单先过滤“吃亏/喝西北风”等非生活事实。
+        // Đã xảy ra的“吃/喝/点单”允许Chưa rõ菜名进入保底；比只维护菜名字典更稳。上面的惯用语黑名单先过滤“吃亏/喝西北风”等非Sự thật đời thường。
         const directConsume = /(?:吃(?:了|完了|掉了|光了)?|喝(?:了|完了|掉了|光了)?)\s*[^，。；！？!?]{1,36}/.test(s);
         const directOrder = /(?:点了?|点单(?:要了?)?)\s*(?:(?:一|两|二|三|四|五)?(?:份|碗|杯|盘|锅|串|盒|个|套)|[^，。；！？!?]{0,12}(?:饭|菜|面|粉|粥|汤|饮料|奶茶|咖啡|果汁|套餐|外卖))[^，。；！？!?]{0,28}/.test(s);
         const directMeal = directConsume || directOrder || /(?:早餐吃|早饭吃|午饭吃|午餐吃|晚饭吃|晚餐吃|夜宵吃|宵夜吃)\s*[^，。；！？!?]{1,36}/.test(s);
@@ -6890,26 +6890,26 @@ ${scene.mood||''}`,12000);
         if (receivedObject && !/(?:消息|电话|来电|回复|通知|信息|邮件|短信|拥抱|安慰|帮助|道歉)/.test(receivedObject[0])) return 'shopping';
         const place = '(?:店|餐厅|饭馆|商场|超市|便利店|菜市场|药店|医院|学校|图书馆|博物馆|美术馆|公园|电影院|影院|酒店|机场|车站|地铁站|网吧|景区|公司|银行|邮局|宿舍|家里|咖啡馆|酒吧|漫展|展馆|海边|游乐园|健身房|工作室)';
         if (new RegExp('(?:去了|去到|前往|到达|逛了|来到|回到|返回(?:了)?|回了)\\s*[^，。；！？!?]{0,24}' + place).test(s)) return 'travel';
-        // “穿着/换上/戴上”本身就是明确穿搭谓词，允许未知服饰名；不匹配“穿过小路”，也排除“穿了三小时”这种时长描述。
+        // “穿着/换上/戴上”本身就是明确穿搭谓词，允许Chưa rõ服饰名；不匹配“穿过小路”，也排除“穿了三小时”这种时长描述。
         const wearMatch=s.match(/(?:穿了|穿着|换上|脱下|披上|戴上|戴着|套上)\s*([^，。；！？!?]{1,36})/);
         if ((wearMatch && !/^(?:\d+|[一二两三四五六七八九十百半]+)(?:个)?(?:小时|分钟|天|周|月)/.test(String(wearMatch[1]||'').trim())) || (/(穿了|穿着|换上|脱下|披上|戴上|套上)/.test(s) && clothing.test(s))) return 'clothing';
         return '';
     }
 
     function splitAtomicDetailClauses(sentence) {
-        const actionStart='(?:(?:又|还|后来|最终|最后|转而|还是)\\s*)?(?:答应|承诺|同意|约定|说好|接受|确认|吃|喝|点|买|购买|下单|去|前往|到达|回到|穿|换上|戴上|花|支付|洗|收拾|打扫|刷|擦|清理|整理)';
+        const actionStart='(?:(?:又|还|后来|最终|最后|转而|还是)\\s*)?(?:答应|承诺|同意|Lời hẹn|说好|接受|确认|吃|喝|点|买|购买|下单|去|前往|到达|回到|穿|换上|戴上|花|支付|洗|收拾|打扫|刷|擦|清理|整理)';
         const routineStart='(?:(?:洗|收拾|打扫|刷|擦|清理|整理)|(?:把\\s*)?(?:碗|餐具|厨房|房间|衣服|家务|卫生|桌子|地面|垃圾)[^，。；！？!?]{0,16}(?:洗|收拾|打扫|刷|擦|清理|整理))';
         const mealThenRoutine=new RegExp(`((?:吃|喝)(?:完|了|过)[^，。；！？!?]{0,20}?)(?:(?:之后|以后|后)(?:便|就|又|再|还|才)?|便|就|又|再|还|才|并(?:且)?)?(?=${routineStart})`,'g');
         const parts=String(sentence||'').split(new RegExp(`(?:，|,|；|;|然后|随后|接着|并且|但|但是|不过|却)(?=\\s*${actionStart})`,'g'));
         return parts.flatMap(part=>{
-            const commitmentPlan=/(?:答应|承诺|同意|约定|说好|接受)(?:了)?[^，。；！？!?]{0,56}(?:吃|喝)[^，。；！？!?]{0,36}(?:洗|收拾|打扫|刷|擦|清理|整理)/.test(part);
+            const commitmentPlan=/(?:答应|承诺|同意|Lời hẹn|说好|接受)(?:了)?[^，。；！？!?]{0,56}(?:吃|喝)[^，。；！？!?]{0,36}(?:洗|收拾|打扫|刷|擦|清理|整理)/.test(part);
             return (commitmentPlan?part:part.replace(mealThenRoutine,'$1\n')).split(/\n+/);
         }).map(item=>compactText(item,520)).filter(item=>item.length>=2);
     }
 
     function splitDetailSentences(text) {
         // U1.7.2：兼容旧健康记录里用“ / ”、①②③拼在一起的多段文本。先拆段再判定，
-        // 避免一条候选同时包含“已发生事实 + 未来建议”，从而永远无法被单个锚点覆盖。
+        // 避免一条候选同时包含“Đã xảy ra事实 + 未来建议”，从而永远无法被单个锚点覆盖。
         const prepared=String(text||'').replace(/\s*\/+(?=\s|[①②③④⑤⑥⑦⑧⑨⑩])/g,'\n').replace(/(?=[①②③④⑤⑥⑦⑧⑨⑩])/g,'\n');
         return prepared.split(/(?<=[。！？!?；;])|\n+/).flatMap(splitAtomicDetailClauses).filter(Boolean);
     }
@@ -6970,10 +6970,10 @@ ${scene.mood||''}`,12000);
 
     function lifeDetailExplicitlyDeniedByAssistant(candidate, assistantText) {
         const actions={
-            commitment:'(?:答应|承诺|同意|约定|说好|接受|参加|出席|代开|代为|帮|陪|接送|办理|处理|负责|照顾|完成|做|去)',
+            commitment:'(?:答应|承诺|同意|Lời hẹn|说好|接受|参加|出席|代开|代为|帮|陪|接送|办理|处理|负责|照顾|完成|做|去)',
             meal:'(?:吃|喝|点单?)', shopping:'(?:买|购买|下单)', travel:'(?:去|前往|到达|来到|回到|返回)',
             clothing:'(?:穿|换上|戴上|套上)', money:'(?:花|支付|付款)', routine:'(?:洗|收拾|打扫|刷|擦|清理|整理)',
-        }[candidate?.category]||'(?:答应|承诺|同意|约定|吃|喝|点单?|买|购买|下单|去|穿|花|支付|付款|洗|收拾|打扫|清理|整理)';
+        }[candidate?.category]||'(?:答应|承诺|同意|Lời hẹn|吃|喝|点单?|买|购买|下单|去|穿|花|支付|付款|洗|收拾|打扫|清理|整理)';
         const denied=new RegExp(`(?:(?:没有|没|未|未曾|并未|不曾|从未|不(?!但|仅|只|过)(?:会|能|愿意?|想)?)\\s*(?:真正|实际|明确)?\\s*${actions}|(?:拒绝|否认)(?:了)?\\s*${actions})`);
         const deniedFacetPrefix=new RegExp('(?:没有|并无|不存在|并非|不是|未发生|没发生|拒绝|否认)[^，。；！？!?]{0,4}$');
         const facets=lifeDetailCriticalFacets(candidate?.text);
@@ -7014,9 +7014,9 @@ ${scene.mood||''}`,12000);
             });
             if(!duplicate)result.push(mapped);
         };
-        // AI回复中明写的事实直接归属该AI楼层。
+        // AI回复中明写的事实直接归属该AITầng。
         detectLifeDetailCandidates(targetFloor,targetFloor,{limit:cap}).forEach(add);
-        // user输入只是上下文；只审计被AI回复明确确认/承接的原子事实，且仍归属AI楼层。
+        // user输入只是上下文；只审计被AI回复明确确认/承接的原子事实，且仍归属AITầng。
         const user=previousUserEntryForAssistant(targetFloor);
         if(user)detectLifeDetailCandidates(user.index,user.index,{limit:cap}).filter(item=>lifeDetailConfirmedByAssistant(item,assistantText)).forEach(add);
         const sorted=result.sort((a,b)=>lifeDetailCandidateScore(b)-lifeDetailCandidateScore(a)||Number(a.evidenceFloor)-Number(b.evidenceFloor));
@@ -7059,7 +7059,7 @@ ${scene.mood||''}`,12000);
         const tokens=[];
         for(const latin of value.match(/[a-z0-9]+(?:\.[0-9]+)?/g)||[])if(latin.length>1)tokens.push(latin);
         for(const chunk of value.match(/[\u3400-\u9fff]+/g)||[]){const chars=[...chunk];for(let i=0;i<chars.length-1;i+=1)tokens.push(chars[i]+chars[i+1]);}
-        const stop=new Set(['我们','他们','她们','一起','今天','现在','然后','已经','本轮','正文','这个','那个','时候','晚上','早上','中午','后来','接着','一下','一些','一个','两个','吃了','喝了','去了','买了','穿了','点了','一共','顺便']);
+        const stop=new Set(['我们','他们','她们','一起','今天','现在','然后','已经','本轮','chính văn','这个','那个','时候','晚上','早上','中午','后来','接着','一下','一些','一个','两个','吃了','喝了','去了','买了','穿了','点了','一共','顺便']);
         return new Set(tokens.filter(token=>!stop.has(token)));
     }
 
@@ -7073,7 +7073,7 @@ ${scene.mood||''}`,12000);
         for(const m of raw.matchAll(/微辣|中辣|重辣|特辣|少辣|不辣|无糖|少糖|三分糖|五分糖|七分糖|全糖|去冰|少冰|正常冰|常温|不要香菜|不加香菜|加香菜|加卤蛋|加金针菇|加豆皮/g))push(m[0]);
         const named=/(麻婆豆腐|宫保鸡丁|锅包肉|北京烤鸭|烤鸭|牛排|寿喜烧|韩式烤肉|煎饼果子|番茄牛腩盖饭|番茄牛腩|照烧鸡腿饭|照烧鸡腿|酸菜鱼|水煮鱼|烤鱼|红烧肉|回锅肉|鱼香肉丝|青椒肉丝|糖醋里脊|小龙虾|螺蛳粉|桂林米粉|牛肉面|炸酱面|鸡丝凉面|杨枝甘露|抹茶拿铁|椰子水|珍珠奶绿|红豆冰|草莓酸奶|冰柠檬茶|热豆浆|无糖可乐|芋泥奶茶|白萝卜|鱼豆腐|魔芋丝|福袋|海带结|鸡肉咖喱饭|猪排咖喱饭|鲜肉小馄饨|荠菜大馄饨|葱油饼|黑米粥|生煎包|咸豆浆|短靴|长靴|马丁靴|水手服|连衣裙)/g;
         for(const m of raw.matchAll(named))push(m[0]);
-        const action=/(?:答应(?:了)?|承诺(?:了)?|同意(?:了)?|约定(?:了)?|说好|吃(?:了|完|的是)?|喝(?:了|完|的是)?|点(?:了|的是)?|买(?:了|的是)?|购买(?:了)?|穿(?:了|的是|着)?|换上|套上|戴上|去了?|前往|到达|花了|支付了|洗(?:了|完)?|收拾(?:了|完)?|打扫(?:了|完)?|清理(?:了|完)?)\s*([^，。；！？!?]{1,36})/g;
+        const action=/(?:答应(?:了)?|承诺(?:了)?|同意(?:了)?|Lời hẹn(?:了)?|说好|吃(?:了|完|的是)?|喝(?:了|完|的是)?|点(?:了|的是)?|买(?:了|的是)?|购买(?:了)?|穿(?:了|的是|着)?|换上|套上|戴上|去了?|前往|到达|花了|支付了|洗(?:了|完)?|收拾(?:了|完)?|打扫(?:了|完)?|清理(?:了|完)?)\s*([^，。；！？!?]{1,36})/g;
         for(const m of raw.matchAll(action)){
             const phrase=String(m[1]||'').split(/(?:，|、|和|以及|并且|而且|还|又|一共)/)[0];
             push(phrase);
@@ -7099,7 +7099,7 @@ ${scene.mood||''}`,12000);
         const facets=lifeDetailCriticalFacets(candidate?.text);
         if(facets.length){
             // U1.7.2：允许一个原句拆成多个detail anchor。旧版要求“所有关键实体必须同时出现在同一个anchor”，
-            // 模型即使已经分别记全了也会被判漏，造成无限修复。现在按同楼层全部锚点的并集判定。
+            // 模型即使已经分别记全了也会被判漏，造成无限修复。现在按同Tầng全部锚点的并集判定。
             return facets.every(facet=>destinations.some(destination=>lifeDetailFacetCovered(facet,destination)));
         }
         const combined=destinations.join(' ');
@@ -7122,7 +7122,7 @@ ${scene.mood||''}`,12000);
         if(anchors.length)mergeMemoryAnchors(anchors,-1);
         for(const item of remaining.filter(row=>row?.category==='commitment')){
             const floor=resolvedMemoryFloor(item.floor,-1);if(floor<0)continue;
-            upsertPromiseSnapshot({content:compactText(item.text,1000),characters:compactText(item.speaker,260),status:'待兑现',floor:String(floor)},floor,messageStableKey(context()?.chat?.[floor]),{_repairSource:source});
+            upsertPromiseSnapshot({content:compactText(item.text,1000),characters:compactText(item.speaker,260),status:'Chờ thực hiện',floor:String(floor)},floor,messageStableKey(context()?.chat?.[floor]),{_repairSource:source});
         }
         const stillMissing=remaining.filter(item=>!lifeDetailCandidateCovered(item));
         return {applied:Math.max(0,remaining.length-stillMissing.length),remaining:stillMissing};
@@ -7140,7 +7140,7 @@ ${scene.mood||''}`,12000);
 
     function lifeDetailRescuePrompt(candidates) {
         const lines=(candidates||[]).map(item=>`【第${item.floor}层｜${item.speaker}｜${item.category}】${item.text}`).join('\n');
-        return `你是“0-32·永不落幕的剧场 P14 生活细节保底提取器”。主记忆已经处理过本轮，但下面这些明确生活事实没有被事件锚点完整覆盖。只补漏，不重复总结整段，不续写剧情，不脑补。输出严格JSON，不要Markdown：\n{"anchors":[{"date":"","time":"","floor":"","type":"meal|promise|shopping|travel|clothing|money|detail","people":[],"event":"","details":"","tags":[],"importance":"detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":""}]}\n\n规则：\n1. 每个候选只要存在可直接确认的具体事实，就至少输出一条对应floor的anchor；commitment使用promise，其余无法细分的家务/日常事实使用detail。不得只记其中一半。承诺内容、菜名、饮料、辣度、糖度、冰量、配料、购买物、地点、衣服、金额等候选中出现的关键实体必须完整保留。\n2. lifeFacts只写明确长期偏好/忌口/习惯/限制。一次点了某道菜不等于喜欢它；角色直接说“我不吃香菜/喜欢微辣/过敏”时explicit=true；只是重复行为证据时explicit=false。\n3. 不得把候选之外的旧事加入结果。\n\n漏记候选：\n${lines}`;
+        return `你是“0-32·永不落幕的剧场 P14 生活细节保底提取器”。主记忆已经处理过本轮，但下面这些明确Sự thật đời thường没有被事件锚点完整覆盖。只补漏，不重复总结整段，不续写剧情，不脑补。输出严格JSON，不要Markdown：\n{"anchors":[{"date":"","time":"","floor":"","type":"meal|promise|shopping|travel|clothing|money|detail","people":[],"event":"","details":"","tags":[],"importance":"detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":""}]}\n\n规则：\n1. 每个候选只要存在可直接确认的具体事实，就至少输出一条对应floor的anchor；commitment使用promise，其余无法细分的家务/日常事实使用detail。不得只记其中一半。承诺内容、菜名、饮料、辣度、糖度、冰量、配料、购买物、地点、衣服、金额等候选中出现的关键实体必须完整保留。\n2. lifeFacts只写明确长期偏好/忌口/习惯/限制。一次点了某道菜不等于喜欢它；角色直接说“我不吃香菜/喜欢微辣/过敏”时explicit=true；只是重复行为证据时explicit=false。\n3. 不得把候选之外的旧事加入结果。\n\n漏记候选：\n${lines}`;
     }
 
     async function rescueLifeDetailCandidates(candidates, { source='turn-audit', maxAttempts=null } = {}) {
@@ -7174,8 +7174,8 @@ ${scene.mood||''}`,12000);
                 },{jsonMode:true,busyLabel:`后台补抓生活细节 ${attempt}/${attemptLimit}…`,timeoutMs});
                 if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓完成时已切换聊天'};
                 if(result.record?.chatIdentity&&result.record.chatIdentity!==operationScope.chatKey){
-                    markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:'补抓完成时聊天身份不一致，结果丢弃'});
-                    return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓完成时聊天身份不一致'};
+                    markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:'补抓完成时聊天Thân phận不一致，结果丢弃'});
+                    return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓完成时聊天Thân phận不一致'};
                 }
                 // U1.6.3：每次尝试仍只允许 anchors + lifeFacts 写入；即使模型乱回其它字段也全部丢弃。
                 const raw=parseGeneratedJson(result.text||'{}');
@@ -7187,7 +7187,7 @@ ${scene.mood||''}`,12000);
             }catch(error){
                 if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'补抓期间已切换聊天'};
                 if(result?.record)markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:error?.message||error});
-                lastError=compactText(error?.message||error,400)||'未知错误';
+                lastError=compactText(error?.message||error,400)||'Chưa rõ错误';
                 console.warn(`[vvv记忆中枢] P13生活细节补抓第 ${attempt}/${attemptLimit} 次失败`,error);
             }
             if(attempt<attemptLimit){
@@ -7390,7 +7390,7 @@ ${scene.mood||''}`,12000);
 
     function singleFloorExtractionPrompt(floor) {
         const target=Math.max(0,Number(floor||0));
-        // U1.6.2：整轮缺失时也只允许重建“目标AI楼层”；前一条user仅作语义上下文，彻底取消旧版 ±1 三层混抽。
+        // U1.6.2：整轮缺失时也只允许重建“目标AITầng”；前一条user仅作语义上下文，彻底Hủy旧版 ±1 三层混抽。
         return extractionPromptV16(target);
     }
 
@@ -7534,8 +7534,8 @@ ${scene.mood||''}`,12000);
 
     function memoryPipelineAvailability() {
         const settings=stateRuntime.state?.settings||{};
-        if(settings.enabled===false)return {code:'disabled',note:'记忆中枢已关闭；本轮不会自动整理。可在设置中开启后再重建。'};
-        if(settings.autoExtract===false)return {code:'manual-only',note:'即时记忆已关闭；请点击“AI整理”或下方“重建本层”手动运行。'};
+        if(settings.enabled===false)return {code:'disabled',note:'记忆中枢已Đóng；本轮不会自动整理。可在设置中开启后再重建。'};
+        if(settings.autoExtract===false)return {code:'manual-only',note:'即时记忆已Đóng；请点击“AI整理”或下方“重建本层”手动运行。'};
         if(!independentApiReady())return {code:'api-missing',note:'独立整理/总结API未配置；幕后七条仍可单独生成，但主记忆不会写入。'};
         if(stateRuntime.memoryPipelineNotice)return {code:'notice',note:stateRuntime.memoryPipelineNotice};
         return {code:'ready',note:'自动整理已开启；每条AI回复只写入一次主记忆。'};
@@ -7587,13 +7587,13 @@ ${scene.mood||''}`,12000);
             const thread = (phone.groupThreads || []).find(item => compactText(item?.groupName,120) === groupName && (!homeWorldKey || compactText(item?.homeWorldKey,120)===homeWorldKey)) || (phone.groupThreads||[]).find(item=>compactText(item?.groupName,120)===groupName);
             const last = thread?.messages?.at(-1);
             const members = [...new Set([...(meta.members || []), ...(thread?.members || [])].map(x=>compactText(x,80)).filter(Boolean))].slice(0,12);
-            rows.push(`- ${groupName}${meta.type?`｜类型:${meta.type}`:''}${meta.scope?`｜范围:${meta.scope}`:''}${meta.channelType?`｜载体:${meta.channelType}`:''}${meta.availability?`｜状态:${meta.availability}`:''}${meta.activityLevel?`｜活跃:${meta.activityLevel}`:''}${members.length?`｜成员:${members.join('、')}`:''}${meta.topic?`｜长期话题:${meta.topic}`:''}${last?.content?`｜最近历史:${last.sender||'群成员'}：${compactText(last.content,160)}`:''}`);
+            rows.push(`- ${groupName}${meta.type?`｜Loại:${meta.type}`:''}${meta.scope?`｜范围:${meta.scope}`:''}${meta.channelType?`｜载体:${meta.channelType}`:''}${meta.availability?`｜Trạng thái:${meta.availability}`:''}${meta.activityLevel?`｜活跃:${meta.activityLevel}`:''}${members.length?`｜成员:${members.join('、')}`:''}${meta.topic?`｜长期话题:${meta.topic}`:''}${last?.content?`｜最近历史:${last.sender||'群成员'}：${compactText(last.content,160)}`:''}`);
         };
         profiles.forEach(p => add(p?.groupName, p || {}));
         (phone.groupThreads || []).forEach(t => add(t?.groupName, t || {}));
         (phone.wechatGroups || []).slice(-40).forEach(m => add(m?.groupName, {members:m?.members||[]}));
         (phone.channelGroups || []).slice(-40).forEach(m => add(m?.groupName, {members:m?.members||[],type:m?.channelType||'channel'}));
-        return rows.slice(0, limit).join('\n') || '暂无已建立群聊；若角色卡/世界书明确存在班级、课程、宿舍、社团、工作、家族、朋友等稳定群体，可在本轮保守建立对应群聊。';
+        return rows.slice(0, limit).join('\n') || 'Chưa có已建立群聊；若角色卡/世界书明确存在班级、课程、宿舍、社团、工作、家族、朋友等稳定群体，可在本轮保守建立对应群聊。';
     }
 
     function phoneActivityDebt() {
@@ -7650,12 +7650,12 @@ ${scene.mood||''}`,12000);
         return names.map(name=>({name,last:Number(lastByName.get(name)??-1),isMain:name===charName}))
             .sort((a,b)=>a.last-b.last || Number(a.isMain)-Number(b.isMain))
             .slice(0,limit)
-            .map(row=>`${row.name}(上次镜头外更新:${row.last>=0?`第${row.last}层`:'从未'})`).join('、') || '暂无可轮转NPC';
+            .map(row=>`${row.name}(上次镜头外更新:${row.last>=0?`第${row.last}层`:'从未'})`).join('、') || 'Chưa có可轮转NPC';
     }
 
     function phoneEcologyDirective() {
         const settings = stateRuntime.state?.settings || {};
-        if (!settings.phoneEcologyEnabled) return '通讯生态增强已关闭：保留基础通讯逻辑。';
+        if (!settings.phoneEcologyEnabled) return '通讯生态增强已Đóng：保留基础通讯逻辑。';
         ensureInstitutionalGroupProfiles((context()?.chat?.length || 1) - 1);
         const groupActivity = Math.max(0, Math.min(1, Number(settings.phoneGroupActivity ?? 0.95)));
         const serviceNoise = Math.max(0, Math.min(1, Number(settings.phoneServiceNoise ?? 0.74)));
@@ -7665,25 +7665,25 @@ ${scene.mood||''}`,12000);
         const current = normalizeCommunicationProfile(stateRuntime.state?.communicationProfile || inferCurrentWorldContext());
         const origin = stateRuntime.state?.worldTransit?.origin || {};
         const currentMedium = current.communicationType === 'smartphone' ? '微信/短信/电话' : communicationMessageLabel(current);
-        const studentHint = social.origin.student ? `原世界身份=学生${social.origin.university?'（大学/学院）':''}` : social.origin.work ? '原世界身份=职场' : '原世界身份=一般社会关系';
+        const studentHint = social.origin.student ? `原世界Thân phận=学生${social.origin.university?'（大学/学院）':''}` : social.origin.work ? '原世界Thân phận=职场' : '原世界Thân phận=一般社会关系';
         const reachHint = current.originReachable ? '原世界关系当前可达' : '原世界关系当前离线但永久保留';
         const silentHint = debt.due
             ? `通讯已静默约${debt.silentFloors}层（阈值${debt.threshold}）；只要当前世界存在可用渠道，本轮必须至少发生1个低影响通讯事件。`
             : `最近通讯静默约${debt.silentFloors}层（阈值${debt.threshold}），按人物动机自然波动。`;
         return `通讯/手机生态增强开启：群聊活跃度=${groupActivity.toFixed(2)}，现代服务噪声=${serviceNoise.toFixed(2)}。
-【时空状态】原世界=${origin.worldType||'未知'} ${origin.era||''}；当前=${current.worldType||'未知'} ${current.era||''} ${current.location||''}；当前载体=${current.deviceLabel||currentMedium}；${reachHint}；${studentHint}。
-- 【绝对分层】插件已记录的原世界身份只描述“原本是谁/来自哪里/原有社会关系”，不能覆盖当前剧情的时代与世界。当前scene+最近剧情才决定“现在在哪里、用什么通讯”。现代大学生穿越到1900香港时，原班级群仍存在但离线；当前只能用1900香港合理的书信/电报/座机等。现代大学生进入异世界时，原微信关系离线；若当地有传讯水晶/信使/书信则改用当地渠道。
+【时空Trạng thái】原世界=${origin.worldType||'Chưa rõ'} ${origin.era||''}；当前=${current.worldType||'Chưa rõ'} ${current.era||''} ${current.location||''}；当前载体=${current.deviceLabel||currentMedium}；${reachHint}；${studentHint}。
+- 【绝对分层】插件已记录的原世界Thân phận只描述“原本是谁/来自哪里/原有社会关系”，不能覆盖当前剧情的时代与世界。当前scene+最近剧情才决定“现在在哪里、用什么通讯”。现代大学生穿越到1900香港时，原班级群仍存在但离线；当前只能用1900香港合理的书信/电报/座机等。现代大学生进入异世界时，原微信关系离线；若当地有传讯水晶/信使/书信则改用当地渠道。
 - 【回归恢复】穿越不会删除联系人、班级群、课程群、朋友群。回到原世界且网络恢复后，原群自动重新active，并可合理积累离线期间之后真正能收到的新消息；绝不能把“离线期间在另一个世界”伪造成已经实时收到微信。
-- 【当地机构必须有剧情依据】仅仅因为user原本是学生，不能一到1900香港或异世界就凭空生成“当地班级群”。只有正文明确入学、转学、任职、入住宿舍、加入组织后，才建立当前世界对应的本地群/频道。
+- 【当地机构必须有剧情依据】仅仅因为user原本是学生，不能一到1900香港或异世界就凭空生成“当地班级群”。只有chính văn明确入学、转学、任职、入住宿舍、加入组织后，才建立当前世界对应的本地群/频道。
 - 【多人通讯随时代换壳】smartphone世界使用phone.wechatGroups；非智能手机时代/世界的多人讨论使用phone.channelGroups，并写channelType=telegram/letter/messenger/radio/magic/terminal/landline等真实载体。不要把魔法频道、电报簿、书信往来伪装成微信群。
 - 【原世界离线群】groupProfiles中scope=origin且availability=offline-origin时，只保存关系和旧历史，本轮禁止往wechat/wechatGroups伪造新消息；除非setting.originReachable=true且剧情明确存在跨世界网络。
-- 【群聊像活人】当前active群/频道会在user没打开UI时继续有NPC↔NPC讨论。课程通知、作业、点名、换地点、约饭、吐槽、工作安排、家庭闲聊、组织活动等都可自然发生；大多数消息不需要@user。若正文只过几秒可安静，明显时间推进/换场景/活动临近/连续静默后通常产生1-6条合理消息。
+- 【群聊像活人】当前active群/频道会在user没打开UI时继续有NPC↔NPC讨论。课程通知、作业、点名、换地点、约饭、吐槽、工作安排、家庭闲聊、组织活动等都可自然发生；大多数消息不需要@user。若chính văn只过几秒可安静，明显时间推进/换场景/活动临近/连续静默后通常产生1-6条合理消息。
 - 【低影响背景NPC】稳定机构缺少成员时允许生成同学/班委/助教/同事/组织成员等低影响NPC，首次出现同步登记memory.people，之后持续复用；不得凭空捏造与user的亲密旧史、重大秘密或共同犯罪史。
 - 【直接触达】距离上一次NPC直接找user约${directDebt.silentFloors}层（阈值${directDebt.threshold}）。达到阈值且当前存在合理可达渠道时，本轮至少安排1次自然直接触达：私聊、来电、群/频道明确@user、信使点名找user等均可；不能永远只有主角色找user。
 - 【通讯方式不要单调】急事、强情绪、即时确认、人物习惯适合实时通讯时可来电/无线电/魔法实时传讯；普通闲聊用异步消息。若当前载体不支持实时通话，不得硬生成calls。
-- 【现代服务噪声只在现代可达时出现】快递、外卖、银行、验证码、运营商、网约车、票务、校园系统、广告/垃圾短信等只在当前现代数字社会且相关服务合理存在时生成；1900/古代/异世界不得因为原身份来自现代继续刷现代验证码和快递短信。
+- 【现代服务噪声只在现代可达时出现】快递、外卖、银行、验证码、运营商、网约车、票务、校园系统、广告/垃圾短信等只在当前现代数字社会且相关服务合理存在时生成；1900/古代/异世界不得因为原Thân phận来自现代继续刷现代验证码和快递短信。
 - 【附近NPC优先现实接触】同地点NPC可直接说话/敲门/加入谈话，不必为了“活跃手机”硬绕一圈通讯；远处NPC更适合使用当前时代的通讯渠道。
-- 【USER主权】任何通讯都不能替user回复、接听、同意、拒绝或作决定。等待接听用waiting/ringing+requiresAnswer=true，选择从下一轮正文继续。
+- 【USER主权】任何通讯都不能替user回复、接听、同意、拒绝或作决定。等待接听用waiting/ringing+requiresAnswer=true，选择从下一轮chính văn继续。
 - ${silentHint}
 【已有群/频道】
 ${phoneExistingGroupBrief()}`;
@@ -7709,7 +7709,7 @@ ${phoneExistingGroupBrief()}`;
 
     function npcCallVarietyDirective() {
         const settings = stateRuntime.state?.settings || {};
-        if (!settings.npcCallVariety) return '电话自然度增强已关闭：仍按人物动机自由选择媒介。';
+        if (!settings.npcCallVariety) return '电话自然度增强已Đóng：仍按人物动机自由选择媒介。';
         const threshold = Math.max(2, Math.min(12, Number(settings.npcCallEscalationAfter || 3)));
         const rows = recentCommunicationEvents(Math.max(18, threshold * 4));
         let textStreak = 0;
@@ -7726,18 +7726,18 @@ ${phoneExistingGroupBrief()}`;
 
     function npcWorldAutonomyDirective() {
         const settings = stateRuntime.state?.settings || {};
-        if (!settings.npcWorldAutonomy) return 'NPC大世界自治增强已关闭：只按当前正文必要范围推进，不额外制造镜头外变化。';
+        if (!settings.npcWorldAutonomy) return 'NPC大世界自治增强已Đóng：只按当前chính văn必要范围推进，不额外制造镜头外变化。';
         const spontaneity = Math.max(0, Math.min(1, Number(settings.npcWorldSpontaneity ?? 0.82)));
         const band = spontaneity >= 0.8 ? '高' : spontaneity >= 0.5 ? '中高' : spontaneity >= 0.25 ? '中低' : '低';
         const debt = worldActivityDebt();
-        const pulse = debt.due ? `镜头外世界已静默约${debt.silentFloors}层（阈值${debt.threshold}），本轮至少推进${debt.minEvents}个不同NPC的低风险真实生活状态；优先轮转长期没更新的人，禁止再次整轮空白。` : `镜头外世界静默约${debt.silentFloors}层（阈值${debt.threshold}），可正常波动。`;
+        const pulse = debt.due ? `镜头外世界已静默约${debt.silentFloors}层（阈值${debt.threshold}），本轮至少推进${debt.minEvents}个不同NPC的低风险真实生活Trạng thái；优先轮转长期没更新的人，禁止再次整轮空白。` : `镜头外世界静默约${debt.silentFloors}层（阈值${debt.threshold}），可正常波动。`;
         return `NPC大世界自治增强开启，自发度=${spontaneity.toFixed(2)}（${band}）。
 - 【世界心跳】${pulse}
 - 【优先轮转】${dormantNpcBrief(16)}。
 - 自发度只控制“世界在镜头外自行发生小变化”的概率与密度，不代表强行制造大事件、犯罪或戏剧冲突。
-- 每个已存在NPC都保留自己的长期目标、日程、社交关系和上轮状态；下一轮优先延续已有因果，再决定是否发生新变化，禁止每轮人格/职业/关系重置。
+- 每个已存在NPC都保留自己的长期目标、日程、社交关系和上轮Trạng thái；下一轮优先延续已有因果，再决定是否发生新变化，禁止每轮人格/职业/关系重置。
 - NPC之间可以互相认识、聊天、合作、争执、恋爱、疏远、借钱、工作、搬家、旅行、加入或离开组织；这些关系允许完全不经过user。
-- 世界事件可以在user不在场时发生，并在之后通过见面、传闻、通讯、环境变化或人物状态体现后果；不要让user拥有全知视角。
+- 世界事件可以在user不在场时发生，并在之后通过见面、传闻、通讯、环境变化或人物Trạng thái体现后果；不要让user拥有全知视角。
 - 新NPC只有在地点、职业、组织、社交或剧情确实需要时才生成；稳定机构（班级、课程、宿舍、社团、公司、项目组）本身就意味着存在其他成员，因此允许生成低影响背景NPC来让社交生态成立。一旦生成就登记并持续存在，不要当一次性路人工具。
 - NPC是否联系user必须由人物动机、距离、时间与通讯条件决定；不要为了“活跃”让所有NPC每轮都联系user，也不要永远没人主动联系。
 - 同地点NPC优先通过现实行为影响场景；远处NPC才优先用微信/群聊/短信/电话/书信等。
@@ -7752,7 +7752,7 @@ ${phoneExistingGroupBrief()}`;
 
     function momentSocialFeedBrief(limit = 18) {
         const rows = (stateRuntime.state?.storyExtras?.moments || []).filter(memoryRecordUsable).slice(-Math.max(1, Number(limit || 18)));
-        if (!rows.length) return '暂无朋友圈动态。';
+        if (!rows.length) return 'Chưa có朋友圈动态。';
         const userName = compactText(context()?.name1 || '{{user}}', 80) || '{{user}}';
         const knownAudience = allKnownNpcNames().filter(name => npcNameKey(name) !== npcNameKey(userName)).slice(0, 40);
         const feed = rows.map(item => {
@@ -7760,9 +7760,9 @@ ${phoneExistingGroupBrief()}`;
             const likes = (item?.likes || []).map(name => compactText(name,80)).filter(Boolean);
             const comments = (item?.comments || []).map(comment => `${compactText(comment?.author,80)}：${compactText(comment?.content,300)}`).filter(Boolean);
             const seenBy = (item?.seenBy || []).map(name => compactText(name,80)).filter(Boolean);
-            return `- momentId=${item.id}｜${item.author || '未知'}｜${item.time || ''}｜正文:${item.content || '[无文字]'}${attachments ? `｜附件:${attachments}` : ''}｜可见范围:${item.visibility || 'friends'}｜已读:${seenBy.join('、') || '无'}｜点赞:${likes.join('、') || '无'}｜评论:${comments.join('；') || '无'}｜互动状态:${item.reactionStatus || (item.manual ? 'pending' : 'normal')}`;
+            return `- momentId=${item.id}｜${item.author || 'Chưa rõ'}｜${item.time || ''}｜chính văn:${item.content || '[无文字]'}${attachments ? `｜附件:${attachments}` : ''}｜可见范围:${item.visibility || 'friends'}｜已读:${seenBy.join('、') || '无'}｜点赞:${likes.join('、') || '无'}｜评论:${comments.join('；') || '无'}｜互动Trạng thái:${item.reactionStatus || (item.manual ? 'pending' : 'normal')}`;
         });
-        return `【可能看到这些动态的已认识NPC】${knownAudience.join('、') || '暂无'}\n${feed.join('\n')}`;
+        return `【可能看到这些动态的已认识NPC】${knownAudience.join('、') || 'Chưa có'}\n${feed.join('\n')}`;
     }
 
     function cleanAppearanceSnapshot(list, floor) {
@@ -7797,48 +7797,48 @@ ${phoneExistingGroupBrief()}`;
         const recent = recentTranscript(Math.max(4, Number(settings.companionRecentMessages || 12)));
         const writingSource = companionWritingSourceLabel();
         const strongWorldBook = settings.strongWorldBookRead===false ? '' : await buildStrongWorldBookDigest({maxChars:Math.min(12000,Number(settings.strongWorldBookMaxChars||18000))});
-        return `【幕后七条资料与输出任务】你是长篇角色扮演中的“0-32·永不落幕的剧场幕后七条引擎”。本轮写作来源是【${writingSource} + 独立资料边界】；酒馆主AI已经写完可见正文，你现在只做一次后台写作，不得续写或改写正文。每个真实剧情轮结束后，你独立生成并同步：待兑现约定/秘密、人物外观、朋友圈/日记/纪念日、通讯终端、彼间私文。主结构化记忆由独立“每条AI回复一次”的记忆流水线负责，你不得再重复写入主记忆。任务只允许使用下面明确提供的当前正文、有限记忆、已确认角色资料、程序状态，以及调用方显式提供的【0-32 强读世界书】摘录；不得自行读取或假设存在酒馆预设、Persona或Prompt Manager快照。
+        return `【幕后七条资料与输出任务】你是长篇角色扮演中的“0-32·永不落幕的剧场幕后七条引擎”。本轮写作来源是【${writingSource} + 独立资料边界】；酒馆主AI已经写完可见chính văn，你现在只做一次后台写作，不得续写或改写chính văn。每个真实剧情轮结束后，你独立生成并同步：Lời hẹn chờ thực hiện/秘密、人物外观、朋友圈/日记/纪念日、通讯终端、彼间私文。主结构化记忆由独立“每条AI回复一次”的记忆流水线负责，你不得再重复写入主记忆。任务只允许使用下面明确提供的当前chính văn、有限记忆、已确认角色资料、程序Trạng thái，以及调用方显式提供的【0-32 强读世界书】摘录；不得自行读取或假设存在酒馆预设、Persona或Prompt Manager快照。
 
 ${strongWorldBook?`${strongWorldBook}\n\n`:''}
 【角色卡/世界书原生人物池｜手机与社交最高优先级】
 ${sourceCharacterRosterBrief()}
 - 微信好友与微信群成员必须优先、实际使用这个原生人物池和【已确认角色资料】，不是只在提示里参考。只要人物属于当前可达社交圈，就应进入联系人；工作/朋友/家庭/学校/社团等对应人物要进入匹配群组。
 - 禁止把世界书条目编号、序号、UID、comment、关键词、字段名、章节标题、规则标题当成人名；例如“00”“01”“第3条”“背景的日常化”“核心机制”“accessories”“relationships”都绝不是联系人。
-- 手机后台不得首创有名字的新NPC：一个新名字必须先在角色卡/世界书中存在，或已经在正文/结构化记忆中真实出场，下一轮才允许进入微信/群聊。
-- 一个群不需要“凑人数”。没有足够明确成员时，可以只保留已经确认的人和泛称“其他群成员”，禁止为了名单好看硬造姓名。
+- 手机后台不得首创有名字的新NPC：一个新名字必须先在角色卡/世界书中存在，或已经在chính văn/结构化记忆中真实出场，下一轮才允许进入微信/群聊。
+- 一个群不需要“凑人数”。没有足够明确成员时，可以只保留已经确认的人和泛称“其他群成员”，禁止为了名单好看硬造Họ tên。
 
 【P29现实权限边界】
-- 当前时间、当前地点、当前世界、当前时代属于“已发生现实”，你没有改写权限。setting/scene只是对正文事实的抄录建议，程序会二次校验。
-- 只有最新正文明确写出穿越、时间跳转、抵达新地点、当前日期/年份变化时，才可在scene/setting里填写新值。
-- 禁止为了让通讯方式合理而自行创造年份、地点或时代；例如正文是2026，绝不能擅自写1715/1900。
+- 当前时间、当前地点、当前世界、当前时代属于“Đã xảy ra现实”，你没有改写权限。setting/scene只是对chính văn事实的抄录建议，程序会二次校验。
+- 只有最新chính văn明确写出穿越、时间跳转、抵达新地点、当前Ngày/年份变化时，才可在scene/setting里填写新值。
+- 禁止为了让通讯方式合理而自行创造年份、地点或时代；例如chính văn是2026，绝不能擅自写1715/1900。
 - 不确定的time/location/era/worldType请留空，宁可不写也不要猜。
 
-先根据【当前这一轮正文结束时的地点】+已确认角色资料+当前剧情判断【当前区域可用通讯方式】。每轮必须重新判断，禁止按角色类型永久锁死：
+先根据【当前这一轮chính văn结束时的地点】+已确认角色资料+当前剧情判断【当前区域可用通讯方式】。每轮必须重新判断，禁止按角色Loại永久锁死：
 - 只要当前时代属于现代社会，就固定communicationType="smartphone"、deviceLabel="iPhone17Promax"。哪怕当前地点暂时无信号/断网/被屏蔽，也仍然是iPhone17Promax，只把available=false、phone.write=false，并在reason说明“无信号/断网/屏蔽”；不要把设备本身改成none。
 - 除现代智能手机外，其余时代、国家、城市、荒野、秘境、异世界区域都由你根据当前场景自己选择最合理的communicationType和deviceLabel；deviceLabel必须写成剧情里真正会被角色使用/看到的具体载体名称，例如“军用电台”“公寓座机”“邮局电报”“驿站书信”“传讯水晶”“灵符传讯”等，不要固定成某一种。
 - 不要因为“奇幻/古代/没有现代设备”就直接判定无通讯。先检查当前区域是否存在魔法、神术、信使、驿站、飞鸟、书信、电报、无线电、座机、专用终端或其他设定内机制。
 - communicationType只是程序分类：mobile/sms/pager/landline/telegram/letter/messenger/radio/magic/terminal都可以按当前地点使用；具体叫什么由deviceLabel决定。
 - 只有当前地点明确与外界隔绝、设定明确无法联络，或确实找不到任何合理渠道时，才用communicationType="none"、available=false、phone.write=false；deviceLabel写“当前区域无可用通讯”或更具体的原因。
 - 剧情穿越、跨国、进城/出城、进入地下城/秘境/战区等都可能让通讯方式改变；优先服从“当前场景地点”，不能沿用上一轮设备偷懒。
-- 【原身份≠当前世界】插件已有记忆里的‘2026大学生/手机/微信’只属于原世界身份，不得覆盖当前剧情的1900香港、异世界、古代、未来等时空。原学校/朋友/联系人必须保留，但若当前不可连接原世界，只标记offline-origin，不产生新微信消息。
+- 【原Thân phận≠当前世界】插件已有记忆里的‘2026大学生/手机/微信’只属于原世界Thân phận，不得覆盖当前剧情的1900香港、异世界、古代、未来等时空。原学校/朋友/联系人必须保留，但若当前不可连接原世界，只标记offline-origin，不产生新微信消息。
 - 如果user把原世界iPhone带到异世界/1900年，设备可以仍在身上；这时personalDeviceLabel可保留iPhone17Promax，但当地communicationType必须按当前时代选择，且personalDeviceAvailable/originReachable按剧情实际网络决定。
 
-【fixed39 手机/正文单一故事线｜强一致】
+【fixed39 手机/chính văn单一故事线｜强一致】
 ${s39UnifiedStorylineBrief(28,latestReply)}
-- 手机与正文不是两个平行剧情。任何已发生微信、短信、电话、转账、订单、现实见面都属于同一条时间线。
-- financeEvents的首个真值源只能是【紧邻user消息明确完成的支付/到账】或【本轮你同时生成的手机消息明确完成的支付/到账】。assistant正文自己第一次写“到账”不能反向作为证据制造手机流水。若由本轮手机消息触发，必须先在wechat/sms里明确写出“已打款/已到账/已转账”和同一精确金额，再创建financeEvents。禁止从“第14版终过/老板结算/以后会付款/世界书预算”等前置信息脑补到账。没有精确金额或没有完成状态就返回[]。
-- 当前正文已经线下同场的NPC，不得再自动生成该NPC的微信/短信/电话；除非正文明确写TA此刻拿手机发送/拨号，或TA已经离开现场。
+- 手机与chính văn不是两个平行剧情。任何Đã xảy ra微信、短信、电话、转账、订单、现实见面都属于同一条Dòng thời gian。
+- financeEvents的首个真值源只能是【紧邻user消息明确完成的支付/到账】或【本轮你同时生成的手机消息明确完成的支付/到账】。assistantchính văn自己第一次写“到账”不能反向作为证据制造手机流水。若由本轮手机消息触发，必须先在wechat/sms里明确写出“已打款/已到账/已转账”和同一精确金额，再创建financeEvents。禁止从“第14版终过/老板结算/以后会付款/世界书预算”等前置信息脑补到账。没有精确金额或没有完成Trạng thái就返回[]。
+- 当前chính văn已经线下同场的NPC，不得再自动生成该NPC的微信/短信/电话；除非chính văn明确写TA此刻拿手机发送/拨号，或TA已经离开现场。
 - NPC只要此前与user在线上聊过、打过电话、收过转账，就已经认识user；现实登场时禁止“第一次见/不认识”。反过来，现实见过后手机端也必须知道双方见过。
 
 只输出一个严格JSON对象，不要Markdown，不要解释：
 {
   "setting":{"worldKey":"","worldType":"","era":"","location":"","technologyLevel":"","communicationType":"smartphone","deviceLabel":"iPhone17Promax","available":true,"networkState":"online","originReachable":true,"personalDeviceType":"smartphone","personalDeviceLabel":"iPhone17Promax","personalDeviceAvailable":true,"reason":""},
   "scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},
-  "promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"待兑现|进行中"}],
+  "promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"Chờ thực hiện|Đang diễn ra"}],
   "secrets":[{"secretId":"","subject":"","content":"","knowers":"","suspects":"","unknown":""}],
   "appearances":[{"character":"","aliases":[],"identityRevealed":false,"source":"","outfit":"详细写清上衣/下装或连衣装、材质、颜色、版型、层次与穿着方式","hair":"","accessories":"","shoes":"","condition":"","time":"","location":""}],
   "memory":{
-    "mainline":[{"date":"","start":"","end":"","summary":"","status":"进行中","floor":""}],
+    "mainline":[{"date":"","start":"","end":"","summary":"","status":"Đang diễn ra","floor":""}],
     "branches":[],"states":[],"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":""}],"relations":[{"a":"","b":"","description":"","attitude":"","time":""}],"world":[],"items":[],"chapters":[],"anchors":[{"date":"","time":"","floor":"","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":""}]
   },
   "story":{
@@ -7868,47 +7868,47 @@ ${s39UnifiedStorylineBrief(28,latestReply)}
 
 【绝对规则】
 1. 这是 user 真正发言后的 AI 回复；开场白禁止生成。
-2. scene必须反映刚完成正文末尾的当前场景；若文本明确发生“离开A→到达B”，scene.location只能写最终B，A仅可作为历史事件/状态迁移，禁止把起点继续当当前地点。
-3. promises只列仍待兑现/进行中的明确约定；同一约定必须沿用已有promiseId，不得因措辞变化重复新建；已经完成或取消的约定不要重新列为待兑现。没有则[]。secrets只列已明确存在、对后续知情边界有用的秘密；同一秘密沿用已有secretId，并更新已知者/未知者边界；没有则[]。
-4. appearances写本轮当前镜头中的角色；只要当前镜头有人，至少返回1名主要在场角色。正文没有重新描述换装时也不能留空：沿用其最后确认穿着，并按本轮正文更新姿态、整洁度或其他可见状态。穿着要具体，不能只写“休闲装/制服”。插件会按角色覆盖当前外观而不是重复堆卡。正文中新出现的NPC只要能看到外形，第一次必须建立外观。角色后来真名揭示时用aliases+identityRevealed帮助插件合并旧称呼。
-5. 【P41-S1记忆职责分离】memory是兼容字段，本轮全部返回空数组：mainline/branches/states/people/relations/world/items/chapters/anchors/lifeFacts均不得生成内容。主结构化记忆会在正文结束后由独立记忆流水线对“这一条AI回复”单独请求一次，避免七条API和记忆API双写同一楼层。
-6. story.moments / story.diary / story.anniversaries 与正文同轮生成并始终保留在正文下方折叠。只有本轮setting=smartphone时，才同步镜像到 iPhone17Promax 的朋友圈/日记/纪念日 App；非现代场景不要强行把它们包装成现代社交App。现代智能手机且存在已认识角色时，本轮story.moments必须自然产生1-4条NPC生活动态，story.diary至少1条符合某位角色习惯的低影响记录；两者都不必围绕user。为每个NPC保持不同社交习惯：低活跃角色可由其他已认识角色承担本轮内容，高活跃NPC可以连续数轮更新；内容以真实生活碎片为主。story.anniversaries只有已有资料或本轮正文明确给出生日、周年等日期依据时才写，否则必须为空，禁止凑数。
+2. scene必须反映刚完成chính văn末尾的当前场景；若文本明确发生“离开A→到达B”，scene.location只能写最终B，A仅可作为历史事件/Trạng thái迁移，禁止把起点继续当当前地点。
+3. promises只列仍Chờ thực hiện/Đang diễn ra的明确Lời hẹn；同一Lời hẹn必须沿用已有promiseId，不得因措辞变化重复新建；已经完成或Hủy的Lời hẹn不要重新列为Chờ thực hiện。没有则[]。secrets只列已明确存在、对后续知情边界有用的秘密；同一秘密沿用已有secretId，并更新已知者/Chưa rõ者边界；没有则[]。
+4. appearances写本轮当前镜头中的角色；只要当前镜头有人，至少返回1名主要在场角色。chính văn没有重新描述换装时也不能留空：沿用其最后确认穿着，并按本轮chính văn更新姿态、整洁度或其他可见Trạng thái。穿着要具体，不能只写“休闲装/制服”。插件会按角色覆盖当前外观而不是重复堆卡。chính văn中新出现的NPC只要能看到外形，第一次必须建立外观。角色后来真名揭示时用aliases+identityRevealed帮助插件合并旧称呼。
+5. 【P41-S1记忆职责分离】memory是兼容字段，本轮全部返回空数组：mainline/branches/states/people/relations/world/items/chapters/anchors/lifeFacts均不得生成内容。主结构化记忆会在chính văn结束后由独立记忆流水线对“这一条AI回复”单独请求一次，避免七条API和记忆API双写同一Tầng。
+6. story.moments / story.diary / story.anniversaries 与chính văn同轮生成并始终保留在chính văn下方折叠。只有本轮setting=smartphone时，才同步镜像到 iPhone17Promax 的朋友圈/日记/纪念日 App；非现代场景不要强行把它们包装成现代社交App。现代智能手机且存在已认识角色时，本轮story.moments必须自然产生1-4条NPC生活动态，story.diary至少1条符合某位角色习惯的低影响记录；两者都不必围绕user。为每个NPC保持不同社交习惯：低活跃角色可由其他已认识角色承担本轮内容，高活跃NPC可以连续数轮更新；内容以真实生活碎片为主。story.anniversaries只有已有资料或本轮chính văn明确给出生日、周年等Ngày依据时才写，否则必须为空，禁止凑数。
 6.1 【朋友圈真实互动】下方“朋友圈现有动态”中 reactionStatus=pending 的user动态已经真实发表，并对已认识好友可见。story.reactions必须为每个pending momentId返回且只返回1条补丁：seenBy写本轮实际刷到的人；likes只写自然会点赞的人；comments写符合各自人设的留言。附件描述就是NPC实际看到的照片/文件/语音/位置/链接内容，评论必须与原文及附件一致。不是每个看见的人都必须点赞或留言，允许只看不互动，但processed必须为true。禁止把互动伪造成一条新的朋友圈，禁止更换momentId。
-7. 【时空通讯分层】插件已有记忆只负责保存原世界身份；当前scene+最近正文定义当前世界/时代。若原身份是2026大学生但正文已到1900香港/异世界，原班级群与联系人必须保留为offline-origin，禁止产生新微信消息；回到原世界且网络恢复后再重新active。只有当前剧情明确入学/入职/加入当地组织时，才建立local群/频道。
+7. 【时空通讯分层】插件已有记忆只负责保存原世界Thân phận；当前scene+最近chính văn定义当前世界/时代。若原Thân phận是2026大学生但chính văn已到1900香港/异世界，原班级群与联系人必须保留为offline-origin，禁止产生新微信消息；回到原世界且网络恢复后再重新active。只有当前剧情明确入学/入职/加入当地组织时，才建立local群/频道。
    当前智能手机世界：NPC主动私聊放phone.wechat，微信群放phone.wechatGroups，现代服务通知放phone.sms，电话放phone.calls。非智能手机世界：wechat/wechatGroups必须为空，单人异步通讯可放sms，多人机构/班级/组织通讯必须放phone.channelGroups并填写channelType；不要把电报簿、书信往来、魔法频道伪装成微信群。phone.groupProfiles持续保存scope/homeWorldKey/channelType/availability，穿越只改可达性不删关系。稳定机构优先从角色卡/世界书原生人物池与已出现人物中组成员；只有确实缺少必要角色时才生成低影响背景NPC，并在后续自然出场时持续复用。
-8. NPC拥有独立意志：不管{{user}}此刻在做什么，只要通讯条件允许，都可以主动联系、打断或留下消息；不需要等待{{user}}先联系，也不需要围绕主线。只要手机生态已开启、当前通讯可用且已有角色，本轮phone必须至少写1个低影响事件；有名字的社交事件优先使用角色卡/世界书原生人物池或已经出现的人。没有私人联系动机时，可写合理的群消息、课程/工作通知、账单、天气、快递或符合时代载体的日常通讯噪声；不要为了保底事件临时捏一个新名字。通讯不可用、载体为none或功能被关闭时才允许全部通讯数组为空；校园身份在活跃轮可写2-6条真实班级/课程群对话。
+8. NPC拥有独立意志：不管{{user}}此刻在做什么，只要通讯条件允许，都可以主动联系、打断或留下消息；不需要等待{{user}}先联系，也不需要围绕主线。只要手机生态已开启、当前通讯可用且已有角色，本轮phone必须至少写1个低影响事件；有名字的社交事件优先使用角色卡/世界书原生人物池或已经出现的人。没有私人联系动机时，可写合理的群消息、课程/工作通知、账单、天气、快递或符合时代载体的日常通讯噪声；不要为了保底事件临时捏一个新名字。通讯不可用、载体为none或功能被Đóng时才允许全部通讯数组为空；校园Thân phận在活跃轮可写2-6条真实班级/课程群对话。
 9. calls.status只用incoming/ringing/waiting/missed/connected/ended/outgoing；正在打给user或等待接听时requiresAnswer=true。
- 10. 【彼间私文=全NPC自由世界】每轮都要扫描结构化记忆和【已出现角色】，维护当前已明确存在且仍活跃/存活的完整NPC人物池。只要彼间私文与世界自治已开启且存在镜头外NPC，本轮world.events不得为空，并至少满足【本轮NPC大世界自治参数】要求的不同NPC数量。world.events写本轮在镜头外确实有状态推进/社交变化/位置变化/有意义日常的NPC；普通吃饭、上课、通勤、打游戏、和朋友聊天、加班、休息、买东西都属于有效推进，不需要制造大事件。优先轮转长期未更新者。人物有自己的工作、家庭、兴趣、社交、休息、旅行和个人目标，绝大多数动态可以完全不围绕user/char。正文自然新生成的NPC立即加入人物池，不得当一次性背景板；但手机/群聊不应主动批量造人，原生人物池和已出现人物拥有更高选角优先级。
-10.1 【彼间私文不是番外】world.events写下的每件事一旦生成并通过校验，就立刻进入唯一世界总账，后续正文/手机/NPC行为都必须承认它已经发生。participants写实际参与者；knownBy至少包含participants，可额外写真正目击/收到通知的人；userKnows只有{{user}}亲历、目击或已被告知时才为true，镜头外默认false。禁止为了给{{user}}看而把隐藏事件强行泄露进正文，但参与NPC之后的态度、地点、目标、关系必须自然承接这些真实经历。
+ 10. 【彼间私文=全NPC自由世界】每轮都要扫描结构化记忆和【已出现角色】，维护当前已明确存在且仍活跃/存活的完整NPC人物池。只要彼间私文与世界自治已开启且存在镜头外NPC，本轮world.events不得为空，并至少满足【本轮NPC大世界自治参数】要求的不同NPC数量。world.events写本轮在镜头外确实有Trạng thái推进/社交变化/位置变化/有意义日常的NPC；普通吃饭、上课、通勤、打游戏、和朋友聊天、加班、休息、买东西都属于有效推进，不需要制造大事件。优先轮转长期未更新者。人物有自己的工作、家庭、兴趣、社交、休息、旅行和个人目标，绝大多数动态可以完全不围绕user/char。chính văn自然新生成的NPC立即加入人物池，不得当一次性背景板；但手机/群聊不应主动批量造人，原生人物池和已出现人物拥有更高选角优先级。
+10.1 【彼间私文不是番外】world.events写下的每件事一旦生成并通过校验，就立刻进入唯一世界总账，后续chính văn/手机/NPC行为都必须承认它已经发生。participants写实际参与者；knownBy至少包含participants，可额外写真正目击/收到通知的人；userKnows只有{{user}}亲历、目击或已被告知时才为true，镜头外默认false。禁止为了给{{user}}看而把隐藏事件强行泄露进chính văn，但参与NPC之后的态度、地点、目标、关系必须自然承接这些真实经历。
 11. 【NPC主动干涉】NPC不需要等user空闲、不需要等user先联系，也不需要正在主线镜头里。只要当前通讯设定允许，任意NPC都可以按自己的动机主动联系、打断或影响user；user正在上课、工作、睡觉、约会、吃饭、赶路等都不是禁止联系的理由。是否回应永远由user决定。
-12. 【通讯生态活跃规则】只要当前setting.available=true，当前时代的通讯网络就是会自己运行的世界层；按本轮完整度保底至少产生1个低影响事件，并在达到静默阈值后提高合理密度。现代iPhone可有微信/短信/电话与服务噪声；1900/古代/异世界改成当地书信/电报/信使/无线电/魔法通讯，不得因为原身份来自现代而刷现代快递/验证码。
+12. 【通讯生态活跃规则】只要当前setting.available=true，当前时代的通讯网络就是会自己运行的世界层；按本轮完整度保底至少产生1个低影响事件，并在达到静默阈值后提高合理密度。现代iPhone可有微信/短信/电话与服务噪声；1900/古代/异世界改成当地书信/电报/信使/无线电/魔法通讯，不得因为原Thân phận来自现代而刷现代快递/验证码。
    【实时渠道增强】不要连续多轮只用一种文字媒介。当前载体支持实时通讯且有合理动机时可来电/无线电/魔法实时传讯；等待user决定时status=waiting/ringing且requiresAnswer=true，不能替user接。
    【本轮实时通讯动态提醒】${npcCallVarietyDirective()}
    【本轮通讯生态参数】
    ${phoneEcologyDirective()}
    【本轮NPC大世界自治参数】
    ${npcWorldAutonomyDirective()}
-13. 微信不再要求“插件里已经登记为联系人”才能出现。任意NPC只要能通过共同群聊、好友申请、搜索账号、名片、工作群、公开账号、旧联系方式等合理渠道触达，就可以主动发微信；其中优先选择角色卡/世界书已有角色与已出现NPC；生成后插件会自动把对方加入会话。陌生号码/功能通知/广告更适合sms；骚扰或陌生来电可放calls。
-13.1 【短信可双向】user可以主动回复任何短信、陌生号码或服务号。若pending短信内容是“TD/退订/取消订阅”等，且对方明显是营销/订阅/垃圾短信服务号，应在phone.sms返回合理的“退订成功/已受理/无法识别指令”等自动回复，而不是当成人类NPC聊天。
+13. 微信不再要求“插件里已经登记为联系人”才能出现。任意NPC只要能通过共同群聊、好友申请、Tìm账号、名片、工作群、公开账号、旧联系方式等合理渠道触达，就可以主动发微信；其中优先选择角色卡/世界书已有角色与已出现NPC；生成后插件会自动把对方加入会话。陌生号码/功能通知/广告更适合sms；骚扰或陌生来电可放calls。
+13.1 【短信可双向】user可以主动回复任何短信、陌生号码或服务号。若pending短信内容是“TD/退订/Hủy订阅”等，且对方明显是营销/订阅/垃圾短信服务号，应在phone.sms返回合理的“退订成功/已受理/无法识别指令”等自动回复，而不是当成人类NPC聊天。
 13.15 【邮件通讯】pending.type=email表示user主动发送剧情邮件。若收件人是可识别NPC且有合理回复动机，可在phone.emailEvents返回邮件回复（from/subject/body/time），也可以选择暂不回复；不得把邮件偷偷改成微信。
-13.2 【剧情支付与到账】phone.financeEvents只能由紧邻user消息已明确完成的支付/到账，或本轮phone.wechat/sms/calls里先出现的精确完成通知触发；assistant正文首次自说“到账”不算真值源。amount填正数，type决定收入/支出；account只能alipay/wechat/bank。没有精确金额不得创建，银行到账用bank。不要凭空制造巨额金钱，也不要替user主动消费。用户在淘宝/饿了么/充值/转账中的手动支付由插件本地处理，你只负责剧情明确发生的账变。剧情明确写出user用外卖软件点餐/下单时改写phone.orderCreates，不要再为同一笔外卖另写financeEvents。支付宝成功转账固定为收款人账户自动到账，绝不能写成需要点击接收、领取或确认；只有微信转账卡才可等待接收或退还。
+13.2 【剧情支付与到账】phone.financeEvents只能由紧邻user消息已明确完成的支付/到账，或本轮phone.wechat/sms/calls里先出现的精确完成通知触发；assistantchính văn首次自说“到账”不算真值源。amount填正数，type决定收入/支出；account只能alipay/wechat/bank。没有精确金额不得创建，银行到账用bank。不要凭空制造巨额金钱，也不要替user主动消费。用户在淘宝/饿了么/充值/转账中的手动支付由插件本地处理，你只负责剧情明确发生的账变。剧情明确写出user用外卖软件点餐/下单时改写phone.orderCreates，不要再为同一笔外卖另写financeEvents。支付宝成功转账固定为收款人账户自动到账，绝不能写成需要点击接收、领取或确认；只有微信转账卡才可等待接收或退还。
 13.3 【同一世界+知情边界】订单、支付、地图、点评、微信、电话、现实见面和彼间私文中的镜头外事件全部是真实世界事实，但绝不自动向所有人广播。谁参与、谁亲眼看见、谁收到消息、谁被告知，谁才知道。工资与余额除相关账户本人及明确目击/被告知者外属于私密事实。朋友圈按实际刷到传播。NPC日记只让日记作者知道其内容；彼间私文中参与该事件的NPC知道自己经历过什么，未参与者和{{user}}默认不知道，除非后续存在真实传播路径。
-13.4 【商品事实锁】下方联网订单中的商户、商品名、口味/规格、数量和状态均是不可替换的真实订单。买的是烤串，送达和后续描写就只能是该订单里的具体烤串；禁止改成蛋糕、冒菜或任何“差不多”的替代品。
+13.4 【商品事实锁】下方联网订单中的商户、商品名、口味/规格、数量和Trạng thái均是不可替换的真实订单。买的是烤串，送达和后续描写就只能是该订单里的具体烤串；禁止改成蛋糕、冒菜或任何“差不多”的替代品。
 13.5 【知情事件硬约束】phone.knowledgeEvents只记录本轮有明确传播路径、且最终让某NPC知道的手机/订单事件：同场目击=witnessed、当面告知=told、收到消息=message、本人代收/共同参与=received、实际刷到朋友圈=moment。eventId必须逐字引用已有ID。彼间私文不通过phone.knowledgeEvents传播，而是通过world.events的participants/knownBy独立记录；其参与者天然知道自己的经历，{{user}}只有在参与、目击或后来被告知时才知道。
-13.6 【订单状态联网】phone.orderUpdates只能引用下方已有orderId，只能更新状态、异常、代收人、观察者和售后说明，绝不能改店铺、商品名、数量、口味/规格、金额。observers只写本轮确实同场观察到的人。
+13.6 【订单Trạng thái联网】phone.orderUpdates只能引用下方已有orderId，只能更新Trạng thái、异常、代收人、观察者和售后说明，绝不能改店铺、商品名、数量、口味/规格、金额。observers只写本轮确实同场观察到的人。
 13.7 【NPC自己的手机生活】phone.npcActivities只写user通过公开朋友圈、共享群聊、收到的消息或同场观察而合理可知的NPC手机动态，visibility只能public/shared。NPC私聊他人、私密浏览和彼间私文后台行动一律不得输出。
-13.8 【剧情自动外卖】只有最近user发言或最新正文明确表示已经/现在要通过外卖软件点餐、下单时，才写phone.orderCreates；只是讨论、询价、浏览、犹豫、否定、取消或已经存在于下方订单真值中的同一单必须返回[]。未指定平台时platform=auto，由插件在美团/饿了么中稳定随机选择；明确说了平台则照写。query和items必须逐字保留用户点的食物、数量、口味/规格，不能把烤串改成蛋糕。一个店铺无法合理提供的不同品类要拆成多笔。amount只有正文明确金额时才填，否则填0让插件按匹配菜单计价。observers只写本轮确实同场看见屏幕/付款的人；user当面说给他们听时knowledgeMethod=told，否则witnessed。插件会建立真实手机订单、扣剧情余额并锁定后续送达商品。
+13.8 【剧情自动外卖】只有最近user发言或最新chính văn明确表示已经/现在要通过外卖软件点餐、下单时，才写phone.orderCreates；只是讨论、询价、浏览、犹豫、否定、Hủy或已经存在于下方订单真值中的同一单必须返回[]。未指定平台时platform=auto，由插件在美团/饿了么中稳定随机选择；明确说了平台则照写。query和items必须逐字保留用户点的食物、数量、口味/规格，不能把烤串改成蛋糕。一个店铺无法合理提供的不同品类要拆成多笔。amount只有chính văn明确金额时才填，否则填0让插件按匹配菜单计价。observers只写本轮确实同场看见屏幕/付款的人；user当面说给他们听时knowledgeMethod=told，否则witnessed。插件会建立真实Đơn hàng điện thoại、扣剧情余额并锁定后续送达商品。
 14. 彼间私文若写某人联系user，phone里必须同步有对应通讯记录；智能手机可用wechat/wechatGroups/sms/calls。非智能手机时代：私人异步往来可写sms，实时往来可写calls，多人机构/班级/组织通讯必须写channelGroups；wechat/wechatGroups必须为空。原世界微信群保存在groupProfiles但availability=offline-origin，不得伪造为当前可收到的消息。
 15. 严格遵守时间、距离、设备、角色能力和知情边界，不制造无依据的大事件；“NPC自由”不等于允许读取其不知道的秘密。
-16. 【高自由度开放世界】在当前正文、已有结构化记忆、既有性格与社会环境允许时，NPC可以像开放世界游戏里的独立居民一样自主做善事、惹事或犯罪，包含但不限于争吵、打架、偷窃、抢劫、勒索、绑架/抢人、帮派冲突、逃亡、杀人、赌博、酗酒、夜生活、成人自愿性交易/嫖娼等；也可以只是正常上班、恋爱、购物、聚餐、看病、旅行。不要因为这些内容“负面”就自动净化掉，也不要强迫每轮都发生犯罪。
+16. 【高自由度开放世界】在当前chính văn、已有结构化记忆、既有Tính cách与社会环境允许时，NPC可以像开放世界游戏里的独立居民一样自主做善事、惹事或犯罪，包含但不限于争吵、打架、偷窃、抢劫、勒索、绑架/抢人、帮派冲突、逃亡、杀人、赌博、酗酒、夜生活、成人自愿性交易/嫖娼等；也可以只是正常上班、恋爱、购物、聚餐、看病、旅行。不要因为这些内容“负面”就自动净化掉，也不要强迫每轮都发生犯罪。
 17. 【现实后果】高自由不等于无后果。违法/暴力/高风险行为要服从当前世界法律、治安、伤势、证据、目击者、金钱、声誉、关系与势力逻辑；可能被追捕、报复、受伤、死亡、失财、关系破裂，也可能暂时逃脱。不要把所有NPC变成围绕user刷事件的工具人。
 18. 【成人亲密边界】允许描写成年NPC之间自愿的恋爱、约会、夜生活和成人自愿性交易；涉及性行为时必须是成年人且自愿。绑架/抢人可以作为犯罪剧情存在，但不能把强迫性行为、性侵或未成年人性内容当作可生成的“自由玩法”。
 
 【已确认角色资料】
 ${known.length ? known.join('、') : '暂未可靠识别'}
 
-【现有彼间私文状态】
-${worldStateBrief() || '暂无，由本轮开始建立。'}
+【现有彼间私文Trạng thái】
+${worldStateBrief() || 'Chưa có，由本轮开始建立。'}
 
 【结构化记忆】
 ${buildMemoryPrompt().slice(0, 9000)}
@@ -7927,13 +7927,13 @@ ${pendingPhonePrompt()}
 - call-action表示user已经接听/挂断了NPC来电；下一轮从这个选择之后继续，不得再次询问同一选择。
 - pending.type=sms时必须按短信渠道回复；若内容是TD/退订等服务指令，优先生成服务号自动回执，不要偷偷改成微信。
 
-【当前手机生态/剧情钱包/订单状态】
+【当前手机生态/剧情钱包/订单Trạng thái】
 ${phoneEcosystemBrief()}
 
 【手机转账固定事实｜支付宝自动到账，微信转账卡才需接收】
 ${phoneTransferRealityBrief()}
 
-【联网订单事实｜店铺、商品和状态不可替换】
+【联网订单事实｜店铺、商品和Trạng thái不可替换】
 ${phoneOrdersRealityBrief()}
 
 【NPC手机事件知情账本｜只有列出的人知道】
@@ -7942,7 +7942,7 @@ ${phoneKnowledgeBrief()}
 【最近聊天】
 ${recent}
 
-【刚完成的第${index}层正文】
+【刚完成的第${index}层chính văn】
 ${latestReply}`;
     }
 
@@ -8094,7 +8094,7 @@ ${latestReply}`;
         return out;
     }
 
-    // v0.9.3-r2：人物/人物关系是长期记忆骨架。模型偶尔漏字段时，不额外调用API，
+    // v0.9.3-r2：人物/Quan hệ nhân vật是长期记忆骨架。模型偶尔漏字段时，不额外调用API，
     // 仅用“已经确认过的数据 + 当前聊天双方”做保守兜底，避免人物页/关系页整块空掉。
     function relationPartyName(value) {
         const raw = compactText(value, 120);
@@ -8110,12 +8110,12 @@ ${latestReply}`;
     function normalizeRelationSnapshot(raw, floor = -1) {
         const item = raw && typeof raw === 'object' ? raw : {};
         return {
-            a: relationPartyName(item.a ?? item['角色A'] ?? item.characterA ?? item.roleA ?? item.from ?? item.sourceCharacter),
-            b: relationPartyName(item.b ?? item['角色B'] ?? item.characterB ?? item.roleB ?? item.to ?? item.targetCharacter),
-            description: compactText(item.description ?? item['关系描述'] ?? item.relation ?? item.relationship ?? item.status, 800),
-            attitude: compactText(item.attitude ?? item['情感态度'] ?? item.feeling ?? item.emotion, 500),
+            a: relationPartyName(item.a ?? item['Nhân vật A'] ?? item.characterA ?? item.roleA ?? item.from ?? item.sourceCharacter),
+            b: relationPartyName(item.b ?? item['Nhân vật B'] ?? item.characterB ?? item.roleB ?? item.to ?? item.targetCharacter),
+            description: compactText(item.description ?? item['Mô tả quan hệ'] ?? item.relation ?? item.relationship ?? item.status, 800),
+            attitude: compactText(item.attitude ?? item['Thái độ tình cảm'] ?? item.feeling ?? item.emotion, 500),
             psychologyChange: compactText(item.psychologyChange ?? item['心理变化'] ?? item.mentalChange, 700),
-            time: compactText(item.time ?? item['更新时间'] ?? item.updatedAt, 160),
+            time: compactText(item.time ?? item['Thời điểm cập nhật'] ?? item.updatedAt, 160),
             floor: resolvedMemoryFloor(item.floor, floor),
         };
     }
@@ -8131,7 +8131,7 @@ ${latestReply}`;
         if(!nextValue||nextValue===oldValue)return {accept:Boolean(nextValue),reason:nextValue?'same-value':'empty-update'};
         const stable=/(?:同事|前任|前男友|前女友|恋人|男友|女友|夫妻|妻子|丈夫|爱人|父母|母亲|父亲|妈妈|爸爸|兄弟|姐妹|家人|亲戚|朋友|同学|室友|上司|下属|合作伙伴|师生|雇主|雇员)/.test(oldValue);
         const unfamiliar=/(?:陌生|不认识|素不相识|第一次见|初次见面|从未见过|不熟|毫无关系|没有关系|普通路人)/.test(nextValue);
-        const resetEvidence=/(?:失忆|记忆丧失|被洗脑|认知被篡改|假装不认识|装作不认识|伪装成陌生人|断绝关系|身份被替换|冒名顶替|确认认错人)/.test(evidence);
+        const resetEvidence=/(?:失忆|记忆丧失|被洗脑|认知被篡改|假装不认识|装作不认识|伪装成陌生人|断绝关系|Thân phận被替换|冒名顶替|确认认错人)/.test(evidence);
         if(stable&&unfamiliar&&!resetEvidence)return {accept:false,reason:'stable-relation-downgrade-without-reset-evidence'};
         if(generic(nextValue)&&oldValue&&!generic(oldValue))return {accept:false,reason:'specific-relation-downgraded-to-generic'};
         return {accept:true,reason:'supported-update'};
@@ -8153,16 +8153,16 @@ ${latestReply}`;
         const pair = relationPairKey(rel.a, rel.b);
         if (!pair) return false;
         const incoming = {
-            '角色A': rel.a, '角色B': rel.b, '关系描述': rel.description || '当前剧情中正在互动',
-            '情感态度': rel.attitude || '', '更新时间': rel.time || nowText(),
+            'Nhân vật A': rel.a, 'Nhân vật B': rel.b, 'Mô tả quan hệ': rel.description || '当前剧情中正在互动',
+            'Thái độ tình cảm': rel.attitude || '', 'Thời điểm cập nhật': rel.time || nowText(),
             _psychologyChange: rel.psychologyChange || '',
             _sourceFloor: Number.isFinite(rel.floor) ? rel.floor : Number(floor), _sourceMessageKey: sourceMessageKey,
         };
-        const existing = [...s.tables.relations].reverse().find(row => relationPairKey(row?.['角色A'], row?.['角色B']) === pair);
+        const existing = [...s.tables.relations].reverse().find(row => relationPairKey(row?.['Nhân vật A'], row?.['Nhân vật B']) === pair);
         if (!existing) { s.tables.relations.push({ ...incoming, _history:[], _evidenceRank:50 }); return true; }
         existing._history ||= [];
-        const oldDesc = compactText(existing['关系描述'], 800);
-        const newDesc = compactText(incoming['关系描述'], 800);
+        const oldDesc = compactText(existing['Mô tả quan hệ'], 800);
+        const newDesc = compactText(incoming['Mô tả quan hệ'], 800);
         const sourceText=messageText(context()?.chat?.[Number(incoming._sourceFloor)]); incoming._evidenceText=compactText(sourceText,2400);
         const decision=relationUpdateDecision({oldDescription:oldDesc,newDescription:newDesc,sourceText});
         if(!decision.accept&&newDesc!==oldDesc){
@@ -8170,22 +8170,22 @@ ${latestReply}`;
         }
         const acceptedDescription=decision.accept?newDesc:'';
         const changes = (acceptedDescription && acceptedDescription !== oldDesc)
-            || (incoming['情感态度'] && incoming['情感态度'] !== existing['情感态度'])
+            || (incoming['Thái độ tình cảm'] && incoming['Thái độ tình cảm'] !== existing['Thái độ tình cảm'])
             || (incoming._psychologyChange && incoming._psychologyChange !== existing._psychologyChange);
         if (changes) {
             const previous = { ...existing }; delete previous._history;
             existing._history.push(previous);
         }
-        existing['角色A'] = incoming['角色A']; existing['角色B'] = incoming['角色B'];
-        if (acceptedDescription) existing['关系描述'] = acceptedDescription;
-        if (incoming['情感态度']) existing['情感态度'] = incoming['情感态度'];
+        existing['Nhân vật A'] = incoming['Nhân vật A']; existing['Nhân vật B'] = incoming['Nhân vật B'];
+        if (acceptedDescription) existing['Mô tả quan hệ'] = acceptedDescription;
+        if (incoming['Thái độ tình cảm']) existing['Thái độ tình cảm'] = incoming['Thái độ tình cảm'];
         if (incoming._psychologyChange) existing._psychologyChange = incoming._psychologyChange;
-        if (incoming['更新时间']) existing['更新时间'] = incoming['更新时间'];
+        if (incoming['Thời điểm cập nhật']) existing['Thời điểm cập nhật'] = incoming['Thời điểm cập nhật'];
         existing._lastUpdateFloor = incoming._sourceFloor; existing._lastUpdateMessageKey = sourceMessageKey;existing._evidenceRank=Math.max(Number(existing._evidenceRank||70),decision.accept?50:0);
         return true;
     }
 
-    // 人物/人物关系是长期记忆骨架。模型漏字段、键名漂移时，不额外调用API，
+    // 人物/Quan hệ nhân vật是长期记忆骨架。模型漏字段、键名漂移时，不额外调用API，
     // 用“已经确认过的数据 + 当前聊天双方”做保守兜底，且永远保证 char↔user 这一对存在。
     function ensurePeopleRelationSnapshots(memory) {
         const m = normalizeCompanionMemory(memory);
@@ -8195,24 +8195,24 @@ ${latestReply}`;
         const existingPeople = stateRuntime.state?.tables?.people || [];
         const existingRelations = stateRuntime.state?.tables?.relations || [];
 
-        m.people = m.people.map(item => ({ ...item, name:relationPartyName(item?.name ?? item?.['姓名']) })).filter(item => item.name);
+        m.people = m.people.map(item => ({ ...item, name:relationPartyName(item?.name ?? item?.['Họ tên']) })).filter(item => item.name);
         m.relations = m.relations.map(item => normalizeRelationSnapshot(item, item?.floor ?? -1)).filter(item => item.a && item.b);
 
         const names = new Set(m.people.map(item => npcNameKey(item?.name)).filter(Boolean));
         if (charName && !/^\{\{char\}\}$/i.test(charName) && !names.has(npcNameKey(charName))) {
-            const prior = [...existingPeople].reverse().find(row => npcNameKey(row?.['姓名']) === npcNameKey(charName));
+            const prior = [...existingPeople].reverse().find(row => npcNameKey(row?.['Họ tên']) === npcNameKey(charName));
             m.people.unshift(prior ? {
-                name: charName, age: prior['年龄'] || '', identity: prior['身份'] || '', location: prior['地点'] || '',
-                personality: prior['性格'] || '', note: prior['备注'] || ''
+                name: charName, age: prior['Tuổi'] || '', identity: prior['Thân phận'] || '', location: prior['地点'] || '',
+                personality: prior['Tính cách'] || '', note: prior['Ghi chú'] || ''
             } : { name: charName, age:'', identity:'当前主角色', location:'', personality:'', note:'由当前聊天自动保底建立；具体资料等待剧情明确后更新' });
         }
 
         const mainPair = relationPairKey(userName, charName);
         const hasMainPair = mainPair && m.relations.some(item => relationPairKey(item.a, item.b) === mainPair);
         if (!hasMainPair && charName && userName && !/^\{\{(?:user|char)\}\}$/i.test(charName + userName)) {
-            const prior = [...existingRelations].reverse().find(row => relationPairKey(row?.['角色A'], row?.['角色B']) === mainPair);
+            const prior = [...existingRelations].reverse().find(row => relationPairKey(row?.['Nhân vật A'], row?.['Nhân vật B']) === mainPair);
             if (prior) {
-                m.relations.unshift({ a: prior['角色A'] || userName, b: prior['角色B'] || charName, description: prior['关系描述'] || '', attitude: prior['情感态度'] || '', time: prior['更新时间'] || '' });
+                m.relations.unshift({ a: prior['Nhân vật A'] || userName, b: prior['Nhân vật B'] || charName, description: prior['Mô tả quan hệ'] || '', attitude: prior['Thái độ tình cảm'] || '', time: prior['Thời điểm cập nhật'] || '' });
             } else {
                 m.relations.unshift({ a:userName, b:charName, description:'当前剧情中正在互动', attitude:'', time:'' });
             }
@@ -8231,35 +8231,35 @@ ${latestReply}`;
         m.people.forEach(item => registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor));
         const canon = value => canonicalNpcName(value) || compactText(value,120);
         m.mainline.forEach(item => uniquePush(s.tables.mainline, {
-            '日期': item?.date ?? '', '开始时间': item?.start ?? '', '完结时间': item?.end ?? '',
-            '事件概要': item?.summary ?? item?.event ?? '', '状态': item?.status ?? '进行中', '楼层': item?.floor ?? f,
+            'Ngày': item?.date ?? '', 'Giờ bắt đầu': item?.start ?? '', 'Giờ kết thúc': item?.end ?? '',
+            'Tóm tắt sự kiện': item?.summary ?? item?.event ?? '', 'Trạng thái': item?.status ?? 'Đang diễn ra', 'Tầng': item?.floor ?? f,
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['日期']}|${row['事件概要']}|${row['楼层']}`));
+        }, row => `${row['Ngày']}|${row['Tóm tắt sự kiện']}|${row['Tầng']}`));
         m.branches.forEach(item => uniquePush(s.tables.branches, {
-            '状态': item?.status ?? '进行中', '支线名': item?.name ?? '', '开始时间': item?.start ?? '', '完结时间': item?.end ?? '',
-            '事件追踪': item?.tracking ?? item?.summary ?? '', '关键NPC': item?.npcs ?? '', '楼层': item?.floor ?? f,
+            'Trạng thái': item?.status ?? 'Đang diễn ra', '支线名': item?.name ?? '', 'Giờ bắt đầu': item?.start ?? '', 'Giờ kết thúc': item?.end ?? '',
+            '事件追踪': item?.tracking ?? item?.summary ?? '', '关键NPC': item?.npcs ?? '', 'Tầng': item?.floor ?? f,
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['支线名']}|${row['事件追踪']}|${row['楼层']}`));
+        }, row => `${row['支线名']}|${row['事件追踪']}|${row['Tầng']}`));
         m.states.forEach(item => uniquePush(s.tables.states, {
-            '角色名': canon(item?.name), '状态变化': item?.change ?? item?.state ?? '', '时间': item?.time ?? '', '原因': item?.reason ?? '',
-            '当前位置': item?.location ?? '', '楼层': item?.floor ?? f, _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['角色名']}|${row['状态变化']}|${row['时间']}|${row['楼层']}`));
+            'Tên nhân vật': canon(item?.name), 'Trạng thái变化': item?.change ?? item?.state ?? '', '时间': item?.time ?? '', '原因': item?.reason ?? '',
+            'Vị trí hiện tại': item?.location ?? '', 'Tầng': item?.floor ?? f, _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
+        }, row => `${row['Tên nhân vật']}|${row['Trạng thái变化']}|${row['时间']}|${row['Tầng']}`));
         m.people.forEach(item => {
             const canonical = registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor) || compactText(item?.name,120);
             const incoming = {
-                '姓名': canonical, '年龄': item?.age ?? '', '身份': item?.identity ?? '', '地点': item?.location ?? '',
-                '性格': item?.personality ?? '', '备注': item?.note ?? '', _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
+                'Họ tên': canonical, 'Tuổi': item?.age ?? '', 'Thân phận': item?.identity ?? '', '地点': item?.location ?? '',
+                'Tính cách': item?.personality ?? '', 'Ghi chú': item?.note ?? '', _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
             };
             if (!canonical) return;
-            const existing = s.tables.people.find(row => npcNameKey(row?.['姓名']) === npcNameKey(canonical));
+            const existing = s.tables.people.find(row => npcNameKey(row?.['Họ tên']) === npcNameKey(canonical));
             if (!existing) { s.tables.people.push(incoming); return; }
-            if(String(incoming['身份']||'').trim())existing['身份']=mergeIdentityDescription(existing['身份'],incoming['身份'],messageText(message));
-            for (const key of ['年龄','地点','性格','备注']) if (String(incoming[key] || '').trim()) existing[key] = incoming[key];
-            existing['姓名'] = canonical; existing._lastUpdateFloor = Number(item?.floor ?? floor); existing._lastUpdateMessageKey = sourceMessageKey;
+            if(String(incoming['Thân phận']||'').trim())existing['Thân phận']=mergeIdentityDescription(existing['Thân phận'],incoming['Thân phận'],messageText(message));
+            for (const key of ['Tuổi','地点','Tính cách','Ghi chú']) if (String(incoming[key] || '').trim()) existing[key] = incoming[key];
+            existing['Họ tên'] = canonical; existing._lastUpdateFloor = Number(item?.floor ?? floor); existing._lastUpdateMessageKey = sourceMessageKey;
         });
         m.relations.forEach(item => upsertRelationSnapshot(item, Number(item?.floor ?? floor), sourceMessageKey));
         m.world.forEach(item => uniquePush(s.tables.world, {
-            '设定名': item?.name ?? '', '类型': item?.type ?? '', '详细说明': item?.description ?? '', '影响范围': item?.scope ?? '',
+            '设定名': item?.name ?? '', 'Loại': item?.type ?? '', '详细说明': item?.description ?? '', '影响范围': item?.scope ?? '',
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
         }, row => `${row['设定名']}|${row['详细说明']}`));
         m.items.forEach(item => upsertItemSnapshot({...item,holder:canon(item?.holder)}, Number(item?.floor ?? floor), sourceMessageKey));
@@ -8285,9 +8285,9 @@ ${latestReply}`;
         const add=value=>{const name=cleanSourceRosterName(value);if(name&&sourceRosterProperNameShape(name))names.add(npcNameKey(name));};
         add(activeCharacterObject()?.data?.name||activeCharacterObject()?.name||context()?.name2);
         for(const row of stateRuntime.sourceCharacterRoster||[])add(row?.name);
-        for(const row of s.tables?.people||[])add(row?.['姓名']);
-        for(const row of s.tables?.states||[])add(row?.['角色名']);
-        for(const row of s.tables?.relations||[]){add(row?.['角色A']);add(row?.['角色B']);}
+        for(const row of s.tables?.people||[])add(row?.['Họ tên']);
+        for(const row of s.tables?.states||[])add(row?.['Tên nhân vật']);
+        for(const row of s.tables?.relations||[]){add(row?.['Nhân vật A']);add(row?.['Nhân vật B']);}
         for(const row of s.characterWorld?.characters||[]){
             const provenance=`${row?.source||''} ${row?.identity||''}`;
             const key=npcNameKey(cleanSourceRosterName(row?.name));
@@ -8297,10 +8297,10 @@ ${latestReply}`;
         for(const row of s.npcRegistry||[]){
             const provenance=`${row?.source||''} ${row?.identity||''}`;
             // fixed27：历史版本曾把世界书标题/短语登记成NPC。世界书来源必须仍存在于“本次重新扫描的人物池”才可信。
-            // 真正在正文/主记忆/结构化剧情里出现过的NPC继续保留。
+            // 真正在chính văn/主记忆/结构化剧情里出现过的NPC继续保留。
             const key=npcNameKey(cleanSourceRosterName(row?.currentName));
             const fromRoster=/(?:角色卡|世界书)/i.test(provenance);
-            const fromStory=/(?:正文|主记忆|结构化|剧情)/i.test(provenance);
+            const fromStory=/(?:chính văn|主记忆|结构化|剧情)/i.test(provenance);
             if(fromRoster&&!fromStory&&key&&!rosterKeys.has(key))continue;
             if(!fromRoster&&!fromStory)continue;
             add(row?.currentName);for(const alias of row?.aliases||[])add(alias);
@@ -8417,7 +8417,7 @@ ${latestReply}`;
         if (!supportsLiveCalls(setting)) phone.calls = [];
         const phoneCount = ['wechat','wechatGroups','channelGroups','sms','calls'].reduce((sum, key) => sum + (phone[key] || []).length, 0);
         // v0.9.3：只要模型确实返回了合法通讯内容且当前世界允许通讯，就保留。
-        // 旧逻辑要求 phone.write 必须同时为 true，模型偶尔漏写该布尔值会把已经生成的微信/短信/通话全部清空。
+        // 旧逻辑要求 phone.write 必须同时为 true，模型偶尔漏写该布尔值会把已经生成的微信/短信/通话全部Bỏ chọn。
         phone.write = Boolean(setting.available && phoneCount > 0);
         if (!phone.write) ['wechat','wechatGroups','channelGroups','sms','calls'].forEach(key => { phone[key] = []; });
 
@@ -8473,7 +8473,7 @@ ${latestReply}`;
         const completedReactionIds = new Set((payload?.story?.reactions || []).filter(item=>item?.processed!==false).map(item=>compactText(item?.momentId,160)).filter(Boolean));
         counts.reactions = pendingMoments.filter(item=>completedReactionIds.has(compactText(item?.id,160))).length;
         const requirements = {
-            // 不能依赖 context.name2 先识别出角色姓名。群聊、特殊卡或跨端加载时，
+            // 不能依赖 context.name2 先识别出角色Họ tên。群聊、特殊卡或跨端加载时，
             // 后台请求仍有明确提供的已确认角色资料，不能把整片空栏目判成成功。
             appearances: substantiveReply ? 1 : 0,
             moments: smartphone && substantiveReply ? 1 : 0,
@@ -8535,7 +8535,7 @@ ${latestReply}`;
 
     function companionRepairPrompt(report, payload, message) {
         const requirements=(report?.missing||[]).map(item=>`- ${item.label}：至少 ${item.min} 条，当前 ${item.actual} 条`).join('\n');
-        const priorAppearances=(stateRuntime.state?.appearances||[]).slice(-8).map(item=>`${item.character}：${item.outfit}${item.hair?`；发型:${item.hair}`:''}`).join('\n')||'暂无旧外观';
+        const priorAppearances=(stateRuntime.state?.appearances||[]).slice(-8).map(item=>`${item.character}：${item.outfit}${item.hair?`；发型:${item.hair}`:''}`).join('\n')||'Chưa có旧外观';
         return `【幕后七条缺失栏目定向补写】
 上一份JSON的上半部分已经有效，但以下栏目缺失，不能把整轮判成成功：
 ${requirements}
@@ -8549,9 +8549,9 @@ ${requirements}
 }
 
 规则：
-- 外观：本轮没有换装时，沿用最后确认的当前穿着并根据刚完成正文更新姿态/状态，不能因为正文没重新逐字描写衣服就返回空。
+- 外观：本轮没有换装时，沿用最后确认的当前穿着并根据刚完成chính văn更新姿态/Trạng thái，不能因为chính văn没重新逐字描写衣服就返回空。
 - 朋友圈与日记：写低影响、符合人物习惯的真实生活碎片，不必围绕user；纪念日只有明确依据才写。
-- 朋友圈互动：若“朋友圈互动”被点名，必须逐个使用下方待处理动态的原momentId返回reactions补丁；NPC先读正文和附件，再决定只看、点赞或留言，不得新建替代动态。
+- 朋友圈互动：若“朋友圈互动”被点名，必须逐个使用下方待处理动态的原momentId返回reactions补丁；NPC先读chính văn和附件，再决定只看、点赞或留言，不得新建替代动态。
 - 通讯：只生成当前时空与载体确实允许的微信/短信/电话/时代通讯，不替user回复或决定。
 - 彼间私文：优先轮转镜头外NPC的吃饭、上课、工作、通勤、休息、社交等低风险日常，不制造无依据的大事件。
 
@@ -8559,13 +8559,13 @@ ${requirements}
 ${JSON.stringify(payload?.setting||{})}
 
 【已知角色】
-${(report?.knownCharacters||[]).join('、')||'暂无'}
+${(report?.knownCharacters||[]).join('、')||'Chưa có'}
 
 【待处理朋友圈动态】
 ${momentSocialFeedBrief()}
 
 【镜头外候选】
-${(report?.worldCandidates||[]).join('、')||'暂无'}
+${(report?.worldCandidates||[]).join('、')||'Chưa có'}
 
 【已确认外观】
 ${priorAppearances}
@@ -8573,12 +8573,12 @@ ${priorAppearances}
 【最近聊天】
 ${recentTranscript(6).slice(0,10000)}
 
-【刚完成正文】
+【刚完成chính văn】
 ${messageText(message).slice(0,10000)}`;
     }
 
     function companionIncompleteError(report) {
-        const names=(report?.missing||[]).map(item=>`${item.label}${item.actual}/${item.min}`).join('、')||'未知栏目';
+        const names=(report?.missing||[]).map(item=>`${item.label}${item.actual}/${item.min}`).join('、')||'Chưa rõ栏目';
         const error=new Error(`幕后七条返回了合法但不完整的JSON：${names}`);
         error.name='CompanionPayloadIncompleteError';
         error.completenessReport=report;
@@ -8598,7 +8598,7 @@ ${messageText(message).slice(0,10000)}`;
         const repairPrompt=companionRepairPrompt(before,primaryPayload,message);
         const repairOptions={
             responseLength:configured,
-            systemPrompt:`${FALLEN_WRITER_CONTEXT}\n\n你只负责补齐幕后七条上一份JSON中缺失的生活栏目，不重写正文和已完成的上半部分。`,
+            systemPrompt:`${FALLEN_WRITER_CONTEXT}\n\n你只负责补齐幕后七条上一份JSON中缺失的生活栏目，不重写chính văn和Đã hoàn thành的上半部分。`,
             jsonMode:true,
             generationType:'companion-scoped',
             finalInstruction:COMPANION_REPAIR_FINAL_CONTRACT,
@@ -8676,7 +8676,7 @@ ${messageText(message).slice(0,10000)}`;
         if (payload.setting) s.communicationProfile = { ...s.communicationProfile, ...payload.setting, updatedAt: payload.generatedAt || nowText() };
         if (payload.scene) for (const [key,value] of Object.entries(payload.scene)) if (String(value || '').trim()) s.scene[key] = value;
         const s39VisibleNarrative=messageText(context()?.chat?.[Number(payload?.floor)]||{}),s39Present=s39RefreshOfflineAcquaintance(s39VisibleNarrative, Number(payload?.floor));
-        if(s39VisibleNarrative)s39RecordStoryEvent({type:'narrative',relatedId:`assistant-floor:${Number(payload?.floor)}`,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...s39Present],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...s39Present],userKnows:true,channel:'正文现实',status:'已发生',summary:compactText(sanitizeRetrievalDocumentText(s39VisibleNarrative),900),floor:Number(payload?.floor),time:compactText(s.scene?.time||'',120),location:compactText(s.scene?.location||'',180),source:'main-narrative'});
+        if(s39VisibleNarrative)s39RecordStoryEvent({type:'narrative',relatedId:`assistant-floor:${Number(payload?.floor)}`,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...s39Present],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...s39Present],userKnows:true,channel:'chính văn现实',status:'Đã xảy ra',summary:compactText(sanitizeRetrievalDocumentText(s39VisibleNarrative),900),floor:Number(payload?.floor),time:compactText(s.scene?.time||'',120),location:compactText(s.scene?.location||'',180),source:'main-narrative'});
         updateWorldTransit(s.communicationProfile, Number(payload.floor));
         if (payload.realityAudit?.length) {
             console.warn('[0-32·P29] 幕后七条现实改写已拦截', payload.realityAudit);
@@ -8684,7 +8684,7 @@ ${messageText(message).slice(0,10000)}`;
             if(severe) toast(`🛡 当前现实锁：${severe}`, 'warning');
         }
 
-        // 约定/秘密属于“当前状态实体”，使用稳定实体键覆盖更新；旧状态进入_history，禁止每轮换词就新增一行。
+        // Lời hẹn/秘密属于“当前Trạng thái实体”，使用稳定实体键覆盖更新；旧Trạng thái进入_history，禁止每轮换词就新增一行。
         const payloadMessageKey=messageStableKey(context()?.chat?.[Number(payload.floor)]);
         for (const item of payload.promises || []) upsertPromiseSnapshot(item, Number(payload.floor), payloadMessageKey, {_sidecarId:payload.id});
         for (const item of payload.secrets || []) upsertSecretSnapshot(item, Number(payload.floor), payloadMessageKey, {_sidecarId:payload.id});
@@ -8692,7 +8692,7 @@ ${messageText(message).slice(0,10000)}`;
         reconcilePromiseLifecycleForState(s, Math.max(Number(payload.floor), (context()?.chat?.length || 1) - 1));
 
         // P41-S1：幕后七条不再写 core memory，避免同一AI回复被“七条API + 主记忆流水线”双写。
-        // 七条仍保留通讯/彼间私文/顶层约定秘密/人物外观。
+        // 七条仍保留通讯/彼间私文/顶层Lời hẹn秘密/人物外观。
         for (const item of payload.appearances || []) upsertAppearanceSnapshot(item, payload.id, payload.floor);
 
         s.storyExtras ||= { moments:[], diary:[], anniversaries:[] };
@@ -8757,7 +8757,7 @@ ${messageText(message).slice(0,10000)}`;
                     if(key==='sms'||key==='calls'){
                         const other=compactText(stored.author||stored.contact,100);if(other){
                             s39MarkAcquaintance(other,{channel:key==='calls'?'电话':'短信',floor:payload.floor,evidence:compactText(stored.content||stored.status,220)});
-                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,other],channel:key==='calls'?'电话':'短信',status:'已发生',summary:`${other}：${compactText(stored.content||stored.status,700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,other],channel:key==='calls'?'电话':'短信',status:'Đã xảy ra',summary:`${other}：${compactText(stored.content||stored.status,700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                         }
                     }
                     if (key === 'wechat') {
@@ -8766,7 +8766,7 @@ ${messageText(message).slice(0,10000)}`;
                         const contact = compactText(authorIsUser ? item.contact : item.author, 100);
                         if (contact) {
                             s39MarkAcquaintance(contact,{channel:'微信',floor:payload.floor,evidence:`幕后同步微信:${compactText(item.content,220)}`});
-                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,contact],channel:'微信',status:'已发生',summary:`${contact}：${compactText(item.content||'[表情]',700)}`,floor:payload.floor,time:item.time,source:'companion-phone'});
+                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,contact],channel:'微信',status:'Đã xảy ra',summary:`${contact}：${compactText(item.content||'[表情]',700)}`,floor:payload.floor,time:item.time,source:'companion-phone'});
                             const thread = ensurePhoneThread(contact);
                             pushPhoneThreadMessageUnique(thread,{ id:uid(authorIsUser?'phone-user':'phone-ai'), role:authorIsUser?'user':'character', sender:authorIsUser?userName:contact,
                                 content:item.content, time:item.time || phoneClock().time, createdAt:stored.createdAt, _eventSeq:stored._eventSeq, _sidecarId:payload.id, _floor:payload.floor },'');
@@ -8784,7 +8784,7 @@ ${messageText(message).slice(0,10000)}`;
                 const knownProfile=phoneGroupProfile(rawItem.groupName);
                 if (knownProfile?.scope==='origin' && !payload.setting?.originReachable) continue;
                 if (knownProfile?.scope==='local' && knownProfile.homeWorldKey && knownProfile.homeWorldKey!==payload.setting?.worldKey && !currentWorldMatchesOrigin(payload.setting)) continue;
-                // R9S1P30：本轮既然已经合法收到该微信群消息，就同步恢复对应群聊的可达状态。
+                // R9S1P30：本轮既然已经合法收到该微信群消息，就同步恢复对应群聊的可达Trạng thái。
                 // 避免历史上曾被标成 offline-origin 的群继续被微信列表过滤掉。
                 if (knownProfile) {
                     if (knownProfile.scope === 'origin' && payload.setting?.originReachable) knownProfile.availability = 'active';
@@ -8814,7 +8814,7 @@ ${messageText(message).slice(0,10000)}`;
                 const stored = stampPhoneEvent({ ...item, _sidecarId:payload.id, _floor:payload.floor, _homeWorldKey:messageHomeKey, _groupScope:messageScope },{floor:payload.floor,sidecarId:payload.id,createdAt:payloadCreatedAt});
                 if(stored.sender){
                     s39MarkAcquaintance(stored.sender,{channel:`微信群:${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
-                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`微信群:${stored.groupName||''}`,status:'已发生',summary:`${stored.sender}：${compactText(stored.content||'[群消息]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`微信群:${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[群消息]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                 }
                 const duplicate = (s.phone.wechatGroups || []).slice(-80).some(row => compactText(row?.groupName,120) === compactText(stored.groupName,120) && compactText(row?.sender,100) === compactText(stored.sender,100) && compactText(row?.content,1800) === compactText(stored.content,1800));
                 const gpForThread = messageProfile || phoneGroupProfile(item.groupName);
@@ -8848,7 +8848,7 @@ ${messageText(message).slice(0,10000)}`;
                 const item={...rawItem,sender:senderRegistered,members:membersRegistered}; const stored=stampPhoneEvent({...item,_sidecarId:payload.id,_floor:payload.floor},{floor:payload.floor,sidecarId:payload.id,createdAt:payloadCreatedAt});
                 if(stored.sender){
                     s39MarkAcquaintance(stored.sender,{channel:`群通讯:${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
-                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`群通讯:${stored.groupName||''}`,status:'已发生',summary:`${stored.sender}：${compactText(stored.content||'[群消息]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`群通讯:${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[群消息]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                 }
                 const duplicate=(s.phone.channelGroups||[]).slice(-80).some(row=>compactText(row?.groupName,120)===compactText(stored.groupName,120)&&compactText(row?.sender,100)===compactText(stored.sender,100)&&compactText(row?.content,1800)===compactText(stored.content,1800));
                 if(duplicate)continue; s.phone.channelGroups.push(stored);
@@ -8893,7 +8893,7 @@ ${messageText(message).slice(0,10000)}`;
                 const participants=[...new Set([canonical,...(event.participants||[])].map(value=>relationPartyName(value)).filter(Boolean))].slice(0,12),knownBy=[...new Set([...(event.knownBy||[]),...participants].map(value=>relationPartyName(value)).filter(Boolean))].slice(0,24);
                 const storedEvent = { ...event, character:canonical, participants, knownBy, userKnows:Boolean(event.userKnows), _sidecarId:payload.id, _floor:payload.floor };
                 world.events.push(storedEvent);
-                s39RecordStoryEvent({type:'offscreen-world',relatedId:storedEvent.id,participants,knownBy,userKnows:storedEvent.userKnows,channel:'彼间私文/镜头外现实',status:'已发生',summary:`${canonical}｜${storedEvent.activity}${storedEvent.social?`｜社交:${storedEvent.social}`:''}${storedEvent.goal?`｜目标:${storedEvent.goal}`:''}`,floor:payload.floor,time:storedEvent.time,location:storedEvent.location,source:'companion-world'});
+                s39RecordStoryEvent({type:'offscreen-world',relatedId:storedEvent.id,participants,knownBy,userKnows:storedEvent.userKnows,channel:'彼间私文/镜头外现实',status:'Đã xảy ra',summary:`${canonical}｜${storedEvent.activity}${storedEvent.social?`｜社交:${storedEvent.social}`:''}${storedEvent.goal?`｜目标:${storedEvent.goal}`:''}`,floor:payload.floor,time:storedEvent.time,location:storedEvent.location,source:'companion-world'});
                 let character = world.characters.find(item => item.name === storedEvent.character);
                 if (!character) { character={ id:uid('character'), name:storedEvent.character, location:'', activity:'', goal:'', mood:'', social:'', updatedAt:'', time:'', lastFloor:-1, updates:0 }; world.characters.push(character); }
                 character.location=storedEvent.location||character.location; character.activity=storedEvent.activity||character.activity; character.goal=storedEvent.goal||character.goal;
@@ -8934,9 +8934,9 @@ ${messageText(message).slice(0,10000)}`;
 
     function removeCompanionPayload(payload) {
         if (!payload?.id) return;
-        // S9.4：手机历史一旦进入手机，就与正文 sidecar 解耦成为永久通讯记录。
-        // 重生成、重复楼层整理、开场白sidecar清理、正文删除都不得再自动删除微信/群聊/短信/电话/支付记录。
-        // 只有用户在手机里明确执行删除/清空，或明确“一键清空本聊天活动数据”时才允许删除。
+        // S9.4：手机历史一旦进入手机，就与chính văn sidecar 解耦成为永久通讯记录。
+        // 重生成、重复Tầng整理、开场白sidecar清理、chính văn删除都不得再自动删除微信/群聊/短信/电话/支付记录。
+        // 只有用户在手机里明确执行删除/Bỏ chọn，或明确“一键Bỏ chọn本聊天活动数据”时才允许删除。
         stateRuntime.state.storyExtras ||= { moments:[], diary:[], anniversaries:[] };
         rollbackMomentReactionPayload(payload.id);
         for (const key of ['moments','diary','anniversaries']) stateRuntime.state.storyExtras[key] = (stateRuntime.state.storyExtras[key] || []).filter(item => item?._sidecarId !== payload.id);
@@ -8962,7 +8962,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function phoneItems(payload) {
-        // r4：正文下方“通讯终端”必须与完整手机看到的是同一批本轮数据。
+        // r4：chính văn下方“通讯终端”必须与完整手机看到的是同一批本轮数据。
         // r3 已经能把微信群写入 iPhone17Promax，但这里旧代码只枚举 wechat/sms/calls，
         // 导致群消息只在手机里可见、七条折叠却显示“本轮无更新”。这里把 wechatGroups 正式纳入。
         const result = [];
@@ -9003,34 +9003,34 @@ ${messageText(message).slice(0,10000)}`;
 
     function unresolvedPromiseSnapshot(payload) {
         const payloadPromises = (Array.isArray(payload?.promises) ? payload.promises : [])
-            .filter(item => promiseContentIsConcrete(item?.content ?? item?.['约定内容'], item))
-            .filter(item => !promiseClosedStatus(item?.status ?? item?.['状态']))
+            .filter(item => promiseContentIsConcrete(item?.content ?? item?.['Nội dung lời hẹn'], item))
+            .filter(item => !promiseClosedStatus(item?.status ?? item?.['Trạng thái']))
             .map(item => {
                 const row = promiseRowForItem(item);
                 // A manual click closes the canonical row even if an older
                 // sidecar still carries the promise as pending.
-                if (row && promiseClosedStatus(row['状态'])) return null;
+                if (row && promiseClosedStatus(row['Trạng thái'])) return null;
                 if (!row) return item;
                 const id = promiseEntityId(row, { create: true });
                 return {
                     ...item,
                     promiseId: item.promiseId || id,
                     _entityId: item._entityId || id,
-                    time: item.time || item['约定时间'] || row['约定时间'] || '',
-                    content: item.content || item['约定内容'] || row['约定内容'] || '',
-                    characters: item.characters || item['核心角色'] || row['核心角色'] || '',
-                    status: row['状态'] || item.status || item['状态'] || '待兑现',
+                    time: item.time || item['Thời điểm hẹn'] || row['Thời điểm hẹn'] || '',
+                    content: item.content || item['Nội dung lời hẹn'] || row['Nội dung lời hẹn'] || '',
+                    characters: item.characters || item['Nhân vật cốt lõi'] || row['Nhân vật cốt lõi'] || '',
+                    status: row['Trạng thái'] || item.status || item['Trạng thái'] || 'Chờ thực hiện',
                 };
             })
             .filter(Boolean);
         if (payloadPromises.length) return payloadPromises;
-        return (stateRuntime.state?.tables?.promises || []).filter(row => !promiseClosedStatus(row['状态'])).slice(-8).map(row => ({
+        return (stateRuntime.state?.tables?.promises || []).filter(row => !promiseClosedStatus(row['Trạng thái'])).slice(-8).map(row => ({
             promiseId: promiseEntityId(row, { create: true }),
             _entityId: promiseEntityId(row),
-            time: row['约定时间'] || '',
-            content: row['约定内容'] || '',
-            characters: row['核心角色'] || '',
-            status: row['状态'] || '待兑现',
+            time: row['Thời điểm hẹn'] || '',
+            content: row['Nội dung lời hẹn'] || '',
+            characters: row['Nhân vật cốt lõi'] || '',
+            status: row['Trạng thái'] || 'Chờ thực hiện',
         }));
     }
 
@@ -9058,7 +9058,7 @@ ${messageText(message).slice(0,10000)}`;
         const latest=Math.max(0,(context()?.chat?.length||1)-1);
         const floor=Number(payload?.floor);
         // 最新八层属于当前现实：先自愈 state，再用 canonical profile 渲染，避免旧 sidecar 的
-        // “前现代/1000年/书信往来”字段覆盖正文刚确认的现代年份与通讯方式。
+        // “前现代/1000年/书信往来”字段覆盖chính văn刚确认的现代年份与通讯方式。
         if (Number.isFinite(floor) && floor>=Math.max(0,latest-8)) {
             selfHealCommunicationReality({floor});
             return stateRuntime.state?.communicationProfile || stored;
@@ -9095,10 +9095,10 @@ ${messageText(message).slice(0,10000)}`;
                     : '';
                 return `<article class="vvvtm-inline-phone-item ${item.type === 'calls' ? 'call' : ''}"><span>${esc(item.icon)}</span><div><b>${esc(item.author || item.contact || item.label)}</b><small>${esc([callMeta,displayGeneratedEventTime(item,payload.floor)].filter(Boolean).join(' · '))}</small><p>${esc(item.content)}</p>${actions}</div></article>`;
             }).join('')
-            : `<div class="vvvtm-inline-empty">${profile.available === false && profile.communicationType === 'smartphone' ? `当前网络离线：${esc(device)}仍可打开查看本机内容；微信、短信、通话等远程通讯暂不可用。` : profile.available === false ? `当前时空判定：${esc(device)}暂无可用远程通讯；不会强塞不符合时代的内容。` : `本轮没有合理的${esc(device)}新内容。`}</div>`;
+            : `<div class="vvvtm-inline-empty">${profile.available === false && profile.communicationType === 'smartphone' ? `当前网络离线：${esc(device)}仍可打开查看本机内容；微信、短信、通话等远程通讯暂不可用。` : profile.available === false ? `当前时空判定：${esc(device)}Chưa có可用远程通讯；不会强塞不符合时代的内容。` : `本轮没有合理的${esc(device)}新内容。`}</div>`;
 
         const worldBody = world.length
-            ? `${payload.world.timeProgress ? `<div class="vvvtm-world-progress">⏱ ${esc(payload.world.timeProgress)}</div>` : ''}${world.map(item => `<article class="vvvtm-inline-world-item"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.activity)}</p><dl>${item.goal ? `<div><dt>目标</dt><dd>${esc(item.goal)}</dd></div>` : ''}${item.mood ? `<div><dt>状态</dt><dd>${esc(item.mood)}</dd></div>` : ''}${item.social ? `<div><dt>社交</dt><dd>${esc(item.social)}</dd></div>` : ''}${item.relationToMainPlot ? `<div><dt>主线关系</dt><dd>${esc(item.relationToMainPlot)}</dd></div>` : ''}</dl></article>`).join('')}`
+            ? `${payload.world.timeProgress ? `<div class="vvvtm-world-progress">⏱ ${esc(payload.world.timeProgress)}</div>` : ''}${world.map(item => `<article class="vvvtm-inline-world-item"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.activity)}</p><dl>${item.goal ? `<div><dt>目标</dt><dd>${esc(item.goal)}</dd></div>` : ''}${item.mood ? `<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>` : ''}${item.social ? `<div><dt>社交</dt><dd>${esc(item.social)}</dd></div>` : ''}${item.relationToMainPlot ? `<div><dt>主线关系</dt><dd>${esc(item.relationToMainPlot)}</dd></div>` : ''}</dl></article>`).join('')}`
             : '<div class="vvvtm-inline-empty">本轮没有需要记录的镜头外角色变化。</div>';
 
         const sceneLabels = {time:'时间',location:'地点',weather:'天气',mood:'氛围',pace:'节奏',goal:'本轮目标'};
@@ -9113,18 +9113,18 @@ ${messageText(message).slice(0,10000)}`;
                 const promiseKey = promiseSemanticKey(promiseRecordContent(item), promiseRecordCharacters(item));
                 const content = promiseRecordContent(item);
                 const characters = promiseRecordCharacters(item);
-                const time = compactText(item?.time ?? item?.['约定时间'], 220);
-                const action = `<div class="vvvtm-row-actions"><button type="button" class="vvvtm-promise-complete" data-vvvtm-promise-complete="true"${promiseId ? ` data-vvvtm-promise-id="${esc(promiseId)}"` : ''}${promiseKey && promiseKey !== '::' ? ` data-vvvtm-promise-key="${esc(promiseKey)}"` : ''} data-vvvtm-promise-content="${esc(content)}" data-vvvtm-promise-characters="${esc(characters)}" data-vvvtm-promise-time="${esc(time)}" data-vvvtm-promise-floor="${esc(payload.floor)}" aria-label="完成约定：${esc(content || '未命名约定')}" title="立即标记为已完成">完成</button></div>`;
-                return `<article class="vvvtm-inline-simple"${promiseId ? ` data-vvvtm-promise-id="${esc(promiseId)}"` : ''}><b>${esc(content)}</b><small>${esc([time, characters, item.status || item['状态']].filter(Boolean).join(' · '))}</small>${action}</article>`;
+                const time = compactText(item?.time ?? item?.['Thời điểm hẹn'], 220);
+                const action = `<div class="vvvtm-row-actions"><button type="button" class="vvvtm-promise-complete" data-vvvtm-promise-complete="true"${promiseId ? ` data-vvvtm-promise-id="${esc(promiseId)}"` : ''}${promiseKey && promiseKey !== '::' ? ` data-vvvtm-promise-key="${esc(promiseKey)}"` : ''} data-vvvtm-promise-content="${esc(content)}" data-vvvtm-promise-characters="${esc(characters)}" data-vvvtm-promise-time="${esc(time)}" data-vvvtm-promise-floor="${esc(payload.floor)}" aria-label="完成Lời hẹn：${esc(content || 'Lời hẹn chưa đặt tên')}" title="立即标记为Đã hoàn thành">完成</button></div>`;
+                return `<article class="vvvtm-inline-simple"${promiseId ? ` data-vvvtm-promise-id="${esc(promiseId)}"` : ''}><b>${esc(content)}</b><small>${esc([time, characters, item.status || item['Trạng thái']].filter(Boolean).join(' · '))}</small>${action}</article>`;
             }).join('')
-            : '<div class="vvvtm-inline-empty">当前没有待兑现约定。</div>';
+            : '<div class="vvvtm-inline-empty">当前没有Lời hẹn chờ thực hiện。</div>';
 
         const secretBody = secrets.length
             ? secrets.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.subject || '秘密')}</b><p>${esc(item.content || '')}</p>${item.knowers ? `<small>知道者：${esc(item.knowers)}</small>` : ''}${item.suspects ? `<small>怀疑者：${esc(item.suspects)}</small>` : ''}</article>`).join('')
-            : '<div class="vvvtm-inline-empty">当前没有需要展示的约定与秘密。</div>';
+            : '<div class="vvvtm-inline-empty">当前没有需要展示的Lời hẹn与秘密。</div>';
 
         const appearanceBody = appearances.length
-            ? appearances.map(item => `<article class="vvvtm-inline-appearance"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.outfit)}</p><dl>${item.hair ? `<div><dt>发型</dt><dd>${esc(item.hair)}</dd></div>` : ''}${item.accessories ? `<div><dt>配饰</dt><dd>${esc(item.accessories)}</dd></div>` : ''}${item.shoes ? `<div><dt>鞋履</dt><dd>${esc(item.shoes)}</dd></div>` : ''}${item.condition ? `<div><dt>状态</dt><dd>${esc(item.condition)}</dd></div>` : ''}</dl></article>`).join('')
+            ? appearances.map(item => `<article class="vvvtm-inline-appearance"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.outfit)}</p><dl>${item.hair ? `<div><dt>发型</dt><dd>${esc(item.hair)}</dd></div>` : ''}${item.accessories ? `<div><dt>配饰</dt><dd>${esc(item.accessories)}</dd></div>` : ''}${item.shoes ? `<div><dt>鞋履</dt><dd>${esc(item.shoes)}</dd></div>` : ''}${item.condition ? `<div><dt>Trạng thái</dt><dd>${esc(item.condition)}</dd></div>` : ''}</dl></article>`).join('')
             : '<div class="vvvtm-inline-empty">本轮没有新的着装信息。</div>';
 
         const storyBody = (items, emptyText) => items?.length
@@ -9141,17 +9141,17 @@ ${messageText(message).slice(0,10000)}`;
                         ? `<div class="vvvtm-inline-warning">${esc(policySourceName)}政策拒绝，本轮已立即停止且不会自动换线：${esc(payload.fallbackError || '请求被供应商内容政策拒绝')}。可在“API与模型”手动选择另一写作来源。</div>`
                         : `<div class="vvvtm-inline-warning">幕后七条自动重试已停止：${esc(payload.fallbackError || '检测到需要人工修复的配置错误')}。</div>`
                     : ['waiting-seven-api','missing'].includes(payload.parseStatus)
-                        ? '<div class="vvvtm-inline-warning">本轮正在后台生成幕后七条；可见正文不受影响。</div>'
+                        ? '<div class="vvvtm-inline-warning">本轮正在后台生成幕后七条；可见chính văn不受影响。</div>'
                         : payload.parseStatus === 'seven-api-unconfigured'
-                            ? `<div class="vvvtm-inline-warning">${esc(payload.fallbackError || '幕后七条写作源不可用')}；可见正文正常，但本轮幕后模块不会更新。请到“API与模型”检查当前写作来源。</div>`
+                            ? `<div class="vvvtm-inline-warning">${esc(payload.fallbackError || '幕后七条写作源不可用')}；可见chính văn正常，但本轮幕后模块不会更新。请到“API与模型”检查当前写作来源。</div>`
                             : payload.parseStatus === 'invalid'
                                 ? '<div class="vvvtm-inline-warning">幕后七条API返回格式异常；R9S1P41 会在重新生成时自动续试。</div>'
                                 : '';
 
         const ecologyStatus = payload.ecologyRepairStatus === 'ok'
-            ? `<div class="vvvtm-inline-success">📡 社交生态补活已完成：${esc(payload.ecologyRepairReason || '手机/彼间私文达到静默阈值')}。</div>`
+            ? `<div class="vvvtm-inline-success">📡 社交生态补活Đã hoàn thành：${esc(payload.ecologyRepairReason || '手机/彼间私文达到静默阈值')}。</div>`
             : payload.ecologyRepairStatus === 'failed'
-                ? `<div class="vvvtm-inline-warning">📡 社交生态补活失败：${esc(payload.ecologyRepairError || '七条API未完成')}；正文与已有记忆不受影响。</div>`
+                ? `<div class="vvvtm-inline-warning">📡 社交生态补活失败：${esc(payload.ecologyRepairError || '七条API未完成')}；chính văn与已有记忆不受影响。</div>`
                 : '';
         const completenessStatus = payload.completenessRepair?.attempted && payload.completenessRepair?.status === 'ok'
             ? `<div class="vvvtm-inline-success">🧩 已自动补齐缺失栏目：${esc((payload.completenessRepair.missingBefore || []).map(item=>item?.label).filter(Boolean).join('、') || '幕后生活栏目')}。</div>`
@@ -9170,12 +9170,12 @@ ${messageText(message).slice(0,10000)}`;
             <header><span>✒️ 0-32 · 永不落幕的剧场</span><div><button type="button" data-vvvtm-open-tab="worldlife">彼间私文管理</button><button type="button" data-vvvtm-regenerate="${payload.floor}">单独重写（额外请求）</button></div></header>
             ${status}${memoryStatus}${completenessStatus}${ecologyStatus}${settingNote}
             ${foldBlock('🎬 当前场景', Object.keys(scene).length ? `${Object.keys(scene).length} 项` : '无更新', sceneBody, 'scene', payload.floor)}
-            ${foldBlock('⏰ 待兑现约定', promises.length ? `${promises.length} 项` : '暂无', promiseBody, 'promises', payload.floor)}
-            ${foldBlock('🔐 约定与秘密', secrets.length ? `${secrets.length} 项` : '暂无', secretBody, 'secrets', payload.floor)}
+            ${foldBlock('⏰ Lời hẹn chờ thực hiện', promises.length ? `${promises.length} 项` : 'Chưa có', promiseBody, 'promises', payload.floor)}
+            ${foldBlock('🔐 Lời hẹn与秘密', secrets.length ? `${secrets.length} 项` : 'Chưa có', secretBody, 'secrets', payload.floor)}
             ${foldBlock('👗 人物外观', appearances.length ? `${appearances.length} 人` : '本轮无更新', appearanceBody, 'appearance', payload.floor)}
-            ${foldBlock('🌐 朋友圈', story.moments?.length ? `${story.moments.length} 条` : '暂无', storyBody(story.moments, '本轮没有朋友圈动态。'), 'moments', payload.floor)}
-            ${foldBlock('📔 日记', story.diary?.length ? `${story.diary.length} 条` : '暂无', storyBody(story.diary, '本轮没有需要记录的日记。'), 'diary', payload.floor)}
-            ${foldBlock('🗓️ 纪念日', story.anniversaries?.length ? `${story.anniversaries.length} 条` : '暂无', storyBody(story.anniversaries, '本轮没有新的纪念日信息。'), 'anniversaries', payload.floor)}
+            ${foldBlock('🌐 朋友圈', story.moments?.length ? `${story.moments.length} 条` : 'Chưa có', storyBody(story.moments, '本轮没有朋友圈动态。'), 'moments', payload.floor)}
+            ${foldBlock('📔 日记', story.diary?.length ? `${story.diary.length} 条` : 'Chưa có', storyBody(story.diary, '本轮没有需要记录的日记。'), 'diary', payload.floor)}
+            ${foldBlock('🗓️ 纪念日', story.anniversaries?.length ? `${story.anniversaries.length} 条` : 'Chưa có', storyBody(story.anniversaries, '本轮没有新的纪念日信息。'), 'anniversaries', payload.floor)}
             <section class="vvvtm-phone-fold"><div class="vvvtm-world-fold-toggle"><span>${communicationIcon(profile)} ${esc(device)}</span><em>${phone.length ? `${phone.length} 条新内容` : '本轮无更新'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-phone="${payload.floor}" aria-expanded="${phoneOpen}" aria-label="${phoneOpen ? `收起${esc(device)}` : `展开${esc(device)}`}">${phoneOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${phoneOpen ? '' : 'hidden'}>${phoneBody}<button type="button" class="vvvtm-open-device-inline" data-vvvtm-open-phone="${payload.floor}">打开完整${esc(device)}</button></div></section>
             <section class="vvvtm-world-fold"><div class="vvvtm-world-fold-toggle"><span>🌍 彼间私文</span><em>${world.length ? `${world.length} 个动态` : '本轮无更新'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-world="${payload.floor}" aria-expanded="${worldOpen}" aria-label="${worldOpen ? '收起彼间私文' : '展开彼间私文'}">${worldOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${worldOpen ? '' : 'hidden'}>${worldBody}</div></section>
         </section>`;
@@ -9197,9 +9197,9 @@ ${messageText(message).slice(0,10000)}`;
         loading.innerHTML = `<div class="vvvtm-fallback-progress-head"><b>${esc(label)}</b>${determinate?`<em>${pct}%</em>`:'<em>处理中</em>'}</div><div class="vvvtm-fallback-progress-track"><i${determinate?` style="width:${Math.max(2,pct)}%"`:''}></i></div>${detail?`<small>${esc(detail)}</small>`:''}`;
     }
     function companionProgressPhase(value) {
-        if (value < 18) return '正在整理本轮正文与角色资料';
+        if (value < 18) return '正在整理本轮chính văn与角色资料';
         if (value < 42) return '正在读取有限记忆与当前现实';
-        if (value < 70) return '正在生成手机、约定与人物动态';
+        if (value < 70) return '正在生成手机、Lời hẹn与人物动态';
         if (value < 90) return '正在核对格式与跨时空规则';
         return '正在写入本轮幕后内容';
     }
@@ -9404,7 +9404,7 @@ ${messageText(message).slice(0,10000)}`;
         const generation = stateRuntime.dataGeneration;
         const stateAtStart = stateRuntime.state;
         const finalPrompt = jsonMode
-            ? `${prompt}\n\n【最终输出硬要求】只输出一个可被 JSON.parse 直接解析的 JSON 对象；不要 Markdown 代码块，不要解释，不要续写正文。`
+            ? `${prompt}\n\n【最终输出硬要求】只输出一个可被 JSON.parse 直接解析的 JSON 对象；不要 Markdown 代码块，不要解释，不要续写chính văn。`
             : prompt;
         const data = await callCompanionJsonWithRecovery(finalPrompt, { systemPrompt, jsonMode, generationType, finalInstruction, progressFloor:Number(record?.floor), source:writingSource });
         if (!chatScopeIsCurrent(scope) || stateRuntime.dataGeneration !== generation || stateRuntime.state !== stateAtStart) {
@@ -9453,9 +9453,9 @@ ${messageText(message).slice(0,10000)}`;
         const scope=captureChatScope();
         const generation=stateRuntime.dataGeneration;
         await ensureCompanionWritingSourceReady();
-        if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation)throw new Error('聊天已切换：已取消旧聊天的幕后七条写入');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation)throw new Error('聊天已切换：Đã hủy旧聊天的幕后七条写入');
         if (feature === 'companion') {
-            updateCompanionFallbackProgress(Number(record?.floor), null, `${companionWritingSourceLabel()}正在生成`, '仅发送当前正文与有限记忆资料');
+            updateCompanionFallbackProgress(Number(record?.floor), null, `${companionWritingSourceLabel()}正在生成`, '仅发送当前chính văn与有限记忆资料');
         }
         const generationType = feature === 'companion' ? 'companion-scoped' : 'memory-scoped';
         const finalInstruction = feature === 'companion' ? COMPANION_FINAL_CONTRACT : '';
@@ -9504,14 +9504,14 @@ ${messageText(message).slice(0,10000)}`;
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const prompt = await companionPrompt(index, message);
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            // 每次重写/重试都是当前所选写作源的新请求；成功结果仍由楼层签名Exactly-Once保护。
+            // 每次重写/重试都是当前所选写作源的新请求；成功结果仍由Tầng签名Exactly-Once保护。
             const record = { kind: 'companion', floor: index, signature, force: Boolean(force), fallbackReason: compactText(fallbackReason, 80), retryRevision:Math.max(0,Number(existing?.retryAttempt||0)), companionSource:companionPayloadSource() };
             companionTaskRecord=record;
             let task = await runPluginLlm({
                 feature: 'companion',
                 prompt,
                 systemPrompt: `${FALLEN_WRITER_CONTEXT}
-【幕后七条任务】你是0-32幕后七条内容引擎。只使用本请求提供的当前正文、有限记忆、已确认角色资料和程序给出的当前现实；禁止读取酒馆预设、角色世界书、Persona或Prompt Manager编译结果。只输出合法JSON；不得续写正文；不得替user做决定。时代/世界/通讯载体由程序状态机最终锁定，你只能据此生成手机、彼间私文、人物外观、朋友圈/日记/纪念日、场景/约定/秘密等幕后内容，不得自行改时代。`,
+【幕后七条任务】你是0-32幕后七条内容引擎。只使用本请求提供的当前chính văn、有限记忆、已确认角色资料和程序给出的当前现实；禁止读取酒馆预设、角色世界书、Persona或Prompt Manager编译结果。只输出合法JSON；不得续写chính văn；不得替user做决定。时代/世界/通讯载体由程序Trạng thái机最终锁定，你只能据此生成手机、彼间私文、人物外观、朋友圈/日记/纪念日、场景/Lời hẹn/秘密等幕后内容，不得自行改时代。`,
                 jsonMode: true,
                 record,
                 writingSource: 'configured',
@@ -9556,7 +9556,7 @@ ${messageText(message).slice(0,10000)}`;
             }
             decorateCompanionOutput(index);
             if (['phone','worldlife','appearance'].includes(stateRuntime.currentTab)) renderCurrentTab();
-            // fixed37：父母主动微信作为独立生活脉冲异步运行；失败绝不拖垮当前正文/幕后七条。
+            // fixed37：父母主动微信作为独立生活脉冲异步运行；失败绝不拖垮当前chính văn/幕后七条。
             runLaterForScope(operationScope,220,()=>{void maybeRunParentWechatPulse(index).catch(error=>console.warn('[0-32·父母微信脉冲] 异步任务失败',error));});
             return record.status !== 'error' && record.status !== 'skipped' && record.status !== 'stale';
         } catch (error) {
@@ -9618,7 +9618,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function phoneContactRemark() {
-        // fixed38：通讯录备注功能停用。旧备注会在状态载入/联系人刷新时清理。
+        // fixed38：通讯录Ghi chú功能停用。旧Ghi chú会在Trạng thái载入/联系人刷新时清理。
         return '';
     }
 
@@ -9844,7 +9844,7 @@ ${messageText(message).slice(0,10000)}`;
         }
         if(kept.length!==thread.messages.length){thread.messages=kept;changed=true;}
 
-        // 系统“已发送”提示继承相邻 pendingId 用户消息的楼层，避免恢复后漂到最前/最后。
+        // 系统“已发送”提示继承相邻 pendingId 用户消息的Tầng，避免恢复后漂到最前/最后。
         const pendingFloor=new Map();
         for(const row of thread.messages)if(row?.pendingId&&Number.isFinite(Number(row?._floor)))pendingFloor.set(row.pendingId,Number(row._floor));
         for(const row of thread.messages)if(row?.pendingId&&!Number.isFinite(Number(row?._floor))&&pendingFloor.has(row.pendingId)){row._floor=pendingFloor.get(row.pendingId);changed=true;}
@@ -9856,7 +9856,7 @@ ${messageText(message).slice(0,10000)}`;
             return Number.POSITIVE_INFINITY;
         };
         const sorted=original.slice().sort((a,b)=>{
-            // U1.4：新消息由永久 _eventSeq 精确排序；旧消息优先依赖剧情楼层/历史快照首次出现证据。
+            // U1.4：新消息由永久 _eventSeq 精确排序；旧消息优先依赖剧情Tầng/历史快照首次出现证据。
             const as=Number(a.row?._eventSeq||0), bs=Number(b.row?._eventSeq||0);
             if(as&&bs&&as!==bs)return as-bs;
             const aRank=Number(a.row?._recoveryOrderRank), bRank=Number(b.row?._recoveryOrderRank);
@@ -9991,7 +9991,7 @@ ${messageText(message).slice(0,10000)}`;
             stateRuntime.phoneHistoryRecoverySaveTimer=runLaterForScope(scope,120,()=>{
                 if(stateRuntime.state===operationState)return saveState({refresh:false,reason:'phone-history-reconcile'});
             });
-            console.info('[vvv小剧场] S9.4 已从正文幕后七条档案补回缺失手机会话，并修复恢复顺序/镜像重复');
+            console.info('[vvv小剧场] S9.4 已从chính văn幕后七条档案补回缺失手机会话，并修复恢复顺序/镜像重复');
         }
         return changed;
     }
@@ -10187,9 +10187,9 @@ ${messageText(message).slice(0,10000)}`;
         if(!stateRuntime.state?.phone)throw new Error('手机数据尚未初始化');
         const scope=captureChatScope();const capturedState=stateRuntime.state;
         // U1.7：预览严格只读；apply 也绑定不可变chat scope，切聊天立即终止，绝不把A聊天证据应用到B。
-        if(apply){await recoverPhoneHistoryFromServerArchive({force:true,silent:true});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('聊天已切换，手机归位已安全取消');}
+        if(apply){await recoverPhoneHistoryFromServerArchive({force:true,silent:true});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('聊天已切换，手机归位已安全Hủy');}
         const binding=scope.binding?.archiveId ? scope.binding : (await resolvePermanentArchiveForScope(scope,{create:false}))?.binding;
-        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('聊天已切换，手机归位已安全取消');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('聊天已切换，手机归位已安全Hủy');
         const chatKey=scope.serverChatKey;if(!binding?.archiveId||!binding?.characterKey||!chatKey)throw new Error('当前角色聊天尚未绑定永久档案');
         const data=await serverFetch('/archives/phone-chronology-evidence',{method:'POST',body:JSON.stringify({characterKey:binding.characterKey,archiveId:binding.archiveId,chatKey})});
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('聊天已切换，手机归位结果未应用');
@@ -10222,10 +10222,10 @@ ${messageText(message).slice(0,10000)}`;
         });
     }
 
-    // R9S1P31：把“已经存在的微信群消息”当作群聊存在的强证据，自动修复旧状态。
+    // R9S1P31：把“已经存在的微信群消息”当作群聊存在的强证据，自动修复旧Trạng thái。
     // P30 只恢复已有 groupProfiles 的 active/offline；如果旧档里的 profile 本身缺失、scope/homeWorldKey
     // 错位，或 channelType 还是旧值 smartphone，列表仍可能显示 0 个群聊。
-    // 本函数只整理本地状态，不调用 API，也不删除任何历史消息。
+    // 本函数只整理本地Trạng thái，不调用 API，也不删除任何历史消息。
     function reconcileWechatGroupState() {
         const s = stateRuntime.state;
         const phone = s?.phone;
@@ -10295,8 +10295,8 @@ ${messageText(message).slice(0,10000)}`;
 
     // R9S1P30：群聊可达性必须像联系人一样随“当前世界/原世界网络”实时恢复。
     // 旧版只会刷新 contactProfiles，不会刷新 groupProfiles：用户从异世界/历史线回到原世界后，
-    // 联系人已经重新 active，但群聊仍可能卡在 offline-origin。于是正文下方能看到新的微信群消息，
-    // 打开完整微信却显示“0 个群聊”。这里只修状态，不删历史、不额外调用 API。
+    // 联系人已经重新 active，但群聊仍可能卡在 offline-origin。于是chính văn下方能看到新的微信群消息，
+    // 打开完整微信却显示“0 个群聊”。这里只修Trạng thái，不删历史、不额外调用 API。
     function refreshPhoneGroupAvailability() {
         const phone = stateRuntime.state?.phone;
         if (!phone) return;
@@ -10520,7 +10520,7 @@ ${messageText(message).slice(0,10000)}`;
         // phrase while dropping intent, quantity and conversational filler.
         return String(value??'').toLowerCase()
             .replace(/(?:我想|我要|帮我|请|给我|麻烦|想要|需要|准备|打算|帮忙|能不能|可以)/g,' ')
-            .replace(/(?:买|购买|下单|搜索|搜|查找|找一下|找|看看|浏览|商品|东西|来点|来些)/g,' ')
+            .replace(/(?:买|购买|下单|Tìm|搜|查找|找一下|找|看看|浏览|商品|东西|来点|来些)/g,' ')
             .replace(/(?:一|两|二|三|四|五|六|七|八|九|十|几|多)?(?:瓶|罐|袋|盒|包|个|件|套|斤|公斤|只|箱|桶|支|卷|提)/g,' ')
             .replace(/(?:这种|那种|这个|那个|之类的|之类|就行|即可|可以吗|吧|呗|呢|啊|呀|用来|用作|拿来|做菜|做饭|做红烧肉|炒菜用|家用|日常用)/g,' ')
             .replace(/[\n\r，,。；;！!？?：:（）()【】\[\]"“”'`]/g,' ')
@@ -11035,10 +11035,10 @@ ${messageText(message).slice(0,10000)}`;
     }
     function phoneKnowledgeBrief(limit=24){
         const rows=(ensurePhoneEcosystem()?.knowledgeLedger||[]).slice(-Math.max(1,Number(limit||24)));
-        return rows.length?rows.map(row=>`- ${row.npc}｜${S12_KNOWLEDGE_METHODS[row.method]||row.method}｜事件:${row.eventId||row.relatedId||'未记录'}｜${row.subject||'手机事件'}${row.summary?`：${row.summary}`:''}｜地点:${row.location||'未记录'}｜楼层:${row.floor}`).join('\n'):'- 暂无任何NPC被确认知道手机事件；不得据此让NPC读心。';
+        return rows.length?rows.map(row=>`- ${row.npc}｜${S12_KNOWLEDGE_METHODS[row.method]||row.method}｜事件:${row.eventId||row.relatedId||'Chưa ghi nhận'}｜${row.subject||'手机事件'}${row.summary?`：${row.summary}`:''}｜地点:${row.location||'Chưa ghi nhận'}｜Tầng:${row.floor}`).join('\n'):'- Chưa có任何NPC被确认知道手机事件；不得据此让NPC读心。';
     }
 
-    // fixed39：手机与正文不再是两条松散剧情。所有跨媒介关键事件统一写入同一故事账本，
+    // fixed39：手机与chính văn不再是两条松散剧情。所有跨媒介关键事件统一写入同一故事账本，
     // 金额、人物是否认识、线上聊天史与线下见面史都作为不可改写事实注入主AI和手机AI。
     const S39_SERVICE_CONTACT_RE=/(?:微信支付|支付宝|运营商|系统|客服|官方|通知|银行|快递|物流|外卖|骑手|网约车|滴滴|淘宝|京东|美团|饿了么|航旅|校园|物业|前台|群成员|其他成员|匿名|陌生人|某人)/i;
     function s39StoryFloor(value=-1){const n=Number(value);return Number.isFinite(n)&&n>=0?n:Math.max(0,(context()?.chat?.length||1)-1);}
@@ -11085,13 +11085,13 @@ ${messageText(message).slice(0,10000)}`;
             s39MarkAcquaintance(contact,{channel:'微信/手机历史',floor,evidence:'历史手机会话已存在'});
             const sampled=[...messages.slice(0,4),...messages.slice(-4)].filter((item,index,arr)=>arr.findIndex(x=>(x?.id&&item?.id?x.id===item.id:x===item))===index);
             const history=sampled.map(item=>`${compactText(item?.sender||item?.role,60)||'消息'}：${compactText(item?.content||phoneStickerById(item?.stickerId)?.name||'[表情]',140)}`).filter(Boolean).join(' / ');
-            s39RecordStoryEvent({type:'communication-history',relatedId:`thread:${npcNameKey(contact)}`,participants:[userName,contact],channel:'手机历史',status:'已发生',summary:`既往手机聊天：${history}`,floor,time:last?.time||'',source:'fixed39-migration'});
+            s39RecordStoryEvent({type:'communication-history',relatedId:`thread:${npcNameKey(contact)}`,participants:[userName,contact],channel:'手机历史',status:'Đã xảy ra',summary:`既往手机聊天：${history}`,floor,time:last?.time||'',source:'fixed39-migration'});
         }
-        for(const transfer of phone.walletTools?.transfers||[]){const to=s39StoryParticipantName(transfer?.to);if(!to)continue;s39MarkAcquaintance(to,{channel:transfer.account==='wechat'?'微信转账':'支付宝转账',floor:transfer.floor,evidence:`历史转账 ${s8MoneyText(transfer.amount)}`});s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],knownBy:[userName,to],userKnows:true,channel:transfer.channel||transfer.account,amount:transfer.amount,status:transfer.status,summary:`${userName}向${to}${transfer.channel||'转账'} ${s8MoneyText(transfer.amount)}；状态:${transfer.status||'未记录'}`,floor:transfer.floor,time:transfer.time,source:'fixed39-migration'});}
+        for(const transfer of phone.walletTools?.transfers||[]){const to=s39StoryParticipantName(transfer?.to);if(!to)continue;s39MarkAcquaintance(to,{channel:transfer.account==='wechat'?'微信转账':'支付宝转账',floor:transfer.floor,evidence:`历史转账 ${s8MoneyText(transfer.amount)}`});s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],knownBy:[userName,to],userKnows:true,channel:transfer.channel||transfer.account,amount:transfer.amount,status:transfer.status,summary:`${userName}向${to}${transfer.channel||'转账'} ${s8MoneyText(transfer.amount)}；Trạng thái:${transfer.status||'Chưa ghi nhận'}`,floor:transfer.floor,time:transfer.time,source:'fixed39-migration'});}
         for(const event of stateRuntime.state?.characterWorld?.events||[]){
             const lead=s39StoryParticipantName(event?.character),participants=[lead,...(Array.isArray(event?.participants)?event.participants:[])].filter(Boolean),knownBy=[...(Array.isArray(event?.knownBy)?event.knownBy:participants)].filter(Boolean);
             if(!lead||!event?.activity)continue;
-            s39RecordStoryEvent({type:'offscreen-world',relatedId:event.id||`world:${event._floor||event.floor||-1}:${npcNameKey(lead)}`,participants,knownBy,userKnows:Boolean(event.userKnows),channel:'彼间私文/镜头外现实',status:'已发生',summary:`${lead}｜${event.activity}${event.social?`｜社交:${event.social}`:''}${event.goal?`｜目标:${event.goal}`:''}`,floor:event._floor??event.floor??-1,time:event.time||'',location:event.location||'',source:'fixed39-migration-world'});
+            s39RecordStoryEvent({type:'offscreen-world',relatedId:event.id||`world:${event._floor||event.floor||-1}:${npcNameKey(lead)}`,participants,knownBy,userKnows:Boolean(event.userKnows),channel:'彼间私文/镜头外现实',status:'Đã xảy ra',summary:`${lead}｜${event.activity}${event.social?`｜社交:${event.social}`:''}${event.goal?`｜目标:${event.goal}`:''}`,floor:event._floor??event.floor??-1,time:event.time||'',location:event.location||'',source:'fixed39-migration-world'});
         }
         phone.storylineMigrationVersion=3;
     }
@@ -11099,7 +11099,7 @@ ${messageText(message).slice(0,10000)}`;
         const source=compactText(text,16000);if(!source)return [];
         const phone=stateRuntime.state?.phone||{};const names=new Set();
         for(const row of phone.acquaintanceLedger||[])if(row?.npc)names.add(row.npc);
-        for(const row of stateRuntime.state?.tables?.people||[])if(row?.['姓名'])names.add(row['姓名']);
+        for(const row of stateRuntime.state?.tables?.people||[])if(row?.['Họ tên'])names.add(row['Họ tên']);
         for(const row of stateRuntime.state?.npcRegistry||[])if(row?.currentName)names.add(row.currentName);
         const active=compactText(context()?.name2||context()?.characterName||'',100);if(active)names.add(active);
         const result=[];
@@ -11115,7 +11115,7 @@ ${messageText(message).slice(0,10000)}`;
         const source=compactText(text,16000),phone=stateRuntime.state?.phone;if(!source||!phone)return [];
         const f=s39StoryFloor(floor),present=s39PhysicalPresenceNames(source),presentKeys=new Set(present.map(npcNameKey));
         const departure=/(?:离开了?|离场|告辞|先走了?|走出(?:去|门|房间|办公室|工作室)?|出了门|回去了?|回家了?|转身离去|转身走开|下楼离开|上车离开|开车离开|关门离开|消失在)/;
-        for(const name of present)s39MarkAcquaintance(name,{channel:'线下现实',floor:f,evidence:'正文中已同场现实登场',offline:true});
+        for(const name of present)s39MarkAcquaintance(name,{channel:'线下现实',floor:f,evidence:'chính văn中已同场现实登场',offline:true});
         for(const row of phone.acquaintanceLedger||[]){
             const name=compactText(row?.npc,100);if(!name)continue;
             let idx=source.indexOf(name),left=false;
@@ -11135,36 +11135,36 @@ ${messageText(message).slice(0,10000)}`;
     function s39AcquaintanceBrief(limit=24,viewer='main'){
         const target=viewer==='main'?'':npcNameKey(viewer),all=(stateRuntime.state?.phone?.acquaintanceLedger||[]).slice().sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
         const rows=(target?all.filter(row=>npcNameKey(row?.npc)===target):all).slice(0,Math.max(1,Number(limit||24)));
-        return rows.length?rows.map(row=>`- ${row.npc}｜已通过:${(row.channels||[]).join('、')||'手机'}｜手机联系:${row.phoneContactCount||0}次｜线下见面:${row.offlineMet?'是':'否'}${row.firstOfflineFloor>=0?`（首次第${row.firstOfflineFloor}层）`:''}｜当前同场:${row.coPresent?'是':'否'}｜结论:双方不是“无历史陌生人”`).join('\n'):'- 暂无当前人物可用的跨媒介接触记录。';
+        return rows.length?rows.map(row=>`- ${row.npc}｜已通过:${(row.channels||[]).join('、')||'手机'}｜手机联系:${row.phoneContactCount||0}次｜线下见面:${row.offlineMet?'是':'否'}${row.firstOfflineFloor>=0?`（首次第${row.firstOfflineFloor}层）`:''}｜当前同场:${row.coPresent?'是':'否'}｜结论:双方不是“无历史陌生人”`).join('\n'):'- Chưa có当前人物可用的跨媒介接触记录。';
     }
     function s39UnifiedStorylineBrief(limit=24,narrativeText='',viewer='main'){
         const phone=stateRuntime.state?.phone||{},all=(phone.storyLedger||[]).slice().sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)),cap=Math.max(1,Number(limit||24));
         const money=all.filter(row=>['transfer','finance'].includes(String(row?.type||''))||Number(row?.amount)>0).slice(0,12),recent=all.slice(0,cap+12);
         const rows=[...money,...recent].filter((row,index,arr)=>arr.findIndex(x=>(x?.id&&row?.id?x.id===row.id:`${x?.type}|${x?.relatedId}`===`${row?.type}|${row?.relatedId}`))===index).slice(0,cap+14);
         const userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}',viewerName=viewer==='main'?userName:compactText(viewer,100);
-        const fmt=row=>`- ${row.type}｜事件ID:${row.relatedId||row.id}｜人物:${(row.participants||[]).join('↔')||'未记录'}｜渠道:${row.channel||'现实'}${Number(row.amount)>0?`｜精确金额:${s8MoneyText(row.amount)}（禁止取整/近似/改写）`:''}${row.status?`｜状态:${row.status}`:''}${row.location?`｜地点:${row.location}`:''}｜${row.summary||''}｜楼层:${row.floor}`;
+        const fmt=row=>`- ${row.type}｜事件ID:${row.relatedId||row.id}｜人物:${(row.participants||[]).join('↔')||'Chưa ghi nhận'}｜渠道:${row.channel||'现实'}${Number(row.amount)>0?`｜精确金额:${s8MoneyText(row.amount)}（禁止取整/近似/改写）`:''}${row.status?`｜Trạng thái:${row.status}`:''}${row.location?`｜地点:${row.location}`:''}｜${row.summary||''}｜Tầng:${row.floor}`;
         const known=rows.filter(row=>viewer==='main'?Boolean(row.userKnows):s39StoryEventKnownTo(row,viewerName));
         const hidden=rows.filter(row=>!known.includes(row));
-        const knownText=known.map(fmt).join('\n')||'- 暂无新的已知跨媒介关键事件。';
-        const hiddenText=hidden.map(row=>`${fmt(row)}｜知情者:${(row.knownBy||row.participants||[]).join('、')||'仅事件参与者'}`).join('\n')||'- 暂无新的镜头外世界事件。';
+        const knownText=known.map(fmt).join('\n')||'- Chưa có新的已知跨媒介关键事件。';
+        const hiddenText=hidden.map(row=>`${fmt(row)}｜知情者:${(row.knownBy||row.participants||[]).join('、')||'仅事件参与者'}`).join('\n')||'- Chưa có新的镜头外世界事件。';
         const text=narrativeText||messageText([...(context()?.chat||[])].reverse().find(m=>!m?.is_user&&!m?.is_system)||{}),present=s39CurrentCoPresentNames(text);
-        return `【fixed39 单一世界总账｜只有一个时间线】
+        return `【fixed39 单一世界总账｜只有一个Dòng thời gian】
 【${viewer==='main'?'{{user}}已知/亲历事实':`${viewerName||'当前NPC'}可知事实`}】
 ${knownText}
-【同一世界中已发生、但${viewer==='main'?'{{user}}当前不知道':`${viewerName||'当前NPC'}当前不知道`}的事实】
+【同一世界中Đã xảy ra、但${viewer==='main'?'{{user}}当前不知道':`${viewerName||'当前NPC'}当前不知道`}的事实】
 ${hiddenText}
 【跨媒介人物认识史】
 ${s39AcquaintanceBrief(20,viewer==='main'?'main':viewerName)}
 【当前线下同场NPC】
-${present.length?present.join('、'):'暂无明确检测'}
+${present.length?present.join('、'):'Chưa có明确检测'}
 【硬规则】
-1. 手机、现实正文、彼间私文、NPC后台行动全部是同一个世界、同一条时间线；区别只在于谁看见、谁知道。镜头外事件不是番外，也不能被后续剧情当作没发生。
+1. 手机、现实chính văn、彼间私文、NPC后台行动全部是同一个世界、同一条Dòng thời gian；区别只在于谁看见、谁知道。镜头外事件不是番外，也不能被后续剧情当作没发生。
 2. “不知道”不等于“没发生”：镜头外事件可以真实改变参与NPC的地点、目标、心情、关系和后续选择；但在合理告知/目击发生前，禁止把其具体内容直接泄露给{{user}}或不知情NPC。
 3. 同一个NPC在微信/短信/电话和现实里始终是同一个人。线上聊过绝不能在线下登场时失忆成陌生人；线下见过后手机端也必须保留见面史。
-4. 金额、付款人、收款人、渠道、订单商品、数量、规格和状态只认总账精确值；18.89绝不能写成18、19或“十几块”。
+4. 金额、付款人、收款人、渠道、订单商品、数量、规格和Trạng thái只认总账精确值；18.89绝不能写成18、19或“十几块”。
 5. 已在线下同场的NPC，后台不得凭空让TA同时远程发微信/短信/打电话；只有现实中明确拿手机发送/拨号，或TA已经离场后才允许远程通讯。
-6. 手机已完成事件立即属于现实；彼间私文完成的镜头外事件也立即属于现实；正文已经发生的现实事件必须回写同一总账。绝不允许三套互相矛盾的剧情。
-7. 微信/支付宝/银行卡的到账、打款、退款、结算不能由正文凭空抢跑；没有总账中已发生的数字账变，就不得自行写成已到账。`;
+6. 手机Đã hoàn thành事件立即属于现实；彼间私文完成的镜头外事件也立即属于现实；chính văn已经发生的现实事件必须回写同一总账。绝不允许三套互相矛盾的剧情。
+7. 微信/支付宝/银行卡的到账、打款、退款、结算不能由chính văn凭空抢跑；没有总账中Đã xảy ra的数字账变，就不得自行写成已到账。`;
     }
 
     function s39FinanceEvidenceParts(payload){
@@ -11181,12 +11181,12 @@ ${present.length?present.join('、'):'暂无明确检测'}
     function s39FinanceEventHasVisibleEvidence(event,payload){
         const amount=Math.abs(s8Money(event?.amount));if(!amount)return false;const parts=s39FinanceEvidenceParts(payload);
         // fixed39：数字账变的“首个真值源”只能来自 user 明确动作/到账陈述，或同一轮手机消息。
-        // assistant 正文单独第一次写“到账”不能反向制造手机流水，否则又会回到两条剧情互相追认的旧问题。
+        // assistant chính văn单独第一次写“到账”不能反向制造手机流水，否则又会回到两条剧情互相追认的旧问题。
         if(s39MoneyTextHasExactCompleted(parts.phone,amount))return true;
         if(s39MoneyTextHasExactCompleted(parts.user,amount))return true;
         const explicitUserAction=promiseMoneyAmounts(parts.user).some(value=>Math.abs(Number(value)-amount)<=0.001)&&/(?:我|user|用户).{0,24}(?:给|向).{0,20}(?:转账|付款|支付|汇款)/i.test(parts.user)&&!/(?:准备|打算|以后|之后再|稍后|明天|下次|可能|计划|预算)/.test(parts.user);
         if(explicitUserAction)return true;
-        const canonical=(stateRuntime.state?.phone?.storyLedger||[]).some(row=>['transfer','finance'].includes(String(row?.type||''))&&Math.abs(Number(row?.amount||0)-amount)<=0.001&&/(?:accepted|credited|已入账|已支出|已发生|已收款)/i.test(String(row?.status||'')));
+        const canonical=(stateRuntime.state?.phone?.storyLedger||[]).some(row=>['transfer','finance'].includes(String(row?.type||''))&&Math.abs(Number(row?.amount||0)-amount)<=0.001&&/(?:accepted|credited|已入账|已支出|Đã xảy ra|已收款)/i.test(String(row?.status||'')));
         return canonical&&s39MoneyTextHasExactCompleted(parts.assistant,amount);
     }
     function s39FilterCompanionPhoneForCoPresent(phone,floor){
@@ -11240,15 +11240,15 @@ ${present.length?present.join('、'):'暂无明确检测'}
         for(const item of events||[])s12RecordKnowledge({...item,floor:payload?.floor??-1,source:item.source||'phone'});
     }
 
-    // fixed37：正文里已经明确“买了/点了/下单了外卖”时，手机订单必须同步出现。
-    // 这条是本地事实提取兜底，不依赖幕后七条是否记得输出 orderCreates；未知店铺/未知餐品也保留原文名称。
+    // fixed37：chính văn里已经明确“买了/点了/下单了外卖”时，Đơn hàng điện thoại必须同步出现。
+    // 这条是本地事实提取兜底，不依赖幕后七条是否记得输出 orderCreates；Chưa rõ店铺/Chưa rõ餐品也保留原文名称。
     function s37NarrativeFoodOrderCreates(payload={}) {
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
         const sourceTexts=[message?.mes??message?.content??'',previous?.is_user?(previous?.mes??previous?.content??''):''].filter(Boolean);
         let text=sourceTexts.join('。').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/\s+/g,' ').trim();
         if(!text||!/(?:外卖|美团|饿了么|点餐|下单)/.test(text))return [];
         const segments=text.split(/(?<=[。！？!?；;])|\n+/).map(x=>x.trim()).filter(Boolean),rows=[];
-        const negative=/(?:没(?:有)?|还没|并未|没有|不(?:要|想|会)|别|取消|算了|只是(?:问|看|说|讨论)|要不要|想不想|能不能|可不可以).{0,12}(?:买|点|订|叫|下单|外卖)/;
+        const negative=/(?:没(?:有)?|还没|并未|没有|不(?:要|想|会)|别|Hủy|算了|只是(?:问|看|说|讨论)|要不要|想不想|能不能|可不可以).{0,12}(?:买|点|订|叫|下单|外卖)/;
         const done=/(?:给[^，。！？；]{0,16}(?:买了|点了|订了|叫了|下单了|买好|点好|订好)|(?:已经|刚刚|刚才|顺手|直接)?[^，。！？；]{0,12}(?:买了|点了|订了|叫了|下单了|点好|买好|订好)[^，。！？；]{0,18}(?:外卖|美团|饿了么)?|(?:美团|饿了么)[^，。！？；]{0,18}(?:下单|点了|买了|订了|叫了))/;
         for(let i=0;i<segments.length&&rows.length<3;i++){
             const seg=segments[i];if(!/(?:外卖|美团|饿了么|点餐)/.test(seg)||negative.test(seg)||!done.test(seg))continue;
@@ -11279,7 +11279,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
     function s39NarrativeShoppingOrders(payload={}){
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
         const raw=[messageText(message||{}),previous?.is_user?messageText(previous):''].filter(Boolean).join('。'),text=compactText(raw,16000);if(!text||!/(?:淘宝|京东|网购|网上|下单|买了|购买了|付款了)/.test(text))return [];
-        const negative=/(?:没(?:有)?|还没|并未|不(?:打算|想|要)|取消|退掉|只是(?:看|问|讨论)|准备|打算|计划|想买|考虑).{0,20}(?:下单|购买|买|付款)/;
+        const negative=/(?:没(?:有)?|还没|并未|不(?:打算|想|要)|Hủy|退掉|只是(?:看|问|讨论)|准备|打算|计划|想买|考虑).{0,20}(?:下单|购买|买|付款)/;
         const segments=text.split(/(?<=[。！？；;])|\n+/).map(v=>compactText(v,1000)).filter(Boolean),rows=[];
         for(const seg of segments){
             if(rows.length>=3||negative.test(seg)||!/(?:下单(?:了|成功)?|买了|购买了|付款(?:了|成功)|订单(?:已)?提交)/.test(seg))continue;
@@ -11292,8 +11292,8 @@ ${present.length?present.join('、'):'暂无明确检测'}
             const order=s8CreateOrder(payment,{id:`story-${platform}-order-${s9Hash(key).toString(36)}`,platform,kind:'shopping',merchant:payment.storeName,storeName:payment.storeName,status:amount>0?'paid':'订单已提交'});order._storyOrderKey=key;order.orderOrigin='narrative-shopping';order.storyIntent=product;order.sourceFloor=floor;order.amount=amount;order.subtotal=amount;order.payAccount=amount>0?payment.account:'unknown';
             ensurePhoneEcosystem().commerce[platform].orders.push(order);
             if(amount>0&&explicitAccount)s8RecordTransaction({account:explicitAccount,amount:-amount,title:`${s8OrderPlatformLabel(platform)}购物 · ${product}`,counterparty:payment.storeName,category:'shopping',source:`${platform}-narrative-sync`,sidecarId:payload?.id||'',floor});
-            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount,status:order.status,summary:`${payment.storeName}｜${product} ×1｜${amount>0?`实付 ${s8MoneyText(amount)}`:'金额未在正文明确'}｜状态:${s8OrderStatusLabel(order)}`,floor,time:order.time,location:order.sceneLocation,source:'narrative-shopping-sync'});
-            s8AddCommerceNotice('剧情网购已同步',`${product} · ${amount>0?`实付 ${s8MoneyText(amount)}`:'金额未记录'}。`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`narrative-shopping-${order.id}`});rows.push(order);
+            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount,status:order.status,summary:`${payment.storeName}｜${product} ×1｜${amount>0?`实付 ${s8MoneyText(amount)}`:'金额未在chính văn明确'}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor,time:order.time,location:order.sceneLocation,source:'narrative-shopping-sync'});
+            s8AddCommerceNotice('剧情网购已同步',`${product} · ${amount>0?`实付 ${s8MoneyText(amount)}`:'金额Chưa ghi nhận'}。`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`narrative-shopping-${order.id}`});rows.push(order);
         }
         return rows;
     }
@@ -11334,12 +11334,12 @@ ${present.length?present.join('、'):'暂无明确检测'}
         const f=Number(floor);if(!Number.isInteger(f)||f<0)return false;
         const payload={id:`fixed39-immediate-${f}`,floor:f,signature:compactText(signature,220)||messageSignature(f,context()?.chat?.[f]),generatedAt:nowText()};
         let changed=false;
-        try{if(s39NarrativeShoppingOrders(payload).length)changed=true;}catch(error){console.warn('[fixed39单一世界] 正文网购即时同步失败',error);}
-        try{const foods=s37NarrativeFoodOrderCreates(payload);if(foods.length){s12ApplyOrderCreates(foods,payload);changed=true;}}catch(error){console.warn('[fixed39单一世界] 正文外卖即时同步失败',error);}
+        try{if(s39NarrativeShoppingOrders(payload).length)changed=true;}catch(error){console.warn('[fixed39单一世界] chính văn网购即时同步失败',error);}
+        try{const foods=s37NarrativeFoodOrderCreates(payload);if(foods.length){s12ApplyOrderCreates(foods,payload);changed=true;}}catch(error){console.warn('[fixed39单一世界] chính văn外卖即时同步失败',error);}
         try{
             const chat=context()?.chat||[],text=messageText(chat[f]||{}),previousUser=f>0&&chat[f-1]?.is_user?messageText(chat[f-1]):'',presenceText=compactText(`${previousUser}\n${text}`,20000),present=s39RefreshOfflineAcquaintance(presenceText,f),userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}';
-            if(text)s39RecordStoryEvent({type:'narrative',relatedId:`assistant-floor:${f}`,participants:[userName,...present],knownBy:[userName,...present],userKnows:true,channel:'正文现实',status:'已发生',summary:compactText(sanitizeRetrievalDocumentText(text),1100),floor:f,time:compactText(stateRuntime.state?.scene?.time||'',120),location:compactText(stateRuntime.state?.scene?.location||'',180),source:'main-narrative-immediate'});
-        }catch(error){console.warn('[fixed39单一世界] 正文世界事实即时登记失败',error);}
+            if(text)s39RecordStoryEvent({type:'narrative',relatedId:`assistant-floor:${f}`,participants:[userName,...present],knownBy:[userName,...present],userKnows:true,channel:'chính văn现实',status:'Đã xảy ra',summary:compactText(sanitizeRetrievalDocumentText(text),1100),floor:f,time:compactText(stateRuntime.state?.scene?.time||'',120),location:compactText(stateRuntime.state?.scene?.location||'',180),source:'main-narrative-immediate'});
+        }catch(error){console.warn('[fixed39单一世界] chính văn世界事实即时登记失败',error);}
         return changed;
     }
 
@@ -11360,7 +11360,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
             order._storyOrderKey=storyKey;order._sidecarId=payload?.id||'';order.orderOrigin='story-auto';order.storyIntent=intent;order.sourceFloor=Number(payload?.floor??order.sourceFloor);order.awareness={...(order.awareness||{}),sceneLocation:compactText(stateRuntime.state?.scene?.location||'',180),sourceFloor:Number(payload?.floor??order.sourceFloor),directlyInformed:[...(order.awareness?.directlyInformed||[])]};
             if(create.externalPayer){order.externalPayer=true;order.paidBy='剧情中的他人';order.payAccount='external';order.orderOrigin=create.storyDetected?'story-text-auto':'story-auto-external';}
             phone.commerce[platform].orders.push(order);
-            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(create.observers||[])],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${store.name}｜${s8OrderItemSummary(order,700)}｜${create.externalPayer?'剧情他人代付':`支付:${s8PaymentAccountLabel(account)}`}｜状态:${s8OrderStatusLabel(order)}`,floor:payload?.floor??-1,time:order.time,location:order.awareness?.sceneLocation||'',source:'narrative-order-sync'});
+            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(create.observers||[])],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${store.name}｜${s8OrderItemSummary(order,700)}｜${create.externalPayer?'剧情他人代付':`支付:${s8PaymentAccountLabel(account)}`}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor:payload?.floor??-1,time:order.time,location:order.awareness?.sceneLocation||'',source:'narrative-order-sync'});
             if(!create.externalPayer)s8RecordTransaction({account,amount:-amount,title:`${s8OrderPlatformLabel(platform)}外卖 · ${store.name} · ${s8OrderItemSummary(order,100)}`,counterparty:store.name,category:'food',source:`${platform}-story-auto`,sidecarId:payload?.id||'',floor:payload?.floor??-1});
             s8AddCommerceNotice('剧情外卖已同步',`${store.name} · ${s8OrderItemSummary(order)}；${create.externalPayer?'剧情中由他人代付':`实付 ${s8MoneyText(amount)}`}。`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`story-order-${order.id}`});
             for(const npc of create.observers||[])s12RecordKnowledge({eventId:order.id,relatedId:order.id,subject:`${s8OrderPlatformLabel(platform)}外卖订单`,summary:`${store.name} · ${s8OrderItemSummary(order,240)}`,npc,method:create.knowledgeMethod,location:order.awareness.sceneLocation,floor:payload?.floor??-1,source:'order'});
@@ -11377,7 +11377,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
                 s8OrderTimeline(order,'delivered',update.receiver?'已由他人代收':'已送达',update.detail||`${update.receiver||'收件人'}收到：${s8OrderItemSummary(order,220)}`);
             }
             for(const npc of update.observers||[])s12RecordKnowledge({eventId:order.id,relatedId:order.id,subject:`${s8OrderPlatformLabel(order.platform)}订单`,summary:`${s8OrderItemSummary(order,240)} · ${s8OrderStatusLabel(order)}`,npc,method:update.receiver&&npcNameKey(npc)===npcNameKey(update.receiver)?'received':'witnessed',location:order.awareness?.sceneLocation||'',floor:payload?.floor??-1,source:'order'});
-            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(update.observers||[])],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(update.observers||[])],userKnows:true,channel:s8OrderPlatformLabel(order.platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'订单'}｜${s8OrderItemSummary(order,700)}｜状态:${s8OrderStatusLabel(order)}${update.receiver?`｜代收:${update.receiver}`:''}`,floor:payload?.floor??-1,time:phoneClock().time,location:order.awareness?.sceneLocation||'',source:'companion-order-update'});
+            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(update.observers||[])],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(update.observers||[])],userKnows:true,channel:s8OrderPlatformLabel(order.platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'订单'}｜${s8OrderItemSummary(order,700)}｜Trạng thái:${s8OrderStatusLabel(order)}${update.receiver?`｜代收:${update.receiver}`:''}`,floor:payload?.floor??-1,time:phoneClock().time,location:order.awareness?.sceneLocation||'',source:'companion-order-update'});
         }
     }
     function s12ApplyNpcActivities(rows,payload){
@@ -11488,12 +11488,12 @@ ${present.length?present.join('、'):'暂无明确检测'}
     }
     const S8_ORDER_PLATFORM_LABELS = Object.freeze({taobao:'淘宝',jd:'京东',eleme:'饿了么',meituan:'美团',ride:'打车',travel:'航旅',campus:'校园'});
     const S8_ORDER_STATUS_LABELS = Object.freeze({
-        taobao:{paid:'待发货',shipped:'已发货',transit:'运输中',delivered:'已签收',exception:'物流异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'已取消'},
-        jd:{paid:'仓库处理中',shipped:'京东物流已揽收',transit:'配送途中',delivered:'已签收',exception:'物流异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'已取消'},
-        eleme:{paid:'待接单',accepted:'商家已接单',delivering:'骑手配送中',delivered:'已送达',exception:'配送异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'已取消'},
-        meituan:{paid:'待接单',accepted:'商家已接单',delivering:'骑手配送中',delivered:'已送达',exception:'配送异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'已取消'},
-        ride:{'司机接单':'司机已接单','司机到达':'司机已到达','行程中':'行程中','已完成':'行程已完成','已取消':'行程已取消'},
-        travel:{'出票成功':'已出票','已确认':'已确认','已使用':'已使用','已过期':'已过期','已取消':'已取消'},
+        taobao:{paid:'待发货',shipped:'已发货',transit:'运输中',delivered:'已签收',exception:'物流异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'Đã hủy'},
+        jd:{paid:'仓库处理中',shipped:'京东物流已揽收',transit:'配送途中',delivered:'已签收',exception:'物流异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'Đã hủy'},
+        eleme:{paid:'待接单',accepted:'商家已接单',delivering:'骑手配送中',delivered:'已送达',exception:'配送异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'Đã hủy'},
+        meituan:{paid:'待接单',accepted:'商家已接单',delivering:'骑手配送中',delivered:'已送达',exception:'配送异常','refund-pending':'退款处理中',refunded:'已退款',cancelled:'Đã hủy'},
+        ride:{'司机接单':'司机已接单','司机到达':'司机已到达','行程中':'行程中','Đã hoàn thành':'行程Đã hoàn thành','Đã hủy':'行程Đã hủy'},
+        travel:{'出票成功':'已出票','已确认':'已确认','已使用':'已使用','已过期':'已过期','Đã hủy':'Đã hủy'},
         campus:{paid:'充值成功'},
     });
     const S8_ORDER_KIND_LABELS = Object.freeze({shopping:'购物订单',food:'外卖订单',ride:'打车订单',travel:'航旅订单',campus:'校园缴费'});
@@ -11523,8 +11523,8 @@ ${present.length?present.join('、'):'暂无明确检测'}
         phone.orderEvents=Array.isArray(phone.orderEvents)?phone.orderEvents:[];
         phone.orderEvents.push({id:uid('order-event'),orderId:order.id,platform:order.platform,status:row.status,label:row.label,detail:row.detail,time:row.time,storyTime:row.storyTime,createdAt:row.createdAt,sourceFloor:Math.max(0,(context()?.chat?.length||1)-1)});
         phone.orderRevision=Math.max(0,Number(phone.orderRevision||0))+1;
-        const terminal=['delivered','已完成','已使用','refunded','cancelled','已取消'].includes(status);
-        s12ScheduleCalendar({id:`order-calendar-${order.id}`,title:`${terminal?'已完成 · ':''}${s8OrderPlatformLabel(order.platform)} · ${order.storeName||order.merchant||s8OrderItemSummary(order,80)}`,date:order.storyTime||order.time,note:`${label}${detail?` · ${detail}`:''}`,source:'order',relatedId:order.id,route:'orders',dueFloor:terminal?-1:Number(order.sourceFloor||0)+(order.kind==='food'?3:6)});
+        const terminal=['delivered','Đã hoàn thành','已使用','refunded','cancelled','Đã hủy'].includes(status);
+        s12ScheduleCalendar({id:`order-calendar-${order.id}`,title:`${terminal?'Đã hoàn thành · ':''}${s8OrderPlatformLabel(order.platform)} · ${order.storeName||order.merchant||s8OrderItemSummary(order,80)}`,date:order.storyTime||order.time,note:`${label}${detail?` · ${detail}`:''}`,source:'order',relatedId:order.id,route:'orders',dueFloor:terminal?-1:Number(order.sourceFloor||0)+(order.kind==='food'?3:6)});
     }
     function s8NormalizeOrder(order,platform='') {
         if(!order||typeof order!=='object')return null;
@@ -11564,21 +11564,21 @@ ${present.length?present.join('、'):'暂无明确检测'}
         return order.platform===filter;
     }
     function s12OrderActionMarkup(order){
-        const terminal=['refunded','cancelled','已取消'].includes(order.status),delivered=['delivered','已完成','已使用'].includes(order.status);
+        const terminal=['refunded','cancelled','Đã hủy'].includes(order.status),delivered=['delivered','Đã hoàn thành','已使用'].includes(order.status);
         if(terminal)return `<span>${esc(s8OrderStatusLabel(order))}</span>`;
         if(order.status==='refund-pending')return '<button disabled>退款处理中</button>';
         if(order.status==='exception')return `<button data-phone-order-action="resume" data-phone-order-id="${esc(order.id)}">继续处理</button><button class="danger-soft" data-phone-order-action="refund" data-phone-order-id="${esc(order.id)}">申请退款</button>`;
         if(delivered)return `<button data-phone-order-action="receiver" data-phone-order-id="${esc(order.id)}">代收人</button><button data-phone-order-action="aftersale" data-phone-order-id="${esc(order.id)}">申请售后</button>`;
         const rider=order.kind==='food'&&order.status==='delivering'?`<button data-phone-order-action="rider" data-phone-order-id="${esc(order.id)}">联系骑手</button>`:'';
-        return `${rider}<button data-phone-order-action="issue" data-phone-order-id="${esc(order.id)}">遇到问题</button><button class="danger-soft" data-phone-order-action="cancel" data-phone-order-id="${esc(order.id)}">取消订单</button>`;
+        return `${rider}<button data-phone-order-action="issue" data-phone-order-id="${esc(order.id)}">遇到问题</button><button class="danger-soft" data-phone-order-action="cancel" data-phone-order-id="${esc(order.id)}">Hủy订单</button>`;
     }
     function phoneOrderDetailMarkup(order) {
         const items=s8OrderItems(order); const timeline=(order.timeline||[]).slice().reverse();
         const merchant=order.storeName||order.merchant||({ride:order.destination,travel:order.code}[order.platform]||s8OrderPlatformLabel(order.platform));
-        return `<div class="vvvtm-phone-app-page vvvtm-order-page"><header class="vvvtm-phone-app-head"><button data-phone-order-back>‹</button><div><b>${esc(s8OrderPlatformLabel(order.platform))} · 订单详情</b><small>${esc(order.id)}</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-order-detail"><section class="vvvtm-order-status-card"><small>${esc(merchant||'订单')}</small><strong>${esc(s8OrderStatusLabel(order))}</strong><p>${esc(phoneOrderStoryStamp(order))}${order.receiver?` · ${esc(order.receiver)}代收`:''}</p></section><section class="vvvtm-order-items"><h3>商品明细</h3>${items.length?items.map(item=>`<article><span>${item.icon}</span><div><b>${esc(item.name)}</b><small>${s8MoneyText(item.price)} × ${item.qty}</small></div><em>${s8MoneyText(item.price*item.qty)}</em></article>`).join(''):'<p>此订单没有商品明细。</p>'}</section><section class="vvvtm-order-total"><span>${order.externalPayer?'他人代付':'实付金额'}</span><strong>${s8MoneyText(order.amount)}</strong></section>${order.issues?.length?`<section class="vvvtm-order-issues"><h3>异常与售后</h3>${order.issues.slice().reverse().map(issue=>`<article><b>${esc(issue.label||issue.type)}</b><p>${esc(issue.note||'')}</p><small>${esc(issue.time||'')}</small></article>`).join('')}</section>`:''}<section class="vvvtm-order-timeline"><h3>订单进度</h3>${timeline.length?timeline.map(item=>`<article class="${item===timeline[0]?'current':''}"><i></i><div><b>${esc(item.label||item.status)}</b><small>${esc(parseStoryDateTime(item.storyTime||'').label||phoneOrderStoryStamp(order)||item.time||'')}</small>${item.detail?`<p>${esc(item.detail)}</p>`:''}</div></article>`).join(''):'<p>暂无进度记录。</p>'}</section><section class="vvvtm-order-service-actions">${s12OrderActionMarkup(order)}</section><footer class="vvvtm-order-actions"><button data-phone-order-back>继续浏览</button><button data-phone-order-center>全部订单</button></footer></main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-order-page"><header class="vvvtm-phone-app-head"><button data-phone-order-back>‹</button><div><b>${esc(s8OrderPlatformLabel(order.platform))} · 订单详情</b><small>${esc(order.id)}</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-order-detail"><section class="vvvtm-order-status-card"><small>${esc(merchant||'订单')}</small><strong>${esc(s8OrderStatusLabel(order))}</strong><p>${esc(phoneOrderStoryStamp(order))}${order.receiver?` · ${esc(order.receiver)}代收`:''}</p></section><section class="vvvtm-order-items"><h3>商品明细</h3>${items.length?items.map(item=>`<article><span>${item.icon}</span><div><b>${esc(item.name)}</b><small>${s8MoneyText(item.price)} × ${item.qty}</small></div><em>${s8MoneyText(item.price*item.qty)}</em></article>`).join(''):'<p>此订单没有商品明细。</p>'}</section><section class="vvvtm-order-total"><span>${order.externalPayer?'他人代付':'实付金额'}</span><strong>${s8MoneyText(order.amount)}</strong></section>${order.issues?.length?`<section class="vvvtm-order-issues"><h3>异常与售后</h3>${order.issues.slice().reverse().map(issue=>`<article><b>${esc(issue.label||issue.type)}</b><p>${esc(issue.note||'')}</p><small>${esc(issue.time||'')}</small></article>`).join('')}</section>`:''}<section class="vvvtm-order-timeline"><h3>订单进度</h3>${timeline.length?timeline.map(item=>`<article class="${item===timeline[0]?'current':''}"><i></i><div><b>${esc(item.label||item.status)}</b><small>${esc(parseStoryDateTime(item.storyTime||'').label||phoneOrderStoryStamp(order)||item.time||'')}</small>${item.detail?`<p>${esc(item.detail)}</p>`:''}</div></article>`).join(''):'<p>Chưa có进度记录。</p>'}</section><section class="vvvtm-order-service-actions">${s12OrderActionMarkup(order)}</section><footer class="vvvtm-order-actions"><button data-phone-order-back>继续浏览</button><button data-phone-order-center>全部订单</button></footer></main></div>`;
     }
     function s12SetOrderIssue(order,type='other',note='',options={}){
-        if(!order)return false;s8NormalizeOrder(order,order.platform);const floor=Math.max(0,(context()?.chat?.length||1)-1);const labels={late:'配送延迟',missing:'商品缺失',wrong:'商品错送',damaged:'商品损坏',address:'地址问题',stock:'商家缺货',cancel:'用户取消',other:'订单异常'};
+        if(!order)return false;s8NormalizeOrder(order,order.platform);const floor=Math.max(0,(context()?.chat?.length||1)-1);const labels={late:'配送延迟',missing:'商品缺失',wrong:'商品错送',damaged:'商品损坏',address:'地址问题',stock:'商家缺货',cancel:'用户Hủy',other:'订单异常'};
         const issue={id:uid('order-issue'),type,label:labels[type]||labels.other,note:compactText(note,400),time:phoneClock().time,floor,createdAt:Date.now()};order.issues.push(issue);
         order.afterSales.previousStatus=order.status;order.status=options.status||'exception';order.afterSales.activeIssueId=issue.id;
         s8OrderTimeline(order,order.status,s8OrderStatusLabel(order),`${issue.label}${issue.note?` · ${issue.note}`:''}`);s8AddNotification(s8OrderPlatformLabel(order.platform),issue.label,`${order.storeName||order.merchant||'订单'} · ${issue.note||s8OrderItemSummary(order,120)}`,{type:'order-issue',route:'orders',relatedId:order.id,dedupeKey:`issue-${issue.id}`});
@@ -11594,7 +11594,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
     }
     function s12ApplyOrderAction(orderId='',action='',data={}){
         const order=s8AllPhoneOrders().find(item=>item.id===compactText(orderId,120));if(!order)return false;
-        if(action==='cancel'){s12SetOrderIssue(order,'cancel',data.note||'订单已取消',{status:'cancelled'});return s12CompleteOrderRefund(order);}
+        if(action==='cancel'){s12SetOrderIssue(order,'cancel',data.note||'订单Đã hủy',{status:'cancelled'});return s12CompleteOrderRefund(order);}
         if(action==='refund'||action==='aftersale')return s12RequestOrderRefund(order,data.note||'用户申请售后退款');
         if(action==='issue')return s12SetOrderIssue(order,data.type||'other',data.note||'用户报告订单异常');
         if(action==='resume'){order.status=order.afterSales?.previousStatus||'paid';order.afterSales.activeIssueId='';s8OrderTimeline(order,order.status,'恢复处理','异常已处理，订单继续原流程');return true;}
@@ -11650,7 +11650,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
         s8OrderTimeline(order,order.status,s8OrderStatusLabel(order),'订单已创建');
         s8RecordPhoneActivity(order.kind==='food'?'food-order':'shopping-order',`${s8OrderPlatformLabel(platform)}下单`,`${order.storeName||order.merchant||'商家'} · ${s8OrderItems(order).map(item=>`${item.name}×${item.qty}`).join('、')}`,{relatedId:order.id,floor:order.sourceFloor});
         stateRuntime.lastPaymentOrderId=order.id;
-        s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'商家'}｜${s8OrderItemSummary(order,700)}｜状态:${s8OrderStatusLabel(order)}`,floor:order.sourceFloor,time:order.time,location:order.sceneLocation,source:'phone-order'});
+        s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'商家'}｜${s8OrderItemSummary(order,700)}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor:order.sourceFloor,time:order.time,location:order.sceneLocation,source:'phone-order'});
         return order;
     }
     function s8OrderItemSummary(orderOrItems, maxChars=360) {
@@ -11716,14 +11716,14 @@ ${present.length?present.join('、'):'暂无明确检测'}
             const transfer={id:uid('wallet-transfer'),transactionId:tx.id,from:userName,to,amount,note:compactText(action.note,120),account,channel,status,time:phoneClock().time,createdAt:Date.now(),floor};
             phone.walletTools.transfers.push(transfer);if(phone.walletTools.transfers.length>300)phone.walletTools.transfers.splice(0,phone.walletTools.transfers.length-300);
             s39MarkAcquaintance(to,{channel,floor,evidence:`${userName}向${to}转账 ${s8MoneyText(amount)}`});
-            s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],channel,amount,status,summary:`${userName}向${to}转账 ${s8MoneyText(amount)}${transfer.note?`；备注:${transfer.note}`:''}`,floor,time:transfer.time,source:'phone-wallet'});
+            s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],channel,amount,status,summary:`${userName}向${to}转账 ${s8MoneyText(amount)}${transfer.note?`；Ghi chú:${transfer.note}`:''}`,floor,time:transfer.time,source:'phone-wallet'});
             if(account==='wechat'){
                 const thread=ensurePhoneThread(to);
                 thread.messages.push({id:uid('phone-transfer-user'),role:'user',sender:userName,content:`[微信转账] ${s8MoneyText(amount)}${action.note?` · ${action.note}`:''}`,time:phoneClock().time,createdAt:Date.now(),transferId:transfer.id,realtimeHandled:true});
-                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'微信转账卡',summary:`${userName}发来微信转账卡 ${s8MoneyText(amount)}${transfer.note?`，备注：${transfer.note}`:''}；当前等待接收或退还`,npc:to,method:'message',channel,source:'wallet-transfer'});
+                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'微信转账卡',summary:`${userName}发来微信转账卡 ${s8MoneyText(amount)}${transfer.note?`，Ghi chú：${transfer.note}`:''}；当前等待接收或退还`,npc:to,method:'message',channel,source:'wallet-transfer'});
             }else{
-                operationState.phone.sms.push({id:uid('transfer-sms'),author:'支付宝',contact:userName,content:`已向 ${to} 转账 ${s8MoneyText(amount)}${action.note?`，备注：${action.note}`:''}；对方账户已自动到账，无需领取或点击接收。`,time:phoneClock().time,category:'payment',direction:'incoming'});
-                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'支付宝转账到账',summary:`${userName}通过支付宝转账 ${s8MoneyText(amount)}${transfer.note?`，备注：${transfer.note}`:''}；支付宝已自动到账，无需领取或点击接收`,npc:to,method:'message',channel,source:'wallet-transfer'});
+                operationState.phone.sms.push({id:uid('transfer-sms'),author:'支付宝',contact:userName,content:`已向 ${to} 转账 ${s8MoneyText(amount)}${action.note?`，Ghi chú：${action.note}`:''}；对方账户已自动到账，无需领取或点击接收。`,time:phoneClock().time,category:'payment',direction:'incoming'});
+                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'支付宝转账到账',summary:`${userName}通过支付宝转账 ${s8MoneyText(amount)}${transfer.note?`，Ghi chú：${transfer.note}`:''}；支付宝已自动到账，无需领取或点击接收`,npc:to,method:'message',channel,source:'wallet-transfer'});
             }
         }else if(action.kind==='redpacket'){
             const to=relationPartyName(action.to);if(!to){toast('红包收件人不正确。','error');return false;}const tools=phone.walletTools;const row={id:uid('red-packet'),to,amount,note:compactText(action.note||'恭喜发财',120),account,status:'sent',time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true};tools.redPackets.push(row);s8RecordTransaction({account,amount:-amount,title:`红包 · ${to}`,counterparty:to,category:'red-packet',source:'wallet-redpacket'});const user=compactText(context()?.name1||'{{user}}',80)||'{{user}}',thread=ensurePhoneThread(to);thread.messages.push({id:uid('phone-redpacket-user'),role:'user',sender:user,content:`[微信红包] ${row.note} · ${s8MoneyText(amount)}`,time:row.time,createdAt:Date.now(),realtimeHandled:true,relatedId:row.id});s12RecordKnowledge({relatedId:row.id,subject:'收到红包',summary:`${row.note} · ${s8MoneyText(amount)}`,npc:to,method:'message',channel:'微信',source:'wallet'});
@@ -11732,7 +11732,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
         }
         await saveState({immediate:true,refresh:false,reason:'phone-payment'});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-        try{await runPhonePaymentRealtimeReaction(action);}catch(error){console.warn('[vvv小手机] 支付后的实时反应失败',error);toast(`支付已完成，实时联系人回复失败：${error.message}`,'warn');}
+        try{await runPhonePaymentRealtimeReaction(action);}catch(error){console.warn('[vvv小手机] 支付后的实时反应失败',error);toast(`支付Đã hoàn thành，实时联系人回复失败：${error.message}`,'warn');}
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         updatePromptInjection();
         return true;
@@ -11773,7 +11773,7 @@ ${present.length?present.join('、'):'暂无明确检测'}
             const result=await callPhoneRealtimeApi({mode:'service-order',contact,event,history:[],maxTokens:1200,requireMessages:true});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             for(const row of result.messages){phone.sms.push({id:uid('service-live'),author:row.sender||contact,contact:compactText(context()?.name1||'{{user}}',80)||'{{user}}',content:row.text||'',stickerId:row.stickerId||'',time:phoneClock().time,createdAt:Date.now(),category:order?.kind==='food'?'food':'order',direction:'incoming',realtimeHandled:true,relatedId:order?.id||''});}
-            recordPhoneRealtimeEvent('order',`${contact}确认${order?.kind==='food'?'外卖':'订单'}：${order?s8OrderItemSummary(order):compactText(action.title,200)}；状态 ${order?.status||'支付成功'}；${result.messages.map(row=>row.text).filter(Boolean).join(' / ')}`,{relatedId:order?.id||'',contact});
+            recordPhoneRealtimeEvent('order',`${contact}确认${order?.kind==='food'?'外卖':'订单'}：${order?s8OrderItemSummary(order):compactText(action.title,200)}；Trạng thái ${order?.status||'支付成功'}；${result.messages.map(row=>row.text).filter(Boolean).join(' / ')}`,{relatedId:order?.id||'',contact});
         }else return false;
         await saveState({immediate:true,refresh:false,reason:'phone-payment-realtime-reaction'});if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;updatePromptInjection();scheduleReindex();return true;
     }
@@ -11787,28 +11787,28 @@ ${present.length?present.join('、'):'暂无明确检测'}
         const rows=(ensurePhoneEcosystem()?.walletTools?.transfers||[]).slice(-Math.max(1,Number(limit||16))).reverse();
         const lines=rows.map(row=>{
             const account=row.account==='wechat'?'wechat':'alipay',channel=account==='wechat'?'微信转账':'支付宝';
-            const status=row.status==='credited'?'已自动到账（无需领取或点击接收）':row.status==='pending-acceptance'?'微信转账卡待接收或退还':row.status==='accepted'?'微信转账卡已接收':row.status==='returned'?'微信转账卡已退还':compactText(row.status,80)||'状态未记录';
-            return `- transferId=${row.id}｜渠道:${channel}｜付款人:${row.from||compactText(context()?.name1||'{{user}}',80)||'{{user}}'}｜收款人:${row.to||'未记录'}｜金额:${s8MoneyText(row.amount)}｜备注:${row.note||'无'}｜状态:${status}｜楼层:${Number.isFinite(Number(row.floor))?row.floor:'未记录'}`;
+            const status=row.status==='credited'?'已自动到账（无需领取或点击接收）':row.status==='pending-acceptance'?'微信转账卡待接收或退还':row.status==='accepted'?'微信转账卡已接收':row.status==='returned'?'微信转账卡已退还':compactText(row.status,80)||'Trạng tháiChưa ghi nhận';
+            return `- transferId=${row.id}｜渠道:${channel}｜付款人:${row.from||compactText(context()?.name1||'{{user}}',80)||'{{user}}'}｜收款人:${row.to||'Chưa ghi nhận'}｜金额:${s8MoneyText(row.amount)}｜Ghi chú:${row.note||'无'}｜Trạng thái:${status}｜Tầng:${Number.isFinite(Number(row.floor))?row.floor:'Chưa ghi nhận'}`;
         });
-        return `【不可改写支付规则】支付宝转账成功后，收款人账户已经自动到账，无需领取或点击接收；严禁叙述“没有点接收”“等待领取支付宝转账”。只有微信转账卡才可能处于待接收、已接收或已退还状态。
+        return `【不可改写支付规则】支付宝转账成功后，收款人账户已经自动到账，无需领取或点击接收；严禁叙述“没有点接收”“等待领取支付宝转账”。只有微信转账卡才可能处于待接收、已接收或已退还Trạng thái。
 【转账固定事实】
-${lines.join('\n')||'- 暂无转账记录'}`;
+${lines.join('\n')||'- Chưa có转账记录'}`;
     }
     function phoneOrdersRealityBrief(limit=16) {
-        const rows=s8AllPhoneOrders().filter(order=>!['cancelled','已取消'].includes(order.status)).slice(-Math.max(1,Number(limit||16))).reverse();
-        const sceneLocation=compactText(stateRuntime.state?.scene?.location||'',180)||'当前场景地点未明确';
+        const rows=s8AllPhoneOrders().filter(order=>!['cancelled','Đã hủy'].includes(order.status)).slice(-Math.max(1,Number(limit||16))).reverse();
+        const sceneLocation=compactText(stateRuntime.state?.scene?.location||'',180)||'当前场景地点Chưa xác định';
         const lines=rows.map(order=>{
-            const where=order.awareness?.sceneLocation||order.sceneLocation||'下单地点未记录';
-            const delivery=order.status==='delivered'||order.status==='已完成'||order.status==='已使用'?`｜到达楼层:${Number.isFinite(Number(order.deliveredFloor))?order.deliveredFloor:'已到达'}`:'';
-            return `- orderId=${order.id}｜平台:${s8OrderPlatformLabel(order.platform)}｜商户:${order.storeName||order.merchant||'未记录'}｜商品:${s8OrderItemSummary(order,620)}｜实付:${s8MoneyText(order.amount)}｜状态:${s8OrderStatusLabel(order)}｜下单地点:${where}｜下单楼层:${order.sourceFloor}${delivery}`;
+            const where=order.awareness?.sceneLocation||order.sceneLocation||'下单地点Chưa ghi nhận';
+            const delivery=order.status==='delivered'||order.status==='Đã hoàn thành'||order.status==='已使用'?`｜到达Tầng:${Number.isFinite(Number(order.deliveredFloor))?order.deliveredFloor:'已到达'}`:'';
+            return `- orderId=${order.id}｜平台:${s8OrderPlatformLabel(order.platform)}｜商户:${order.storeName||order.merchant||'Chưa ghi nhận'}｜商品:${s8OrderItemSummary(order,620)}｜实付:${s8MoneyText(order.amount)}｜Trạng thái:${s8OrderStatusLabel(order)}｜下单地点:${where}｜下单Tầng:${order.sourceFloor}${delivery}`;
         });
-        const activities=(ensurePhoneEcosystem()?.activityEvents||[]).slice(-16).map(row=>`- activityEventId=${row.id}｜${row.type}｜${row.title}${row.detail?`｜${row.detail}`:''}｜发生地点:${row.sceneLocation||'未记录'}｜楼层:${row.sourceFloor}`);
-        return `【订单真值锁｜最高优先】店铺名、商品名、规格、数量和订单状态必须与手机订单逐字一致；禁止用“同类食物”“更顺口的菜名”替换。若旧摘要、旧时间线或模型常识与最新订单冲突，以这里按时间倒序列出的最新订单为唯一事实。例如手机下单是“米线”，正文绝不能改成“辣汤面/汤面/面条”。当前场景=${sceneLocation}。
-【NPC认知边界】这些是系统真值，不等于所有NPC都知道。只有与user同场且实际看见屏幕/付款/包裹/外卖送达，或被user通过对话/消息告知的NPC才可知道；隔着手机、身处远方、未获通知的NPC不得自动得知，也不得因此主动发微信。收货发生时，同场NPC可以从门铃、骑手、包裹或食物客观发现。朋友圈按好友刷到规则另行传播。
+        const activities=(ensurePhoneEcosystem()?.activityEvents||[]).slice(-16).map(row=>`- activityEventId=${row.id}｜${row.type}｜${row.title}${row.detail?`｜${row.detail}`:''}｜发生地点:${row.sceneLocation||'Chưa ghi nhận'}｜Tầng:${row.sourceFloor}`);
+        return `【订单真值锁｜最高优先】店铺名、商品名、规格、数量和订单Trạng thái必须与Đơn hàng điện thoại逐字一致；禁止用“同类食物”“更顺口的菜名”替换。若旧摘要、旧Dòng thời gian或模型常识与最新订单冲突，以这里按时间倒序列出的最新订单为唯一事实。例如手机下单是“米线”，chính văn绝不能改成“辣汤面/汤面/面条”。当前场景=${sceneLocation}。
+【NPC认知边界】这些是Sự thật hệ thống，不等于所有NPC都知道。只有与user同场且实际看见屏幕/付款/包裹/外卖送达，或被user通过对话/消息告知的NPC才可知道；隔着手机、身处远方、未获通知的NPC不得自动得知，也不得因此主动发微信。收货发生时，同场NPC可以从门铃、骑手、包裹或食物客观发现。朋友圈按好友刷到规则另行传播。
 【订单】
-${lines.join('\n')||'- 暂无订单'}
+${lines.join('\n')||'- Chưa có订单'}
 【近期手机行为（同样遵守同场可观察边界）】
-${activities.join('\n')||'- 暂无记录'}`;
+${activities.join('\n')||'- Chưa có记录'}`;
     }
     function s8MonthGrid(offset=0){
         const now=new Date(); const d=new Date(now.getFullYear(),now.getMonth()+Number(offset||0),1);
@@ -11823,16 +11823,16 @@ ${activities.join('\n')||'- 暂无记录'}`;
             ...(stateRuntime.state.storyExtras?.anniversaries||[]).map((x,i)=>({id:x.id||`ann-${i}`,title:x.content||'纪念日',date:x.date||x.time||'',source:'纪念日'}))
         ];
         const dayEvents=(day)=>allEvents.filter(ev=>{const s=String(ev.date||ev.time||'');return new RegExp(`(^|\\D)${grid.month+1}[月\\-/]0?${day}(\\D|$)`).test(s)||new RegExp(`(^|\\D)0?${day}日`).test(s)}).slice(0,3);
-        return `<div class="vvvtm-phone-app-page vvvtm-calendar-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>日历</b><small>${grid.year}年${grid.month+1}月</small></div><button data-phone-calendar-add>＋</button></header><main class="vvvtm-calendar-main"><div class="vvvtm-calendar-toolbar"><button data-phone-calendar-shift="-1">‹</button><b>${grid.year}年 ${grid.month+1}月</b><button data-phone-calendar-shift="1">›</button></div><div class="vvvtm-calendar-week">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="vvvtm-calendar-grid">${grid.cells.map(day=>day?`<div class="${now.getFullYear()===grid.year&&now.getMonth()===grid.month&&now.getDate()===day?'today':''}"><b>${day}</b>${dayEvents(day).map(ev=>`<i title="${esc(ev.title)}"></i>`).join('')}</div>`:'<div class="empty"></div>').join('')}</div><section class="vvvtm-calendar-events"><h3>日程</h3>${allEvents.length?allEvents.slice().reverse().slice(0,30).map(ev=>`<article><span>📅</span><div><b>${esc(ev.title||ev.content||'日程')}</b><small>${esc(ev.date||ev.time||'日期未定')}</small></div></article>`).join(''):'<p>暂无日程。可以点右上角＋添加。</p>'}</section></main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-calendar-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>日历</b><small>${grid.year}年${grid.month+1}月</small></div><button data-phone-calendar-add>＋</button></header><main class="vvvtm-calendar-main"><div class="vvvtm-calendar-toolbar"><button data-phone-calendar-shift="-1">‹</button><b>${grid.year}年 ${grid.month+1}月</b><button data-phone-calendar-shift="1">›</button></div><div class="vvvtm-calendar-week">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="vvvtm-calendar-grid">${grid.cells.map(day=>day?`<div class="${now.getFullYear()===grid.year&&now.getMonth()===grid.month&&now.getDate()===day?'today':''}"><b>${day}</b>${dayEvents(day).map(ev=>`<i title="${esc(ev.title)}"></i>`).join('')}</div>`:'<div class="empty"></div>').join('')}</div><section class="vvvtm-calendar-events"><h3>日程</h3>${allEvents.length?allEvents.slice().reverse().slice(0,30).map(ev=>`<article><span>📅</span><div><b>${esc(ev.title||ev.content||'日程')}</b><small>${esc(ev.date||ev.time||'Ngày未定')}</small></div></article>`).join(''):'<p>Chưa có日程。可以点右上角＋添加。</p>'}</section></main></div>`;
     }
     function phoneNotificationsMarkup(){
         const phone=ensurePhoneEcosystem(); const rows=(phone.notifications||[]).slice().reverse();
         const unread=rows.filter(row=>!row.read).length;
-        return `<div class="vvvtm-phone-app-page vvvtm-notify-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>通知中心</b><small>${rows.length} 条 · ${unread} 条未读</small></div><button data-phone-notify-clear>清空</button></header><main class="vvvtm-notify-list">${rows.length?rows.map(n=>`<button class="${n.read?'read':'unread'}" data-phone-notification-id="${esc(n.id)}"><span>${n.app==='淘宝'?'🛍️':n.app==='饿了么'||n.app==='美团'?'🛵':n.app==='支付宝'?'支':n.app==='微信支付'?'微':n.app==='日历'?'📅':'🔔'}</span><div><b>${esc(n.title||n.app||'通知')}</b><p>${esc(n.content||'')}</p><small>${esc(n.app||'系统')} · ${esc(n.time||'')}${n.route?' · 点按查看':''}</small></div></button>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>暂无通知</b></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-notify-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>通知中心</b><small>${rows.length} 条 · ${unread} 条未读</small></div><button data-phone-notify-clear>Bỏ chọn</button></header><main class="vvvtm-notify-list">${rows.length?rows.map(n=>`<button class="${n.read?'read':'unread'}" data-phone-notification-id="${esc(n.id)}"><span>${n.app==='淘宝'?'🛍️':n.app==='饿了么'||n.app==='美团'?'🛵':n.app==='支付宝'?'支':n.app==='微信支付'?'微':n.app==='日历'?'📅':'🔔'}</span><div><b>${esc(n.title||n.app||'通知')}</b><p>${esc(n.content||'')}</p><small>${esc(n.app||'系统')} · ${esc(n.time||'')}${n.route?' · 点按查看':''}</small></div></button>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có通知</b></div>'}</main></div>`;
     }
     function phoneTaobaoMarkup(){
         s9EnsureExtendedApps(); const tb=ensurePhoneEcosystem().commerce.taobao; const data=s9CatalogSlice('taobao'); const q=stateRuntime.phoneSearch||''; const cartCount=(tb.cart||[]).reduce((n,x)=>n+Number(x.qty||1),0);
-        return `<div class="vvvtm-phone-app-page vvvtm-taobao-page vvvtm-mega-commerce"><header class="vvvtm-phone-app-head taobao-head"><button data-phone-home>‹</button><div><b>淘宝</b><small>商品库 · ${S9_CATALOG_COUNTS.taobao}件商品 / 240页</small></div><button data-phone-taobao-cart>购物车${cartCount?`(${cartCount})`:''}</button></header><main><section class="vvvtm-shop-search"><button data-phone-catalog-search="taobao">🔎 ${q?esc(q):'搜索商品 / 店铺 / 分类'}</button></section>${s9CategoryBar('taobao',S9_PRODUCT_CATEGORIES)}<section class="vvvtm-mega-banner taobao"><b>猜你喜欢 · 为你推荐</b><small>店铺与商品按品类稳定生成，同一店铺只展示同类商品</small></section><section class="vvvtm-product-grid">${data.items.map(p=>`<button class="vvvtm-product-card" data-phone-product-id="${esc(p.id)}"><span>${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.store)} · ⭐${p.rating} · ${esc(p.sold)}</small><em>${s8MoneyText(p.price)}</em><i>${esc(p.tags.join(' · '))}</i></button>`).join('')}</section>${s9Pager('taobao',data.page,data.totalPages,data.totalItems)}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-taobao-page vvvtm-mega-commerce"><header class="vvvtm-phone-app-head taobao-head"><button data-phone-home>‹</button><div><b>淘宝</b><small>商品库 · ${S9_CATALOG_COUNTS.taobao}件商品 / 240页</small></div><button data-phone-taobao-cart>购物车${cartCount?`(${cartCount})`:''}</button></header><main><section class="vvvtm-shop-search"><button data-phone-catalog-search="taobao">🔎 ${q?esc(q):'Tìm商品 / 店铺 / 分类'}</button></section>${s9CategoryBar('taobao',S9_PRODUCT_CATEGORIES)}<section class="vvvtm-mega-banner taobao"><b>猜你喜欢 · 为你推荐</b><small>店铺与商品按品类稳定生成，同一店铺只展示同类商品</small></section><section class="vvvtm-product-grid">${data.items.map(p=>`<button class="vvvtm-product-card" data-phone-product-id="${esc(p.id)}"><span>${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.store)} · ⭐${p.rating} · ${esc(p.sold)}</small><em>${s8MoneyText(p.price)}</em><i>${esc(p.tags.join(' · '))}</i></button>`).join('')}</section>${s9Pager('taobao',data.page,data.totalPages,data.totalItems)}</main></div>`;
     }
 
     function s9FoodStoreCardMarkup(store,platform='eleme'){
@@ -11843,18 +11843,18 @@ ${activities.join('\n')||'- 暂无记录'}`;
     function phoneElemeMarkup(){
         s9EnsureExtendedApps(); const data=s9FoodSlice('eleme'); const selected=stateRuntime.phoneSelectedStore? s8ElemeStore(stateRuntime.phoneSelectedStore):null;
         if(selected){ const cart=(ensurePhoneEcosystem().commerce.eleme.cart||[]).filter(x=>x.storeId===selected.id); const subtotal=cart.reduce((sum,row)=>{const item=selected.menu.find(x=>x.id===row.itemId);return sum+(item?s8Money(item.price)*Number(row.qty||1):0)},0); return `<div class="vvvtm-phone-app-page vvvtm-eleme-page vvvtm-food-store-page"><header class="vvvtm-phone-app-head eleme-head"><button data-phone-eleme-back>‹</button><div><b>${esc(selected.name)}</b><small>${selected.score}分 · 月售${selected.monthlySales}+ · ${selected.eta}</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-food-store-hero"><span>${selected.icon}</span><div><b>${esc(selected.name)}</b><small>起送${s8MoneyText(selected.minOrder)} · 配送${s8MoneyText(selected.delivery)} · ${esc(selected.distance)}</small><p>${esc(selected.rank)} · ${esc(selected.promotions.join(' · '))}</p></div></section><section class="vvvtm-food-menu">${selected.menu.map(item=>`<article><span>${item.icon}</span><div><b>${esc(item.name)}</b><p>${esc(item.description||'现点现做')}</p><small>${esc(item.sold||'热销')} · ${esc(item.rating)}分</small><em>${s8MoneyText(item.price)}</em></div><button data-phone-food-add="${esc(item.id)}" data-phone-food-store="${esc(selected.id)}" title="加入购物车">＋</button></article>`).join('')}</section></main><footer class="vvvtm-food-cart-bar"><span class="vvvtm-food-cart-icon">🛒</span><div><small>${cart.reduce((n,x)=>n+Number(x.qty||1),0)}件 · 含配送${s8MoneyText(selected.delivery)}</small><b><i>合计</i>${s8MoneyText(subtotal+s8Money(selected.delivery))}</b></div><button data-phone-food-checkout ${cart.length?'':'disabled'}>去结算</button></footer></div>`; }
-        return `<div class="vvvtm-phone-app-page vvvtm-eleme-page vvvtm-mega-food"><header class="vvvtm-phone-app-head eleme-head"><button data-phone-home>‹</button><div><b>饿了么</b><small>${esc(stateRuntime.state.scene?.location||'当前位置')} · 附近${S9_CATALOG_COUNTS.eleme}家</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-food-location">📍 ${esc(stateRuntime.state.scene?.location||'当前场景位置')} <small>配送到当前剧情地点</small></section><section class="vvvtm-shop-search"><button data-phone-catalog-search="eleme">🔎 搜索店铺 / 菜品</button></section>${s9CategoryBar('eleme',S9_FOOD_CATEGORIES)}${s9FoodSortBar('eleme')}<section class="vvvtm-food-store-list">${data.items.map(store=>s9FoodStoreCardMarkup(store,'eleme')).join('')}</section>${s9Pager('eleme',data.page,data.totalPages,data.totalItems)}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-eleme-page vvvtm-mega-food"><header class="vvvtm-phone-app-head eleme-head"><button data-phone-home>‹</button><div><b>饿了么</b><small>${esc(stateRuntime.state.scene?.location||'Vị trí hiện tại')} · 附近${S9_CATALOG_COUNTS.eleme}家</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-food-location">📍 ${esc(stateRuntime.state.scene?.location||'当前场景位置')} <small>配送到当前剧情地点</small></section><section class="vvvtm-shop-search"><button data-phone-catalog-search="eleme">🔎 Tìm店铺 / 菜品</button></section>${s9CategoryBar('eleme',S9_FOOD_CATEGORIES)}${s9FoodSortBar('eleme')}<section class="vvvtm-food-store-list">${data.items.map(store=>s9FoodStoreCardMarkup(store,'eleme')).join('')}</section>${s9Pager('eleme',data.page,data.totalPages,data.totalItems)}</main></div>`;
     }
 
     function phoneJdMarkup(){
         s9EnsureExtendedApps(); const jd=ensurePhoneEcosystem().commerce.jd; const data=s9CatalogSlice('jd'); const cartCount=(jd.cart||[]).reduce((n,x)=>n+Number(x.qty||1),0);
-        return `<div class="vvvtm-phone-app-page vvvtm-jd-page vvvtm-mega-commerce"><header class="vvvtm-phone-app-head jd-head"><button data-phone-home>‹</button><div><b>京东</b><small>自营 / 品牌商城 · ${S9_CATALOG_COUNTS.jd}件 / ${Math.ceil(S9_CATALOG_COUNTS.jd/S9_PAGE_SIZE)}页</small></div><button data-phone-jd-cart>购物车${cartCount?`(${cartCount})`:''}</button></header><main><section class="vvvtm-shop-search"><button data-phone-catalog-search="jd">🔎 搜索京东商品</button></section>${s9CategoryBar('jd',S9_PRODUCT_CATEGORIES)}<section class="vvvtm-mega-banner jd"><b>京东自营 · 配送到家</b><small>数码、家电、超市、服饰、美妆、汽车等全品类</small></section><section class="vvvtm-product-grid">${data.items.map(p=>`<button class="vvvtm-product-card jd" data-phone-jd-product="${esc(p.id)}"><span>${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.store)} · ⭐${p.rating} · ${esc(p.sold)}</small><em>${s8MoneyText(p.price)}</em><i>自营 · ${esc(p.shipping)}</i></button>`).join('')}</section>${s9Pager('jd',data.page,data.totalPages,data.totalItems)}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-jd-page vvvtm-mega-commerce"><header class="vvvtm-phone-app-head jd-head"><button data-phone-home>‹</button><div><b>京东</b><small>自营 / 品牌商城 · ${S9_CATALOG_COUNTS.jd}件 / ${Math.ceil(S9_CATALOG_COUNTS.jd/S9_PAGE_SIZE)}页</small></div><button data-phone-jd-cart>购物车${cartCount?`(${cartCount})`:''}</button></header><main><section class="vvvtm-shop-search"><button data-phone-catalog-search="jd">🔎 Tìm京东商品</button></section>${s9CategoryBar('jd',S9_PRODUCT_CATEGORIES)}<section class="vvvtm-mega-banner jd"><b>京东自营 · 配送到家</b><small>数码、家电、超市、服饰、美妆、汽车等全品类</small></section><section class="vvvtm-product-grid">${data.items.map(p=>`<button class="vvvtm-product-card jd" data-phone-jd-product="${esc(p.id)}"><span>${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.store)} · ⭐${p.rating} · ${esc(p.sold)}</small><em>${s8MoneyText(p.price)}</em><i>自营 · ${esc(p.shipping)}</i></button>`).join('')}</section>${s9Pager('jd',data.page,data.totalPages,data.totalItems)}</main></div>`;
     }
 
     function phoneMeituanMarkup(){
         s9EnsureExtendedApps(); const data=s9FoodSlice('meituan'); const selected=stateRuntime.phoneSelectedStore?s9MeituanStore(stateRuntime.phoneSelectedStore):null;
         if(selected){const cart=(ensurePhoneEcosystem().commerce.meituan.cart||[]).filter(x=>x.storeId===selected.id);const subtotal=cart.reduce((sum,row)=>{const item=selected.menu.find(x=>x.id===row.itemId);return sum+(item?s8Money(item.price)*Number(row.qty||1):0)},0);return `<div class="vvvtm-phone-app-page vvvtm-meituan-page vvvtm-food-store-page"><header class="vvvtm-phone-app-head meituan-head"><button data-phone-meituan-back>‹</button><div><b>${esc(selected.name)}</b><small>${esc(selected.category)} · ${selected.score}分 · 月售${selected.monthlySales}+</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-food-store-hero"><span>${selected.icon}</span><div><b>${esc(selected.name)}</b><small>人均${s8MoneyText(selected.average)} · ${esc(selected.eta)} · ${esc(selected.distance)}</small><p>${esc(selected.rank)} · ${esc(selected.promotions.join(' · '))}</p></div></section><section class="vvvtm-food-menu">${selected.menu.map(item=>`<article><span>${item.icon}</span><div><b>${esc(item.name)}</b><p>${esc(item.description||'现点现做')}</p><small>${esc(item.sold||'热销')} · ${esc(item.rating)}分</small><em>${s8MoneyText(item.price)}</em></div><button data-phone-meituan-add="${esc(item.id)}" data-phone-food-store="${esc(selected.id)}" title="加入购物车">＋</button></article>`).join('')}</section></main><footer class="vvvtm-food-cart-bar meituan"><span class="vvvtm-food-cart-icon">🛒</span><div><small>${cart.reduce((n,x)=>n+Number(x.qty||1),0)}件 · 含配送${s8MoneyText(selected.delivery)}</small><b><i>合计</i>${s8MoneyText(subtotal+s8Money(selected.delivery))}</b></div><button data-phone-meituan-checkout ${cart.length?'':'disabled'}>提交订单</button></footer></div>`;}
-        return `<div class="vvvtm-phone-app-page vvvtm-meituan-page vvvtm-mega-food"><header class="vvvtm-phone-app-head meituan-head"><button data-phone-home>‹</button><div><b>美团</b><small>${esc(stateRuntime.state.scene?.location||'当前位置')} · 外卖/到店/出行</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-meituan-services" data-phone-horizontal-scroll><button data-phone-app="dianping">⭐<b>大众点评</b></button><button data-phone-app="ride">🚕<b>打车</b></button><button data-phone-app="travel">✈️<b>机酒火车</b></button><button data-phone-app="maps">🗺️<b>地图</b></button></section><section class="vvvtm-shop-search"><button data-phone-catalog-search="meituan">🔎 搜索商家 / 菜品</button></section>${s9CategoryBar('meituan',S9_FOOD_CATEGORIES)}${s9FoodSortBar('meituan')}<section class="vvvtm-food-store-list">${data.items.map(store=>s9FoodStoreCardMarkup(store,'meituan')).join('')}</section>${s9Pager('meituan',data.page,data.totalPages,data.totalItems)}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-meituan-page vvvtm-mega-food"><header class="vvvtm-phone-app-head meituan-head"><button data-phone-home>‹</button><div><b>美团</b><small>${esc(stateRuntime.state.scene?.location||'Vị trí hiện tại')} · 外卖/到店/出行</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-meituan-services" data-phone-horizontal-scroll><button data-phone-app="dianping">⭐<b>大众点评</b></button><button data-phone-app="ride">🚕<b>打车</b></button><button data-phone-app="travel">✈️<b>机酒火车</b></button><button data-phone-app="maps">🗺️<b>地图</b></button></section><section class="vvvtm-shop-search"><button data-phone-catalog-search="meituan">🔎 Tìm商家 / 菜品</button></section>${s9CategoryBar('meituan',S9_FOOD_CATEGORIES)}${s9FoodSortBar('meituan')}<section class="vvvtm-food-store-list">${data.items.map(store=>s9FoodStoreCardMarkup(store,'meituan')).join('')}</section>${s9Pager('meituan',data.page,data.totalPages,data.totalItems)}</main></div>`;
     }
 
     const S9_DIANPING_CATEGORIES=['美食','景点/周边游','酒店/民宿','休闲/玩乐','KTV','健身/运动','按摩/足疗'];
@@ -11890,10 +11890,10 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const phone=ensurePhoneEcosystem();const row={id:uid('dp-review'),venueId:venue.id,name:venue.name,score:Math.max(1,Math.min(5,Number(score||5))),content:compactText(content,600),time:phoneClock().time,createdAt:Date.now(),floor:Math.max(0,(context()?.chat?.length||1)-1)};phone.dianping.reviews.push(row);s8RecordPhoneActivity('dianping-review','发表到店评价',`${venue.name} · ${row.score}分 · ${row.content}`,{relatedId:row.id,route:'dianping'});return row;
     }
     function phoneDianpingMarkup(){
-        const location=compactText(stateRuntime.phoneMapDestination||stateRuntime.state?.scene?.location||'当前位置',180)||'当前位置';
+        const location=compactText(stateRuntime.phoneMapDestination||stateRuntime.state?.scene?.location||'Vị trí hiện tại',180)||'Vị trí hiện tại';
         const category=S9_DIANPING_CATEGORIES.includes(stateRuntime.phoneDianpingCategory)?stateRuntime.phoneDianpingCategory:'美食';
         const rows=Array.from({length:16},(_,index)=>s9DianpingVenue(location,category,index));const dp=ensurePhoneEcosystem().dianping;const favoriteIds=new Set(dp.favorites.map(row=>row.venueId));
-        return `<div class="vvvtm-phone-app-page vvvtm-dianping-page"><header class="vvvtm-phone-app-head dianping-head"><button data-phone-home>‹</button><div><b>大众点评</b><small>${esc(location)} · 收藏${dp.favorites.length} · 预约${dp.bookings.filter(row=>row.status==='reserved').length}</small></div><button data-phone-app="maps" title="打开地图">⌖</button></header><main><section class="vvvtm-dianping-search"><button data-phone-app="maps">📍 ${esc(location)}</button><span>搜索商户名、地点</span></section><nav class="vvvtm-dianping-categories">${S9_DIANPING_CATEGORIES.map(name=>`<button class="${category===name?'active':''}" data-phone-dianping-category="${esc(name)}">${esc(name)}</button>`).join('')}</nav><section class="vvvtm-dianping-note-stream">${rows.map(row=>`<article><span class="vvvtm-dianping-photo">${row.icon}</span><div><small>${esc(row.venueType)}</small><b>${esc(row.name)}</b><p><strong>${esc(row.score)}分</strong> · ${row.reviewCount}条评价 · 人均${s8MoneyText(row.average)}</p><p>${esc(row.comment)} · ${esc(row.featured)}</p><footer><span>${esc(row.distance)}</span><button data-phone-dianping-map="${esc(row.name)}">导航</button></footer><div class="vvvtm-dianping-actions"><button data-phone-dianping-action="favorite" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">${favoriteIds.has(row.id)?'已收藏':'收藏'}</button><button data-phone-dianping-action="booking" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">预约</button><button data-phone-dianping-action="deal" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">团购</button><button data-phone-dianping-action="checkin" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">到店</button><button data-phone-dianping-action="review" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">评价</button></div></div></article>`).join('')}</section></main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-dianping-page"><header class="vvvtm-phone-app-head dianping-head"><button data-phone-home>‹</button><div><b>大众点评</b><small>${esc(location)} · 收藏${dp.favorites.length} · 预约${dp.bookings.filter(row=>row.status==='reserved').length}</small></div><button data-phone-app="maps" title="打开地图">⌖</button></header><main><section class="vvvtm-dianping-search"><button data-phone-app="maps">📍 ${esc(location)}</button><span>Tìm商户名、地点</span></section><nav class="vvvtm-dianping-categories">${S9_DIANPING_CATEGORIES.map(name=>`<button class="${category===name?'active':''}" data-phone-dianping-category="${esc(name)}">${esc(name)}</button>`).join('')}</nav><section class="vvvtm-dianping-note-stream">${rows.map(row=>`<article><span class="vvvtm-dianping-photo">${row.icon}</span><div><small>${esc(row.venueType)}</small><b>${esc(row.name)}</b><p><strong>${esc(row.score)}分</strong> · ${row.reviewCount}条评价 · 人均${s8MoneyText(row.average)}</p><p>${esc(row.comment)} · ${esc(row.featured)}</p><footer><span>${esc(row.distance)}</span><button data-phone-dianping-map="${esc(row.name)}">导航</button></footer><div class="vvvtm-dianping-actions"><button data-phone-dianping-action="favorite" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">${favoriteIds.has(row.id)?'已收藏':'收藏'}</button><button data-phone-dianping-action="booking" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">预约</button><button data-phone-dianping-action="deal" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">团购</button><button data-phone-dianping-action="checkin" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">到店</button><button data-phone-dianping-action="review" data-phone-dianping-venue="${esc(encodeURIComponent(JSON.stringify(row)))}">评价</button></div></div></article>`).join('')}</section></main></div>`;
     }
 
     function phoneCampusMarkupV2(){
@@ -11908,11 +11908,11 @@ ${activities.join('\n')||'- 暂无记录'}`;
                     : `<section class="vvvtm-campus-panel"><h3>本周课表</h3>${p.campus.courses.map(c=>`<article><span>${esc(c.day)}</span><div><b>${esc(c.name)}</b><small>${esc(c.time)} · ${esc(c.room)}</small></div></article>`).join('')}</section>`;
         return `<div class="vvvtm-phone-app-page vvvtm-campus-page"><header class="vvvtm-phone-app-head campus-head"><button data-phone-home>‹</button><div><b>智慧校园</b><small>课表 / 成绩 / 校园卡 / 通知</small></div><button data-phone-campus-recharge>充值</button></header><main><section class="vvvtm-campus-card"><small>校园卡余额</small><strong>${s8MoneyText(p.campus.cardBalance)}</strong><button data-phone-campus-recharge>充值</button></section><nav class="vvvtm-campus-nav"><button class="${view==='home'?'active':''}" data-phone-campus-view="home">📚课表</button><button class="${view==='grades'?'active':''}" data-phone-campus-view="grades">📝成绩</button><button class="${view==='notices'?'active':''}" data-phone-campus-view="notices">📢通知</button><button class="${view==='bus'?'active':''}" data-phone-campus-view="bus">🚌校车</button></nav>${viewContent}</main></div>`;
     }
-    function phoneBankMarkup(){const p=s9EnsureExtendedApps(),tx=(p.bank.transactions||[]).slice().reverse().slice(0,60);return `<div class="vvvtm-phone-app-page vvvtm-bank-page"><header class="vvvtm-phone-app-head bank-head"><button data-phone-home>‹</button><div><b>手机银行</b><small>剧情账户 · 不连接真实银行</small></div><button data-phone-bank-action="transfer">转账</button></header><main><section class="vvvtm-bank-card"><small>储蓄账户余额</small><strong>${s8MoneyText(s9BankBalance())}</strong><p>**** **** **** ${esc(p.bank.cards?.[0]?.last4||'8888')}</p><div><button data-phone-bank-action="deposit">模拟入账</button><button data-phone-bank-action="transfer">转账</button></div></section><section class="vvvtm-wallet-bills"><h3>账户明细</h3>${tx.length?tx.map(r=>`<article><div><b>${esc(r.title)}</b><small>${esc(r.time||'')}</small></div><em class="${r.amount>=0?'income':'expense'}">${r.amount>=0?'+':'-'}${s8MoneyText(Math.abs(r.amount))}</em></article>`).join(''):`<p>暂无银行流水。</p>`}</section></main></div>`;}
+    function phoneBankMarkup(){const p=s9EnsureExtendedApps(),tx=(p.bank.transactions||[]).slice().reverse().slice(0,60);return `<div class="vvvtm-phone-app-page vvvtm-bank-page"><header class="vvvtm-phone-app-head bank-head"><button data-phone-home>‹</button><div><b>手机银行</b><small>剧情账户 · 不连接真实银行</small></div><button data-phone-bank-action="transfer">转账</button></header><main><section class="vvvtm-bank-card"><small>储蓄账户余额</small><strong>${s8MoneyText(s9BankBalance())}</strong><p>**** **** **** ${esc(p.bank.cards?.[0]?.last4||'8888')}</p><div><button data-phone-bank-action="deposit">模拟入账</button><button data-phone-bank-action="transfer">转账</button></div></section><section class="vvvtm-wallet-bills"><h3>账户明细</h3>${tx.length?tx.map(r=>`<article><div><b>${esc(r.title)}</b><small>${esc(r.time||'')}</small></div><em class="${r.amount>=0?'income':'expense'}">${r.amount>=0?'+':'-'}${s8MoneyText(Math.abs(r.amount))}</em></article>`).join(''):`<p>Chưa có银行流水。</p>`}</section></main></div>`;}
     function phoneMailMarkup(){const p=s9EnsureExtendedApps(),all=[...(p.mail.inbox||[]).map(x=>({...x,box:'收件箱'})),...(p.mail.sent||[]).map(x=>({...x,box:'已发送'}))].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));return `<div class="vvvtm-phone-app-page vvvtm-mail-page"><header class="vvvtm-phone-app-head mail-head"><button data-phone-home>‹</button><div><b>邮件</b><small>${p.mail.inbox.length}封收件 · ${p.mail.sent.length}封已发送</small></div><button data-phone-mail-compose>✎</button></header><main class="vvvtm-mail-list">${all.length?all.slice(0,80).map(m=>`<button data-phone-mail-id="${esc(m.id)}"><span>${esc((m.from||m.to||'邮').slice(0,1))}</span><div><b>${esc(m.subject||'无主题')}</b><small>${esc(m.from||m.to||'')}</small><p>${esc(compactText(m.body,100))}</p></div><time>${esc(m.time||'')}</time></button>`).join(''):`<div class="vvvtm-phone-empty-chat"><b>邮箱是空的</b><small>可以给任意NPC/邮箱地址发送剧情邮件。</small></div>`}</main></div>`;}
     function phoneBrowserMarkup(){
         const p=s9EnsureExtendedApps(),q=stateRuntime.phoneBrowserQuery||'',history=(p.browser.history||[]).slice().reverse(),isTavern=/酒馆|tavern|sillytavern/i.test(q);
-        return `<div class="vvvtm-phone-app-page vvvtm-browser-page"><header class="vvvtm-phone-app-head browser-head"><button data-phone-home>‹</button><div><b>浏览器</b><small>剧情网页 · 本地模拟</small></div><button data-phone-browser-new>＋</button></header><main><button class="vvvtm-browser-address" data-phone-browser-search>🔎 ${esc(q||'搜索或输入网址')}</button>${isTavern?`<section class="vvvtm-browser-results"><button class="vvvtm-tavern-search-result" data-phone-browser-tavern><span>酒</span><div><small>手机网页应用</small><h3>酒馆</h3><p>角色卡与会话</p></div><i>打开</i></button></section>`:q?`<section class="vvvtm-browser-results"><article><small>搜索结果</small><h3>${esc(q)} - 综合信息</h3><p>这是根据当前剧情手机生成的本地浏览结果，不会访问真实互联网。你可以把查询继续作为剧情线索使用。</p></article>${['百科','问答','资讯','图片','购物'].map((x,i)=>`<article><small>${x}</small><h3>${esc(q)} · ${x}结果 ${i+1}</h3><p>${esc(`关于“${q}”的剧情模拟页面摘要。`)}</p></article>`).join('')}</section>`:`<section class="vvvtm-browser-start"><h3>常用</h3><div><button class="vvvtm-browser-tavern-bookmark" data-phone-browser-tavern><span>酒</span><b>酒馆</b></button>${(p.browser.bookmarks||[]).map(b=>`<button data-phone-browser-query="${esc(b)}">${esc(b)}</button>`).join('')}</div><h3>最近访问</h3>${history.slice(0,20).map(h=>`<button data-phone-browser-query="${esc(h.query)}">${esc(h.query)}<small>${esc(h.time||'')}</small></button>`).join('')}</section>`}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-browser-page"><header class="vvvtm-phone-app-head browser-head"><button data-phone-home>‹</button><div><b>浏览器</b><small>剧情网页 · 本地模拟</small></div><button data-phone-browser-new>＋</button></header><main><button class="vvvtm-browser-address" data-phone-browser-search>🔎 ${esc(q||'Tìm或输入网址')}</button>${isTavern?`<section class="vvvtm-browser-results"><button class="vvvtm-tavern-search-result" data-phone-browser-tavern><span>酒</span><div><small>手机网页应用</small><h3>酒馆</h3><p>角色卡与会话</p></div><i>打开</i></button></section>`:q?`<section class="vvvtm-browser-results"><article><small>Tìm结果</small><h3>${esc(q)} - 综合信息</h3><p>这是根据当前剧情手机生成的本地浏览结果，不会访问真实互联网。你可以把查询继续作为剧情线索使用。</p></article>${['百科','问答','资讯','图片','购物'].map((x,i)=>`<article><small>${x}</small><h3>${esc(q)} · ${x}结果 ${i+1}</h3><p>${esc(`关于“${q}”的剧情模拟页面摘要。`)}</p></article>`).join('')}</section>`:`<section class="vvvtm-browser-start"><h3>常用</h3><div><button class="vvvtm-browser-tavern-bookmark" data-phone-browser-tavern><span>酒</span><b>酒馆</b></button>${(p.browser.bookmarks||[]).map(b=>`<button data-phone-browser-query="${esc(b)}">${esc(b)}</button>`).join('')}</div><h3>最近访问</h3>${history.slice(0,20).map(h=>`<button data-phone-browser-query="${esc(h.query)}">${esc(h.query)}<small>${esc(h.time||'')}</small></button>`).join('')}</section>`}</main></div>`;
     }
     function ensurePhoneTavern() {
         const phone=ensurePhoneEcosystem();if(!phone)return {characters:[],sessions:[],activeCharacterId:'',activeSessionId:''};
@@ -11943,17 +11943,17 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const tavern=ensurePhoneTavern(),session=phoneTavernSession(),character=session?phoneTavernCharacter(session.characterId):null;
         if(session&&character){
             const rows=session.messages||[];
-            return `<div class="vvvtm-phone-app-page vvvtm-inner-tavern vvvtm-inner-tavern-chat"><header class="vvvtm-phone-app-head tavern-head"><button data-phone-tavern-back>‹</button><div><b>${esc(character.name)}</b><small>酒馆 · ${esc(session.title||'会话')}</small></div><button data-phone-tavern-new-session="${esc(character.id)}" title="新会话"><i class="fa-solid fa-pen-to-square"></i></button></header><main class="vvvtm-phone-chat-log vvvtm-tavern-chat-log">${rows.length?rows.map((item,index)=>`<article data-phone-message-id="${esc(phoneMessageDomId(item,index))}" class="${item.role==='user'?'mine':'theirs'}">${phoneMessageContentMarkup(item)}<time>${esc(item.time||'')}</time></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>开始一段里层故事</b></div>'}</main><footer class="vvvtm-phone-composer vvvtm-tavern-composer"><textarea id="vvvtm-tavern-input" rows="1" placeholder="以当前外层人物的身份输入……" ${stateRuntime.phoneSending?'disabled':''}></textarea><button data-phone-tavern-send ${stateRuntime.phoneSending?'disabled':''}>${stateRuntime.phoneSending?'…':'发送'}</button></footer></div>`;
+            return `<div class="vvvtm-phone-app-page vvvtm-inner-tavern vvvtm-inner-tavern-chat"><header class="vvvtm-phone-app-head tavern-head"><button data-phone-tavern-back>‹</button><div><b>${esc(character.name)}</b><small>酒馆 · ${esc(session.title||'会话')}</small></div><button data-phone-tavern-new-session="${esc(character.id)}" title="新会话"><i class="fa-solid fa-pen-to-square"></i></button></header><main class="vvvtm-phone-chat-log vvvtm-tavern-chat-log">${rows.length?rows.map((item,index)=>`<article data-phone-message-id="${esc(phoneMessageDomId(item,index))}" class="${item.role==='user'?'mine':'theirs'}">${phoneMessageContentMarkup(item)}<time>${esc(item.time||'')}</time></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>开始一段里层故事</b></div>'}</main><footer class="vvvtm-phone-composer vvvtm-tavern-composer"><textarea id="vvvtm-tavern-input" rows="1" placeholder="以当前外层人物的Thân phận输入……" ${stateRuntime.phoneSending?'disabled':''}></textarea><button data-phone-tavern-send ${stateRuntime.phoneSending?'disabled':''}>${stateRuntime.phoneSending?'…':'发送'}</button></footer></div>`;
         }
         const sessions=[...tavern.sessions].sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
-        return `<div class="vvvtm-phone-app-page vvvtm-inner-tavern"><header class="vvvtm-phone-app-head tavern-head"><button data-phone-nav="browser">‹</button><div><b>酒馆</b><small>${tavern.characters.length} 张角色卡 · ${sessions.length} 个会话</small></div><button data-phone-tavern-create title="新建角色"><i class="fa-solid fa-user-plus"></i></button></header><main><section class="vvvtm-tavern-brand"><span>酒</span><div><b>角色酒馆</b><small>内层会话</small></div></section>${tavern.characters.length?`<section class="vvvtm-tavern-characters"><h3>角色卡</h3>${tavern.characters.map(row=>{const last=[...sessions].find(s=>s.characterId===row.id);return `<button data-phone-tavern-character="${esc(row.id)}"><span>${esc((row.name||'角').slice(0,1))}</span><div><b>${esc(row.name||'未命名角色')}</b><p>${esc(compactText(row.setting,100)||'暂无设定')}</p><small>${last?`继续 · ${esc(last.title||'会话')}`:'开始聊天'}</small></div><i>›</i></button>`}).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><b>还没有角色卡</b><small>点击右上角创建第一张角色卡</small></div>'}${sessions.length?`<section class="vvvtm-tavern-recent"><h3>最近会话</h3>${sessions.slice(0,20).map(row=>{const c=phoneTavernCharacter(row.characterId);return `<button data-phone-tavern-session="${esc(row.id)}"><span>${esc((c?.name||'酒').slice(0,1))}</span><div><b>${esc(row.title||c?.name||'会话')}</b><small>${esc(row.messages?.at(-1)?.content||'')}</small></div></button>`}).join('')}</section>`:''}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-inner-tavern"><header class="vvvtm-phone-app-head tavern-head"><button data-phone-nav="browser">‹</button><div><b>酒馆</b><small>${tavern.characters.length} 张角色卡 · ${sessions.length} 个会话</small></div><button data-phone-tavern-create title="新建角色"><i class="fa-solid fa-user-plus"></i></button></header><main><section class="vvvtm-tavern-brand"><span>酒</span><div><b>角色酒馆</b><small>内层会话</small></div></section>${tavern.characters.length?`<section class="vvvtm-tavern-characters"><h3>角色卡</h3>${tavern.characters.map(row=>{const last=[...sessions].find(s=>s.characterId===row.id);return `<button data-phone-tavern-character="${esc(row.id)}"><span>${esc((row.name||'角').slice(0,1))}</span><div><b>${esc(row.name||'Nhân vật chưa đặt tên')}</b><p>${esc(compactText(row.setting,100)||'Chưa có设定')}</p><small>${last?`继续 · ${esc(last.title||'会话')}`:'开始聊天'}</small></div><i>›</i></button>`}).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><b>还没有角色卡</b><small>点击右上角创建第一张角色卡</small></div>'}${sessions.length?`<section class="vvvtm-tavern-recent"><h3>最近会话</h3>${sessions.slice(0,20).map(row=>{const c=phoneTavernCharacter(row.characterId);return `<button data-phone-tavern-session="${esc(row.id)}"><span>${esc((c?.name||'酒').slice(0,1))}</span><div><b>${esc(row.title||c?.name||'会话')}</b><small>${esc(row.messages?.at(-1)?.content||'')}</small></div></button>`}).join('')}</section>`:''}</main></div>`;
     }
-    function phoneMapMarkupS9(){const p=s9EnsureExtendedApps(),scene=stateRuntime.state.scene||{},dest=stateRuntime.phoneMapDestination||'',hist=(p.maps.history||[]).slice().reverse().slice(0,30);const km=dest?((s9Hash(dest)%240)/10+0.6).toFixed(1):'';return `<div class="vvvtm-phone-app-page vvvtm-map-page s9-map"><header class="vvvtm-phone-app-head map-head"><button data-phone-home>‹</button><div><b>地图导航</b><small>${esc(scene.location||'当前位置')}</small></div><button data-phone-map-search>🔎</button></header><main><section class="vvvtm-map-canvas"><div class="route-line"></div><span class="me">●</span>${dest?`<span class="dest">📍</span>`:''}<b>${esc(scene.location||'当前位置')}</b>${dest?`<strong>${esc(dest)}</strong>`:''}</section>${dest?`<section class="vvvtm-route-options"><button><b>驾车 ${Math.ceil(Number(km)*3)}分钟</b><small>${km}km · 红绿灯${2+s9Hash(dest)%18}个</small></button><button><b>公交 ${Math.ceil(Number(km)*5)}分钟</b><small>步行约${5+s9Hash(dest)%20}分钟</small></button><button data-phone-ride-dest="${esc(dest)}"><b>打车约 ${s8MoneyText(8+Number(km)*2.2)}</b><small>呼叫网约车</small></button></section>`:'<button class="vvvtm-map-search-card" data-phone-map-search>你要去哪儿？</button>'}<section class="vvvtm-map-history">${hist.map(h=>`<button data-phone-map-dest="${esc(h.destination)}">📍 ${esc(h.destination)}<small>${esc(h.time||'')}</small></button>`).join('')}</section></main></div>`;}
+    function phoneMapMarkupS9(){const p=s9EnsureExtendedApps(),scene=stateRuntime.state.scene||{},dest=stateRuntime.phoneMapDestination||'',hist=(p.maps.history||[]).slice().reverse().slice(0,30);const km=dest?((s9Hash(dest)%240)/10+0.6).toFixed(1):'';return `<div class="vvvtm-phone-app-page vvvtm-map-page s9-map"><header class="vvvtm-phone-app-head map-head"><button data-phone-home>‹</button><div><b>地图导航</b><small>${esc(scene.location||'Vị trí hiện tại')}</small></div><button data-phone-map-search>🔎</button></header><main><section class="vvvtm-map-canvas"><div class="route-line"></div><span class="me">●</span>${dest?`<span class="dest">📍</span>`:''}<b>${esc(scene.location||'Vị trí hiện tại')}</b>${dest?`<strong>${esc(dest)}</strong>`:''}</section>${dest?`<section class="vvvtm-route-options"><button><b>驾车 ${Math.ceil(Number(km)*3)}分钟</b><small>${km}km · 红绿灯${2+s9Hash(dest)%18}个</small></button><button><b>公交 ${Math.ceil(Number(km)*5)}分钟</b><small>步行约${5+s9Hash(dest)%20}分钟</small></button><button data-phone-ride-dest="${esc(dest)}"><b>打车约 ${s8MoneyText(8+Number(km)*2.2)}</b><small>呼叫网约车</small></button></section>`:'<button class="vvvtm-map-search-card" data-phone-map-search>你要去哪儿？</button>'}<section class="vvvtm-map-history">${hist.map(h=>`<button data-phone-map-dest="${esc(h.destination)}">📍 ${esc(h.destination)}<small>${esc(h.time||'')}</small></button>`).join('')}</section></main></div>`;}
     function phoneMapMarkupS9V2(){
-        const place=compactText(stateRuntime.phoneMapDestination||stateRuntime.state?.scene?.location||'当前位置',180)||'当前位置';
+        const place=compactText(stateRuntime.phoneMapDestination||stateRuntime.state?.scene?.location||'Vị trí hiện tại',180)||'Vị trí hiện tại';
         return phoneMapMarkupS9().replace('<button><b>驾车 ', '<button data-phone-map-mode="drive"><b>驾车 ').replace('<button><b>公交 ', '<button data-phone-map-mode="transit"><b>公交 ').replace('</main></div>',`<button class="vvvtm-map-dianping" data-phone-app="dianping">⭐ 查看 ${esc(place)} 的大众点评</button></main></div>`);
     }
-    function phoneRideMarkup(){const p=s9EnsureExtendedApps(),orders=(p.ride.orders||[]).slice().reverse();return `<div class="vvvtm-phone-app-page vvvtm-ride-page"><header class="vvvtm-phone-app-head ride-head"><button data-phone-home>‹</button><div><b>打车</b><small>快车 / 舒适 / 专车 · 剧情模拟</small></div><button data-phone-ride-new>＋</button></header><main><section class="vvvtm-ride-map"><span>🚕</span><b>${esc(stateRuntime.state.scene?.location||'当前位置')}</b><button data-phone-ride-new>输入目的地</button></section><section class="vvvtm-ride-orders">${orders.length?orders.slice(0,30).map(o=>`<article><span>🚕</span><div><b>${esc(o.destination)}</b><small>${esc(o.status)} · ${esc(o.carType)} · ${esc(o.time)}</small></div><em>${s8MoneyText(o.amount)}</em></article>`).join(''):`<p>暂无行程。</p>`}</section></main></div>`;}
+    function phoneRideMarkup(){const p=s9EnsureExtendedApps(),orders=(p.ride.orders||[]).slice().reverse();return `<div class="vvvtm-phone-app-page vvvtm-ride-page"><header class="vvvtm-phone-app-head ride-head"><button data-phone-home>‹</button><div><b>打车</b><small>快车 / 舒适 / 专车 · 剧情模拟</small></div><button data-phone-ride-new>＋</button></header><main><section class="vvvtm-ride-map"><span>🚕</span><b>${esc(stateRuntime.state.scene?.location||'Vị trí hiện tại')}</b><button data-phone-ride-new>输入目的地</button></section><section class="vvvtm-ride-orders">${orders.length?orders.slice(0,30).map(o=>`<article><span>🚕</span><div><b>${esc(o.destination)}</b><small>${esc(o.status)} · ${esc(o.carType)} · ${esc(o.time)}</small></div><em>${s8MoneyText(o.amount)}</em></article>`).join(''):`<p>Chưa có行程。</p>`}</section></main></div>`;}
     function s9TravelOptions(from,to,type='flight'){const n=type==='train'?60:48;return Array.from({length:n},(_,i)=>{const seed=s9Hash(`${from}|${to}|${type}|${i}`);return{id:`${type}-${i}`,code:type==='train'?`${['G','D','C'][seed%3]}${100+(seed%8900)}`:`${['MU','CA','CZ','HU','3U','FM'][seed%6]}${1000+(seed%8000)}`,depart:`${String(6+(i%16)).padStart(2,'0')}:${String((i*17)%60).padStart(2,'0')}`,arrive:`${String(8+(i%15)).padStart(2,'0')}:${String((i*29)%60).padStart(2,'0')}`,price:Math.round((type==='train'?120:380)+(seed%(type==='train'?900:2400))),type};});}
         function phoneTravelMarkup(){const p=s9EnsureExtendedApps(),query=stateRuntime.phoneTravelQuery||{from:stateRuntime.state.scene?.location||'上海',to:'东京',type:'flight'},opts=s9TravelOptions(query.from,query.to,query.type);return `<div class="vvvtm-phone-app-page vvvtm-travel-page"><header class="vvvtm-phone-app-head travel-head"><button data-phone-home>‹</button><div><b>航旅</b><small>机票 / 火车票 / 酒店 · 我的订单可追踪</small></div><button data-phone-order-center>订单</button></header><main><section class="vvvtm-travel-query"><b>${esc(query.from)} ⇄ ${esc(query.to)}</b><div><button class="${query.type==='flight'?'active':''}" data-phone-travel-type="flight">✈️机票</button><button class="${query.type==='train'?'active':''}" data-phone-travel-type="train">🚄火车</button><button class="${query.type==='hotel'?'active':''}" data-phone-travel-type="hotel">🏨酒店</button></div></section>${query.type==='hotel'?`<section class="vvvtm-hotel-list">${Array.from({length:80},(_,i)=>{const seed=s9Hash(`${query.to}|hotel|${i}`),hotelName=`${query.to} ${s9Pick(S9_BRANDS,seed)}酒店`,price=180+(seed%1800);return`<button data-phone-travel-hotel="${esc(hotelName)}" data-phone-travel-price="${price}"><span>🏨</span><div><b>${esc(hotelName)}</b><small>⭐${(4.3+(seed%60)/100).toFixed(1)} · ${['豪华','高档','舒适','经济'][seed%4]} · 可预订</small></div><em>${s8MoneyText(price)}/晚</em></button>`}).join('')}</section>`:`<section class="vvvtm-ticket-list">${opts.map(o=>`<button data-phone-travel-book="${esc(o.code)}" data-phone-travel-price="${o.price}" data-phone-travel-kind="${o.type}"><div><b>${esc(o.depart)}</b><small>${esc(query.from)}</small></div><span>${esc(o.code)}<i>直达</i></span><div><b>${esc(o.arrive)}</b><small>${esc(query.to)}</small></div><em>${s8MoneyText(o.price)}</em></button>`).join('')}</section>`}</main></div>`;}
     function phoneCampusMarkup(){const p=s9EnsureExtendedApps();return `<div class="vvvtm-phone-app-page vvvtm-campus-page"><header class="vvvtm-phone-app-head campus-head"><button data-phone-home>‹</button><div><b>智慧校园</b><small>课表 / 成绩 / 校园卡 / 通知</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-campus-card"><small>校园卡余额</small><strong>${s8MoneyText(p.campus.cardBalance)}</strong><button data-phone-campus-recharge>充值</button></section><section class="vvvtm-campus-grid"><button>📚<b>今日课表</b></button><button>📝<b>成绩查询</b></button><button>📢<b>校园通知</b></button><button>🚌<b>校车</b></button></section><section class="vvvtm-campus-courses"><h3>本周课表</h3>${p.campus.courses.map(c=>`<article><span>${esc(c.day)}</span><div><b>${esc(c.name)}</b><small>${esc(c.time)} · ${esc(c.room)}</small></div></article>`).join('')}</section><section class="vvvtm-campus-notices"><h3>通知</h3>${p.campus.notices.slice().reverse().map(n=>`<article><b>${esc(n.title)}</b><p>${esc(n.content)}</p><small>${esc(n.time||'')}</small></article>`).join('')}</section></main></div>`;}
@@ -11976,18 +11976,18 @@ ${activities.join('\n')||'- 暂无记录'}`;
         return Number(floor)>=source+Math.max(1,delayFloors)*(Math.max(0,Number(order.progressTick||0))+1);
     }
     function s8AdvanceOrder(order,platform,steps,{floorDelay=1,hourDelay=0,noticeApp='',floor=-1 }={}) {
-        if(!order||['delivered','已完成','已使用','已过期','exception','refund-pending','refunded','cancelled','已取消'].includes(order.status))return false;
+        if(!order||['delivered','Đã hoàn thành','已使用','已过期','exception','refund-pending','refunded','cancelled','Đã hủy'].includes(order.status))return false;
         s8NormalizeOrder(order,platform);
         const nextIndex=Math.min(steps.length-1,Math.max(0,Number(order.progressTick||0)+1));
         const tickFloor=Number.isFinite(Number(floor))&&Number(floor)>=0?Number(floor):Math.max(0,(context()?.chat?.length||1)-1);
         if(nextIndex<=0||!s8OrderCanProgress(order,tickFloor,floorDelay,hourDelay))return false;
         const previous=order.status; const next=steps[nextIndex]; order.progressTick=nextIndex; order.status=next.status;
         if(previous===order.status)return false;
-        if(['delivered','已完成','已使用'].includes(order.status)){order.deliveredFloor=tickFloor;order.deliveredStoryTime=compactText(stateRuntime.state?.scene?.time||'',120);}
-        s8OrderTimeline(order,order.status,next.label,next.detail||'订单状态已更新');
+        if(['delivered','Đã hoàn thành','已使用'].includes(order.status)){order.deliveredFloor=tickFloor;order.deliveredStoryTime=compactText(stateRuntime.state?.scene?.time||'',120);}
+        s8OrderTimeline(order,order.status,next.label,next.detail||'订单Trạng thái已更新');
         if(noticeApp)s8AddCommerceNotice(next.label,`${order.storeName||order.destination||order.code||'订单'} · ${s8OrderItemSummary(order,300)} · ${next.label}` ,noticeApp,{relatedId:order.id,dedupeKey:`order-${order.id}-${order.status}`});
         s8RecordPhoneActivity('order-status',`${noticeApp||s8OrderPlatformLabel(platform)} · ${next.label}`,`${order.storeName||order.destination||order.code||'订单'} · ${s8OrderItemSummary(order,300)}`,{relatedId:order.id,floor:tickFloor});
-        s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.destination||order.code||'订单'}｜${s8OrderItemSummary(order,700)}｜状态:${s8OrderStatusLabel(order)}`,floor:tickFloor,time:phoneClock().time,location:order.awareness?.sceneLocation||order.sceneLocation||'',source:'phone-order-status'});
+        s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.destination||order.code||'订单'}｜${s8OrderItemSummary(order,700)}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor:tickFloor,time:phoneClock().time,location:order.awareness?.sceneLocation||order.sceneLocation||'',source:'phone-order-status'});
         return true;
     }
     function s8TickPhoneEcosystem(floor = -1) {
@@ -12002,7 +12002,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         };
         for(const platform of Object.keys(commerceSteps))for(const order of phone.commerce?.[platform]?.orders||[])changed=s8AdvanceOrder(order,platform,commerceSteps[platform],{floorDelay:['eleme','meituan'].includes(platform)?1:2,hourDelay:['eleme','meituan'].includes(platform)?1:24,noticeApp:s8OrderPlatformLabel(platform),floor:tickFloor})||changed;
         const ext=s9EnsureExtendedApps();
-        for(const ride of ext.ride.orders||[])changed=s8AdvanceOrder(ride,'ride',[{status:'司机接单',label:'司机已接单'},{status:'司机到达',label:'司机已到达'},{status:'行程中',label:'行程中'},{status:'已完成',label:'行程已完成'}],{floorDelay:1,hourDelay:.5,noticeApp:'打车',floor:tickFloor})||changed;
+        for(const ride of ext.ride.orders||[])changed=s8AdvanceOrder(ride,'ride',[{status:'司机接单',label:'司机已接单'},{status:'司机到达',label:'司机已到达'},{status:'行程中',label:'行程中'},{status:'Đã hoàn thành',label:'行程Đã hoàn thành'}],{floorDelay:1,hourDelay:.5,noticeApp:'打车',floor:tickFloor})||changed;
         for(const order of s8AllPhoneOrders())if(order.status==='refund-pending'&&tickFloor>=Number(order.afterSales?.refundDueFloor??Infinity))changed=s12CompleteOrderRefund(order)||changed;
         changed=s12TickWalletTools(tickFloor)||changed;
         changed=s12TickCalendar(tickFloor)||changed;
@@ -12012,7 +12012,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const phone=ensurePhoneEcosystem(); if(!phone||!Array.isArray(events))return;
         events.forEach((event,index)=>{
             if(!s39FinanceEventHasVisibleEvidence(event,payload)){
-                console.warn('[fixed39单一故事线] 已拦截没有可见正文精确金额证据的financeEvent',event);
+                console.warn('[fixed39单一故事线] 已拦截没有可见chính văn精确金额证据的financeEvent',event);
                 return;
             }
             const account=event.account==='bank'?'bank':event.account==='wechat'?'wechat':'alipay';
@@ -12061,7 +12061,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const tx=(phone.finance.transactions||[]).filter(x=>x.account===account).slice().reverse().slice(0,80);
         const title=isWechat?'微信支付':'支付宝', icon=isWechat?'💚':'支';
         const tools=phone.walletTools,unpaid=(tools.creditBills||[]).filter(row=>row.status==='unpaid');
-        return `<div class="vvvtm-phone-app-page vvvtm-wallet-page ${isWechat?'wechat-wallet':'alipay-wallet'}"><header class="vvvtm-phone-app-head wallet-head"><button data-phone-${isWechat?'nav="wechat"':'home'}>‹</button><div><b>${icon} ${title}</b><small>0-32剧情模拟钱包 · 请勿输入真实支付密码</small></div><button data-phone-wallet-calibrate="${account}">余额校准</button></header><main><section class="vvvtm-wallet-balance"><small>可用余额</small><strong>${s8MoneyText(balance)}</strong><div><button data-phone-wallet-transfer="${account}">转账</button><button data-phone-wallet-recharge="${account}">充话费</button></div></section><section class="vvvtm-wallet-advanced"><button data-phone-wallet-tool="redpacket" data-phone-wallet-account="${account}">🧧<b>红包</b></button><button data-phone-wallet-tool="split" data-phone-wallet-account="${account}">AA<b>AA收款</b></button><button data-phone-wallet-tool="subscription" data-phone-wallet-account="${account}">⟳<b>固定支出</b></button><button data-phone-wallet-tool="credit" data-phone-wallet-account="${account}">💳<b>信用账单 ${unpaid.length}</b></button></section><section class="vvvtm-wallet-services"><button data-phone-app="taobao">🛍️<b>淘宝</b></button><button data-phone-app="eleme">🛵<b>外卖</b></button><button data-phone-app="calendar">📅<b>日历</b></button><button data-phone-app="notifications">🔔<b>通知</b></button></section>${unpaid.length?`<section class="vvvtm-wallet-obligations"><h3>待还信用账单</h3>${unpaid.map(row=>`<article><b>${esc(row.title)}</b><span>${s8MoneyText(row.amount)}</span><small>第${row.dueFloor}层到期</small></article>`).join('')}</section>`:''}<section class="vvvtm-wallet-bills"><h3>账单</h3>${tx.length?tx.map(row=>`<article><div><b>${esc(row.title||row.counterparty||'交易')}</b><small>${esc(row.time||'')} · ${esc(row.counterparty||row.category||'')}</small></div><em class="${row.amount>=0?'income':'expense'}">${row.amount>=0?'+':'-'}${s8MoneyText(Math.abs(row.amount))}</em></article>`).join(''):'<p>暂无账单。剧情里的工资、零花钱、购物、外卖、转账都会记录在这里。</p>'}</section></main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-wallet-page ${isWechat?'wechat-wallet':'alipay-wallet'}"><header class="vvvtm-phone-app-head wallet-head"><button data-phone-${isWechat?'nav="wechat"':'home'}>‹</button><div><b>${icon} ${title}</b><small>0-32剧情模拟钱包 · 请勿输入真实支付密码</small></div><button data-phone-wallet-calibrate="${account}">余额校准</button></header><main><section class="vvvtm-wallet-balance"><small>可用余额</small><strong>${s8MoneyText(balance)}</strong><div><button data-phone-wallet-transfer="${account}">转账</button><button data-phone-wallet-recharge="${account}">充话费</button></div></section><section class="vvvtm-wallet-advanced"><button data-phone-wallet-tool="redpacket" data-phone-wallet-account="${account}">🧧<b>红包</b></button><button data-phone-wallet-tool="split" data-phone-wallet-account="${account}">AA<b>AA收款</b></button><button data-phone-wallet-tool="subscription" data-phone-wallet-account="${account}">⟳<b>固定支出</b></button><button data-phone-wallet-tool="credit" data-phone-wallet-account="${account}">💳<b>信用账单 ${unpaid.length}</b></button></section><section class="vvvtm-wallet-services"><button data-phone-app="taobao">🛍️<b>淘宝</b></button><button data-phone-app="eleme">🛵<b>外卖</b></button><button data-phone-app="calendar">📅<b>日历</b></button><button data-phone-app="notifications">🔔<b>通知</b></button></section>${unpaid.length?`<section class="vvvtm-wallet-obligations"><h3>待还信用账单</h3>${unpaid.map(row=>`<article><b>${esc(row.title)}</b><span>${s8MoneyText(row.amount)}</span><small>第${row.dueFloor}层到期</small></article>`).join('')}</section>`:''}<section class="vvvtm-wallet-bills"><h3>账单</h3>${tx.length?tx.map(row=>`<article><div><b>${esc(row.title||row.counterparty||'交易')}</b><small>${esc(row.time||'')} · ${esc(row.counterparty||row.category||'')}</small></div><em class="${row.amount>=0?'income':'expense'}">${row.amount>=0?'+':'-'}${s8MoneyText(Math.abs(row.amount))}</em></article>`).join(''):'<p>Chưa có账单。剧情里的工资、零花钱、购物、外卖、转账都会记录在这里。</p>'}</section></main></div>`;
     }
     function phoneLogisticsMarkup(){
         stateRuntime.phoneOrderFilter='shipping';
@@ -12071,15 +12071,15 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const sources=[];
         for(const thread of stateRuntime.state.phone?.threads||[])for(const msg of thread.messages||[])for(const att of msg.attachments||[])if(att.kind==='image')sources.push({title:msg.sender||thread.contact,desc:att.description,time:msg.time});
         for(const moment of stateRuntime.state.storyExtras?.moments||[])if(moment.mediaDescription)sources.push({title:moment.author,desc:moment.mediaDescription,time:moment.time});
-        return `<div class="vvvtm-phone-app-page vvvtm-gallery-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>相册</b><small>${sources.length} 个文字模拟媒体</small></div><button data-phone-home>⌂</button></header><main>${sources.length?sources.slice().reverse().map(x=>`<article><span>🖼️</span><b>${esc(x.title||'图片')}</b><p>${esc(x.desc||'')}</p><small>${esc(x.time||'')}</small></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>暂无照片</b><small>微信里发送的“图片附件”会出现在这里。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-gallery-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>相册</b><small>${sources.length} 个文字模拟媒体</small></div><button data-phone-home>⌂</button></header><main>${sources.length?sources.slice().reverse().map(x=>`<article><span>🖼️</span><b>${esc(x.title||'图片')}</b><p>${esc(x.desc||'')}</p><small>${esc(x.time||'')}</small></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có照片</b><small>微信里发送的“图片附件”会出现在这里。</small></div>'}</main></div>`;
     }
     function phoneNotesMarkup(){
         const notes=stateRuntime.state.phone.notes ||= [];
-        return `<div class="vvvtm-phone-app-page vvvtm-notes-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>备忘录</b><small>${notes.length} 条</small></div><button data-phone-note-add>＋</button></header><main>${notes.length?notes.slice().reverse().map(n=>`<article><b>${esc(n.title||'备忘')}</b><p>${esc(n.content||'')}</p><small>${esc(n.time||'')}</small></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>暂无备忘</b></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-notes-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>备忘录</b><small>${notes.length} 条</small></div><button data-phone-note-add>＋</button></header><main>${notes.length?notes.slice().reverse().map(n=>`<article><b>${esc(n.title||'备忘')}</b><p>${esc(n.content||'')}</p><small>${esc(n.time||'')}</small></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có备忘</b></div>'}</main></div>`;
     }
     function phoneWeatherMarkup(){
         const scene=stateRuntime.state.scene||{};
-        return `<div class="vvvtm-phone-app-page vvvtm-weather-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>天气</b><small>按当前剧情场景</small></div><button data-phone-home>⌂</button></header><main><span>☁️</span><strong>${esc(scene.weather||'天气未记录')}</strong><b>${esc(scene.location||'地点未记录')}</b><p>${esc(scene.time||phoneClock().date)}</p><small>这里展示剧情里已经明确的天气，不调用现实天气接口。</small></main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-weather-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>天气</b><small>按当前剧情场景</small></div><button data-phone-home>⌂</button></header><main><span>☁️</span><strong>${esc(scene.weather||'天气Chưa ghi nhận')}</strong><b>${esc(scene.location||'地点Chưa ghi nhận')}</b><p>${esc(scene.time||phoneClock().date)}</p><small>这里展示剧情里已经明确的天气，不调用现实天气接口。</small></main></div>`;
     }
     function phoneHomeMarkup({ preview = false } = {}) {
         const clock = phoneClock();
@@ -12094,7 +12094,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         let apps = '';
         let dock = '';
         if (isSmartphone) {
-            apps = `${app('wechat','💚','微信','green')}${app('sms','✉️','短信','blue')}${app('calls','☎️','通话','green')}${app('moments','🌐','朋友圈','blue')}${app('taobao','淘','淘宝','orange')}${app('jd','京','京东','red')}${app('meituan','美','美团','yellow')}${app('eleme','饿','饿了么','cyan')}${app('dianping','⭐','大众点评','orange')}${app('orders','🧾','订单','blue')}${app('alipay','支','支付宝','blue')}${app('bank','银','银行','blue')}${app('calendar','📅','日历','red')}${app('mail','✉','邮箱','blue')}${app('browser','🧭','浏览器','blue')}${app('maps','🗺','地图','green')}${app('ride','🚕','打车','green')}${app('travel','✈','航旅','blue')}${app('campus','校','校园','green')}${app('logistics','📦','物流','cream')}${app('notifications','🔔','通知','red')}${app('search','⌕','全机搜索','cream')}${app('privacy','知','知情账本','green')}${app('npcphone','NPC','NPC手机','blue')}${app('inspector','检','事件检查','orange')}${app('gallery','🖼️','相册','pink')}${app('notes','📝','备忘录','cream')}${app('weather','☁️','天气','blue')}${app('diary','📔','日记','cream')}${app('anniversaries','🗓️','纪念日','pink')}${app('world','📖','彼间私文','cream')}${app('theme','🎨','主题中心','pink')}${app('api','⚙️','API设置','cream')}${app('settings','⚙️','设置','cream')}`;
+            apps = `${app('wechat','💚','微信','green')}${app('sms','✉️','短信','blue')}${app('calls','☎️','通话','green')}${app('moments','🌐','朋友圈','blue')}${app('taobao','淘','淘宝','orange')}${app('jd','京','京东','red')}${app('meituan','美','美团','yellow')}${app('eleme','饿','饿了么','cyan')}${app('dianping','⭐','大众点评','orange')}${app('orders','🧾','订单','blue')}${app('alipay','支','支付宝','blue')}${app('bank','银','银行','blue')}${app('calendar','📅','日历','red')}${app('mail','✉','邮箱','blue')}${app('browser','🧭','浏览器','blue')}${app('maps','🗺','地图','green')}${app('ride','🚕','打车','green')}${app('travel','✈','航旅','blue')}${app('campus','校','校园','green')}${app('logistics','📦','物流','cream')}${app('notifications','🔔','通知','red')}${app('search','⌕','全机Tìm','cream')}${app('privacy','知','知情账本','green')}${app('npcphone','NPC','NPC手机','blue')}${app('inspector','检','事件检查','orange')}${app('gallery','🖼️','相册','pink')}${app('notes','📝','备忘录','cream')}${app('weather','☁️','天气','blue')}${app('diary','📔','日记','cream')}${app('anniversaries','🗓️','纪念日','pink')}${app('world','📖','彼间私文','cream')}${app('theme','🎨','主题中心','pink')}${app('api','⚙️','API设置','cream')}${app('settings','⚙️','设置','cream')}`;
             dock = `${app('wechat','💚','微信','green')}${app('orders','🧾','订单','blue')}${app('alipay','支','支付','blue')}${app('eleme','饿','外卖','cyan')}`;
         } else {
             // 非现代场景不再假装是固定手机桌面：根据本轮 AI 判定显示当前真实载体。
@@ -12103,10 +12103,10 @@ ${activities.join('\n')||'- 暂无记录'}`;
             const hasGroups=(stateRuntime.state.phone?.groupProfiles||[]).some(g=>g?.availability==='active'&&g?.homeWorldKey===profile.worldKey)||(stateRuntime.state.phone?.channelGroups||[]).length;
             if (hasGroups) apps += app('channels', profile.communicationType==='magic'?'🔮':'👥', profile.communicationType==='magic'?'传讯频道':'群组/频道','cream');
             if (available && liveCalls) apps += app('calls', profile.communicationType === 'magic' ? '✨' : profile.communicationType === 'radio' ? '📻' : '☎️', profile.communicationType === 'magic' ? '实时传讯' : '实时通讯', 'green');
-            apps += `${app('diary','📔','日记','cream')}${app('anniversaries','🗓️','重要日期','pink')}${app('world','📖','彼间私文','cream')}${app('api','⚙️','API设置','cream')}${app('settings','⚙️','设置','cream')}`;
+            apps += `${app('diary','📔','日记','cream')}${app('anniversaries','🗓️','重要Ngày','pink')}${app('world','📖','彼间私文','cream')}${app('api','⚙️','API设置','cream')}${app('settings','⚙️','设置','cream')}`;
             if (available) dock = `${app('sms','📨',periodLabel,'blue')}${liveCalls ? app('calls','☎️','通讯','green') : ''}`;
         }
-        const unavailable = !available ? `<div class="vvvtm-phone-era-note"><b>当前区域暂无可用远程通讯</b><small>${esc(profile.reason || 'AI会在下一轮根据新的地点、时代和当前正文重新判断。')}</small></div>` : '';
+        const unavailable = !available ? `<div class="vvvtm-phone-era-note"><b>当前区域Chưa có可用远程通讯</b><small>${esc(profile.reason || 'AI会在下一轮根据新的地点、时代和当前chính văn重新判断。')}</small></div>` : '';
         const originDevice = profile.personalDeviceType==='smartphone' && !isSmartphone ? `<div class="vvvtm-phone-era-note origin-device"><b>原世界设备：${esc(profile.personalDeviceLabel||'iPhone17Promax')}</b><small>${originOnline?'跨世界网络已连接：原世界微信可用；当地通讯仍按当前时代独立运行。':'设备仍可能随身，但当前世界/时代无法连接原世界网络。原班级群、朋友群不会被删除，只会标记离线。'}</small></div>` : '';
         return `<div class="vvvtm-os-home ${preview?'preview':''}" data-vvvtm-theme="${esc(stateRuntime.state.phone?.themeStore?.active || 'classic')}">
             <div class="vvvtm-os-status"><b>${clock.time}</b><span>${isSmartphone ? '▮▮▮ ᯤ 🔋' : '✦'}</span></div><div class="vvvtm-os-device-label">${esc(device)}</div>
@@ -12156,7 +12156,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             ? `${esc(compactText(stateRuntime.phoneStickerLoadError,180))}<button type="button" data-phone-sticker-retry>重新读取</button>`
             : '已内置360张，也可点击文件夹批量导入 PNG、JPG、WebP 或 GIF';
         return `<section class="vvvtm-sticker-panel">
-            <header><label><i class="fa-solid fa-magnifying-glass"></i><input id="vvvtm-sticker-search" value="${esc(stateRuntime.phoneStickerQuery||'')}" placeholder="搜索表情"></label><button data-phone-sticker-import title="导入表情"><i class="fa-solid fa-folder-plus"></i></button><button class="${manage?'active':''}" data-phone-sticker-manage title="管理表情"><i class="fa-solid fa-pen"></i></button></header>
+            <header><label><i class="fa-solid fa-magnifying-glass"></i><input id="vvvtm-sticker-search" value="${esc(stateRuntime.phoneStickerQuery||'')}" placeholder="Tìm表情"></label><button data-phone-sticker-import title="导入表情"><i class="fa-solid fa-folder-plus"></i></button><button class="${manage?'active':''}" data-phone-sticker-manage title="管理表情"><i class="fa-solid fa-pen"></i></button></header>
             <input data-phone-sticker-file type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
             <div class="vvvtm-sticker-grid">${rows.length?rows.map(row=>`<article data-sticker-hay="${esc(`${row.name||''} ${row.category||''} ${(row.tags||[]).join(' ')} ${row.description||''}`.toLowerCase())}"><button data-phone-sticker-send="${esc(row.id)}" title="${esc(`${row.name||'表情'}${row.category?` · ${row.category}`:''}`)}"><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'表情')}" loading="lazy"></button>${manage?`<span><button data-phone-sticker-edit="${esc(row.id)}" title="编辑"><i class="fa-solid fa-pen"></i></button><button data-phone-sticker-delete="${esc(row.id)}" title="删除"><i class="fa-solid fa-trash"></i></button></span>`:''}</article>`).join(''):`<div class="vvvtm-sticker-empty"><b>${esc(emptyTitle)}</b><small>${emptyDetail}</small></div>`}</div>
         </section>`;
@@ -12186,7 +12186,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         return [...new Set([
             ...phoneContactNames(),
             ...(stateRuntime.state?.phone?.calls || []).flatMap(item => [compactText(item?.author,100), compactText(item?.contact,100)]),
-            ...(stateRuntime.state?.tables?.people || []).map(row => compactText(row?.['姓名'],100)),
+            ...(stateRuntime.state?.tables?.people || []).map(row => compactText(row?.['Họ tên'],100)),
         ].filter(Boolean))].slice(0, 24);
     }
 
@@ -12198,7 +12198,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const digits=String(stateRuntime.phonePaymentDigits||'').replace(/\D/g,'').slice(0,6);
         const dots=Array.from({length:6},(_,index)=>`<i class="${index<digits.length?'filled':''}"></i>`).join('');
         const keys=['1','2','3','4','5','6','7','8','9','clear','0','backspace'];
-        return `<div class="vvvtm-pay-code" data-phone-pay-code aria-label="已输入${digits.length}位">${dots}</div><div class="vvvtm-pay-keypad">${keys.map(key=>`<button type="button" data-phone-pay-key="${key}" aria-label="${key==='clear'?'清空':key==='backspace'?'退格':key}">${key==='clear'?'清空':key==='backspace'?'⌫':key}</button>`).join('')}</div>`;
+        return `<div class="vvvtm-pay-code" data-phone-pay-code aria-label="已输入${digits.length}位">${dots}</div><div class="vvvtm-pay-keypad">${keys.map(key=>`<button type="button" data-phone-pay-key="${key}" aria-label="${key==='clear'?'Bỏ chọn':key==='backspace'?'退格':key}">${key==='clear'?'Bỏ chọn':key==='backspace'?'⌫':key}</button>`).join('')}</div>`;
     }
 
     function updatePhonePaymentKeypad(screen) {
@@ -12213,42 +12213,42 @@ ${activities.join('\n')||'- 暂无记录'}`;
         if (!dialog) return '';
         if(dialog.type==='sticker-edit'){
             const row=phoneStickerById(dialog.stickerId);if(!row)return '';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-sticker-edit-sheet"><header><div><b>编辑表情</b><small>名称、标签和描述会帮助手机AI正确选图</small></div><button data-phone-dialog-close>×</button></header><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'表情')}"><input id="vvvtm-sticker-name" maxlength="120" placeholder="表情名称" value="${esc(row.name||'')}"><input id="vvvtm-sticker-tags" maxlength="400" placeholder="标签，用逗号分隔" value="${esc((row.tags||[]).join('，'))}"><textarea id="vvvtm-sticker-description" maxlength="500" rows="4" placeholder="描述这个表情适合什么语气和场景">${esc(row.description||'')}</textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="sticker-edit">保存</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-sticker-edit-sheet"><header><div><b>编辑表情</b><small>名称、标签和描述会帮助手机AI正确选图</small></div><button data-phone-dialog-close>×</button></header><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'表情')}"><input id="vvvtm-sticker-name" maxlength="120" placeholder="表情名称" value="${esc(row.name||'')}"><input id="vvvtm-sticker-tags" maxlength="400" placeholder="标签，用逗号分隔" value="${esc((row.tags||[]).join('，'))}"><textarea id="vvvtm-sticker-description" maxlength="500" rows="4" placeholder="描述这个表情适合什么语气和场景">${esc(row.description||'')}</textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="sticker-edit">保存</button></footer></section></div>`;
         }
         if(dialog.type==='sticker-preview'){
             const row=phoneStickerById(dialog.stickerId);if(!row)return '';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-sticker-preview-sheet"><header><div><b>${esc(row.name||'表情')}</b><small>${esc((row.tags||[]).join(' · '))}</small></div><button data-phone-dialog-close>×</button></header><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'表情')}"><p>${esc(row.description||'')}</p><footer><button data-phone-dialog-close>关闭</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-sticker-preview-sheet"><header><div><b>${esc(row.name||'表情')}</b><small>${esc((row.tags||[]).join(' · '))}</small></div><button data-phone-dialog-close>×</button></header><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'表情')}"><p>${esc(row.description||'')}</p><footer><button data-phone-dialog-close>Đóng</button></footer></section></div>`;
         }
         if(dialog.type==='tavern-character'){
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-tavern-character-sheet"><header><div><b>新建酒馆角色</b><small>这张卡只属于手机里的里层故事</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-tavern-character-name" maxlength="100" placeholder="角色名"><textarea id="vvvtm-tavern-character-setting" rows="7" maxlength="3000" placeholder="身份、性格、关系、世界背景……"></textarea><textarea id="vvvtm-tavern-character-greeting" rows="4" maxlength="1200" placeholder="开场白（可选）"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="tavern-character">创建并聊天</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-tavern-character-sheet"><header><div><b>新建酒馆角色</b><small>这张卡只属于手机里的里层故事</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-tavern-character-name" maxlength="100" placeholder="Tên nhân vật"><textarea id="vvvtm-tavern-character-setting" rows="7" maxlength="3000" placeholder="Thân phận、Tính cách、关系、世界背景……"></textarea><textarea id="vvvtm-tavern-character-greeting" rows="4" maxlength="1200" placeholder="开场白（可选）"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="tavern-character">创建并聊天</button></footer></section></div>`;
         }
         if (dialog.type === 'attachment-create') {
             const kinds = ['image','file','voice','location','link','other'];
             const active = dialog.kind || 'image';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>添加附件</b><small>${dialog.target==='moment'?'添加到这条朋友圈，NPC会看到附件内容':'添加到当前消息'}</small></div><button ${dialog.target==='moment'?'data-phone-moment-attachment-cancel':'data-phone-dialog-close'}>×</button></header><div class="vvvtm-phone-sheet-types">${kinds.map(kind=>{const m=phoneAttachmentTypeMeta(kind);return `<button class="${active===kind?'active':''}" data-phone-attachment-kind="${kind}"><span>${m.icon}</span>${m.label}</button>`}).join('')}</div><textarea id="vvvtm-phone-attachment-description" rows="5" maxlength="500" placeholder="例如：旅行合照 / 成绩单PDF / 酒店定位 / 一段语音：今晚晚点回去">${esc(dialog.description||'')}</textarea><footer><button class="secondary" ${dialog.target==='moment'?'data-phone-moment-attachment-cancel':'data-phone-dialog-close'}>取消</button><button data-phone-dialog-confirm="attachment">添加${dialog.target==='moment'?'到朋友圈':'到消息'}</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>添加附件</b><small>${dialog.target==='moment'?'添加到这条朋友圈，NPC会看到附件内容':'添加到当前消息'}</small></div><button ${dialog.target==='moment'?'data-phone-moment-attachment-cancel':'data-phone-dialog-close'}>×</button></header><div class="vvvtm-phone-sheet-types">${kinds.map(kind=>{const m=phoneAttachmentTypeMeta(kind);return `<button class="${active===kind?'active':''}" data-phone-attachment-kind="${kind}"><span>${m.icon}</span>${m.label}</button>`}).join('')}</div><textarea id="vvvtm-phone-attachment-description" rows="5" maxlength="500" placeholder="例如：旅行合照 / 成绩单PDF / 酒店定位 / 一段语音：今晚晚点回去">${esc(dialog.description||'')}</textarea><footer><button class="secondary" ${dialog.target==='moment'?'data-phone-moment-attachment-cancel':'data-phone-dialog-close'}>Hủy</button><button data-phone-dialog-confirm="attachment">添加${dialog.target==='moment'?'到朋友圈':'到消息'}</button></footer></section></div>`;
         }
         if (dialog.type === 'attachment-view') {
             const meta = phoneAttachmentTypeMeta(dialog.kind);
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet attachment-view"><header><div><b>${meta.icon} ${esc(meta.label)}</b><small>文字模拟附件</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-phone-attachment-preview"><span>${meta.icon}</span><p>${esc(dialog.description||'')}</p></div><footer><button data-phone-dialog-close>关闭</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet attachment-view"><header><div><b>${meta.icon} ${esc(meta.label)}</b><small>文字模拟附件</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-phone-attachment-preview"><span>${meta.icon}</span><p>${esc(dialog.description||'')}</p></div><footer><button data-phone-dialog-close>Đóng</button></footer></section></div>`;
         }
         if (dialog.type === 'dial') {
             const names = phoneKnownCallNames();
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet dial-sheet"><header><div><b>拨打电话</b><small>可以选择已有联系人，也可以输入任意NPC名字</small></div><button data-phone-dialog-close>×</button></header>${names.length?`<div class="vvvtm-dial-quick">${names.map(name=>`<button data-phone-dial-pick="${esc(name)}"><span>${esc(name.slice(0,1))}</span><b>${esc(name)}</b></button>`).join('')}</div>`:''}<input id="vvvtm-phone-dial-name" maxlength="100" placeholder="输入联系人 / NPC 名字" value="${esc(dialog.contact||'')}"><footer><button class="secondary" data-phone-dialog-close>取消</button><button class="call-green" data-phone-dialog-confirm="dial">拨打</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet dial-sheet"><header><div><b>拨打电话</b><small>可以选择已有联系人，也可以输入任意NPC名字</small></div><button data-phone-dialog-close>×</button></header>${names.length?`<div class="vvvtm-dial-quick">${names.map(name=>`<button data-phone-dial-pick="${esc(name)}"><span>${esc(name.slice(0,1))}</span><b>${esc(name)}</b></button>`).join('')}</div>`:''}<input id="vvvtm-phone-dial-name" maxlength="100" placeholder="输入联系人 / NPC 名字" value="${esc(dialog.contact||'')}"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button class="call-green" data-phone-dialog-confirm="dial">拨打</button></footer></section></div>`;
         }
         if (dialog.type === 'moment-compose') {
             const drafts=stateRuntime.phoneMomentDraftAttachments||[];
             const draftMarkup=drafts.length?`<div class="vvvtm-moment-draft-attachments">${drafts.map((att,index)=>{const meta=phoneAttachmentTypeMeta(att.kind);return `<article><span>${meta.icon}</span><div><b>${esc(meta.label)}</b><small>${esc(compactText(att.description,180))}</small></div><button type="button" data-phone-moment-attachment-remove="${index}" title="移除附件">×</button></article>`}).join('')}</div>`:'';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet moment-compose"><header><div><b>发表朋友圈</b><small>已认识的NPC会在后续剧情轮看到，并可按人设点赞或留言</small></div><button data-phone-dialog-close>×</button></header><textarea id="vvvtm-moment-input" rows="6" maxlength="800" placeholder="这一刻的想法……">${esc(dialog.content||stateRuntime.phoneMomentDraftContent||'')}</textarea>${draftMarkup}<button type="button" class="vvvtm-moment-add-attachment" data-phone-moment-attachment-add>＋ 添加图片、文件、语音、位置或链接</button><footer><button class="secondary" data-phone-dialog-close>取消</button><button class="wechat-green" data-phone-dialog-confirm="moment-compose">发表</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet moment-compose"><header><div><b>发表朋友圈</b><small>已认识的NPC会在后续剧情轮看到，并可按人设点赞或留言</small></div><button data-phone-dialog-close>×</button></header><textarea id="vvvtm-moment-input" rows="6" maxlength="800" placeholder="这一刻的想法……">${esc(dialog.content||stateRuntime.phoneMomentDraftContent||'')}</textarea>${draftMarkup}<button type="button" class="vvvtm-moment-add-attachment" data-phone-moment-attachment-add>＋ 添加图片、文件、语音、位置或链接</button><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button class="wechat-green" data-phone-dialog-confirm="moment-compose">发表</button></footer></section></div>`;
         }
         if (dialog.type === 'moment-comment') {
             const item = phoneMomentById(dialog.momentId);
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet moment-comment"><header><div><b>评论 ${esc(item?.author||'朋友圈')}</b><small>${esc(compactText(item?.content,80))}</small></div><button data-phone-dialog-close>×</button></header><textarea id="vvvtm-moment-comment-input" rows="4" maxlength="300" placeholder="写评论……"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button class="wechat-green" data-phone-dialog-confirm="moment-comment">发送评论</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet moment-comment"><header><div><b>评论 ${esc(item?.author||'朋友圈')}</b><small>${esc(compactText(item?.content,80))}</small></div><button data-phone-dialog-close>×</button></header><textarea id="vvvtm-moment-comment-input" rows="4" maxlength="300" placeholder="写评论……"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button class="wechat-green" data-phone-dialog-confirm="moment-comment">发送评论</button></footer></section></div>`;
         }
         if (dialog.type === 'sms-new') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>新建短信</b><small>可以输入联系人、陌生号码、服务号；垃圾短信也能回复 TD/退订</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-sms-recipient" maxlength="120" placeholder="联系人 / 手机号 / 服务号" value="${esc(dialog.contact||'')}"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="sms-new">下一步</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>新建短信</b><small>可以输入联系人、陌生号码、服务号；垃圾短信也能回复 TD/退订</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-sms-recipient" maxlength="120" placeholder="联系人 / 手机号 / 服务号" value="${esc(dialog.contact||'')}"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="sms-new">下一步</button></footer></section></div>`;
         }
         if (dialog.type === 'taobao-search') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>搜索淘宝</b><small>按商品名、店铺或分类筛选</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-taobao-search-input" maxlength="80" placeholder="搜索商品 / 店铺" value="${esc(stateRuntime.phoneSearch||'')}"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="taobao-search">搜索</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>Tìm淘宝</b><small>按商品名、店铺或分类筛选</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-taobao-search-input" maxlength="80" placeholder="Tìm商品 / 店铺" value="${esc(stateRuntime.phoneSearch||'')}"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="taobao-search">Tìm</button></footer></section></div>`;
         }
         if (dialog.type === 'taobao-product') {
             const p=s8TaobaoProduct(dialog.productId);
@@ -12257,7 +12257,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         }
         if (dialog.type === 'taobao-cart') {
             const phone=ensurePhoneEcosystem(); const cart=phone.commerce.taobao.cart||[]; const total=s8CartTotal('taobao');
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-cart-sheet"><header><div><b>淘宝购物车</b><small>${cart.reduce((n,x)=>n+Number(x.qty||1),0)} 件商品</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-cart-list">${cart.length?cart.map(row=>{const p=s8TaobaoProduct(row.productId);return p?`<article><span>${p.icon||'📦'}</span><div><b>${esc(p.name)}</b><small>${s8MoneyText(p.price)} × ${Number(row.qty||1)}</small></div><button data-phone-taobao-remove="${esc(p.id)}">删除</button></article>`:''}).join(''):'<p>购物车还是空的。</p>'}</div><footer><div class="vvvtm-cart-total">合计 <b>${s8MoneyText(total)}</b></div><button data-phone-taobao-checkout ${cart.length?'':'disabled'}>结算</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-cart-sheet"><header><div><b>淘宝购物车</b><small>${cart.reduce((n,x)=>n+Number(x.qty||1),0)} 件商品</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-cart-list">${cart.length?cart.map(row=>{const p=s8TaobaoProduct(row.productId);return p?`<article><span>${p.icon||'📦'}</span><div><b>${esc(p.name)}</b><small>${s8MoneyText(p.price)} × ${Number(row.qty||1)}</small></div><button data-phone-taobao-remove="${esc(p.id)}">Xóa</button></article>`:''}).join(''):'<p>购物车还是空的。</p>'}</div><footer><div class="vvvtm-cart-total">合计 <b>${s8MoneyText(total)}</b></div><button data-phone-taobao-checkout ${cart.length?'':'disabled'}>结算</button></footer></section></div>`;
         }
         if (dialog.type === 'payment-review') {
             const action=dialog.payment||{}; const items=s8OrderItems({items:action.items,title:action.title,amount:action.amount});
@@ -12265,55 +12265,55 @@ ${activities.join('\n')||'- 暂无记录'}`;
         }
         if (dialog.type === 'payment-success') {
             const order=dialog.orderId?s8AllPhoneOrders().find(row=>row.id===dialog.orderId):null;
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-pay-sheet vvvtm-payment-success"><header><div><b>支付成功</b><small>${esc(order?`${s8OrderPlatformLabel(order.platform)} · ${s8OrderStatusLabel(order)}`:'模拟交易已完成')}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-success-mark">✓</div><strong>${s8MoneyText(dialog.amount||order?.amount||0)}</strong><p>${order?`订单号：${esc(order.id)}`:'账单已经记入剧情钱包。'}</p><footer><button class="secondary" data-phone-home>返回桌面</button>${order?`<button data-phone-order-open="${esc(order.id)}">查看订单</button>`:''}</footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-pay-sheet vvvtm-payment-success"><header><div><b>支付成功</b><small>${esc(order?`${s8OrderPlatformLabel(order.platform)} · ${s8OrderStatusLabel(order)}`:'模拟交易Đã hoàn thành')}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-success-mark">✓</div><strong>${s8MoneyText(dialog.amount||order?.amount||0)}</strong><p>${order?`订单号：${esc(order.id)}`:'账单已经记入剧情钱包。'}</p><footer><button class="secondary" data-phone-home>返回桌面</button>${order?`<button data-phone-order-open="${esc(order.id)}">查看订单</button>`:''}</footer></section></div>`;
         }
         if (dialog.type === 'pay-password-setup') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-pay-sheet"><header><div><b>设置剧情支付密码</b><small>仅用于0-32模拟支付。请勿输入你的真实支付宝/微信/银行卡密码。</small></div><button data-phone-dialog-close>×</button></header>${phonePaymentKeypadMarkup()}<footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-pay-submit data-phone-dialog-confirm="pay-password-setup" ${String(stateRuntime.phonePaymentDigits||'').length===6?'':'disabled'}>设置并继续</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-pay-sheet"><header><div><b>设置剧情支付密码</b><small>仅用于0-32模拟支付。请勿输入你的真实支付宝/微信/银行卡密码。</small></div><button data-phone-dialog-close>×</button></header>${phonePaymentKeypadMarkup()}<footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-pay-submit data-phone-dialog-confirm="pay-password-setup" ${String(stateRuntime.phonePaymentDigits||'').length===6?'':'disabled'}>设置并继续</button></footer></section></div>`;
         }
         if (dialog.type === 'pay-password') {
             const action=dialog.payment||{}; const account=action.account==='wechat'?'wechat':'alipay';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-pay-sheet"><header><div><b>${s8PaymentAccountLabel(account)} · 确认付款</b><small>${esc(action.title||'剧情模拟支付')} · ${s8MoneyText(action.amount)}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-pay-account-switch"><button class="${account==='alipay'?'active':''}" data-phone-pay-account="alipay">支付宝 ${s8MoneyText(s8WalletBalance('alipay'))}</button><button class="${account==='wechat'?'active':''}" data-phone-pay-account="wechat">微信支付 ${s8MoneyText(s8WalletBalance('wechat'))}</button></div>${phonePaymentKeypadMarkup()}<p class="vvvtm-safe-note">这是0-32本地剧情钱包，不连接真实支付服务。</p><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-pay-submit data-phone-dialog-confirm="pay-password" ${String(stateRuntime.phonePaymentDigits||'').length===6?'':'disabled'}>付款 ${s8MoneyText(action.amount)}</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-pay-sheet"><header><div><b>${s8PaymentAccountLabel(account)} · 确认付款</b><small>${esc(action.title||'剧情模拟支付')} · ${s8MoneyText(action.amount)}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-pay-account-switch"><button class="${account==='alipay'?'active':''}" data-phone-pay-account="alipay">支付宝 ${s8MoneyText(s8WalletBalance('alipay'))}</button><button class="${account==='wechat'?'active':''}" data-phone-pay-account="wechat">微信支付 ${s8MoneyText(s8WalletBalance('wechat'))}</button></div>${phonePaymentKeypadMarkup()}<p class="vvvtm-safe-note">这是0-32本地剧情钱包，不连接真实支付服务。</p><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-pay-submit data-phone-dialog-confirm="pay-password" ${String(stateRuntime.phonePaymentDigits||'').length===6?'':'disabled'}>付款 ${s8MoneyText(action.amount)}</button></footer></section></div>`;
         }
         if (dialog.type === 'wallet-calibrate') {
             const phone=ensurePhoneEcosystem();
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>剧情余额校准</b><small>只调整当前角色聊天里的模拟初始余额，不涉及真实账户</small></div><button data-phone-dialog-close>×</button></header><label>支付宝初始余额<input id="vvvtm-balance-alipay" type="number" step="0.01" min="0" value="${s8Money(phone.finance.openingBalances.alipay)}"></label><label>微信零钱初始余额<input id="vvvtm-balance-wechat" type="number" step="0.01" min="0" value="${s8Money(phone.finance.openingBalances.wechat)}"></label><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-calibrate">保存</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>剧情余额校准</b><small>只调整当前角色聊天里的模拟初始余额，不涉及真实账户</small></div><button data-phone-dialog-close>×</button></header><label>支付宝初始余额<input id="vvvtm-balance-alipay" type="number" step="0.01" min="0" value="${s8Money(phone.finance.openingBalances.alipay)}"></label><label>微信零钱初始余额<input id="vvvtm-balance-wechat" type="number" step="0.01" min="0" value="${s8Money(phone.finance.openingBalances.wechat)}"></label><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-calibrate">保存</button></footer></section></div>`;
         }
         if (dialog.type === 'wallet-recharge') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>手机充值</b><small>从${s8PaymentAccountLabel(dialog.account||'alipay')}剧情余额扣款</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-recharge-phone" maxlength="30" placeholder="手机号 / 本机" value="${esc(dialog.phone||'本机')}"><input id="vvvtm-recharge-amount" type="number" min="1" step="1" placeholder="充值金额，例如 50"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-recharge">下一步</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>手机充值</b><small>从${s8PaymentAccountLabel(dialog.account||'alipay')}剧情余额扣款</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-recharge-phone" maxlength="30" placeholder="手机号 / 本机" value="${esc(dialog.phone||'本机')}"><input id="vvvtm-recharge-amount" type="number" min="1" step="1" placeholder="充值金额，例如 50"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-recharge">下一步</button></footer></section></div>`;
         }
         if (dialog.type === 'wallet-transfer') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>转账</b><small>${s8PaymentAccountLabel(dialog.account||'alipay')} · 剧情模拟</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-transfer-to" maxlength="120" placeholder="收款人 / NPC" value="${esc(dialog.to||'')}"><input id="vvvtm-transfer-amount" type="number" min="0.01" step="0.01" placeholder="金额"><input id="vvvtm-transfer-note" maxlength="120" placeholder="备注（可选）"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-transfer">下一步</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>转账</b><small>${s8PaymentAccountLabel(dialog.account||'alipay')} · 剧情模拟</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-transfer-to" maxlength="120" placeholder="收款人 / NPC" value="${esc(dialog.to||'')}"><input id="vvvtm-transfer-amount" type="number" min="0.01" step="0.01" placeholder="金额"><input id="vvvtm-transfer-note" maxlength="120" placeholder="Ghi chú（可选）"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-transfer">下一步</button></footer></section></div>`;
         }
-        if(dialog.type==='wallet-redpacket')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>发红包</b><small>${s8PaymentAccountLabel(dialog.account||'wechat')} · 对方会收到消息并知道</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-redpacket-to" maxlength="120" placeholder="收件人 / NPC"><input id="vvvtm-redpacket-amount" type="number" min="0.01" step="0.01" placeholder="金额"><input id="vvvtm-redpacket-note" maxlength="120" placeholder="祝福语" value="恭喜发财"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-redpacket">下一步</button></footer></section></div>`;
-        if(dialog.type==='wallet-split')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>发起AA收款</b><small>通过剧情微信向参与者发送收款消息</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-split-title" maxlength="140" placeholder="事项，例如：今晚火锅"><input id="vvvtm-split-total" type="number" min="0.01" step="0.01" placeholder="总金额"><textarea id="vvvtm-split-people" rows="3" maxlength="500" placeholder="参与NPC，使用逗号分隔"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-split">发起收款</button></footer></section></div>`;
-        if(dialog.type==='wallet-subscription')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>添加固定支出</b><small>按剧情回合自动扣款并加入日历</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-subscription-title" maxlength="140" placeholder="名称，例如：房租"><input id="vvvtm-subscription-amount" type="number" min="0.01" step="0.01" placeholder="每次金额"><input id="vvvtm-subscription-interval" type="number" min="1" step="1" value="4" placeholder="间隔回合数"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-subscription">保存</button></footer></section></div>`;
-        if(dialog.type==='wallet-credit')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>登记信用账单</b><small>到期后从指定剧情钱包还款</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-credit-title" maxlength="140" placeholder="账单名称"><input id="vvvtm-credit-amount" type="number" min="0.01" step="0.01" placeholder="应还金额"><input id="vvvtm-credit-due" type="number" min="1" step="1" value="4" placeholder="几回合后到期"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="wallet-credit">保存</button></footer></section></div>`;
-        if(dialog.type==='order-issue')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>报告订单问题</b><small>商品明细不会因此被改写</small></div><button data-phone-dialog-close>×</button></header><select id="vvvtm-order-issue-type"><option value="late">配送延迟</option><option value="missing">商品缺失</option><option value="wrong">商品错送</option><option value="damaged">商品损坏</option><option value="address">地址问题</option><option value="stock">商家缺货</option><option value="other">其他异常</option></select><textarea id="vvvtm-order-issue-note" rows="4" maxlength="400" placeholder="补充说明"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="order-issue">提交</button></footer></section></div>`;
-        if(dialog.type==='order-refund')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>申请退款/售后</b><small>审核完成后原路退回剧情支付账户</small></div><button data-phone-dialog-close>×</button></header><textarea id="vvvtm-order-refund-note" rows="4" maxlength="400" placeholder="退款或售后原因"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="order-refund">提交申请</button></footer></section></div>`;
-        if(dialog.type==='order-receiver')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>登记代收人</b><small>代收NPC会被写入知情账本</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-order-receiver-name" maxlength="120" placeholder="代收NPC名字"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="order-receiver">确认代收</button></footer></section></div>`;
-        if(dialog.type==='dianping-booking')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>预约 ${esc(dialog.venue?.name||'到店')}</b><small>预约会自动加入日历</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-dp-booking-date" maxlength="80" placeholder="日期/时间，例如：周六18:30"><input id="vvvtm-dp-booking-party" type="number" min="1" max="30" value="2"><textarea id="vvvtm-dp-booking-invitees" rows="3" maxlength="500" placeholder="邀请NPC，逗号分隔（可选）"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="dianping-booking">确认预约</button></footer></section></div>`;
-        if(dialog.type==='dianping-review')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>评价 ${esc(dialog.venue?.name||'商户')}</b><small>评价保存在剧情大众点评</small></div><button data-phone-dialog-close>×</button></header><select id="vvvtm-dp-review-score"><option value="5">5分</option><option value="4">4分</option><option value="3">3分</option><option value="2">2分</option><option value="1">1分</option></select><textarea id="vvvtm-dp-review-content" rows="5" maxlength="600" placeholder="写下真实到店感受"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="dianping-review">发表评价</button></footer></section></div>`;
+        if(dialog.type==='wallet-redpacket')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>发红包</b><small>${s8PaymentAccountLabel(dialog.account||'wechat')} · 对方会收到消息并知道</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-redpacket-to" maxlength="120" placeholder="收件人 / NPC"><input id="vvvtm-redpacket-amount" type="number" min="0.01" step="0.01" placeholder="金额"><input id="vvvtm-redpacket-note" maxlength="120" placeholder="祝福语" value="恭喜发财"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-redpacket">下一步</button></footer></section></div>`;
+        if(dialog.type==='wallet-split')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>发起AA收款</b><small>通过剧情微信向参与者发送收款消息</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-split-title" maxlength="140" placeholder="事项，例如：今晚火锅"><input id="vvvtm-split-total" type="number" min="0.01" step="0.01" placeholder="总金额"><textarea id="vvvtm-split-people" rows="3" maxlength="500" placeholder="参与NPC，使用逗号分隔"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-split">发起收款</button></footer></section></div>`;
+        if(dialog.type==='wallet-subscription')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>添加固定支出</b><small>按剧情回合自动扣款并加入日历</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-subscription-title" maxlength="140" placeholder="名称，例如：房租"><input id="vvvtm-subscription-amount" type="number" min="0.01" step="0.01" placeholder="每次金额"><input id="vvvtm-subscription-interval" type="number" min="1" step="1" value="4" placeholder="间隔回合数"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-subscription">保存</button></footer></section></div>`;
+        if(dialog.type==='wallet-credit')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>登记信用账单</b><small>到期后从指定剧情钱包还款</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-credit-title" maxlength="140" placeholder="账单名称"><input id="vvvtm-credit-amount" type="number" min="0.01" step="0.01" placeholder="应还金额"><input id="vvvtm-credit-due" type="number" min="1" step="1" value="4" placeholder="几回合后到期"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="wallet-credit">保存</button></footer></section></div>`;
+        if(dialog.type==='order-issue')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>报告订单问题</b><small>商品明细不会因此被改写</small></div><button data-phone-dialog-close>×</button></header><select id="vvvtm-order-issue-type"><option value="late">配送延迟</option><option value="missing">商品缺失</option><option value="wrong">商品错送</option><option value="damaged">商品损坏</option><option value="address">地址问题</option><option value="stock">商家缺货</option><option value="other">其他异常</option></select><textarea id="vvvtm-order-issue-note" rows="4" maxlength="400" placeholder="补充说明"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="order-issue">提交</button></footer></section></div>`;
+        if(dialog.type==='order-refund')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>申请退款/售后</b><small>审核完成后原路退回剧情支付账户</small></div><button data-phone-dialog-close>×</button></header><textarea id="vvvtm-order-refund-note" rows="4" maxlength="400" placeholder="退款或售后原因"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="order-refund">提交申请</button></footer></section></div>`;
+        if(dialog.type==='order-receiver')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>登记代收人</b><small>代收NPC会被写入知情账本</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-order-receiver-name" maxlength="120" placeholder="代收NPC名字"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="order-receiver">确认代收</button></footer></section></div>`;
+        if(dialog.type==='dianping-booking')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>预约 ${esc(dialog.venue?.name||'到店')}</b><small>预约会自动加入日历</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-dp-booking-date" maxlength="80" placeholder="Ngày/时间，例如：周六18:30"><input id="vvvtm-dp-booking-party" type="number" min="1" max="30" value="2"><textarea id="vvvtm-dp-booking-invitees" rows="3" maxlength="500" placeholder="邀请NPC，逗号分隔（可选）"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="dianping-booking">确认预约</button></footer></section></div>`;
+        if(dialog.type==='dianping-review')return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>评价 ${esc(dialog.venue?.name||'商户')}</b><small>评价保存在剧情大众点评</small></div><button data-phone-dialog-close>×</button></header><select id="vvvtm-dp-review-score"><option value="5">5分</option><option value="4">4分</option><option value="3">3分</option><option value="2">2分</option><option value="1">1分</option></select><textarea id="vvvtm-dp-review-content" rows="5" maxlength="600" placeholder="写下真实到店感受"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="dianping-review">发表评价</button></footer></section></div>`;
         if (dialog.type === 'calendar-event') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>添加日程</b><small>保存在当前聊天的永久档案</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-calendar-title" maxlength="160" placeholder="日程标题"><input id="vvvtm-calendar-date" type="date"><textarea id="vvvtm-calendar-note" rows="3" maxlength="400" placeholder="备注（可选）"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="calendar-event">保存</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>添加日程</b><small>保存在当前聊天的永久档案</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-calendar-title" maxlength="160" placeholder="日程标题"><input id="vvvtm-calendar-date" type="date"><textarea id="vvvtm-calendar-note" rows="3" maxlength="400" placeholder="Ghi chú（可选）"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="calendar-event">保存</button></footer></section></div>`;
         }
         if (dialog.type === 'note-add') {
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>新建备忘</b><small>保存在当前聊天</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-note-title" maxlength="120" placeholder="标题"><textarea id="vvvtm-note-content" rows="6" maxlength="1200" placeholder="写点什么……"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="note-add">保存</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>新建备忘</b><small>保存在当前聊天</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-note-title" maxlength="120" placeholder="标题"><textarea id="vvvtm-note-content" rows="6" maxlength="1200" placeholder="写点什么……"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="note-add">保存</button></footer></section></div>`;
         }
         if (dialog.type === 'catalog-search') {
             const platform=dialog.platform||'taobao'; const labels={taobao:'淘宝',jd:'京东',eleme:'饿了么',meituan:'美团'};
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>搜索${labels[platform]||'商城'}</b><small>支持商品、店铺、分类关键词</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-catalog-search-input" maxlength="80" placeholder="输入关键词" value="${esc(stateRuntime.phoneSearch||'')}"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="catalog-search">搜索</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>Tìm${labels[platform]||'商城'}</b><small>支持商品、店铺、分类关键词</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-catalog-search-input" maxlength="80" placeholder="输入关键词" value="${esc(stateRuntime.phoneSearch||'')}"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="catalog-search">Tìm</button></footer></section></div>`;
         }
         if (dialog.type === 'food-filter') {
             const platform=['eleme','meituan'].includes(dialog.platform)?dialog.platform:'meituan';
             const filters=s9FoodFilterState(platform);
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-food-filter-sheet"><header><div><b>${platform==='meituan'?'美团':'饿了么'}筛选</b><small>条件会真实改变商家列表</small></div><button data-phone-dialog-close>×</button></header><label><span><b>评分 4.7 以上</b><small>优先保留高分商家</small></span><input id="vvvtm-food-filter-rating" type="checkbox" ${filters.highRating?'checked':''}></label><label><span><b>30 分钟内送达</b><small>按商家预计送达时间筛选</small></span><input id="vvvtm-food-filter-fast" type="checkbox" ${filters.fastDelivery?'checked':''}></label><label><span><b>配送费 3 元以内</b><small>包含免配送费商家</small></span><input id="vvvtm-food-filter-fee" type="checkbox" ${filters.lowDeliveryFee?'checked':''}></label><footer><button class="secondary" data-phone-food-filter-clear="${platform}">清空</button><button data-phone-dialog-confirm="food-filter" data-phone-food-platform="${platform}">应用筛选</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-food-filter-sheet"><header><div><b>${platform==='meituan'?'美团':'饿了么'}筛选</b><small>条件会真实改变商家列表</small></div><button data-phone-dialog-close>×</button></header><label><span><b>评分 4.7 以上</b><small>优先保留高分商家</small></span><input id="vvvtm-food-filter-rating" type="checkbox" ${filters.highRating?'checked':''}></label><label><span><b>30 分钟内送达</b><small>按商家预计送达时间筛选</small></span><input id="vvvtm-food-filter-fast" type="checkbox" ${filters.fastDelivery?'checked':''}></label><label><span><b>配送费 3 元以内</b><small>包含免配送费商家</small></span><input id="vvvtm-food-filter-fee" type="checkbox" ${filters.lowDeliveryFee?'checked':''}></label><footer><button class="secondary" data-phone-food-filter-clear="${platform}">Bỏ chọn</button><button data-phone-dialog-confirm="food-filter" data-phone-food-platform="${platform}">应用筛选</button></footer></section></div>`;
         }
         if (dialog.type === 'jd-product') {
             const p=s9JdProduct(dialog.productId); if(!p)return '';
             return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-product-sheet"><header><div><b>${esc(p.name)}</b><small>${esc(p.store)} · 京东剧情自营</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-product-hero"><span>${p.icon}</span><strong>${s8MoneyText(p.price)}</strong><p>⭐${p.rating} · ${esc(p.shipping)} · ${esc(p.tags.join(' · '))}</p></div><div class="vvvtm-store-entry"><button data-phone-shop-store="jd" data-phone-shop-store-name="${esc(p.store)}" data-phone-shop-product="${esc(p.id)}">🏪 进入 ${esc(p.store)}</button></div><footer><button class="secondary" data-phone-jd-add="${esc(p.id)}">加入购物车</button><button data-phone-jd-buy="${esc(p.id)}">立即购买</button></footer></section></div>`;
         }
         if (dialog.type === 'jd-cart') {
-            const p=s9EnsureExtendedApps(),cart=p.commerce.jd.cart||[],total=s8CartTotal('jd');return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-cart-sheet"><header><div><b>京东购物车</b><small>${cart.reduce((n,x)=>n+Number(x.qty||1),0)}件</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-cart-list">${cart.length?cart.map(row=>{const x=s9JdProduct(row.productId);return x?`<article><span>${x.icon}</span><div><b>${esc(x.name)}</b><small>${s8MoneyText(x.price)} × ${row.qty||1}</small></div><button data-phone-jd-remove="${esc(x.id)}">删除</button></article>`:''}).join(''):'<p>购物车为空</p>'}</div><footer><div class="vvvtm-cart-total">合计 <b>${s8MoneyText(total)}</b></div><button data-phone-jd-checkout ${cart.length?'':'disabled'}>结算</button></footer></section></div>`;
+            const p=s9EnsureExtendedApps(),cart=p.commerce.jd.cart||[],total=s8CartTotal('jd');return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-cart-sheet"><header><div><b>京东购物车</b><small>${cart.reduce((n,x)=>n+Number(x.qty||1),0)}件</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-cart-list">${cart.length?cart.map(row=>{const x=s9JdProduct(row.productId);return x?`<article><span>${x.icon}</span><div><b>${esc(x.name)}</b><small>${s8MoneyText(x.price)} × ${row.qty||1}</small></div><button data-phone-jd-remove="${esc(x.id)}">Xóa</button></article>`:''}).join(''):'<p>购物车为空</p>'}</div><footer><div class="vvvtm-cart-total">合计 <b>${s8MoneyText(total)}</b></div><button data-phone-jd-checkout ${cart.length?'':'disabled'}>结算</button></footer></section></div>`;
         }
         if (dialog.type === 'shop-store') {
             const platform=dialog.platform||'taobao';
@@ -12330,18 +12330,18 @@ ${activities.join('\n')||'- 暂无记录'}`;
             const storeCategory=anchor?.category||meta.category;
             return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-store-sheet"><header><div><b>🏪 ${esc(name)}</b><small>${platform==='jd'?'京东店铺':'淘宝店铺'} · ${esc(storeCategory)} · 关注 ${esc(meta.fans)}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-store-cover"><span>${anchor?.icon||'🏪'}</span><div><b>${esc(name)}</b><small>综合体验 ⭐${esc(meta.score)} · ${esc(meta.experience)} · 同店商品保持同一品类</small></div></div><div class="vvvtm-store-goods">${goods.map(x=>`<button ${platform==='jd'?`data-phone-jd-product="${esc(x.id)}"`:`data-phone-product-id="${esc(x.id)}"`}><span>${x.icon}</span><b>${esc(x.name)}</b><small>${esc(x.brand||'')}</small><em>${s8MoneyText(x.price)}</em></button>`).join('')}</div><footer><button data-phone-dialog-close>返回</button></footer></section></div>`;
         }
-        if (dialog.type === 'bank-action') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>${dialog.action==='deposit'?'剧情入账':'银行转账'}</b><small>仅当前聊天中的模拟银行账户</small></div><button data-phone-dialog-close>×</button></header>${dialog.action==='transfer'?'<input id="vvvtm-bank-to" maxlength="100" placeholder="收款人 / NPC">':''}<input id="vvvtm-bank-amount" type="number" min="0.01" step="0.01" placeholder="金额"><input id="vvvtm-bank-note" maxlength="120" placeholder="备注"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="bank-action">确认</button></footer></section></div>`;
-        if (dialog.type === 'mail-compose') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>写邮件</b><small>可以发送给任意NPC或剧情邮箱</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-mail-to" maxlength="120" placeholder="收件人" value="${esc(dialog.replyTo||'')}"><input id="vvvtm-mail-subject" maxlength="160" placeholder="主题"><textarea id="vvvtm-mail-body" rows="7" maxlength="1800" placeholder="邮件正文"></textarea><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="mail-compose">发送</button></footer></section></div>`;
+        if (dialog.type === 'bank-action') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>${dialog.action==='deposit'?'剧情入账':'银行转账'}</b><small>仅当前聊天中的模拟银行账户</small></div><button data-phone-dialog-close>×</button></header>${dialog.action==='transfer'?'<input id="vvvtm-bank-to" maxlength="100" placeholder="收款人 / NPC">':''}<input id="vvvtm-bank-amount" type="number" min="0.01" step="0.01" placeholder="金额"><input id="vvvtm-bank-note" maxlength="120" placeholder="Ghi chú"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="bank-action">确认</button></footer></section></div>`;
+        if (dialog.type === 'mail-compose') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>写邮件</b><small>可以发送给任意NPC或剧情邮箱</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-mail-to" maxlength="120" placeholder="收件人" value="${esc(dialog.replyTo||'')}"><input id="vvvtm-mail-subject" maxlength="160" placeholder="主题"><textarea id="vvvtm-mail-body" rows="7" maxlength="1800" placeholder="邮件chính văn"></textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="mail-compose">发送</button></footer></section></div>`;
         if (dialog.type === 'mail-view') {
             const p=s9EnsureExtendedApps(); const all=[...(p.mail.inbox||[]),...(p.mail.sent||[])]; const mail=all.find(row=>row.id===dialog.mailId);
             if(!mail)return '';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>${esc(mail.subject||'(无主题)')}</b><small>${esc(mail.from||mail.to||'未知联系人')} · ${esc(mail.time||'')}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-mail-detail"><p><b>发件人：</b>${esc(mail.from||'我')}</p><p><b>收件人：</b>${esc(mail.to||'我')}</p><hr><div>${esc(mail.body||'').replace(/\n/g,'<br>')}</div></div><footer><button class="secondary" data-phone-dialog-close>关闭</button><button data-phone-mail-reply="${esc(mail.from||mail.to||'')}">回复</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>${esc(mail.subject||'(无主题)')}</b><small>${esc(mail.from||mail.to||'Chưa rõ联系人')} · ${esc(mail.time||'')}</small></div><button data-phone-dialog-close>×</button></header><div class="vvvtm-mail-detail"><p><b>发件人：</b>${esc(mail.from||'我')}</p><p><b>收件人：</b>${esc(mail.to||'我')}</p><hr><div>${esc(mail.body||'').replace(/\n/g,'<br>')}</div></div><footer><button class="secondary" data-phone-dialog-close>Đóng</button><button data-phone-mail-reply="${esc(mail.from||mail.to||'')}">回复</button></footer></section></div>`;
         }
-        if (dialog.type === 'browser-search') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>搜索或输入网址</b><small>剧情浏览器本地模拟，不访问真实网页</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-browser-search-input" maxlength="200" placeholder="关键词 / 网址"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="browser-search">打开</button></footer></section></div>`;
-        if (dialog.type === 'map-search') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>地图搜索</b><small>输入剧情目的地</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-map-destination" maxlength="160" placeholder="例如：学校 / 机场 / 东京站 / 某家酒店" value="${esc(stateRuntime.phoneMapDestination||'')}"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="map-search">规划路线</button></footer></section></div>`;
-        if (dialog.type === 'ride-new') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>呼叫网约车</b><small>输入目的地并选择车型</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-ride-dest" maxlength="160" placeholder="目的地" value="${esc(dialog.destination||stateRuntime.phoneMapDestination||'')}"><select id="vvvtm-ride-type"><option>快车</option><option>舒适型</option><option>专车</option><option>出租车</option></select><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="ride-new">预估并叫车</button></footer></section></div>`;
-        if (dialog.type === 'travel-search') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>航旅搜索</b><small>机票 / 火车票 / 酒店</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-travel-from" maxlength="80" placeholder="出发地" value="${esc(stateRuntime.phoneTravelQuery?.from||stateRuntime.state.scene?.location||'上海')}"><input id="vvvtm-travel-to" maxlength="80" placeholder="目的地" value="${esc(stateRuntime.phoneTravelQuery?.to||'东京')}"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="travel-search">搜索</button></footer></section></div>`;
-        if (dialog.type === 'campus-recharge') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>校园卡充值</b><small>使用微信支付剧情余额</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-campus-amount" type="number" min="1" step="1" placeholder="充值金额"><footer><button class="secondary" data-phone-dialog-close>取消</button><button data-phone-dialog-confirm="campus-recharge">下一步</button></footer></section></div>`;
+        if (dialog.type === 'browser-search') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>Tìm或输入网址</b><small>剧情浏览器本地模拟，不访问真实网页</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-browser-search-input" maxlength="200" placeholder="关键词 / 网址"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="browser-search">打开</button></footer></section></div>`;
+        if (dialog.type === 'map-search') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>地图Tìm</b><small>输入剧情目的地</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-map-destination" maxlength="160" placeholder="例如：学校 / 机场 / 东京站 / 某家酒店" value="${esc(stateRuntime.phoneMapDestination||'')}"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="map-search">规划路线</button></footer></section></div>`;
+        if (dialog.type === 'ride-new') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>呼叫网约车</b><small>输入目的地并选择车型</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-ride-dest" maxlength="160" placeholder="目的地" value="${esc(dialog.destination||stateRuntime.phoneMapDestination||'')}"><select id="vvvtm-ride-type"><option>快车</option><option>舒适型</option><option>专车</option><option>出租车</option></select><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="ride-new">预估并叫车</button></footer></section></div>`;
+        if (dialog.type === 'travel-search') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>航旅Tìm</b><small>机票 / 火车票 / 酒店</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-travel-from" maxlength="80" placeholder="出发地" value="${esc(stateRuntime.phoneTravelQuery?.from||stateRuntime.state.scene?.location||'上海')}"><input id="vvvtm-travel-to" maxlength="80" placeholder="目的地" value="${esc(stateRuntime.phoneTravelQuery?.to||'东京')}"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="travel-search">Tìm</button></footer></section></div>`;
+        if (dialog.type === 'campus-recharge') return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet"><header><div><b>校园卡充值</b><small>使用微信支付剧情余额</small></div><button data-phone-dialog-close>×</button></header><input id="vvvtm-campus-amount" type="number" min="1" step="1" placeholder="充值金额"><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="campus-recharge">下一步</button></footer></section></div>`;
         return '';
     }
 
@@ -12403,7 +12403,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
     function isLegacyDeferredPhonePlaceholder(item) {
         if(item?.role!=='system')return false;
         const text=String(item?.content||'');
-        return /下一次正常角色正文结束后[\s\S]*幕后七条API处理|下一轮[\s\S]*幕后七条/.test(text);
+        return /下一次正常角色chính văn结束后[\s\S]*幕后七条API处理|下一轮[\s\S]*幕后七条/.test(text);
     }
     function visiblePhoneThreadMessages(messages=[]) {
         return (Array.isArray(messages)?messages:[]).filter(item=>!isLegacyDeferredPhonePlaceholder(item));
@@ -12502,7 +12502,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
     }
 
     function phoneWechatMarkup() {
-        // fixed27：旧版本误把世界书标题/字段键当联系人或群名的污染继续清理；同时把“店长陈故/房东徐阿姨”等前缀式名字归一到真实姓名。
+        // fixed27：旧版本误把世界书标题/字段键当联系人或群名的污染继续清理；同时把“店长陈故/房东徐阿姨”等前缀式名字归一到真实Họ tên。
         normalizePhoneSocialCanonicalNames();
         pruneInvalidWorldBookRosterArtifacts();
         prunePhoneSocialGraphToTrustedRoster();
@@ -12545,19 +12545,19 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const worldBookCount=(stateRuntime.sourceCharacterRoster||[]).filter(row=>sourceRosterBookEligibleForPhone({source:row?.source})||/角色卡|独立API人物建档/.test(String(row?.source||''))).length;
         const rosterAi=stateRuntime.state?.sourceRosterAi||{},aiRosterCount=Array.isArray(rosterAi.rows)?rosterAi.rows.length:0;
         const aiRosterLabel=rosterAi.status==='complete'?`AI名册 ${aiRosterCount} 人`:rosterAi.status==='running'?'AI名册扫描中':rosterAi.status==='failed'?'AI名册失败·正则兜底':rosterAi.status==='unavailable'?'AI名册待配置独立API':'AI名册待首轮';
-        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>💚 微信</b><small>${groups.length} 个群聊 · ${contacts.length} 位联系人 · ${esc(aiRosterLabel)} · 当前可信 ${worldBookCount} 人</small></div><span class="vvvtm-phone-head-actions"><button data-phone-roster-ai-refresh title="用幕后七条独立API重新扫描角色卡/世界书人物">AI↻</button><button data-phone-app="wechatpay" title="微信支付">支付</button><button data-phone-add-contact>＋</button></span></header><main class="vvvtm-contact-list">${conversationRows || '<div class="vvvtm-phone-empty-chat"><b>暂无微信会话</b><small>第一轮正文结束后会用独立API建立角色社会关系名册；失败时才使用本地正向证据解析兜底。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>💚 微信</b><small>${groups.length} 个群聊 · ${contacts.length} 位联系人 · ${esc(aiRosterLabel)} · 当前可信 ${worldBookCount} 人</small></div><span class="vvvtm-phone-head-actions"><button data-phone-roster-ai-refresh title="用幕后七条独立API重新扫描角色卡/世界书人物">AI↻</button><button data-phone-app="wechatpay" title="微信支付">支付</button><button data-phone-add-contact>＋</button></span></header><main class="vvvtm-contact-list">${conversationRows || '<div class="vvvtm-phone-empty-chat"><b>Chưa có微信会话</b><small>第一轮chính văn结束后会用独立API建立角色社会关系名册；失败时才使用本地正向证据解析兜底。</small></div>'}</main></div>`;
     }
 
     function phoneChannelMarkup() {
         const profile=stateRuntime.state?.communicationProfile||{}; const currentKey=profile.worldKey||'';
         const groups=phoneGroupNames(); const threads=stateRuntime.state.phone?.groupThreads||[];
         const rows=groups.map(name=>{const gp=phoneGroupProfile(name)||{};const thread=phoneGroupThread(name, gp.homeWorldKey || currentKey),activity=phoneThreadLatestActivity(thread),last=activity.last;const active=gp.availability==='active'&&(!gp.homeWorldKey||gp.homeWorldKey===currentKey);const status=active?'可用':gp.availability==='offline-origin'?'原世界离线':'不可达';return {name,last,stamp:activity.stamp,html:`<button data-phone-contact="${esc(groupSelectionKey(name))}" ${active?'':'disabled'}><span class="vvvtm-contact-avatar group">${active?'👥':'🔒'}</span><span><b>${esc(name)}</b><small>${esc([gp.channelType||profile.communicationType,status,last?`${last.sender||'成员'}：${last.content||'[表情]'}`:gp.topic].filter(Boolean).join(' · '))}</small></span><time>${esc(last?.time||'')}</time></button>`};}).sort(phoneConversationSort).map(row=>row.html).join('');
-        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${communicationIcon(profile)} 群组 / 频道</b><small>当前世界通讯与原世界离线关系分开保存</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-contact-list">${rows||'<div class="vvvtm-phone-empty-chat"><b>暂无当前可用群组</b><small>只有剧情明确加入当地学校、组织、工作单位后才会建立对应频道。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${communicationIcon(profile)} 群组 / 频道</b><small>当前世界通讯与原世界离线关系分开保存</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-contact-list">${rows||'<div class="vvvtm-phone-empty-chat"><b>Chưa có当前可用群组</b><small>只有剧情明确加入当地学校、组织、工作单位后才会建立对应频道。</small></div>'}</main></div>`;
     }
 
     function phoneChannelThreadMarkup() {
         const groupName=selectedGroupName(); const gp=phoneGroupProfile(groupName)||{}; const thread=ensurePhoneGroupThread(groupName, [], gp.homeWorldKey || stateRuntime.state?.communicationProfile?.worldKey || ''); const messages=visiblePhoneThreadMessages(thread.messages);
-        return `<div class="vvvtm-phone-app-page vvvtm-chat-page"><header class="vvvtm-phone-app-head"><button data-phone-nav="channels">‹</button><div><b>${communicationIcon()} ${esc(groupName)}</b><small>${esc([gp.channelType||stateRuntime.state?.communicationProfile?.communicationType,gp.topic].filter(Boolean).join(' · '))}</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-phone-chat-log">${messages.length?messages.map((item,index)=>`<article data-phone-message-id="${esc(phoneMessageDomId(item,index))}" class="${item.role==='user'?'mine':'theirs'}"><small class="vvvtm-group-sender">${item.role==='user'?'我':esc(item.sender||'成员')}${item.mentionsUser?' · @你':''}</small>${phoneMessageContentMarkup(item)}<time>${esc(item.time||'')}</time></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>暂无记录</b></div>'}</main>${phoneComposerMarkup('通过当前通讯方式发送')}</div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-chat-page"><header class="vvvtm-phone-app-head"><button data-phone-nav="channels">‹</button><div><b>${communicationIcon()} ${esc(groupName)}</b><small>${esc([gp.channelType||stateRuntime.state?.communicationProfile?.communicationType,gp.topic].filter(Boolean).join(' · '))}</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-phone-chat-log">${messages.length?messages.map((item,index)=>`<article data-phone-message-id="${esc(phoneMessageDomId(item,index))}" class="${item.role==='user'?'mine':'theirs'}"><small class="vvvtm-group-sender">${item.role==='user'?'我':esc(item.sender||'成员')}${item.mentionsUser?' · @你':''}</small>${phoneMessageContentMarkup(item)}<time>${esc(item.time||'')}</time></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có记录</b></div>'}</main>${phoneComposerMarkup('通过当前通讯方式发送')}</div>`;
     }
 
     function phoneSmsMarkup() {
@@ -12578,10 +12578,10 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const list=(phone.sms||[]).filter(item=>!isWechatPaymentSms(item)).slice().reverse();
         const seen=new Set(), conversations=[];
         for(const item of list){
-            const other=compactText(item.direction==='outgoing'?(item.contact||item.author):(item.author||item.contact),120)||'未知号码';
+            const other=compactText(item.direction==='outgoing'?(item.contact||item.author):(item.author||item.contact),120)||'Chưa rõ号码';
             if(seen.has(other))continue; seen.add(other); conversations.push({other,item});
         }
-        return `<div class="vvvtm-phone-app-page vvvtm-sms-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>✉️ ${esc(title)}</b><small>${esc(isSmartphone?'可主动发给任何人 · 服务通知与垃圾短信也能回复':`${communicationLabel()} · 当前时代通讯`)}</small></div><button data-phone-sms-new>＋</button></header><main class="vvvtm-contact-list sms-list">${conversations.length?conversations.map(({other,item})=>`<button data-phone-sms-contact="${esc(other)}"><span class="vvvtm-contact-avatar">${esc(other.slice(0,1))}</span><span><b>${esc(other)}</b><small>${esc(item.content||'')}</small></span><time>${esc(item.time||'')}</time></button>`).join(''):`<div class="vvvtm-phone-empty-chat"><b>暂无${esc(title)}</b><small>点击右上角＋，可以给任意联系人、号码或服务号发消息。</small></div>`}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-sms-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>✉️ ${esc(title)}</b><small>${esc(isSmartphone?'可主动发给任何人 · 服务通知与垃圾短信也能回复':`${communicationLabel()} · 当前时代通讯`)}</small></div><button data-phone-sms-new>＋</button></header><main class="vvvtm-contact-list sms-list">${conversations.length?conversations.map(({other,item})=>`<button data-phone-sms-contact="${esc(other)}"><span class="vvvtm-contact-avatar">${esc(other.slice(0,1))}</span><span><b>${esc(other)}</b><small>${esc(item.content||'')}</small></span><time>${esc(item.time||'')}</time></button>`).join(''):`<div class="vvvtm-phone-empty-chat"><b>Chưa có${esc(title)}</b><small>点击右上角＋，可以给任意联系人、号码或服务号发消息。</small></div>`}</main></div>`;
     }
 
     function phoneMomentsMarkup() {
@@ -12597,24 +12597,24 @@ ${activities.join('\n')||'- 暂无记录'}`;
             const attachments=phoneAttachmentsMarkup(item.attachments,'vvvtm-moment-attachment');
             return `<article class="vvvtm-moment-card"><div class="vvvtm-moment-avatar">${esc((item.author||'朋').slice(0,1))}</div><div class="vvvtm-moment-main"><b class="vvvtm-moment-author">${esc(item.author||'朋友圈')}</b>${item.content?`<p class="vvvtm-moment-content">${esc(item.content)}</p>`:''}${attachments?`<div class="vvvtm-moment-attachments">${attachments}</div>`:''}<div class="vvvtm-moment-meta"><small>${esc(meta)}</small><span class="vvvtm-moment-actions"><button class="${liked?'liked':''}" data-phone-moment-like="${esc(item.id)}">${liked?'♥':'♡'} 赞</button><button data-phone-moment-comment="${esc(item.id)}">💬 评论</button></span></div>${likes}${comments}</div></article>`;
         }).join('');
-        return `<div class="vvvtm-phone-app-page vvvtm-moments-page"><header class="vvvtm-phone-app-head wechat-head"><button data-phone-home>‹</button><div><b>朋友圈</b><small>${list.length} 条动态</small></div><button class="vvvtm-moment-camera" data-phone-moment-compose title="发表朋友圈">📷</button></header><main class="vvvtm-moments-feed"><section class="vvvtm-moments-cover"><div class="vvvtm-moments-cover-shade"></div><div class="vvvtm-moments-profile"><b>${esc(userName)}</b><span>${esc(userName.slice(0,1))}</span></div></section>${rows || '<div class="vvvtm-phone-empty-chat"><b>暂无朋友圈动态</b><small>你可以先发表一条；认识的NPC也会在后续剧情中自然发动态。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-moments-page"><header class="vvvtm-phone-app-head wechat-head"><button data-phone-home>‹</button><div><b>朋友圈</b><small>${list.length} 条动态</small></div><button class="vvvtm-moment-camera" data-phone-moment-compose title="发表朋友圈">📷</button></header><main class="vvvtm-moments-feed"><section class="vvvtm-moments-cover"><div class="vvvtm-moments-cover-shade"></div><div class="vvvtm-moments-profile"><b>${esc(userName)}</b><span>${esc(userName.slice(0,1))}</span></div></section>${rows || '<div class="vvvtm-phone-empty-chat"><b>Chưa có朋友圈动态</b><small>你可以先发表一条；认识的NPC也会在后续剧情中自然发动态。</small></div>'}</main></div>`;
     }
 
     function phoneStoryExtraMarkup(kind) {
         if (kind === 'moments') return phoneMomentsMarkup();
         const defs = {
-            diary: { title:'日记', icon:'📔', empty:'暂无日记' },
-            anniversaries: { title:'纪念日', icon:'🗓️', empty:'暂无纪念日' },
+            diary: { title:'日记', icon:'📔', empty:'Chưa có日记' },
+            anniversaries: { title:'纪念日', icon:'🗓️', empty:'Chưa có纪念日' },
         };
         const def = defs[kind] || defs.diary;
         const list = (stateRuntime.state.storyExtras?.[kind] || []).slice().reverse();
-        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${def.icon} ${def.title}</b><small>${list.length} 条 · 与正文折叠同步</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-phone-feed story-extra ${esc(kind)}">${list.length ? list.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.author || def.title).slice(0,1))}</span><div><b>${esc(item.author || def.title)}</b><small>${esc([item.time, Number.isFinite(Number(item._floor ?? item.floor)) ? `第${item._floor ?? item.floor}层` : item.manual ? '我发表的' : ''].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.content || '')}</p></article>`).join('') : `<div class="vvvtm-phone-empty-chat"><b>${def.empty}</b><small>下一轮若幕后七条生成对应内容，会同时出现在正文折叠和手机里。</small></div>`}</main></div>`;
+        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${def.icon} ${def.title}</b><small>${list.length} 条 · 与chính văn折叠同步</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-phone-feed story-extra ${esc(kind)}">${list.length ? list.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.author || def.title).slice(0,1))}</span><div><b>${esc(item.author || def.title)}</b><small>${esc([item.time, Number.isFinite(Number(item._floor ?? item.floor)) ? `第${item._floor ?? item.floor}层` : item.manual ? '我发表的' : ''].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.content || '')}</p></article>`).join('') : `<div class="vvvtm-phone-empty-chat"><b>${def.empty}</b><small>下一轮若幕后七条生成对应内容，会同时出现在chính văn折叠和手机里。</small></div>`}</main></div>`;
     }
 
     function phoneCallDisplayRows(calls=[]){
         const rows=[];
         for(const item of (Array.isArray(calls)?calls:[]).slice().reverse()){
-            const name=compactText(item?.direction==='outgoing'?(item?.contact||item?.author):(item?.author||item?.contact),100)||'未知';
+            const name=compactText(item?.direction==='outgoing'?(item?.contact||item?.author):(item?.author||item?.contact),100)||'Chưa rõ';
             const unresolved=!s12CallIsResolved(item),bucket=unresolved?'active':item?.status==='missed'?'missed':item?.direction==='outgoing'?'outgoing':'completed',groupKey=`${npcNameKey(name)}|${bucket}`;
             const previous=rows.at(-1);
             if(!unresolved&&previous?._groupKey===groupKey){previous._count+=1;continue;}
@@ -12626,20 +12626,20 @@ ${activities.join('\n')||'- 暂无记录'}`;
         s12ReconcileCallReceipts();
         const raw = stateRuntime.state.phone?.calls || [], list=phoneCallDisplayRows(raw);
         const labels = { incoming:'来电', ringing:'正在呼叫', waiting:'等待接听', missed:'未接来电', connected:'通话中', ended:'已结束', outgoing:'已拨出' };
-        return `<div class="vvvtm-phone-app-page vvvtm-calls-page"><header class="vvvtm-phone-app-head ios-call-head"><button data-phone-home aria-label="返回">‹</button><div><b>最近通话</b><small>${raw.length} 条记录 · ${esc(communicationLabel())}</small></div><button class="vvvtm-call-add" data-phone-start-call title="拨号" aria-label="拨号">＋</button></header><main class="vvvtm-call-list">${list.length ? list.map(item => {const name=item._displayName,missed=item.status==='missed',duration=Number(item.durationSeconds||0),direction=item.direction==='outgoing'?'↗':missed?'!':'↙',detail=[labels[item.status]||'通话',item.time,duration?`${Math.floor(duration/60)}分${duration%60}秒`:item.status==='connected'?'已接通':''].filter(Boolean).join(' · '),count=item._count>1?` <em>(${item._count})</em>`:'';const actions=!s12CallIsResolved(item)?`<div class="vvvtm-call-actions"><button class="answer" data-phone-call-action="answer" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="接听" aria-label="接听"><i class="fa-solid fa-phone"></i></button><button class="danger-soft" data-phone-call-action="decline" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="拒接" aria-label="拒接"><i class="fa-solid fa-phone-slash"></i></button></div>`:item.status==='connected'?`<button class="vvvtm-call-back danger-soft" data-phone-call-action="end" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="结束通话" aria-label="结束通话"><i class="fa-solid fa-phone-slash"></i></button>`:`<button class="vvvtm-call-back" data-phone-start-call data-phone-call-contact="${esc(name)}" title="再次拨打" aria-label="再次拨打"><i class="fa-solid fa-phone"></i></button>`;return `<article class="vvvtm-call-row ${missed?'missed':''} ${item._active?'active':''}"><span class="vvvtm-call-avatar">${esc(name.slice(0,1))}</span><div><b>${esc(name)}${count}</b><small><i class="vvvtm-call-direction">${direction}</i>${esc(detail)}</small>${item.content?`<p>${esc(item.content)}</p>`:''}</div>${actions}</article>`}).join('') : '<div class="vvvtm-phone-empty-chat"><b>暂无通话记录</b><small>点击右上角＋，可以给任何联系人或NPC拨号。</small></div>'}</main><button class="vvvtm-call-fab" data-phone-start-call><i class="fa-solid fa-phone"></i><span>拨号</span></button></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-calls-page"><header class="vvvtm-phone-app-head ios-call-head"><button data-phone-home aria-label="返回">‹</button><div><b>最近通话</b><small>${raw.length} 条记录 · ${esc(communicationLabel())}</small></div><button class="vvvtm-call-add" data-phone-start-call title="拨号" aria-label="拨号">＋</button></header><main class="vvvtm-call-list">${list.length ? list.map(item => {const name=item._displayName,missed=item.status==='missed',duration=Number(item.durationSeconds||0),direction=item.direction==='outgoing'?'↗':missed?'!':'↙',detail=[labels[item.status]||'通话',item.time,duration?`${Math.floor(duration/60)}分${duration%60}秒`:item.status==='connected'?'已接通':''].filter(Boolean).join(' · '),count=item._count>1?` <em>(${item._count})</em>`:'';const actions=!s12CallIsResolved(item)?`<div class="vvvtm-call-actions"><button class="answer" data-phone-call-action="answer" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="接听" aria-label="接听"><i class="fa-solid fa-phone"></i></button><button class="danger-soft" data-phone-call-action="decline" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="拒接" aria-label="拒接"><i class="fa-solid fa-phone-slash"></i></button></div>`:item.status==='connected'?`<button class="vvvtm-call-back danger-soft" data-phone-call-action="end" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="结束通话" aria-label="结束通话"><i class="fa-solid fa-phone-slash"></i></button>`:`<button class="vvvtm-call-back" data-phone-start-call data-phone-call-contact="${esc(name)}" title="再次拨打" aria-label="再次拨打"><i class="fa-solid fa-phone"></i></button>`;return `<article class="vvvtm-call-row ${missed?'missed':''} ${item._active?'active':''}"><span class="vvvtm-call-avatar">${esc(name.slice(0,1))}</span><div><b>${esc(name)}${count}</b><small><i class="vvvtm-call-direction">${direction}</i>${esc(detail)}</small>${item.content?`<p>${esc(item.content)}</p>`:''}</div>${actions}</article>`}).join('') : '<div class="vvvtm-phone-empty-chat"><b>Chưa có通话记录</b><small>点击右上角＋，可以给任何联系人或NPC拨号。</small></div>'}</main><button class="vvvtm-call-fab" data-phone-start-call><i class="fa-solid fa-phone"></i><span>拨号</span></button></div>`;
     }
     function phoneActiveCall() {
         const id=stateRuntime.phoneActiveCallId;return (stateRuntime.state?.phone?.calls||[]).find(row=>row.id===id)||null;
     }
     function phoneActiveCallMarkup() {
         const call=phoneActiveCall();if(!call){stateRuntime.phoneActiveCallId='';stateRuntime.phoneView='calls';return phoneCallsMarkup();}
-        const contact=compactText(call.direction==='outgoing'?(call.contact||call.author):(call.author||call.contact),100)||'未知联系人';
+        const contact=compactText(call.direction==='outgoing'?(call.contact||call.author):(call.author||call.contact),100)||'Chưa rõ联系人';
         const transcript=Array.isArray(call.transcript)?call.transcript:[];
         return `<div class="vvvtm-phone-app-page vvvtm-live-call-page"><header class="vvvtm-phone-app-head live-call-head"><button data-phone-nav="calls">‹</button><div><b>${esc(contact)}</b><small><i></i>${call.status==='connected'?'通话中':'正在连接'}</small></div><button class="danger-soft" data-phone-call-action="end" data-phone-call-id="${esc(call.id)}" data-phone-call-contact="${esc(contact)}" title="挂断"><i class="fa-solid fa-phone-slash"></i></button></header><main class="vvvtm-phone-chat-log vvvtm-call-transcript">${transcript.length?transcript.map((item,index)=>`<article data-phone-message-id="${esc(phoneMessageDomId(item,index))}" class="${item.role==='user'?'mine':'theirs'}"><small>${item.role==='user'?'我':esc(item.sender||contact)}</small>${phoneMessageContentMarkup(item)}<time>${esc(item.time||'')}</time></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>已接通</b><small>正在等待对方开口……</small></div>'}</main><footer class="vvvtm-phone-composer vvvtm-call-composer"><textarea id="vvvtm-call-input" rows="1" placeholder="在电话里说……" ${stateRuntime.phoneSending?'disabled':''}></textarea><button data-phone-call-send ${stateRuntime.phoneSending?'disabled':''}>${stateRuntime.phoneSending?'…':'说话'}</button></footer></div>`;
     }
     async function runPhoneCallRealtime(call,{opening=false,userText=''}={}) {
         if(!call)return false;const scope=captureChatScope(),operationState=stateRuntime.state;if(!scope||!operationState)return false;
-        const contact=compactText(call.direction==='outgoing'?(call.contact||call.author):(call.author||call.contact),100)||'未知联系人';call.transcript=Array.isArray(call.transcript)?call.transcript:[];
+        const contact=compactText(call.direction==='outgoing'?(call.contact||call.author):(call.author||call.contact),100)||'Chưa rõ联系人';call.transcript=Array.isArray(call.transcript)?call.transcript:[];
         const history=call.transcript.slice(-24).map(row=>({role:row.role==='user'?'user':'assistant',sender:row.sender||'',text:row.content||''}));
         const mode=opening?(call.direction==='outgoing'?'outgoing-call':'answered-incoming-call'):'call-turn';
         const result=await callPhoneRealtimeApi({mode,contact,event:{callId:call.id,direction:call.direction,status:call.status,userText},history,maxTokens:1400,requireMessages:true,requiredActions:mode==='outgoing-call'?['answer-call','decline-call','miss-call']:[],allowEmptyForActions:mode==='outgoing-call'?['decline-call','miss-call']:[]});
@@ -12665,18 +12665,18 @@ ${activities.join('\n')||'- 暂无记录'}`;
 
     function phoneWorldMarkup() {
         const events = (stateRuntime.state.characterWorld?.events || []).slice().reverse();
-        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>📖 彼间私文</b><small>镜头外仍在运行</small></div><button data-phone-open-world>↗</button></header><main class="vvvtm-phone-feed world">${events.length ? events.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.character || '?').slice(0,1))}</span><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.activity)}</p>${item.goal?`<footer>目标：${esc(item.goal)}</footer>`:''}</article>`).join('') : '<div class="vvvtm-phone-empty-chat"><b>暂无彼间私文动态</b></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>📖 彼间私文</b><small>镜头外仍在运行</small></div><button data-phone-open-world>↗</button></header><main class="vvvtm-phone-feed world">${events.length ? events.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.character || '?').slice(0,1))}</span><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.activity)}</p>${item.goal?`<footer>目标：${esc(item.goal)}</footer>`:''}</article>`).join('') : '<div class="vvvtm-phone-empty-chat"><b>Chưa có彼间私文动态</b></div>'}</main></div>`;
     }
 
     function phonePrivacyMarkup(){
         const rows=(ensurePhoneEcosystem()?.knowledgeLedger||[]).slice().reverse();
         const people=new Set(rows.map(row=>row.npc).filter(Boolean));
-        return `<div class="vvvtm-phone-app-page vvvtm-privacy-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>知情账本</b><small>${people.size} 位NPC · ${rows.length} 条确认记录</small></div><button data-phone-app="inspector">检查</button></header><main><section class="vvvtm-privacy-rule"><b>只记录真实传播</b><p>同场目击、当面告知、收到消息、代收参与或实际刷到朋友圈。日记与彼间私文永不授予知情。</p></section>${rows.length?`<section class="vvvtm-knowledge-list">${rows.map(row=>`<article><span>${esc((row.npc||'?').slice(0,1))}</span><div><b>${esc(row.npc)}</b><strong>${esc(row.subject||'手机事件')}</strong><p>${esc(row.summary||'')}</p><small>${esc(S12_KNOWLEDGE_METHODS[row.method]||row.method)} · ${esc(row.location||'地点未记录')} · 第${esc(row.floor)}层</small></div></article>`).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><b>暂无NPC被确认知道手机事件</b><small>没有传播记录时，NPC不得自动知道。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-privacy-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>知情账本</b><small>${people.size} 位NPC · ${rows.length} 条确认记录</small></div><button data-phone-app="inspector">检查</button></header><main><section class="vvvtm-privacy-rule"><b>只记录真实传播</b><p>同场目击、当面告知、收到消息、代收参与或实际刷到朋友圈。日记与彼间私文永不授予知情。</p></section>${rows.length?`<section class="vvvtm-knowledge-list">${rows.map(row=>`<article><span>${esc((row.npc||'?').slice(0,1))}</span><div><b>${esc(row.npc)}</b><strong>${esc(row.subject||'手机事件')}</strong><p>${esc(row.summary||'')}</p><small>${esc(S12_KNOWLEDGE_METHODS[row.method]||row.method)} · ${esc(row.location||'地点Chưa ghi nhận')} · 第${esc(row.floor)}层</small></div></article>`).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><b>Chưa cóNPC被确认知道手机事件</b><small>没有传播记录时，NPC不得自动知道。</small></div>'}</main></div>`;
     }
 
     function phoneNpcActivitiesMarkup(){
         const rows=(ensurePhoneEcosystem()?.npcActivities||[]).filter(row=>['public','shared'].includes(row.visibility)).slice().reverse();
-        return `<div class="vvvtm-phone-app-page vvvtm-npc-phone-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>NPC手机生活</b><small>${rows.length} 条你合理可知的公开/共享动态</small></div><button data-phone-app="privacy">知情</button></header><main>${rows.length?rows.map(row=>`<article><span>${esc((row.npc||'?').slice(0,1))}</span><div><header><b>${esc(row.npc)}</b><small>${esc(row.app||row.channel||'手机')}</small></header><strong>${esc(row.action||'手机动态')}</strong><p>${esc(row.content)}</p><small>${esc(row.time||'')} · ${row.visibility==='public'?'公开':'共享可见'}</small></div></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>暂无可见动态</b><small>NPC的私密手机行为不会在这里显示。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-npc-phone-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>NPC手机生活</b><small>${rows.length} 条你合理可知的公开/共享动态</small></div><button data-phone-app="privacy">知情</button></header><main>${rows.length?rows.map(row=>`<article><span>${esc((row.npc||'?').slice(0,1))}</span><div><header><b>${esc(row.npc)}</b><small>${esc(row.app||row.channel||'手机')}</small></header><strong>${esc(row.action||'手机动态')}</strong><p>${esc(row.content)}</p><small>${esc(row.time||'')} · ${row.visibility==='public'?'公开':'共享可见'}</small></div></article>`).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có可见动态</b><small>NPC的私密手机行为不会在这里显示。</small></div>'}</main></div>`;
     }
 
     function phoneSearchRows(query=''){
@@ -12699,7 +12699,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
     }
     function phoneGlobalSearchMarkup(){
         const q=stateRuntime.phoneGlobalSearch||'',rows=phoneSearchRows(q);
-        return `<div class="vvvtm-phone-app-page vvvtm-phone-search-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>全手机搜索</b><small>不搜索日记、彼间私文和NPC私密后台</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-global-search-box"><input id="vvvtm-global-search-input" maxlength="120" value="${esc(q)}" placeholder="联系人、消息、订单、账单、地点"><button data-phone-global-search-run>搜索</button></section>${q?(rows.length?`<section class="vvvtm-global-search-results">${rows.map(row=>`<button data-phone-search-route="${esc(row.route)}" data-phone-search-id="${esc(row.relatedId||'')}"><span>${esc(row.icon)}</span><div><b>${esc(row.title)}</b><p>${esc(row.detail)}</p><small>${esc(row.meta||row.route)}</small></div></button>`).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><b>没有找到结果</b></div>'):'<div class="vvvtm-phone-empty-chat"><b>搜索整部剧情手机</b><small>覆盖通讯、朋友圈、订单物流、钱包、日历、通知、地图点评和知情账本。</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-phone-search-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>全手机Tìm</b><small>不Tìm日记、彼间私文和NPC私密后台</small></div><button data-phone-home>⌂</button></header><main><section class="vvvtm-global-search-box"><input id="vvvtm-global-search-input" maxlength="120" value="${esc(q)}" placeholder="联系人、消息、订单、账单、地点"><button data-phone-global-search-run>Tìm</button></section>${q?(rows.length?`<section class="vvvtm-global-search-results">${rows.map(row=>`<button data-phone-search-route="${esc(row.route)}" data-phone-search-id="${esc(row.relatedId||'')}"><span>${esc(row.icon)}</span><div><b>${esc(row.title)}</b><p>${esc(row.detail)}</p><small>${esc(row.meta||row.route)}</small></div></button>`).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><b>没有找到结果</b></div>'):'<div class="vvvtm-phone-empty-chat"><b>Tìm整部剧情手机</b><small>覆盖通讯、朋友圈、订单物流、钱包、日历、通知、地图点评和知情账本。</small></div>'}</main></div>`;
     }
 
     function phoneInspectorMarkup(){
@@ -12710,7 +12710,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         for(const item of phone.callReceipts||[])add(item.id,'通话凭证',item.contact,item.action,item.callId,'',item.floor,item.status,item.time);
         for(const item of phone.notifications||[])add(item.id,'通知',item.title,item.content,item.relatedId,'','',item.read?'已读':'未读',item.time);
         rows.sort((a,b)=>String(b.id).localeCompare(String(a.id)));
-        return `<div class="vvvtm-phone-app-page vvvtm-inspector-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>手机事件检查器</b><small>${rows.length} 条 · 用于核对跨回合状态</small></div><button data-phone-app="privacy">知情</button></header><main>${rows.length?rows.slice(0,180).map(row=>{const knowers=[...new Set(knowledge.filter(k=>k.eventId===row.id||k.relatedId===row.id||k.eventId===row.relatedId||k.relatedId===row.relatedId).map(k=>k.npc))];return `<article><header><b>${esc(row.type)} · ${esc(row.title||'事件')}</b><span>${esc(row.status||'已保存')}</span></header><p>${esc(row.detail||'')}</p><dl><div><dt>事件ID</dt><dd>${esc(row.id||'—')}</dd></div>${row.relatedId?`<div><dt>关联ID</dt><dd>${esc(row.relatedId)}</dd></div>`:''}<div><dt>位置/楼层</dt><dd>${esc(row.location||'未记录')} · ${row.floor===''?'未记录':`第${esc(row.floor)}层`}</dd></div><div><dt>保存时间</dt><dd>${esc(row.time||'未记录')}</dd></div><div><dt>知情NPC</dt><dd>${esc(knowers.join('、')||'无人被确认知情')}</dd></div></dl></article>`}).join(''):'<div class="vvvtm-phone-empty-chat"><b>暂无事件</b></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-inspector-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>手机事件检查器</b><small>${rows.length} 条 · 用于核对跨回合Trạng thái</small></div><button data-phone-app="privacy">知情</button></header><main>${rows.length?rows.slice(0,180).map(row=>{const knowers=[...new Set(knowledge.filter(k=>k.eventId===row.id||k.relatedId===row.id||k.eventId===row.relatedId||k.relatedId===row.relatedId).map(k=>k.npc))];return `<article><header><b>${esc(row.type)} · ${esc(row.title||'事件')}</b><span>${esc(row.status||'已保存')}</span></header><p>${esc(row.detail||'')}</p><dl><div><dt>事件ID</dt><dd>${esc(row.id||'—')}</dd></div>${row.relatedId?`<div><dt>关联ID</dt><dd>${esc(row.relatedId)}</dd></div>`:''}<div><dt>位置/Tầng</dt><dd>${esc(row.location||'Chưa ghi nhận')} · ${row.floor===''?'Chưa ghi nhận':`第${esc(row.floor)}层`}</dd></div><div><dt>保存时间</dt><dd>${esc(row.time||'Chưa ghi nhận')}</dd></div><div><dt>知情NPC</dt><dd>${esc(knowers.join('、')||'无人被确认知情')}</dd></div></dl></article>`}).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có事件</b></div>'}</main></div>`;
     }
 
     const PHONE_THEMES = {
@@ -12851,7 +12851,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             const {file,mimeType}=entry;
             try{
                 if(Number(file.size||0)>6*1024*1024)throw new Error('单个文件不能超过6MB');
-                const rawData=await readPhoneStickerFile(file),data=rawData.replace(/^data:[^;,]*;base64,/i,`data:${mimeType};base64,`),name=compactText(String(file.name||'未命名表情').replace(/\.[^.]+$/,''),120)||'未命名表情';
+                const rawData=await readPhoneStickerFile(file),data=rawData.replace(/^data:[^;,]*;base64,/i,`data:${mimeType};base64,`),name=compactText(String(file.name||'Chưa đặt tên表情').replace(/\.[^.]+$/,''),120)||'Chưa đặt tên表情';
                 await serverFetch('/phone/stickers',{method:'POST',body:JSON.stringify({name,tags:'',description:'',mimeType,data})});count++;
             }catch(error){toast(`${file.name||'表情'} 导入失败：${error.message}`,'error');}
         }
@@ -12864,7 +12864,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         overlay = document.createElement('div');
         overlay.id = 'vvvtm-role-phone';
         overlay.hidden = true;
-        overlay.innerHTML = `<div class="vvvtm-role-device" role="dialog" aria-modal="true" aria-label="${esc(communicationLabel())}"><div class="vvvtm-role-phone-buttons"><button data-phone-minimize title="最小化">—</button><button data-phone-close title="关闭">×</button></div><div class="vvvtm-role-speaker"></div><section id="vvvtm-role-phone-screen" class="vvvtm-role-phone-screen"></section><div class="vvvtm-role-homebar" data-phone-home></div></div>`;
+        overlay.innerHTML = `<div class="vvvtm-role-device" role="dialog" aria-modal="true" aria-label="${esc(communicationLabel())}"><div class="vvvtm-role-phone-buttons"><button data-phone-minimize title="最小化">—</button><button data-phone-close title="Đóng">×</button></div><div class="vvvtm-role-speaker"></div><section id="vvvtm-role-phone-screen" class="vvvtm-role-phone-screen"></section><div class="vvvtm-role-homebar" data-phone-home></div></div>`;
         overlay.addEventListener('click', async event => {
             const phoneEventScope=captureChatScope();
             const phoneEventState=stateRuntime.state;
@@ -12878,7 +12878,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             if(event.target.closest('[data-phone-sticker-import]')){overlay.querySelector('[data-phone-sticker-file]')?.click();return;}
             if(event.target.closest('[data-phone-sticker-manage]')){stateRuntime.phoneStickerManage=!stateRuntime.phoneStickerManage;renderRolePhone();return;}
             const stickerEdit=event.target.closest('[data-phone-sticker-edit]');if(stickerEdit){stateRuntime.phoneDialog={type:'sticker-edit',stickerId:stickerEdit.dataset.phoneStickerEdit};renderRolePhone();return;}
-            const stickerDelete=event.target.closest('[data-phone-sticker-delete]');if(stickerDelete){const row=phoneStickerById(stickerDelete.dataset.phoneStickerDelete);if(row&&confirm(`删除表情“${row.name||'未命名表情'}”？`)){await serverFetch(`/phone/stickers/${encodeURIComponent(row.id)}`,{method:'DELETE'});await loadPhoneStickers({force:true});renderRolePhone();}return;}
+            const stickerDelete=event.target.closest('[data-phone-sticker-delete]');if(stickerDelete){const row=phoneStickerById(stickerDelete.dataset.phoneStickerDelete);if(row&&confirm(`删除表情“${row.name||'Chưa đặt tên表情'}”？`)){await serverFetch(`/phone/stickers/${encodeURIComponent(row.id)}`,{method:'DELETE'});await loadPhoneStickers({force:true});renderRolePhone();}return;}
             const stickerSend=event.target.closest('[data-phone-sticker-send]');if(stickerSend){await sendRolePhoneMessage({stickerId:stickerSend.dataset.phoneStickerSend});return;}
             const stickerPreview=event.target.closest('[data-phone-sticker-preview]');if(stickerPreview){await loadPhoneStickers();stateRuntime.phoneDialog={type:'sticker-preview',stickerId:stickerPreview.dataset.phoneStickerPreview};renderRolePhone();return;}
             if(event.target.closest('[data-phone-browser-tavern]')){stateRuntime.phoneView='tavern';stateRuntime.phoneTavernSessionId='';ensurePhoneTavern().activeSessionId='';renderRolePhone();return;}
@@ -12903,8 +12903,8 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 if(action==='issue'){stateRuntime.phoneDialog={type:'order-issue',orderId};renderRolePhone();return;}
                 if(action==='refund'||action==='aftersale'){stateRuntime.phoneDialog={type:'order-refund',orderId,orderAction:action};renderRolePhone();return;}
                 if(action==='receiver'){stateRuntime.phoneDialog={type:'order-receiver',orderId};renderRolePhone();return;}
-                if(action==='cancel'&&!confirm(`确认取消这笔${s8OrderPlatformLabel(order.platform)}订单并原路退款吗？\n${s8OrderItemSummary(order,240)}`))return;
-                if(s12ApplyOrderAction(orderId,action,{note:action==='cancel'?'用户取消订单':''})){await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast(action==='resume'?'订单已恢复处理':'订单已取消并原路退款','success');}
+                if(action==='cancel'&&!confirm(`确认Hủy这笔${s8OrderPlatformLabel(order.platform)}订单并原路退款吗？\n${s8OrderItemSummary(order,240)}`))return;
+                if(s12ApplyOrderAction(orderId,action,{note:action==='cancel'?'用户Hủy订单':''})){await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast(action==='resume'?'订单已恢复处理':'订单Đã hủy并原路退款','success');}
                 return;
             }
             if(event.target.closest('[data-phone-roster-ai-refresh]')){
@@ -12914,7 +12914,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                     const floor=(context()?.chat?.length||1)-1;ensureInstitutionalGroupProfiles(floor);seedSourceRosterGroupProfiles(floor);prunePhoneSocialGraphToTrustedRoster();
                     await saveState({immediate:true,refresh:false,reason:'manual-ai-roster-refresh'});
                     if(!phoneEventStillCurrent())return;
-                    const c=stateRuntime.state?.sourceRosterAi||{};toast(c.status==='complete'?`AI人物建档完成：${Array.isArray(c.rows)?c.rows.length:0}人`:`AI人物建档未完成：${c.error||c.status||'未知状态'}`,c.status==='complete'?'success':'warn');
+                    const c=stateRuntime.state?.sourceRosterAi||{};toast(c.status==='complete'?`AI人物建档完成：${Array.isArray(c.rows)?c.rows.length:0}人`:`AI人物建档未完成：${c.error||c.status||'Chưa rõTrạng thái'}`,c.status==='complete'?'success':'warn');
                 }catch(error){toast(`AI人物建档失败：${error.message}`,'error');}finally{setBusy(false);}
                 if(phoneEventStillCurrent())renderRolePhone();return;
             }
@@ -12994,7 +12994,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 }
                 if(action==='tavern-character'){
                     const name=compactText(overlay.querySelector('#vvvtm-tavern-character-name')?.value||'',100),setting=compactText(overlay.querySelector('#vvvtm-tavern-character-setting')?.value||'',3000),greeting=compactText(overlay.querySelector('#vvvtm-tavern-character-greeting')?.value||'',1200);
-                    if(!name||!setting){toast('请填写角色名和角色设定。','info');return;}
+                    if(!name||!setting){toast('请填写Tên nhân vật和角色设定。','info');return;}
                     const tavern=ensurePhoneTavern(),character={id:uid('inner-tavern-character'),name,setting,greeting,createdAt:Date.now(),updatedAt:Date.now(),privateInnerFiction:true};tavern.characters.push(character);stateRuntime.phoneDialog=null;startPhoneTavernSession(character.id,{fresh:true});await saveState({immediate:true,refresh:false,reason:'inner-tavern-character-create'});if(!phoneEventStillCurrent())return;renderRolePhone();return;
                 }
                 if(action==='attachment'){
@@ -13124,7 +13124,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                     const title=compactText(overlay.querySelector('#vvvtm-calendar-title')?.value||'',160);
                     const date=compactText(overlay.querySelector('#vvvtm-calendar-date')?.value||'',40);
                     const note=compactText(overlay.querySelector('#vvvtm-calendar-note')?.value||'',400);
-                    if(!title||!date){toast('日程标题和日期都要填写。','info');return;}
+                    if(!title||!date){toast('日程标题和Ngày都要填写。','info');return;}
                     ensurePhoneEcosystem().calendarEvents.push({id:uid('calendar-event'),title,date,note,time:phoneClock().time,createdAt:Date.now(),manual:true});
                     s8RecordPhoneActivity('calendar','添加日程',`${title} · ${date}${note?` · ${note}`:''}`);
                     stateRuntime.phoneDialog=null; await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return; renderRolePhone(); return;
@@ -13145,10 +13145,10 @@ ${activities.join('\n')||'- 暂无记录'}`;
                     const amount=s8Money(overlay.querySelector('#vvvtm-bank-amount')?.value||0),to=compactText(overlay.querySelector('#vvvtm-bank-to')?.value||'',100),note=compactText(overlay.querySelector('#vvvtm-bank-note')?.value||'',120);const mode=stateRuntime.phoneDialog?.action||'transfer';if(amount<=0){toast('请输入正确金额','info');return;}if(mode==='transfer'&&(!to||amount>s9BankBalance())){toast(!to?'请输入收款人。':`账户余额不足：当前 ${s8MoneyText(s9BankBalance())}`,'warning');return;}s9AddBankTx(mode==='deposit'?amount:-amount,mode==='deposit'?(note||'剧情入账'):`转账给 ${to}${note?` · ${note}`:''}`);stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();return;
                 }
                 if(action==='mail-compose'){
-                    const to=compactText(overlay.querySelector('#vvvtm-mail-to')?.value||'',120),subject=compactText(overlay.querySelector('#vvvtm-mail-subject')?.value||'',160),body=compactText(overlay.querySelector('#vvvtm-mail-body')?.value||'',1800);if(!to||!body){toast('收件人和正文不能为空','info');return;}const p=s9EnsureExtendedApps(),id=uid('mail-out'),user=compactText(context()?.name1||'{{user}}',80)||'{{user}}',mail={id,from:user,to,subject:subject||'(无主题)',body,time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true};p.mail.sent.push(mail);stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();try{await runPhoneMailRealtime(mail);toast('邮件已发送并完成实时同步','success');}catch(error){toast(`邮件已发送，实时回复失败：${error.message}`,'warn');}if(!phoneEventStillCurrent())return;renderRolePhone();return;
+                    const to=compactText(overlay.querySelector('#vvvtm-mail-to')?.value||'',120),subject=compactText(overlay.querySelector('#vvvtm-mail-subject')?.value||'',160),body=compactText(overlay.querySelector('#vvvtm-mail-body')?.value||'',1800);if(!to||!body){toast('收件人和chính văn不能为空','info');return;}const p=s9EnsureExtendedApps(),id=uid('mail-out'),user=compactText(context()?.name1||'{{user}}',80)||'{{user}}',mail={id,from:user,to,subject:subject||'(无主题)',body,time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true};p.mail.sent.push(mail);stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();try{await runPhoneMailRealtime(mail);toast('邮件已发送并完成实时同步','success');}catch(error){toast(`邮件已发送，实时回复失败：${error.message}`,'warn');}if(!phoneEventStillCurrent())return;renderRolePhone();return;
                 }
                 if(action==='browser-search'){
-                    const q=compactText(overlay.querySelector('#vvvtm-browser-search-input')?.value||'',200);if(!q)return;const p=s9EnsureExtendedApps();stateRuntime.phoneBrowserQuery=q;p.browser.history.push({id:uid('browser-h'),query:q,time:phoneClock().time,createdAt:Date.now()});s8RecordPhoneActivity('browser','浏览器搜索',q);stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();return;
+                    const q=compactText(overlay.querySelector('#vvvtm-browser-search-input')?.value||'',200);if(!q)return;const p=s9EnsureExtendedApps();stateRuntime.phoneBrowserQuery=q;p.browser.history.push({id:uid('browser-h'),query:q,time:phoneClock().time,createdAt:Date.now()});s8RecordPhoneActivity('browser','浏览器Tìm',q);stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();return;
                 }
                 if(action==='map-search'){
                     const d=compactText(overlay.querySelector('#vvvtm-map-destination')?.value||'',160);if(!d)return;const p=s9EnsureExtendedApps();stateRuntime.phoneMapDestination=d;p.maps.history.push({id:uid('map-h'),destination:d,time:phoneClock().time,createdAt:Date.now()});s8RecordPhoneActivity('maps','地图指定地点',d);stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();return;
@@ -13205,7 +13205,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 if(action==='booking'){stateRuntime.phoneDialog={type:'dianping-booking',venue};renderRolePhone();return;}
                 if(action==='review'){stateRuntime.phoneDialog={type:'dianping-review',venue};renderRolePhone();return;}
                 if(action==='deal'){const amount=Math.max(1,Math.round(s8Money(venue.average)*.78*100)/100);s8BeginPayment({kind:'dianping',account:'wechat',amount,title:`${venue.name} 到店团购`,venue:venue.name});return;}
-                if(action==='favorite')s12DianpingFavorite(venue);else if(action==='checkin')s12DianpingCheckin(venue);await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast(action==='favorite'?'收藏状态已更新':'已登记到店','success');return;
+                if(action==='favorite')s12DianpingFavorite(venue);else if(action==='checkin')s12DianpingCheckin(venue);await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast(action==='favorite'?'收藏Trạng thái已更新':'已登记到店','success');return;
             }
             const catalogSearch=event.target.closest('[data-phone-catalog-search]');if(catalogSearch){stateRuntime.phoneDialog={type:'catalog-search',platform:catalogSearch.dataset.phoneCatalogSearch||stateRuntime.phoneView};renderRolePhone();return;}
             const shopStore=event.target.closest('[data-phone-shop-store]');if(shopStore){stateRuntime.phoneDialog={type:'shop-store',platform:shopStore.dataset.phoneShopStore||'taobao',storeName:shopStore.dataset.phoneShopStoreName||'店铺',productId:shopStore.dataset.phoneShopProduct||''};renderRolePhone();return;}
@@ -13224,7 +13224,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             if(event.target.closest('[data-phone-browser-search],[data-phone-browser-new]')){stateRuntime.phoneDialog={type:'browser-search'};renderRolePhone();return;}
             const bq=event.target.closest('[data-phone-browser-query]');if(bq){const q=bq.dataset.phoneBrowserQuery;stateRuntime.phoneBrowserQuery=q;s9EnsureExtendedApps().browser.history.push({id:uid('browser-h'),query:q,time:phoneClock().time,createdAt:Date.now()});s8RecordPhoneActivity('browser','浏览器打开',q);await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();return;}
             if(event.target.closest('[data-phone-map-search]')){stateRuntime.phoneDialog={type:'map-search'};renderRolePhone();return;}
-            const mapMode=event.target.closest('[data-phone-map-mode]');if(mapMode){const p=s9EnsureExtendedApps(),destination=stateRuntime.phoneMapDestination||'';p.maps.history.push({id:uid('map-route'),destination,from:stateRuntime.state.scene?.location||'当前位置',mode:mapMode.dataset.phoneMapMode||'drive',time:phoneClock().time,createdAt:Date.now(),floor:Math.max(0,(context()?.chat?.length||1)-1)});s8RecordPhoneActivity('maps','选择导航路线',`${mapMode.dataset.phoneMapMode==='transit'?'公交':'驾车'} · ${destination}`);await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;toast(`已选择${mapMode.dataset.phoneMapMode==='transit'?'公交':'驾车'}路线`,'success');renderRolePhone();return;}
+            const mapMode=event.target.closest('[data-phone-map-mode]');if(mapMode){const p=s9EnsureExtendedApps(),destination=stateRuntime.phoneMapDestination||'';p.maps.history.push({id:uid('map-route'),destination,from:stateRuntime.state.scene?.location||'Vị trí hiện tại',mode:mapMode.dataset.phoneMapMode||'drive',time:phoneClock().time,createdAt:Date.now(),floor:Math.max(0,(context()?.chat?.length||1)-1)});s8RecordPhoneActivity('maps','选择导航路线',`${mapMode.dataset.phoneMapMode==='transit'?'公交':'驾车'} · ${destination}`);await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;toast(`已选择${mapMode.dataset.phoneMapMode==='transit'?'公交':'驾车'}路线`,'success');renderRolePhone();return;}
             const md=event.target.closest('[data-phone-map-dest]');if(md){stateRuntime.phoneMapDestination=md.dataset.phoneMapDest;renderRolePhone();return;}
             const rideDest=event.target.closest('[data-phone-ride-dest]');if(rideDest){stateRuntime.phoneDialog={type:'ride-new',destination:rideDest.dataset.phoneRideDest};renderRolePhone();return;}
             if(event.target.closest('[data-phone-ride-new]')){stateRuntime.phoneDialog={type:'ride-new'};renderRolePhone();return;}
@@ -13502,7 +13502,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
     }
 
 
-    // fixed38：微信联系人显示/注入彻底去备注；关系仅保留为隐藏结构化字段。
+    // fixed38：微信联系人显示/注入彻底去Ghi chú；关系仅保留为隐藏结构化字段。
     // fixed37：父母微信不再只等 user 主动点开。每隔约3-6轮剧情，轮换一位已确认父/母联系人主动发一条生活化微信。
     function phoneParentContacts() {
         const rows=[];const seen=new Set();
@@ -13596,8 +13596,8 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const allEvents = (world.events || []).filter(item => !filter || item.character === filter).slice().reverse();
         const page = pageSlice(allEvents,`world:${filter||'all'}`);
         const events = page.items;
-        const characterCards = (world.characters || []).slice().sort((a,b) => Number(b.lastFloor || 0) - Number(a.lastFloor || 0)).map(item => `<article class="world-character-card ${filter===item.name?'active':''}" data-world-filter="${esc(item.name)}"><div class="world-character-avatar">${esc(item.name.slice(0,1))}</div><div><b>${esc(item.name)}</b><small>${esc(item.location || '位置未知')}</small><p>${esc(item.activity || '暂未记录当前活动')}</p><em>${esc(item.goal ? `目标：${item.goal}` : '')}</em></div></article>`).join('');
-        return `<section class="vvvtm-world-dashboard"><article class="vvvtm-card world-overview"><div class="vvvtm-section-title"><div><h3>🌍 彼间私文</h3><p>所有出现过的角色会在镜头外继续生活，不需要等user去触发。</p></div><div><button data-world-generate>✨ 独立API推进本轮</button><button data-world-clear class="danger-soft">清空世界动态</button></div></div><div class="world-stats"><span><b>${world.characters.length}</b> 活跃角色</span><span><b>${world.events.length}</b> 条动态</span><span><b>${esc(world.lastFloor ?? -1)}</b> 最后楼层</span></div></article><section class="world-layout"><aside class="world-characters"><button class="world-all ${!filter?'active':''}" data-world-filter="">全部角色</button>${characterCards || '<div class="vvvtm-empty">等待下一轮AI回复后建立角色生活状态</div>'}</aside><main class="world-feed">${pagerMarkup(page)}${events.length ? events.map(item => `<article class="world-event-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div><button class="danger-soft" data-world-delete="${esc(item.id)}">删除</button></header><p>${esc(item.activity)}</p><dl>${item.goal?`<div><dt>目标</dt><dd>${esc(item.goal)}</dd></div>`:''}${item.mood?`<div><dt>状态</dt><dd>${esc(item.mood)}</dd></div>`:''}${item.social?`<div><dt>社交</dt><dd>${esc(item.social)}</dd></div>`:''}${item.relationToMainPlot?`<div><dt>与主线</dt><dd>${esc(item.relationToMainPlot)}</dd></div>`:''}</dl><footer>来源：第 ${esc(item.floor)} 层 · ${esc(item.generatedAt || '')}</footer></article>`).join('') : '<div class="vvvtm-empty">这个筛选下暂无动态</div>'}${pagerMarkup(page)}</main></section></section>`;
+        const characterCards = (world.characters || []).slice().sort((a,b) => Number(b.lastFloor || 0) - Number(a.lastFloor || 0)).map(item => `<article class="world-character-card ${filter===item.name?'active':''}" data-world-filter="${esc(item.name)}"><div class="world-character-avatar">${esc(item.name.slice(0,1))}</div><div><b>${esc(item.name)}</b><small>${esc(item.location || '位置Chưa rõ')}</small><p>${esc(item.activity || '暂Chưa ghi nhận当前活动')}</p><em>${esc(item.goal ? `目标：${item.goal}` : '')}</em></div></article>`).join('');
+        return `<section class="vvvtm-world-dashboard"><article class="vvvtm-card world-overview"><div class="vvvtm-section-title"><div><h3>🌍 彼间私文</h3><p>所有出现过的角色会在镜头外继续生活，不需要等user去触发。</p></div><div><button data-world-generate>✨ 独立API推进本轮</button><button data-world-clear class="danger-soft">Bỏ chọn世界动态</button></div></div><div class="world-stats"><span><b>${world.characters.length}</b> 活跃角色</span><span><b>${world.events.length}</b> 条动态</span><span><b>${esc(world.lastFloor ?? -1)}</b> 最后Tầng</span></div></article><section class="world-layout"><aside class="world-characters"><button class="world-all ${!filter?'active':''}" data-world-filter="">全部角色</button>${characterCards || '<div class="vvvtm-empty">等待下一轮AI回复后建立角色生活Trạng thái</div>'}</aside><main class="world-feed">${pagerMarkup(page)}${events.length ? events.map(item => `<article class="world-event-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div><button class="danger-soft" data-world-delete="${esc(item.id)}">Xóa</button></header><p>${esc(item.activity)}</p><dl>${item.goal?`<div><dt>目标</dt><dd>${esc(item.goal)}</dd></div>`:''}${item.mood?`<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>`:''}${item.social?`<div><dt>社交</dt><dd>${esc(item.social)}</dd></div>`:''}${item.relationToMainPlot?`<div><dt>与主线</dt><dd>${esc(item.relationToMainPlot)}</dd></div>`:''}</dl><footer>来源：第 ${esc(item.floor)} 层 · ${esc(item.generatedAt || '')}</footer></article>`).join('') : '<div class="vvvtm-empty">这个筛选下Chưa có动态</div>'}${pagerMarkup(page)}</main></section></section>`;
     }
 
     function bindCharacterWorld(content) {
@@ -13614,7 +13614,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
         }));
         content.querySelector('[data-world-clear]')?.addEventListener('click', () => {
-            if (!confirm('清空当前聊天的彼间私文动态和角色状态？通讯终端与其他记忆不会删除。')) return;
+            if (!confirm('Bỏ chọn当前聊天的彼间私文动态和角色Trạng thái？通讯终端与其他记忆不会删除。')) return;
             recordManualDeletion('characterWorld.events',stateRuntime.state.characterWorld.events||[]);
             recordManualDeletion('characterWorld.characters',stateRuntime.state.characterWorld.characters||[]);
             stateRuntime.state.characterWorld = { characters: [], events: [], lastGeneratedAt: '', lastFloor: -1 };
@@ -13640,7 +13640,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         if (stateRuntime.incomingCallShown.has(call.id)) return;
         stateRuntime.incomingCallShown.add(call.id);
         document.getElementById('vvvtm-incoming-call')?.remove();
-        const contact = canonicalNpcName(call.author || call.contact) || call.author || call.contact || '未知来电';
+        const contact = canonicalNpcName(call.author || call.contact) || call.author || call.contact || 'Chưa rõ来电';
         const overlay = document.createElement('div');
         overlay.id = 'vvvtm-incoming-call';
         overlay.innerHTML = `<div class="vvvtm-call-sheet"><div class="vvvtm-call-pulse">☎</div><small>${esc(communicationLabel())} · 来电</small><h2>${esc(contact)}</h2><p>${esc(call.content || '正在呼叫你…')}</p><div class="vvvtm-call-sheet-actions"><button class="decline" data-vvvtm-call-action="decline" data-vvvtm-call-id="${esc(call.id)}" data-vvvtm-call-contact="${esc(contact)}"><span>✕</span>挂断</button><button class="answer" data-vvvtm-call-action="answer" data-vvvtm-call-id="${esc(call.id)}" data-vvvtm-call-contact="${esc(contact)}"><span>☎</span>接听</button></div><em>接听后对方会立即开口，可在手机里连续通话。</em></div>`;
@@ -13689,7 +13689,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                     if (!completed && promiseComplete.isConnected) promiseComplete.disabled = false;
                 } catch (error) {
                     promiseComplete.disabled = false;
-                    toast(`完成约定失败：${error?.message || error}`, 'error');
+                    toast(`完成Lời hẹn失败：${error?.message || error}`, 'error');
                 }
                 return;
             }
@@ -13707,7 +13707,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 if (body) body.hidden = !next;
                 const ui = companionUiState(floor);
                 ui.sections[key] = next;
-                saveChatExtras().catch(error => console.warn('[vvv小剧场] 保存折叠状态失败', error));
+                saveChatExtras().catch(error => console.warn('[vvv小剧场] 保存折叠Trạng thái失败', error));
                 return;
             }
             const phoneToggle = event.target.closest('[data-vvvtm-toggle-phone]');
@@ -13727,7 +13727,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 const ui = companionUiState(floor);
                 if (phoneToggle) ui.phoneExpanded = next;
                 if (worldToggle) ui.worldExpanded = next;
-                saveChatExtras().catch(error => console.warn('[vvv小剧场] 保存折叠状态失败', error));
+                saveChatExtras().catch(error => console.warn('[vvv小剧场] 保存折叠Trạng thái失败', error));
                 return;
             }
             const open = event.target.closest('[data-vvvtm-open-tab]');
@@ -13771,13 +13771,13 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const pool = [
             '发生一个与当前地点合理相关的小意外，但不要制造灾难。',
             '让一位近期被忽略的NPC以自然方式联系当前角色。',
-            '让一个尚未兑现的约定重新浮出水面。',
+            '让一个尚未兑现的Lời hẹn重新浮出水面。',
             '加入一个能推动关系升温的安静细节，不替{{user}}表态。',
             '让天气或环境变化影响当前行动，但不要强迫剧情转场。',
             '让一个被遗漏的物品或线索重新出现。',
             '安排一次轻微误会，并给双方留下解释空间。',
             '保持日常节奏，用一个生活化事件增加真实感。',
-            '让某位NPC做出符合其既有性格的自主选择。',
+            '让某位NPC做出符合其既有Tính cách的自主选择。',
             '用一通电话或消息打断当前场景，内容与未解决伏笔有关。',
         ];
         const result = pool[Math.floor(Math.random() * pool.length)];
@@ -13821,14 +13821,14 @@ ${activities.join('\n')||'- 暂无记录'}`;
         if (!file||!scope||!operationState) return false;
         try {
             const parsed = JSON.parse(await file.text());
-            if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('读取备份期间已切换聊天，已取消导入');
+            if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('读取备份期间已切换聊天，Đã hủy导入');
             if (!confirm('导入会覆盖当前聊天的 vvv 小剧场记忆，确认继续吗？')) return false;
             await createSafetySnapshot('before-import',{force:true,stateSnapshot:clone(operationState),scope});
-            if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('创建导入前快照期间已切换聊天，已取消导入');
+            if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('创建导入前快照期间已切换聊天，Đã hủy导入');
             const next=normalizeState(parsed);next.chatIdentity=scope.chatKey;next.chatAnchor=scope.chatAnchor;next.intentionalResetAt=0;stateRuntime.state=next;s12ReconcileCallReceipts();
             await saveState({ immediate: true, refresh: true, reason:'import-backup', allowDestructive:true, forceSnapshot:true });
             if(!chatScopeIsCurrent(scope)||stateRuntime.state!==next)return false;
-            toast('导入完成（导入前状态已存入安全快照）', 'success');return true;
+            toast('导入完成（导入前Trạng thái已存入安全快照）', 'success');return true;
         } catch (error) {
             if(chatScopeIsCurrent(scope))toast(`导入失败：${error.message}`, 'error');return false;
         } finally {
@@ -13876,7 +13876,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             updatePromptInjection();
             renderCurrentTab();
             decorateAllCompanionOutputs();
-            console.info(`[vvv小剧场] 安全同步（${reason}）：仅观察，不删除任何旧记忆；当前可见最高楼层 ${maxFloor}`);
+            console.info(`[vvv小剧场] 安全同步（${reason}）：仅观察，不删除任何旧记忆；当前可见最高Tầng ${maxFloor}`);
             return;
         }
 
@@ -13897,7 +13897,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         });
         if(!stillCurrent())return false;
         scheduleReindex(); updatePromptInjection(); renderCurrentTab(); decorateAllCompanionOutputs();
-        console.info(`[vvv小剧场] 已完成历史分支同步（${reason}），当前最高楼层 ${maxFloor}`,stateRuntime.lastHistoryReconciliation||{});
+        console.info(`[vvv小剧场] Đã hoàn thành历史分支同步（${reason}），当前最高Tầng ${maxFloor}`,stateRuntime.lastHistoryReconciliation||{});
         return true;
     }
 
@@ -14040,7 +14040,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             toast(`第 ${targetFloor} 层整理失败，${Math.round(delay/1000)} 秒后重试 ${attempt}/${extractRetryLimit()}：${retryReasonText(error,120)}`,'warn');
             if(stateRuntime.currentTab==='overview')renderCurrentTab();
         }
-        console.warn(`[0-32·U1.7.10-R5] 第${targetFloor}层AI记忆重试${attempt}/${extractRetryLimit()}，${Math.round(delay/1000)}秒后继续；同楼层只允许一个server task`,error);
+        console.warn(`[0-32·U1.7.10-R5] 第${targetFloor}层AI记忆重试${attempt}/${extractRetryLimit()}，${Math.round(delay/1000)}秒后继续；同Tầng只允许一个server task`,error);
         return true;
     }
 
@@ -14152,7 +14152,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         shell.retryAt=Date.now()+delay;shell.retryForce=Boolean(force);shell.failureKind='';shell.fallbackError='';message.extra.vvvTheaterCompanion=shell;
         armCompanionRetry(index,signature,{waitMs:delay,fallbackReason,silent,force,scope,operationState});
         saveChatExtras(scope).catch(()=>{});if(chatScopeIsCurrent(scope))decorateCompanionOutput(index);
-        console.warn(`[0-32·U1.7.2] 幕后七条${resume?'恢复等待':'失败'}：第${attempt}/${maxAttempts}次，${Math.round(delay/1000)}秒后继续；同楼层优先复用原server task`,error);
+        console.warn(`[0-32·U1.7.2] 幕后七条${resume?'恢复等待':'失败'}：第${attempt}/${maxAttempts}次，${Math.round(delay/1000)}秒后继续；同Tầng优先复用原server task`,error);
         return true;
     }
 
@@ -14170,7 +14170,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
     }
 
     function serverChatKey(ctx = context()) {
-        // 不再直接用 native chat id。这样改聊天文件名/聊天ID时，完整状态快照、检索索引和后台任务仍绑定同一档案。
+        // 不再直接用 native chat id。这样改聊天文件名/聊天ID时，完整Trạng thái快照、检索索引和后台任务仍绑定同一档案。
         const raw = safetyArchiveIdentity(ctx);
         let hash = 2166136261;
         for (const char of String(raw)) {
@@ -14237,7 +14237,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 return rows;
             }catch(error){
                 stateRuntime.phoneStickersLoaded=false;
-                stateRuntime.phoneStickerLoadError=error?.name==='AbortError'?'读取超过15秒，已停止等待':compactText(error?.message||error,220)||'未知错误';
+                stateRuntime.phoneStickerLoadError=error?.name==='AbortError'?'读取超过15秒，已停止等待':compactText(error?.message||error,220)||'Chưa rõ错误';
                 console.warn('[vvv小手机] 表情库读取失败',error);
                 return stateRuntime.phoneStickers||[];
             }finally{
@@ -14268,7 +14268,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const actionChoices=(Array.isArray(requiredActions)?requiredActions:[]).filter(Boolean);
         const emptyActionChoices=(Array.isArray(allowEmptyForActions)?allowEmptyForActions:[]).filter(Boolean);
         const strictResponseRules=[
-            '按人物性格和关系自然回应；通常发1-4条短消息。',
+            '按人物Tính cách和关系自然回应；通常发1-4条短消息。',
             requireMessages?'本次事件必须立即产生至少1条有效messages；不允许用空数组无声结束。':'没有合理互动者时messages可以为空。',
             actionChoices.length?`action.type必须明确选择：${actionChoices.join('|')}。`:'',
             emptyActionChoices.length?`只有action.type为${emptyActionChoices.join('|')}时才允许messages为空，并且必须在action.reason写明贴合场景的具体原因。`:'',
@@ -14276,13 +14276,13 @@ ${activities.join('\n')||'- 暂无记录'}`;
             '只输出JSON。',
         ].filter(Boolean).join('');
         const systemPrompt=`${FALLEN_WRITER_CONTEXT}
-【小手机实时交互引擎】你只扮演当前手机事件中的NPC、群成员或服务人员，不写外层正文，不替{{user}}行动。所有回复发生在手机内部并立即生效。
+【小手机实时交互引擎】你只扮演当前手机事件中的NPC、群成员或服务人员，不写外层chính văn，不替{{user}}行动。所有回复发生在手机内部并立即生效。
 必须只输出JSON对象：{"messages":[{"sender":"发送者","text":"文字，可为空","stickerId":"已导入表情ID，可为空"}],"reactions":[{"npc":"朋友圈好友","liked":true,"comment":"可为空"}],"action":{"type":"none|accept-transfer|return-transfer|decline-transfer|answer-call|decline-call|miss-call|end-call|confirm-delivery","reason":""}}。只有朋友圈模式使用reactions，其他模式返回空数组。
 表情只能使用本请求“可用表情库”中的原样ID；有合适表情时可以只发表情，禁止输出“（某某表情）”“[表情包]”等文字替代品。
-余额、扣款、订单商品、店铺、路线和配送状态由程序决定，禁止擅自改金额、换商品、把外卖换成别的餐品。支付宝转账已经自动到账；微信转账才可接收、退还或拒绝。
-手机端与外层正文共享同一人物和同一故事线：此前在线上聊过就必须记得，线下见过也必须记得；严禁把同一个NPC当成两个人。recentOuterNarrative是刚刚实际发生的外层正文，不是另一套参考故事。金额必须逐分遵守unifiedStoryline中的精确值，不允许18.89写成18/19。数字账户的到账/打款状态也必须遵守unifiedStoryline，不能把“尚未到账”擅自说成“已经到账”。若unifiedStoryline显示NPC此刻正在线下同场，只在user明确主动使用手机联系TA时回应，不得把线下现实当成另一条平行剧情。
-当请求包含relevantWorldBook时，它是当前联系人/本轮话题定向命中的绑定世界书事实：优先级高于普通旧摘要和手机历史。禁止为了迎合user问题而否认、反转或改写其中明确的固定事实；若只缺“今天具体班次/当前是否在岗”等即时信息，应明确区分“固定设定”和“今日具体状态”，不要自行把固定设定抹掉。
-模式为nested-tavern时，这是外层人物手机里的虚构二级故事。characterCard是唯一世界设定，playerPersona只是里层玩家身份；只续写二级角色，绝不能宣称二级剧情已经发生在外层现实，也不能读取、引用或猜测外层场景与长期记忆。`;
+余额、扣款、订单商品、店铺、路线和配送Trạng thái由程序决定，禁止擅自改金额、换商品、把外卖换成别的餐品。支付宝转账已经自动到账；微信转账才可接收、退还或拒绝。
+手机端与外层chính văn共享同一人物和同一故事线：此前在线上聊过就必须记得，线下见过也必须记得；严禁把同一个NPC当成两个人。recentOuterNarrative是刚刚实际发生的外层chính văn，不是另一套参考故事。金额必须逐分遵守unifiedStoryline中的精确值，不允许18.89写成18/19。数字账户的到账/打款Trạng thái也必须遵守unifiedStoryline，不能把“尚未到账”擅自说成“已经到账”。若unifiedStoryline显示NPC此刻正在线下同场，只在user明确主动使用手机联系TA时回应，不得把线下现实当成另一条平行剧情。
+当请求包含relevantWorldBook时，它是当前联系人/本轮话题定向命中的绑定世界书事实：优先级高于普通旧摘要和手机历史。禁止为了迎合user问题而否认、反转或改写其中明确的固定事实；若只缺“今天具体班次/当前是否在岗”等即时信息，应明确区分“固定设定”和“今日具体Trạng thái”，不要自行把固定设定抹掉。
+模式为nested-tavern时，这是外层人物手机里的虚构二级故事。characterCard是唯一世界设定，playerPersona只是里层玩家Thân phận；只续写二级角色，绝不能宣称二级剧情已经发生在外层现实，也不能读取、引用或猜测外层场景与长期记忆。`;
         const nested=mode==='nested-tavern';
         const resultIsValid=result=>{
             const actionType=String(result?.action?.type||'none');
@@ -14323,7 +14323,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const row={id:uid('phone-live'),kind:compactText(kind,80),summary:compactText(summary,900),relatedId:compactText(relatedId,160),contact:compactText(contact,100),handled:true,realtimeHandled:true,privateInnerFiction:Boolean(privateInnerFiction),anchorFloor:Math.max(-1,(context()?.chat||[]).length-1),time:phoneClock().time,createdAt:Date.now()};
         phone.realtimeEvents.push(row);if(phone.realtimeEvents.length>400)phone.realtimeEvents.splice(0,phone.realtimeEvents.length-400);
         if(contact)s39MarkAcquaintance(contact,{channel:/call/.test(kind)?'电话':'手机通讯',floor:row.anchorFloor,evidence:row.summary});
-        if(!privateInnerFiction&&!['message','transfer'].includes(kind))s39RecordStoryEvent({type:kind||'phone-event',relatedId:relatedId||row.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',contact||''],channel:/call/.test(kind)?'电话':'手机',status:'已发生',summary:row.summary,floor:row.anchorFloor,time:row.time,source:'phone-realtime'});
+        if(!privateInnerFiction&&!['message','transfer'].includes(kind))s39RecordStoryEvent({type:kind||'phone-event',relatedId:relatedId||row.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',contact||''],channel:/call/.test(kind)?'电话':'手机',status:'Đã xảy ra',summary:row.summary,floor:row.anchorFloor,time:row.time,source:'phone-realtime'});
         return row;
     }
     function appendPhoneRealtimeIncoming({contact,groupName='',useWechat=true,text='',stickerId='',anchorFloor=-1,sender=''}) {
@@ -14348,7 +14348,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
         } catch (error) {
             const message = String(error?.message || error);
             if (/forbidden|403/i.test(message)) return false;
-            // 服务端暂时未加载时不破坏当前账号的本地状态；正确安装后重启服务端即可恢复联网能力。
+            // 服务端暂时未加载时不破坏当前账号的本地Trạng thái；正确安装后重启服务端即可恢复联网能力。
             return true;
         }
     }
@@ -14389,7 +14389,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             const task = (await serverFetch(`/tasks/${encodeURIComponent(id)}`)).task;
             onProgress?.(task);
             if (task.status === 'completed') return task;
-            if (task.status === 'cancelled') throw new Error('任务已取消');
+            if (task.status === 'cancelled') throw new Error('任务Đã hủy');
             if (task.status === 'error') {
                 const error=new Error(task.error || '服务端任务失败');
                 if(task.errorName)error.name=String(task.errorName);
@@ -14430,18 +14430,18 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const command=`/${hidden?'hide':'unhide'} ${range.label}`;
         try{
             const module=await import('/scripts/slash-commands.js');
-            if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，已取消楼层隐藏操作');
+            if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，Đã hủyTầng隐藏操作');
             if(typeof module.executeSlashCommandsWithOptions!=='function')throw new Error('slash-command-api-missing');
             await module.executeSlashCommandsWithOptions(command,{handleParserErrors:false,handleExecutionErrors:true});
-            if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，楼层隐藏结果不再应用');
+            if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，Tầng隐藏结果不再应用');
         }catch(slashError){
             if(!chatScopeIsCurrent(scope))throw slashError;
             try{
                 const chats=await import('/scripts/chats.js');
-                if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，已取消楼层隐藏操作');
+                if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，Đã hủyTầng隐藏操作');
                 if(typeof chats.hideChatMessageRange!=='function')throw slashError;
                 await chats.hideChatMessageRange(range.start,range.end,!hidden,'');
-                if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，楼层隐藏结果不再应用');
+                if(!chatScopeIsCurrent(scope))throw new Error('聊天已切换，Tầng隐藏结果不再应用');
             }catch(fallbackError){throw new Error(`执行 ${command} 失败：${fallbackError?.message||slashError?.message||fallbackError}`);}
         }
         return range;
@@ -14450,23 +14450,23 @@ ${activities.join('\n')||'- 暂无记录'}`;
     async function applySummaryHideState(row, hidden = true, { silent = false } = {}) {
         const operationScope=captureChatScope(),operationState=stateRuntime.state;
         if(!operationScope||!operationState)throw new Error('当前聊天尚未完成载入');
-        if(row&&!((operationState.tables?.summaries||[]).includes(row)))throw new Error('总结对象不属于当前聊天，已拒绝跨聊天楼层操作');
-        if(hidden && (row?.['类型']||row?.['表格类型'])==='阶段总结'){
-            if(!/完成|成功/.test(String(row?.['状态']||''))||!isFixedStageSummaryText(row?.['总结内容']))throw new Error('该阶段总结尚未通过固定格式质量校验，禁止隐藏原聊天');
+        if(row&&!((operationState.tables?.summaries||[]).includes(row)))throw new Error('总结对象不属于当前聊天，已拒绝跨聊天Tầng操作');
+        if(hidden && (row?.['Loại']||row?.['Loại bảng'])==='阶段总结'){
+            if(!/完成|成功/.test(String(row?.['Trạng thái']||''))||!isFixedStageSummaryText(row?.['Nội dung tổng kết']))throw new Error('该阶段总结尚未通过固定格式质量校验，禁止隐藏原聊天');
         }
-        const parsed = parseRange(row?.['覆盖楼层']);
-        if (parsed.start === null || parsed.end === null) throw new Error('无法识别总结楼层范围');
+        const parsed = parseRange(row?.['Tầng bao phủ']);
+        if (parsed.start === null || parsed.end === null) throw new Error('无法识别总结Tầng范围');
         const range = await setPromptHiddenRange(parsed.start, parsed.end, hidden);
-        if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('楼层操作期间已切换聊天，状态不再写入');
+        if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('Tầng操作期间已切换聊天，Trạng thái不再写入');
         if (!range) {
-            row['隐藏状态'] = '无需隐藏';
+            row['隐藏Trạng thái'] = '无需隐藏';
             row._hiddenRange = '';
             return null;
         }
-        row['隐藏状态'] = hidden ? '已隐藏' : '未隐藏';
+        row['隐藏Trạng thái'] = hidden ? '已隐藏' : '未隐藏';
         row._hiddenRange = hidden ? range.label : '';
         row._hiddenAt = hidden ? nowText() : null;
-        logAudit(hidden ? '隐藏已总结楼层' : '恢复已总结楼层', range.label);
+        logAudit(hidden ? '隐藏已总结Tầng' : '恢复已总结Tầng', range.label);
         if (!silent) toast(`${hidden ? '已隐藏' : '已恢复'}第 ${range.label} 层`, 'success');
         return range;
     }
@@ -14475,22 +14475,22 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const operationScope=scope||captureChatScope(),s=state||stateRuntime.state;
         if(!operationScope||!s||!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
         // 恢复快照时先把真实聊天全部unhide，再严格按快照里“已隐藏”的阶段逐段重放。
-        // 这样不会出现快照恢复了、但酒馆真实 /hide 状态仍停留在另一版本的问题。
+        // 这样不会出现快照恢复了、但酒馆真实 /hide Trạng thái仍停留在另一版本的问题。
         if(!await unhideEntireCurrentChat(operationScope))return false;
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
         let restored=0;
         for(const row of s.tables?.summaries||[]){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-            if((row['类型']||row['表格类型'])!=='阶段总结')continue;
-            if(!/完成|成功/.test(String(row['状态']||'')))continue;
-            const wantsHidden=row['隐藏状态']==='已隐藏'||Boolean(String(row._hiddenRange||'').trim());
-            if(!wantsHidden){row['隐藏状态']='未隐藏';row._hiddenRange='';continue;}
+            if((row['Loại']||row['Loại bảng'])!=='阶段总结')continue;
+            if(!/完成|成功/.test(String(row['Trạng thái']||'')))continue;
+            const wantsHidden=row['隐藏Trạng thái']==='已隐藏'||Boolean(String(row._hiddenRange||'').trim());
+            if(!wantsHidden){row['隐藏Trạng thái']='未隐藏';row._hiddenRange='';continue;}
             await applySummaryHideState(row,true,{silent:true});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
             restored+=1;
         }
-        logAudit('恢复快照后同步隐藏状态',`重新隐藏 ${restored} 个阶段`);
-        if(!silent)toast(`已同步快照的 /hide 状态：${restored} 个阶段`,'success');
+        logAudit('恢复快照后同步隐藏Trạng thái',`重新隐藏 ${restored} 个阶段`);
+        if(!silent)toast(`已同步快照的 /hide Trạng thái：${restored} 个阶段`,'success');
         return true;
     }
 
@@ -14512,7 +14512,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
                 current.endFloor=floor; current.text+=full;
                 continue;
             }
-            // 单层本身极长时也绝不截断，按同一楼层分片并标明片段序号。
+            // 单层本身极长时也绝不截断，按同一Tầng分片并标明片段序号。
             if(current.text) flush();
             const room=Math.max(8000,maxChars-head.length-80);
             const slices=[]; for(let pos=0;pos<body.length;pos+=room)slices.push(body.slice(pos,pos+room));
@@ -14549,7 +14549,7 @@ ${activities.join('\n')||'- 暂无记录'}`;
             for(let offset=0;offset<assistantBody.length;offset+=room)slices.push(assistantBody.slice(offset,offset+room));
             if(!slices.length)slices.push('');
             for(let sliceIndex=0;sliceIndex<slices.length;sliceIndex+=1){
-                const sliceLabel=slices.length>1?`｜超长楼层片段 ${sliceIndex+1}/${slices.length}`:'';
+                const sliceLabel=slices.length>1?`｜超长Tầng片段 ${sliceIndex+1}/${slices.length}`:'';
                 units.push({
                     floor,
                     sliceIndex,
@@ -14579,18 +14579,18 @@ ${activities.join('\n')||'- 暂无记录'}`;
         const sources=part.units.map(unit=>unit.text).join('\n\n');
         return `你是“0-32·永不落幕的剧场”的全量记忆复检员。现在执行记忆集合 API 接力的第${partIndex+1}/${totalParts}次请求。本请求已经贴近单次安全容量；只处理本片，不等待也不假设其他片。
 
-【目标AI楼层】${targets}
-【任务】逐层重新详细读取原文，提取可以直接确认的剧情事实。已有正确记忆由程序保留，本次结果只做去重补充和有证据的状态更新，禁止删除、覆盖成空或凭空改写旧事实。
+【目标AITầng】${targets}
+【任务】逐层重新详细读取原文，提取可以直接确认的剧情事实。已有正确记忆由程序保留，本次结果只做去重补充和有证据的Trạng thái更新，禁止删除、覆盖成空或凭空改写旧事实。
 
 严格规则：
-1. floors数组必须为每个目标AI楼层各返回且只返回一项，floor必须是上面的真实数字；user楼层只供理解，禁止单独建记忆。
-2. 每个楼层只记录该AI/角色回复明确发生、确认或承接的事实；不得把更早楼层、写作指令、思维链、提示词或分析过程当剧情。
-3. mainline只要有实质剧情就写1条60至260字概括；其余栏目尽量详细保留时间、地点、行动、心理/关系变化、约定生命周期、秘密知情边界、物品流转、金钱、饮食、购物、出行、穿着和长期偏好证据。
-4. 所有带floor的记录统一写所属AI楼层。一次行为不得脑补成永久喜好。promises只写明确成立的约定，并区分待兑现、进行中、默认已履行、已兑现、长期有效、条件未触发、逾期未确认、取消。
-5. 没有内容用空数组，未知字符串留空；不得省略memory顶层字段。只输出JSON对象，不要Markdown、解释或续写正文。
+1. floors数组必须为每个目标AITầng各返回且只返回一项，floor必须是上面的真实数字；userTầng只供理解，禁止单独建记忆。
+2. 每个Tầng只记录该AI/角色回复明确发生、确认或承接的事实；不得把更早Tầng、写作指令、思维链、提示词或分析过程当剧情。
+3. mainline只要有实质剧情就写1条60至260字概括；其余栏目尽量详细保留时间、地点、行动、心理/关系变化、Lời hẹn生命周期、秘密知情边界、物品流转、金钱、饮食、购物、出行、穿着和长期偏好证据。
+4. 所有带floor的记录统一写所属AITầng。一次行为不得脑补成永久喜好。promises只写明确成立的Lời hẹn，并区分Chờ thực hiện、Đang diễn ra、默认已履行、Đã thực hiện、长期有效、条件未触发、逾期未确认、Hủy。
+5. 没有内容用空数组，Chưa rõ字符串留空；不得省略memory顶层字段。只输出JSON对象，不要Markdown、解释或续写chính văn。
 
 输出结构：
-{"floors":[{"floor":0,"memory":{"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},"mainline":[{"date":"","start":"","end":"","summary":"","status":"已完成","floor":"0"}],"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"0"}],"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"0"}],"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"0"}],"relations":[{"a":"","b":"","description":"","attitude":"","psychologyChange":"","time":""}],"world":[{"name":"","type":"","description":"","scope":""}],"items":[{"itemId":"","name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"待兑现","floor":"0"}],"secrets":[{"secretId":"","subject":"","content":"","knowers":"","suspects":"","unknown":""}],"chapters":[{"title":"","startFloor":"0","endFloor":"0","summary":"","time":""}],"anchors":[{"date":"","time":"","floor":"0","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"0"}]}}]}
+{"floors":[{"floor":0,"memory":{"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"0"}],"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"0"}],"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"0"}],"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"0"}],"relations":[{"a":"","b":"","description":"","attitude":"","psychologyChange":"","time":""}],"world":[{"name":"","type":"","description":"","scope":""}],"items":[{"itemId":"","name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"Chờ thực hiện","floor":"0"}],"secrets":[{"secretId":"","subject":"","content":"","knowers":"","suspects":"","unknown":""}],"chapters":[{"title":"","startFloor":"0","endFloor":"0","summary":"","time":""}],"anchors":[{"date":"","time":"","floor":"0","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"0"}]}}]}
 
 本片原文：
 ${sources}`;
@@ -14602,23 +14602,23 @@ ${sources}`;
         const expected=new Set(expectedFloors.map(Number));const seen=new Set();const floorPayloads=[];
         for(const row of raw.floors){
             const floor=Number(row?.floor);
-            if(!Number.isInteger(floor)||!expected.has(floor))throw new Error(`记忆集合返回了非目标楼层：${String(row?.floor)}`);
+            if(!Number.isInteger(floor)||!expected.has(floor))throw new Error(`记忆集合返回了非目标Tầng：${String(row?.floor)}`);
             if(seen.has(floor))throw new Error(`记忆集合重复返回第 ${floor} 层`);
             const memory=validateExtractionPayload(row?.memory);
             for(const key of ['mainline','branches','states','people','promises','anchors','lifeFacts'])for(const item of memory[key]||[])if(item&&typeof item==='object')item.floor=String(floor);
             seen.add(floor);floorPayloads.push({floor,memory});
         }
         const missing=[...expected].filter(floor=>!seen.has(floor));
-        if(missing.length)throw new Error(`记忆集合漏掉目标楼层：${missing.join('、')}`);
+        if(missing.length)throw new Error(`记忆集合漏掉目标Tầng：${missing.join('、')}`);
         return {...result,floorPayloads};
     }
 
     function clearSummaryHiddenStateAfterCollection(state=stateRuntime.state) {
         let changed=0;
         for(const row of state?.tables?.summaries||[]){
-            if((row?.['类型']||row?.['表格类型'])!=='阶段总结')continue;
-            if(row['隐藏状态']!=='未隐藏'||row._hiddenRange||row._hiddenAt)changed+=1;
-            row['隐藏状态']='未隐藏';row._hiddenRange='';delete row._hiddenAt;
+            if((row?.['Loại']||row?.['Loại bảng'])!=='阶段总结')continue;
+            if(row['隐藏Trạng thái']!=='未隐藏'||row._hiddenRange||row._hiddenAt)changed+=1;
+            row['隐藏Trạng thái']='未隐藏';row._hiddenRange='';delete row._hiddenAt;
         }
         return changed;
     }
@@ -14642,17 +14642,17 @@ ${sources}`;
         const operationScope=captureChatScope(),operationState=stateRuntime.state;
         if(!operationScope||!operationState)throw new Error('当前聊天尚未完成载入');
         const maxChars=memoryCollectionLimit(),parts=memoryCollectionParts(maxChars);
-        if(!parts.length){toast('当前聊天没有可重新整理的AI楼层','warn');return false;}
+        if(!parts.length){toast('当前聊天没有可重新整理的AITầng','warn');return false;}
         const sourceFingerprint=memoryCollectionSourceFingerprint(maxChars);
         const prior=operationState.progress?.memoryCollection||{};
         const resumable=prior.sourceFingerprint===sourceFingerprint&&Number(prior.nextPart)>0&&Number(prior.nextPart)<parts.length&&['running','paused','failed'].includes(String(prior.status||''));
         const startPart=resumable?Math.max(0,Math.min(parts.length-1,Number(prior.nextPart))):0;
         const assistantFloors=new Set(parts.flatMap(part=>part.targetFloors)).size;
         const sourceChars=parts.reduce((sum,part)=>sum+part.sourceChars,0);
-        const hiddenCount=(operationState.tables?.summaries||[]).filter(row=>(row?.['类型']||row?.['表格类型'])==='阶段总结'&&(row['隐藏状态']==='已隐藏'||row._hiddenRange)).length;
+        const hiddenCount=(operationState.tables?.summaries||[]).filter(row=>(row?.['Loại']||row?.['Loại bảng'])==='阶段总结'&&(row['隐藏Trạng thái']==='已隐藏'||row._hiddenRange)).length;
         const question=resumable
-            ? `继续“记忆集合”吗？\n\n将从第 ${startPart+1}/${parts.length} 次API请求继续。当前聊天共 ${assistantFloors} 个AI楼层，剩余 ${parts.length-startPart} 次按容量自动接力。开始前仍会再做安全快照，并确保全部楼层可见。`
-            : `开始“记忆集合”吗？\n\n统计：${context()?.chat?.length||0} 个总楼层，其中 ${assistantFloors} 个AI楼层，约 ${sourceChars.toLocaleString()} 字符；按单次 ${maxChars.toLocaleString()} 字符安全容量预计调用 ${parts.length} 次API。调用次数没有固定上限，长聊天会一直接力到全部读完。\n\n操作会先保存安全快照，再解除全部 /hide（当前检测到 ${hiddenCount} 个隐藏阶段），并把新结果按真实楼层增量补入现有记忆，不删除旧记忆。是否继续？`;
+            ? `继续“记忆集合”吗？\n\n将从第 ${startPart+1}/${parts.length} 次API请求继续。当前聊天共 ${assistantFloors} 个AITầng，剩余 ${parts.length-startPart} 次按容量自动接力。开始前仍会再做安全快照，并确保全部Tầng可见。`
+            : `开始“记忆集合”吗？\n\n统计：${context()?.chat?.length||0} 个总Tầng，其中 ${assistantFloors} 个AITầng，约 ${sourceChars.toLocaleString()} 字符；按单次 ${maxChars.toLocaleString()} 字符安全容量预计调用 ${parts.length} 次API。调用次数没有固定上限，长聊天会一直接力到全部读完。\n\n操作会先保存安全快照，再解除全部 /hide（当前检测到 ${hiddenCount} 个隐藏阶段），并把新结果按真实Tầng增量补入现有记忆，不删除旧记忆。是否继续？`;
         if(!confirm(question))return false;
         const operationToken={scope:operationScope,state:operationState,at:Date.now()};
         stateRuntime.memoryCollectionRunning=true;stateRuntime.memoryCollectionAbort=false;stateRuntime.memoryCollectionOperationToken=operationToken;
@@ -14664,8 +14664,8 @@ ${sources}`;
             memoryCollectionBusy('记忆集合：正在保存操作前安全快照…');
             await createSafetySnapshot('before-memory-collection',{force:true,stateSnapshot:clone(operationState),scope:operationScope});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('聊天已切换，记忆集合已停止');
-            memoryCollectionBusy('记忆集合：正在解除全部隐藏楼层…');
-            if(!await unhideEntireCurrentChat(operationScope))throw new Error('无法解除全部隐藏楼层，已停止重读');
+            memoryCollectionBusy('记忆集合：正在解除全部隐藏Tầng…');
+            if(!await unhideEntireCurrentChat(operationScope))throw new Error('无法解除全部隐藏Tầng，已停止重读');
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('聊天已切换，记忆集合已停止');
             const visibleRows=clearSummaryHiddenStateAfterCollection(operationState);stateRuntime.uiExpanded=true;applyUiCollapse();
             logAudit('记忆集合解除全部隐藏',`恢复 ${visibleRows} 个阶段标记；计划 ${parts.length} 次容量接力`);
@@ -14698,10 +14698,10 @@ ${sources}`;
                 return false;
             }
             progress.status='completed';progress.completedAt=Date.now();progress.updatedAt=Date.now();progress.error='';
-            runDiagnostics();logAudit('记忆集合完成',`${assistantFloors}个AI楼层 · ${parts.length}次API容量接力 · 仅增量补充`);
+            runDiagnostics();logAudit('记忆集合完成',`${assistantFloors}个AITầng · ${parts.length}次API容量接力 · 仅增量补充`);
             await saveState({immediate:true,refresh:true,reason:'memory-collection-completed',forceSnapshot:true});
             scheduleReindex();scheduleContextRefresh();
-            notifyPipelineDone(`记忆集合完成：已用 ${parts.length} 次API重读 ${assistantFloors} 个AI楼层并增量补充`,'success',{fullscreen:true});
+            notifyPipelineDone(`记忆集合完成：已用 ${parts.length} 次API重读 ${assistantFloors} 个AITầng并增量补充`,'success',{fullscreen:true});
             return true;
         }catch(error){
             if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState){
@@ -14798,23 +14798,23 @@ ${sources}`;
                 if(attempt<attempts)setBusy(true,`${label}质量不合格，正在重新请求 ${attempt+1}/${attempts}…`);
             }
         }
-        throw new Error(`${label}连续${attempts}次质量校验失败：${lastError?.message||lastError||'未知错误'}`);
+        throw new Error(`${label}连续${attempts}次质量校验失败：${lastError?.message||lastError||'Chưa rõ错误'}`);
     }
 
     function rangePartSummaryPrompt(start,end,text) {
-        return `你是长篇剧情记忆编辑。以下是第${start}-${end}层中的一个完整原文分片。请做高密度“分片摘要”，不能遗漏精确时间、地点、人物行动/情绪、关系变化、约定、物品、秘密知情边界、未解决伏笔。禁止续写、禁止脑补。只输出摘要正文。\n\n${text}`;
+        return `你是长篇剧情记忆编辑。以下是第${start}-${end}层中的一个完整原文分片。请做高密度“分片摘要”，不能遗漏精确时间、地点、人物行动/情绪、关系变化、Lời hẹn、物品、秘密知情边界、未解决伏笔。禁止续写、禁止脑补。只输出摘要chính văn。\n\n${text}`;
     }
 
     function requireSummaryQuality(value, kind='阶段总结', minChars=80) {
         const text=String(value?.text ?? value ?? '').trim();
         const compact=text.replace(/\s+/g,'');
         if(compact.length < minChars) throw new Error(`${kind}质量校验失败：内容过短（${compact.length}<${minChars}），已拒绝写入/隐藏原文`);
-        if(/^(?:null|undefined|\{\}|\[\]|无|暂无|没有|无内容|无新增|n\/?a)$/i.test(compact)) throw new Error(`${kind}质量校验失败：返回为空壳`);
+        if(/^(?:null|undefined|\{\}|\[\]|无|Chưa có|没有|无内容|无新增|n\/?a)$/i.test(compact)) throw new Error(`${kind}质量校验失败：返回为空壳`);
         if(/(?:抱歉|无法提供|不能提供|无法完成|I\s*(?:can(?:not|'t)|am unable))/i.test(text) && compact.length < 220) throw new Error(`${kind}质量校验失败：疑似模型拒答/错误文本`);
         return value && typeof value==='object' ? {...value,text} : text;
     }
 
-    function summaryValue(value,fallback='未明确') {
+    function summaryValue(value,fallback='Chưa xác định') {
         if(Array.isArray(value))value=value.map(item=>typeof item==='object'?Object.values(item).filter(Boolean).join('；'):item).filter(Boolean).join('、');
         if(value&&typeof value==='object')value=Object.values(value).filter(Boolean).join('；');
         return compactText(value,4000)||fallback;
@@ -14830,26 +14830,26 @@ ${sources}`;
                 date:summaryValue(time.date),period:summaryValue(time.period),location:summaryValue(time.location),
                 weatherAtmosphere:summaryValue(time.weatherAtmosphere||time.weather||time.atmosphere),
             },
-            corePlotActions:rows(source.corePlotActions,item=>({fact:summaryValue(item.fact||item.action||item.event),cause:summaryValue(item.cause,'未明确'),result:summaryValue(item.result,'未明确'),floors:summaryValue(item.floors||item.evidenceFloors,`${start}-${end}`)})),
-            peopleRelations:rows(source.peopleRelations,item=>({person:summaryValue(item.person||item.name),stageChange:summaryValue(item.stageChange||item.change),currentState:summaryValue(item.currentState||item.status),psychologyChange:summaryValue(item.psychologyChange||item.psychology,'未明确'),relationChange:summaryValue(item.relationChange||item.relationship,'未明确'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
+            corePlotActions:rows(source.corePlotActions,item=>({fact:summaryValue(item.fact||item.action||item.event),cause:summaryValue(item.cause,'Chưa xác định'),result:summaryValue(item.result,'Chưa xác định'),floors:summaryValue(item.floors||item.evidenceFloors,`${start}-${end}`)})),
+            peopleRelations:rows(source.peopleRelations,item=>({person:summaryValue(item.person||item.name),stageChange:summaryValue(item.stageChange||item.change),currentState:summaryValue(item.currentState||item.status),psychologyChange:summaryValue(item.psychologyChange||item.psychology,'Chưa xác định'),relationChange:summaryValue(item.relationChange||item.relationship,'Chưa xác định'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
             secretsKnowledge:rows(source.secretsKnowledge,item=>({secret:summaryValue(item.secret||item.content),knowers:summaryValue(item.knowers),unknown:summaryValue(item.unknown),suspects:summaryValue(item.suspects,'无明确怀疑者'),change:summaryValue(item.change,'无新增变化'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
-            items:rows(source.items,item=>({item:summaryValue(item.item||item.name),currentState:summaryValue(item.currentState||item.status),holder:summaryValue(item.holder,'未明确'),changes:summaryValue(item.changes||item.change,'无新增变化'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
-            promises:rows(source.promises,item=>({promise:summaryValue(item.promise||item.content),parties:summaryValue(item.parties||item.characters),status:summaryValue(item.status,'待确认'),basis:summaryValue(item.basis||item.reason,'未明确'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
-            unresolved:rows(source.unresolved,item=>({matter:summaryValue(item.matter||item.issue||item.foreshadow),currentState:summaryValue(item.currentState||item.status),nextTrigger:summaryValue(item.nextTrigger||item.condition,'未明确'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
+            items:rows(source.items,item=>({item:summaryValue(item.item||item.name),currentState:summaryValue(item.currentState||item.status),holder:summaryValue(item.holder,'Chưa xác định'),changes:summaryValue(item.changes||item.change,'无新增变化'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
+            promises:rows(source.promises,item=>({promise:summaryValue(item.promise||item.content),parties:summaryValue(item.parties||item.characters),status:summaryValue(item.status,'待确认'),basis:summaryValue(item.basis||item.reason,'Chưa xác định'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
+            unresolved:rows(source.unresolved,item=>({matter:summaryValue(item.matter||item.issue||item.foreshadow),currentState:summaryValue(item.currentState||item.status),nextTrigger:summaryValue(item.nextTrigger||item.condition,'Chưa xác định'),evidenceFloors:summaryValue(item.evidenceFloors||item.floors,`${start}-${end}`)})),
         };
     }
 
     function formatStageSummaryPayload(payload) {
         const p=payload||normalizeStageSummaryPayload({},0,0);const bullets=(rows,format,empty='- 无新增。')=>rows.length?rows.map(row=>`- ${format(row)}`).join('\n'):empty;
-        return `【时间与场景】\n日期：${p.timeScene.date}\n时段：${p.timeScene.period}\n地点：${p.timeScene.location}\n天气/氛围：${p.timeScene.weatherAtmosphere}\n\n【1. 核心剧情与行动】\n${bullets(p.corePlotActions,row=>`${row.fact}；起因：${row.cause}；结果：${row.result}；依据楼层：${row.floors}`)}\n\n【2. 人物状态与关系变化】\n${bullets(p.peopleRelations,row=>`${row.person}：阶段内变化：${row.stageChange}；心理变化：${row.psychologyChange}；关系变化：${row.relationChange}；截至本阶段末：${row.currentState}；依据楼层：${row.evidenceFloors}`)}\n\n【3. 秘密与知情边界】\n${bullets(p.secretsKnowledge,row=>`秘密：${row.secret}\n  已知者：${row.knowers}\n  未知者：${row.unknown}\n  怀疑者：${row.suspects}\n  阶段变化：${row.change}\n  依据楼层：${row.evidenceFloors}`,'- 秘密：无新增。\n  已知者：无。\n  未知者：无。')}\n\n【4. 关键物品与约定】\n${bullets(p.items,row=>`物品：${row.item}；阶段流转：${row.changes}；截至本阶段末：${row.currentState}；当前持有/位置：${row.holder}；依据楼层：${row.evidenceFloors}`,'- 物品：无新增。')}\n${bullets(p.promises,row=>`约定：${row.promise}；相关人：${row.parties}；截至本阶段末状态：${row.status}；判断依据：${row.basis}；依据楼层：${row.evidenceFloors}`,'- 约定：无新增。')}\n\n【5. 伏笔与未解决事项】\n${bullets(p.unresolved,row=>`${row.matter}；截至本阶段末：${row.currentState}；下一触发/确认条件：${row.nextTrigger}；依据楼层：${row.evidenceFloors}`)}`;
+        return `【时间与场景】\nNgày：${p.timeScene.date}\n时段：${p.timeScene.period}\n地点：${p.timeScene.location}\n天气/氛围：${p.timeScene.weatherAtmosphere}\n\n【1. 核心剧情与行动】\n${bullets(p.corePlotActions,row=>`${row.fact}；起因：${row.cause}；结果：${row.result}；依据Tầng：${row.floors}`)}\n\n【2. 人物Trạng thái与关系变化】\n${bullets(p.peopleRelations,row=>`${row.person}：阶段内变化：${row.stageChange}；心理变化：${row.psychologyChange}；关系变化：${row.relationChange}；截至本阶段末：${row.currentState}；依据Tầng：${row.evidenceFloors}`)}\n\n【3. 秘密与知情边界】\n${bullets(p.secretsKnowledge,row=>`秘密：${row.secret}\n  已知者：${row.knowers}\n  Chưa rõ者：${row.unknown}\n  怀疑者：${row.suspects}\n  阶段变化：${row.change}\n  依据Tầng：${row.evidenceFloors}`,'- 秘密：无新增。\n  已知者：无。\n  Chưa rõ者：无。')}\n\n【4. 关键物品与Lời hẹn】\n${bullets(p.items,row=>`物品：${row.item}；阶段流转：${row.changes}；截至本阶段末：${row.currentState}；当前持有/位置：${row.holder}；依据Tầng：${row.evidenceFloors}`,'- 物品：无新增。')}\n${bullets(p.promises,row=>`Lời hẹn：${row.promise}；相关人：${row.parties}；截至本阶段末Trạng thái：${row.status}；判断依据：${row.basis}；依据Tầng：${row.evidenceFloors}`,'- Lời hẹn：无新增。')}\n\n【5. 伏笔与未解决事项】\n${bullets(p.unresolved,row=>`${row.matter}；截至本阶段末：${row.currentState}；下一触发/确认条件：${row.nextTrigger}；依据Tầng：${row.evidenceFloors}`)}`;
     }
 
     function isFixedStageSummaryText(text) {
-        const value=String(text||'');return ['【时间与场景】','【1. 核心剧情与行动】','【2. 人物状态与关系变化】','【3. 秘密与知情边界】','【4. 关键物品与约定】','【5. 伏笔与未解决事项】'].every(title=>value.includes(title));
+        const value=String(text||'');return ['【时间与场景】','【1. 核心剧情与行动】','【2. 人物Trạng thái与关系变化】','【3. 秘密与知情边界】','【4. 关键物品与Lời hẹn】','【5. 伏笔与未解决事项】'].every(title=>value.includes(title));
     }
 
     function stageSummaryJsonInstruction(start,end) {
-        return `请只输出一个合法JSON对象，不要Markdown、不要解释、不要省略顶层字段。范围固定为第${start}-${end}层。\nJSON结构：\n{"timeScene":{"date":"","period":"","location":"","weatherAtmosphere":""},"corePlotActions":[{"fact":"","cause":"","result":"","floors":""}],"peopleRelations":[{"person":"","stageChange":"","psychologyChange":"","relationChange":"","currentState":"","evidenceFloors":""}],"secretsKnowledge":[{"secret":"","knowers":"","unknown":"","suspects":"","change":"","evidenceFloors":""}],"items":[{"item":"","changes":"","currentState":"","holder":"","evidenceFloors":""}],"promises":[{"promise":"","parties":"","status":"待兑现|进行中|默认已履行|已兑现|长期有效|条件未触发|逾期未确认|取消","basis":"","evidenceFloors":""}],"unresolved":[{"matter":"","currentState":"","nextTrigger":"","evidenceFloors":""}]}\n严格规则：①每条必须写清依据楼层，未知写“未明确”，没有就用空数组；②人物必须同时写阶段内变化、心理变化、关系变化和阶段末当前状态；③秘密必须逐条区分已知者、未知者、怀疑者；④约定按当前状态写，不得把同一约定重复列成多条；明确完成则“已兑现”，日常短期安排已跨过执行窗口且后文无反证可写“默认已履行”并在basis说明推断，长期承诺不能自动完成；⑤物品写清流转和阶段末持有/位置；⑥禁止脑补、续写或替{{user}}新增动作。`;
+        return `请只输出一个合法JSON对象，不要Markdown、不要解释、不要省略顶层字段。范围固定为第${start}-${end}层。\nJSON结构：\n{"timeScene":{"date":"","period":"","location":"","weatherAtmosphere":""},"corePlotActions":[{"fact":"","cause":"","result":"","floors":""}],"peopleRelations":[{"person":"","stageChange":"","psychologyChange":"","relationChange":"","currentState":"","evidenceFloors":""}],"secretsKnowledge":[{"secret":"","knowers":"","unknown":"","suspects":"","change":"","evidenceFloors":""}],"items":[{"item":"","changes":"","currentState":"","holder":"","evidenceFloors":""}],"promises":[{"promise":"","parties":"","status":"Chờ thực hiện|Đang diễn ra|默认已履行|Đã thực hiện|长期有效|条件未触发|逾期未确认|Hủy","basis":"","evidenceFloors":""}],"unresolved":[{"matter":"","currentState":"","nextTrigger":"","evidenceFloors":""}]}\n严格规则：①每条必须写清依据Tầng，Chưa rõ写“Chưa xác định”，没有就用空数组；②人物必须同时写阶段内变化、心理变化、关系变化和阶段末当前Trạng thái；③秘密必须逐条区分已知者、Chưa rõ者、怀疑者；④Lời hẹn按当前Trạng thái写，不得把同一Lời hẹn重复列成多条；明确完成则“Đã thực hiện”，日常短期安排已跨过执行窗口且后文无反证可写“默认已履行”并在basis说明推断，长期承诺不能自动完成；⑤物品写清流转和阶段末持有/位置；⑥禁止脑补、续写或替{{user}}新增动作。`;
     }
 
     function parseStageSummaryResult(result,start,end) {
@@ -14870,7 +14870,7 @@ ${sources}`;
         if(!parts.length) throw new Error('指定范围没有可总结的聊天内容');
         const validateFinal=result=>requireSummaryQuality(parseStageSummaryResult(result,start,end),'阶段总结',120);
         if(parts.length===1){
-            const prompt=`你是长篇剧情记忆编辑。完整读取原聊天并提取长期记忆。必须保留精确时间/相对时间、地点变化、每个人物的行动与情绪/心理变化、关系变化、约定生命周期、物品流转、秘密知情边界及未解决伏笔。不能因为某类信息很多就省略其它栏目。
+            const prompt=`你是长篇剧情记忆编辑。完整读取原聊天并提取长期记忆。必须保留精确时间/相对时间、地点变化、每个人物的行动与情绪/心理变化、关系变化、Lời hẹn生命周期、物品流转、秘密知情边界及未解决伏笔。不能因为某类信息很多就省略其它栏目。
 
 ${stageSummaryJsonInstruction(start,end)}
 
@@ -14890,7 +14890,7 @@ ${parts[0].text}`;
 ${result.text}`);
             }
             setBusy(true,`正在合并 ${start}-${end} 层阶段总结…`);
-            const merged=await runValidatedTransientLlm('stageSummary',`你正在合并同一个阶段第${start}-${end}层的全部原文分片摘要。按时间顺序去重，不得遗漏时间、地点、人物心理和关系变化、约定当前状态、秘密知情边界、物品流转、亲密/冲突/身份揭示及未解决伏笔。即使某栏目只有一条，也必须保留；没有内容才返回空数组。
+            const merged=await runValidatedTransientLlm('stageSummary',`你正在合并同一个阶段第${start}-${end}层的全部原文分片摘要。按时间顺序去重，不得遗漏时间、地点、人物心理和关系变化、Lời hẹn当前Trạng thái、秘密知情边界、物品流转、亲密/冲突/Thân phận揭示及未解决伏笔。即使某栏目只有一条，也必须保留；没有内容才返回空数组。
 
 ${stageSummaryJsonInstruction(start,end)}
 
@@ -14905,16 +14905,16 @@ ${digests.join('\n\n')}`,{
 
     function completedSummaryRows(type = null) {
         const rows=stateRuntime.state.tables.summaries.filter(row => {
-            const rowType = row['类型'] || row['表格类型'];
-            const status = row['状态'] || '已完成';
-            return (!type || rowType === type) && /完成|成功/.test(status) && String(row['总结内容'] || '').trim();
+            const rowType = row['Loại'] || row['Loại bảng'];
+            const status = row['Trạng thái'] || 'Đã hoàn thành';
+            return (!type || rowType === type) && /完成|成功/.test(status) && String(row['Nội dung tổng kết'] || '').trim();
         });
-        const latest=new Map();for(const row of rows){const rowType=row['类型']||row['表格类型'];const range=parseRange(row['覆盖楼层']);const key=`${rowType}|${range.start}-${range.end}`;const prior=latest.get(key);if(!prior||Number(row._updatedAt||row.updatedAt||0)>=Number(prior._updatedAt||prior.updatedAt||0))latest.set(key,row);}
-        return [...latest.values()].sort((a,b)=>{const ar=parseRange(a['覆盖楼层']),br=parseRange(b['覆盖楼层']);return Number(ar.start??Infinity)-Number(br.start??Infinity)||Number(ar.end??Infinity)-Number(br.end??Infinity);});
+        const latest=new Map();for(const row of rows){const rowType=row['Loại']||row['Loại bảng'];const range=parseRange(row['Tầng bao phủ']);const key=`${rowType}|${range.start}-${range.end}`;const prior=latest.get(key);if(!prior||Number(row._updatedAt||row.updatedAt||0)>=Number(prior._updatedAt||prior.updatedAt||0))latest.set(key,row);}
+        return [...latest.values()].sort((a,b)=>{const ar=parseRange(a['Tầng bao phủ']),br=parseRange(b['Tầng bao phủ']);return Number(ar.start??Infinity)-Number(br.start??Infinity)||Number(ar.end??Infinity)-Number(br.end??Infinity);});
     }
 
     function completedStageRanges() {
-        return completedSummaryRows('阶段总结').map(row=>parseRange(row['覆盖楼层'])).filter(range=>range.start!==null&&range.end!==null).sort((a,b)=>a.start-b.start||a.end-b.end);
+        return completedSummaryRows('阶段总结').map(row=>parseRange(row['Tầng bao phủ'])).filter(range=>range.start!==null&&range.end!==null).sort((a,b)=>a.start-b.start||a.end-b.end);
     }
 
     function floorCoveredByCompletedStage(floor) {
@@ -14933,12 +14933,12 @@ ${digests.join('\n\n')}`,{
         const quality=requireSummaryQuality(task.result?.text||'',type,minChars);
         if(type==='阶段总结'&&!isFixedStageSummaryText(String(quality?.text??quality)))throw new Error('阶段总结任务结果不是U1.6.1固定格式，已拒绝写入');
         return {
-            '类型': type,
-            '状态': '已完成',
-            '总结内容': String(quality?.text ?? quality).trim(),
-            '覆盖楼层': ['bigSummary','eraSummary'].includes(record.kind) ? record.rangeLabel : `${record.startFloor}-${record.endFloor}`,
+            'Loại': type,
+            'Trạng thái': 'Đã hoàn thành',
+            'Nội dung tổng kết': String(quality?.text ?? quality).trim(),
+            'Tầng bao phủ': ['bigSummary','eraSummary'].includes(record.kind) ? record.rangeLabel : `${record.startFloor}-${record.endFloor}`,
             '模型': task.model || record.model || '独立总结API',
-            '生成时间': nowText(),
+            'Thời điểm tạo': nowText(),
             '锁定': '否',
             _id: record.summaryId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
             _taskId: record.id || '',
@@ -14956,7 +14956,7 @@ ${digests.join('\n\n')}`,{
         if (record.dataGeneration !== undefined && Number(record.dataGeneration) !== Number(stateRuntime.dataGeneration)) {
             record.status = 'discarded-after-reset';
             record.applied = true;
-            record.error = '数据已被一键清空，本旧任务结果已丢弃。';
+            record.error = '数据已被一键Bỏ chọn，本旧任务结果已丢弃。';
             return false;
         }
         const currentIdentity = getChatKey();
@@ -14979,9 +14979,9 @@ ${digests.join('\n\n')}`,{
             try{
                 const replacement=parseRecentEventRerunResult(task.result?.text||'',entry);
                 const previous={
-                    time:nowText(),reason:'最近事件手动重跑',
-                    '日期':existing['日期']||'','开始时间':existing['开始时间']||'','完结时间':existing['完结时间']||'',
-                    '事件概要':existing['事件概要']||'','状态':existing['状态']||'',
+                    time:nowText(),reason:'Sự kiện gần đây手动重跑',
+                    'Ngày':existing['Ngày']||'','Giờ bắt đầu':existing['Giờ bắt đầu']||'','Giờ kết thúc':existing['Giờ kết thúc']||'',
+                    'Tóm tắt sự kiện':existing['Tóm tắt sự kiện']||'','Trạng thái':existing['Trạng thái']||'',
                 };
                 existing._history=Array.isArray(existing._history)?existing._history:[];
                 existing._history.push(previous);
@@ -14990,9 +14990,9 @@ ${digests.join('\n\n')}`,{
                 if(!result.row)throw new Error('事件摘要写入失败');
                 result.row._rerunAt=nowText();
                 result.row._rerunModel=task.model||record.model||'';
-                logAudit('最近事件重新提取',`第${floor}层事件已原位更新；其他记忆未改动。`);
+                logAudit('Sự kiện gần đây重新提取',`第${floor}层事件已原位更新；其他记忆未改动。`);
             }catch(error){
-                record.status='quality-rejected';record.applied=true;record.error=`最近事件重跑结果未通过校验：${error?.message||error}`;record.updatedAt=Date.now();
+                record.status='quality-rejected';record.applied=true;record.error=`Sự kiện gần đây重跑结果未通过校验：${error?.message||error}`;record.updatedAt=Date.now();
                 await saveState({immediate:true,refresh:false,reason:'recent-event-rerun-quality-rejected'});
                 throw error;
             }
@@ -15007,7 +15007,7 @@ ${digests.join('\n\n')}`,{
                     &&assistantMainlineHasValidRow(operationState,floor,entry.message)
                     &&!memoryHealthAttemptForFloor(floor)?.forceFullRepair
                     &&!assistantMainlineNeedsModelRepair(operationState,floor,entry.message)){
-                    record.status='duplicate-skipped';record.applied=true;record.error='同楼层同回复已有成功主记忆，旧任务已丢弃';record.updatedAt=Date.now();
+                    record.status='duplicate-skipped';record.applied=true;record.error='同Tầng同回复已有成功主记忆，旧任务已丢弃';record.updatedAt=Date.now();
                     return true;
                 }
                 try{mergeExtraction(parseExtractionResult(task.result?.text || ''), floor);}
@@ -15028,7 +15028,7 @@ ${digests.join('\n\n')}`,{
                     clearExtractFallbackRepairFlag(floor);
                     for(const older of operationState.summaryJobs||[]){
                         if(older===record||older.kind!=='extract'||Number(older.floor)!==floor||older.sourceMessageSignature!==entry.signature)continue;
-                        if(['error','cancelled','quality-rejected','fallback-saved','orphaned'].includes(String(older.status||''))){older.originalStatus=older.originalStatus||older.status;older.status='superseded';older.applied=true;older.error='同楼层后续任务已成功，旧失败记录不再阻塞';older.updatedAt=Date.now();}
+                        if(['error','cancelled','quality-rejected','fallback-saved','orphaned'].includes(String(older.status||''))){older.originalStatus=older.originalStatus||older.status;older.status='superseded';older.applied=true;older.error='同Tầng后续任务已成功，旧失败记录不再阻塞';older.updatedAt=Date.now();}
                     }
                 }
             } else mergeExtraction(parseExtractionResult(task.result?.text || ''));
@@ -15061,7 +15061,7 @@ ${digests.join('\n\n')}`,{
                     if(!stillCurrent())return false;
                 } catch (error) {
                     if(!stillCurrent())return false;
-                    summaryRow['隐藏状态'] = `隐藏失败：${error.message}`;
+                    summaryRow['隐藏Trạng thái'] = `隐藏失败：${error.message}`;
                     await saveState({ immediate:true, refresh:false, reason:'stage-summary-hide-failed' });
                     if(stillCurrent())console.warn('[vvv记忆中枢] 自动 /hide 失败', error);
                 }
@@ -15092,7 +15092,7 @@ ${digests.join('\n\n')}`,{
             if(fullStage && summaryRow){await saveState({immediate:true,refresh:false,reason:'takeover-stage-before-hide'});if(!stillCurrent())return false;}
             if (fullStage && summaryRow && operationState.settings.autoHideSummarized) {
                 try { await applySummaryHideState(summaryRow, true, { silent:true }); if(!stillCurrent())return false; await saveState({immediate:true,refresh:false,reason:'takeover-stage-after-hide'}); if(!stillCurrent())return false; }
-                catch (error) { if(!stillCurrent())return false;summaryRow['隐藏状态'] = `隐藏失败：${error.message}`; await saveState({immediate:true,refresh:false,reason:'takeover-stage-hide-failed'});if(!stillCurrent())return false; }
+                catch (error) { if(!stillCurrent())return false;summaryRow['隐藏Trạng thái'] = `隐藏失败：${error.message}`; await saveState({immediate:true,refresh:false,reason:'takeover-stage-hide-failed'});if(!stillCurrent())return false; }
             }
             const t = operationState.takeover || {};
             t.lastProcessedFloor = Math.max(Number(t.lastProcessedFloor ?? -1), end);
@@ -15107,18 +15107,18 @@ ${digests.join('\n\n')}`,{
             const message = context()?.chat?.[floor];
             if (!message || message.is_user || message.is_system || isGreetingMessage(floor, message)) {
                 record.status = 'skipped';
-                record.error = '开场白或目标楼层不存在，已跳过';
+                record.error = '开场白或目标Tầng不存在，已跳过';
             } else {
                 const currentSignature = messageSignature(floor, message);
                 if (!record.force && record.signature && currentSignature !== record.signature) {
                     record.status = 'stale';
                     record.error = '目标回复已被编辑或重Roll，未应用旧结果';
                 } else {
-                    // U1.7.2升级兼容：U1.7.1若已经为同一楼层错误创建了多个在途七条任务，安装新版后只允许第一个成功结果落地。
+                    // U1.7.2升级兼容：U1.7.1若已经为同一Tầng错误创建了多个在途七条任务，安装新版后只允许第一个成功结果落地。
                     // 后续旧任务即使晚到completed，也只标记为duplicate-skipped，绝不能再合并手机/朋友圈/彼间私文。
                     const alreadyComplete = message?.extra?.vvvTheaterCompanion;
                     if (!record.force && alreadyComplete?.signature === currentSignature && ['ok','fallback-ok'].includes(String(alreadyComplete?.parseStatus||''))) {
-                        record.status='duplicate-skipped';record.applied=true;record.error='同楼层同回复已有成功七条结果，本旧任务已丢弃以防重复刷手机/世界事件';record.updatedAt=Date.now();
+                        record.status='duplicate-skipped';record.applied=true;record.error='同Tầng同回复已有成功七条结果，本旧任务已丢弃以防重复刷手机/世界事件';record.updatedAt=Date.now();
                         clearCompanionRetryForFloor(floor);
                         await saveState({immediate:true,refresh:false,reason:'companion-duplicate-task-skipped'});
                         if(stillCurrent())decorateCompanionOutput(floor);
@@ -15145,14 +15145,14 @@ ${digests.join('\n\n')}`,{
                     const previousPayload = message.extra.vvvTheaterCompanion;
                     // U1.7.2：七条最终落地必须是“先完整合并成功，再把sidecar标成ok”。
                     // 旧版先写 message.extra=ok 再调用合并器，一旦合并器缺失/抛错，就会出现
-                    // “卡片已经显示，但后台仍判失败/状态错乱”的半提交。这里用状态快照做失败回滚。
+                    // “卡片已经显示，但后台仍判失败/Trạng thái错乱”的半提交。这里用Trạng thái快照做失败回滚。
                     const liveStateBeforeCompanionMerge = stateRuntime.state;
                     const companionMergeRollback = clone(liveStateBeforeCompanionMerge);
                     try {
                         if (previousPayload) removeCompanionPayload(previousPayload);
                         mergeCompanionPayload(payload);
                     } catch (mergeError) {
-                        // 保持顶层 state 对象身份不变，避免破坏当前聊天 scope；只把内容原地回滚。
+                        // 保持顶层 state 对象Thân phận不变，避免破坏当前聊天 scope；只把内容原地回滚。
                         for (const key of Object.keys(liveStateBeforeCompanionMerge)) delete liveStateBeforeCompanionMerge[key];
                         Object.assign(liveStateBeforeCompanionMerge, companionMergeRollback);
                         record.status = 'merge-error';
@@ -15311,7 +15311,7 @@ ${digests.join('\n\n')}`,{
             if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)return;
             try {
                 if (record.kind === 'legacyTakeover' && capturedState?.takeover?.userInitiated !== true) {
-                    record.status='stale-no-consent';record.applied=true;record.error='R9S1已阻止未明确授权的旧档任务自动续跑';record.updatedAt=Date.now();continue;
+                    record.status='stale-no-consent';record.applied=true;record.error='R9S1已阻止Chưa xác định授权的旧档任务自动续跑';record.updatedAt=Date.now();continue;
                 }
                 let task=(await serverFetch(`/tasks/${encodeURIComponent(record.id)}`)).task;
                 if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)return;
@@ -15381,7 +15381,7 @@ ${digests.join('\n\n')}`,{
             try{
                 const applied=await applyCompletedJob(record,task);
                 changed=changed||Boolean(applied)||Boolean(record.applied);
-            }catch(error){console.warn('[vvv记忆中枢] 恢复已完成主记忆任务失败',error);}
+            }catch(error){console.warn('[vvv记忆中枢] 恢复Đã hoàn thành主记忆任务失败',error);}
         }
         if(changed&&chatScopeIsCurrent(scope)&&stateRuntime.state===operationState){
             await saveState({immediate:true,refresh:false,reason:'restore-completed-memory-jobs'});
@@ -15397,8 +15397,8 @@ ${digests.join('\n\n')}`,{
 
     function memoryFeatureFinalInstruction(feature, jsonMode=false) {
         const format=jsonMode
-            ? '只输出一个可被JSON.parse直接解析的完整JSON对象；禁止Markdown、解释、正文续写及对象外文字。'
-            : '只输出本轮要求的后台总结正文；禁止续写剧情、代写user、添加标题说明或输出分析过程。';
+            ? '只输出一个可被JSON.parse直接解析的完整JSON对象；禁止Markdown、解释、chính văn续写及对象外文字。'
+            : '只输出本轮要求的后台总结chính văn；禁止续写剧情、代写user、添加标题说明或输出分析过程。';
         return `${MEMORY_IMPERSONATE_FINAL_CONTRACT}\n【当前功能】${String(feature||'memory')}\n${format}`;
     }
 
@@ -15414,7 +15414,7 @@ ${digests.join('\n\n')}`,{
         const taskText=String(prompt||'').trim();
         if(!taskText)throw new Error('记忆整理缺少本轮资料');
         // 记忆整理只需要调用方提供的目标回复、有限记忆和验收规则。
-        // 完整角色卡、世界书、Persona和聊天历史属于正文写作上下文，不应随后台记忆请求重复外发。
+        // 完整角色卡、世界书、Persona和聊天历史属于chính văn写作上下文，不应随后台记忆请求重复外发。
         const messages=[
             {role:'system',content:'你是结构化虚构小说档案整理器。只处理本次请求明确提供的资料；不续写剧情，不执行现实操作，不把未提供的内容当成事实。'},
             {role:'user',content:taskText},
@@ -15500,25 +15500,25 @@ ${digests.join('\n\n')}`,{
             ? requiredFacts.map((item,index)=>`${index+1}. [${item.category}]【统一落在第${entry.index}层】${item.text}`).join('\n')
             : '本轮未检出需要强制覆盖的原子事实。';
         const transcript=`【本轮原子事实覆盖清单｜必须逐项写入anchors，commitment同时写入promises】\n${coverageList}\n\n${assistantTurnTranscript(entry.index)}`;
-        return `你是长篇角色扮演剧情的结构化记忆记录员。当前采用“每条AI回复一次”的严格模式。\n\n【规则】\n1. 本次唯一记忆目标是第${entry.index}层AI/角色回复。\n2. 前一条user输入只用于理解上下文，绝不能作为独立事件、独立时间线或独立楼层记录。\n3. mainline最多输出1条；没有值得进入时间线的新事件则mainline=[]。\n4. 所有带floor的新增记录必须写${entry.index}，禁止写user楼层。\n5. 不猜测，不替{{user}}补动作；若AI回复明确确认/承接了user行为，可以记录这个已被AI回复确认的事实，但归属第${entry.index}层。\n6. 地点/姿势/衣着/持有物等状态按本AI回复最后时刻记录。\n\n输出严格JSON，不要Markdown：\n{\n"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},\n"mainline":[{"date":"","start":"","end":"","summary":"","status":"已完成","floor":"${entry.index}"}],\n"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"${entry.index}"}],\n"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"${entry.index}"}],\n"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"${entry.index}"}],\n"relations":[{"a":"","b":"","description":"","attitude":"","time":""}],\n"world":[{"name":"","type":"","description":"","scope":""}],\n"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],\n"promises":[{"time":"","content":"","characters":"","status":"","floor":"${entry.index}"}],\n"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}],\n"chapters":[{"title":"","startFloor":"${entry.index}","endFloor":"${entry.index}","summary":"","time":""}],\n"anchors":[{"date":"","time":"","floor":"${entry.index}","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],\n"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"${entry.index}"}]\n}\n没有新增就返回空数组。未知字段留空。一次行为不得脑补成永久喜好。\n\n本次唯一资料与目标：\n${transcript}`;
+        return `你是长篇角色扮演剧情的结构化记忆记录员。当前采用“每条AI回复一次”的严格模式。\n\n【规则】\n1. 本次唯一记忆目标是第${entry.index}层AI/角色回复。\n2. 前一条user输入只用于理解上下文，绝不能作为独立事件、独立Dòng thời gian或独立Tầng记录。\n3. mainline最多输出1条；没有值得进入Dòng thời gian的新事件则mainline=[]。\n4. 所有带floor的新增记录必须写${entry.index}，禁止写userTầng。\n5. 不猜测，不替{{user}}补动作；若AI回复明确确认/承接了user行为，可以记录这个已被AI回复确认的事实，但归属第${entry.index}层。\n6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n\n输出严格JSON，不要Markdown：\n{\n"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},\n"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}],\n"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"${entry.index}"}],\n"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"${entry.index}"}],\n"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"${entry.index}"}],\n"relations":[{"a":"","b":"","description":"","attitude":"","time":""}],\n"world":[{"name":"","type":"","description":"","scope":""}],\n"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],\n"promises":[{"time":"","content":"","characters":"","status":"","floor":"${entry.index}"}],\n"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}],\n"chapters":[{"title":"","startFloor":"${entry.index}","endFloor":"${entry.index}","summary":"","time":""}],\n"anchors":[{"date":"","time":"","floor":"${entry.index}","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],\n"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"${entry.index}"}]\n}\n没有新增就返回空数组。Chưa rõ字段留空。一次行为不得脑补成永久喜好。\n\n本次唯一资料与目标：\n${transcript}`;
     }
 
     function extractionPromptV16(targetFloor=null) {
         const prompt = extractionPrompt(targetFloor)
-            .replace('3. mainline最多输出1条；没有值得进入时间线的新事件则mainline=[]。','3. 目标AI回复只要包含实质剧情、动作、对话结果或状态变化，mainline必须且只能输出1条60至260字概括；只有纯问候、纯占位或确实没有任何剧情事实时才可mainline=[]。')
-            .replace('6. 地点/姿势/衣着/持有物等状态按本AI回复最后时刻记录。','6. 地点/姿势/衣着/持有物等状态按本AI回复最后时刻记录。\n7. 所有输出字段都必须直接取证于本次目标AI回复；不得把较早楼层、已有约定或其他记忆改写成本层事件。')
+            .replace('3. mainline最多输出1条；没有值得进入Dòng thời gian的新事件则mainline=[]。','3. 目标AI回复只要包含实质剧情、动作、对话结果或Trạng thái变化，mainline必须且只能输出1条60至260字概括；只有纯问候、纯占位或确实没有任何剧情事实时才可mainline=[]。')
+            .replace('6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。','6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n7. 所有输出字段都必须直接取证于本次目标AI回复；不得把较早Tầng、已有Lời hẹn或其他记忆改写成本层事件。')
             .replace('"relations":[{"a":"","b":"","description":"","attitude":"","time":""}]','"relations":[{"a":"","b":"","description":"","attitude":"写清当前心理态度","psychologyChange":"本轮心理变化","time":""}]')
             .replace('"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}]','"items":[{"itemId":"","name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}]')
-            .replace('"promises":[{"time":"","content":"","characters":"","status":"","floor":','"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"待兑现|进行中|默认已履行|已兑现|长期有效|条件未触发|逾期未确认|取消","floor":')
+            .replace('"promises":[{"time":"","content":"","characters":"","status":"","floor":','"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"Chờ thực hiện|Đang diễn ra|默认已履行|Đã thực hiện|长期有效|条件未触发|逾期未确认|Hủy","floor":')
             .replace('"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}]','"secrets":[{"secretId":"","subject":"","content":"","knowers":"","suspects":"","unknown":""}]')
-            .replace('一次行为不得脑补成永久喜好。','一次行为不得脑补成永久喜好。promises只写明确成立且仍待兑现或进行中的约定；动作摘录、人物反应、台词提示、<user_input>/共创者确认、写作任务和仅仅提到“答应/约定”的叙述一律不得写入promises。人物关系返回截至本轮末的当前关系与心理态度；相同人物对只更新，不重复建卡。物品、约定、秘密优先沿用已有ID并更新当前状态。日常短期约定跨过执行窗口且后文无反证时可标“默认已履行”，长期承诺绝不能自动完成。');
-        return `${prompt}\n\n【fixed22 时间线精度】mainline.date 与 mainline.start 是一级记忆键：目标AI回复的 <time> 或明确剧情时间里只要存在日期/时分，就必须逐字提取，不得留空；事件概括必须说明“发生了什么”，不要只写情绪判断。promises.time/due 表示约定兑现时间，不等于创建时间；创建时间由程序按本层 <time> 自动绑定。跨过午夜时必须以目标AI回复当前 <time> 的日期为准，不能沿用上一层旧日期。`;
+            .replace('一次行为不得脑补成永久喜好。','一次行为不得脑补成永久喜好。promises只写明确成立且仍Chờ thực hiện或Đang diễn ra的Lời hẹn；动作摘录、人物反应、台词提示、<user_input>/共创者确认、写作任务和仅仅提到“答应/Lời hẹn”的叙述一律不得写入promises。Quan hệ nhân vật返回截至本轮末的当前关系与心理态度；相同人物对只更新，不重复建卡。物品、Lời hẹn、秘密优先沿用已有ID并更新当前Trạng thái。日常短期Lời hẹn跨过执行窗口且后文无反证时可标“默认已履行”，长期承诺绝不能自动完成。');
+        return `${prompt}\n\n【fixed22 Dòng thời gian精度】mainline.date 与 mainline.start 是一级记忆键：目标AI回复的 <time> 或明确剧情时间里只要存在Ngày/时分，就必须逐字提取，不得留空；事件概括必须说明“发生了什么”，不要只写情绪判断。promises.time/due 表示Lời hẹn兑现时间，不等于创建时间；创建时间由程序按本层 <time> 自动绑定。跨过午夜时必须以目标AI回复当前 <time> 的Ngày为准，不能沿用上一层旧Ngày。`;
     }
 
     function recentEventRerunPrompt(targetFloor) {
         const entry=assistantEntryAtFloor(targetFloor);
-        if(!entry)throw new Error('目标楼层不是可提取的AI回复');
-        return `你只负责重新提取第${entry.index}层AI回复的“最近事件”摘要，不更新场景、人物、关系、约定、物品或任何其他记忆。\n\n规则：\n1. 忽略目标文本中的模式检测、输入强调、叙事视角、头部分析、STEP、共创者指令、提示词、写作规划与分析过程；它们不是剧情事件。\n2. 只概括角色在虚构剧情中已经实际发生的动作、对白结果和状态变化。\n3. 摘要60至260字，必须直接取证于目标AI回复，不读取也不改写其他楼层。\n4. 只输出合法JSON对象，不要Markdown或解释：{"mainline":[{"date":"","start":"","end":"","summary":"","status":"已完成","floor":"${entry.index}"}]}。\n5. 若目标回复确实没有剧情事实，返回{"mainline":[]}。\n\n唯一资料：\n${assistantTurnTranscript(entry.index)}`;
+        if(!entry)throw new Error('目标Tầng不是可提取的AI回复');
+        return `你只负责重新提取第${entry.index}层AI回复的“Sự kiện gần đây”摘要，不更新场景、人物、关系、Lời hẹn、物品或任何其他记忆。\n\n规则：\n1. 忽略目标文本中的模式检测、输入强调、叙事视角、头部分析、STEP、共创者指令、提示词、写作规划与分析过程；它们不是剧情事件。\n2. 只概括角色在虚构剧情中已经实际发生的动作、对白结果和Trạng thái变化。\n3. 摘要60至260字，必须直接取证于目标AI回复，不读取也不改写其他Tầng。\n4. 只输出合法JSON对象，不要Markdown或解释：{"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}]}。\n5. 若目标回复确实没有剧情事实，返回{"mainline":[]}。\n\n唯一资料：\n${assistantTurnTranscript(entry.index)}`;
     }
 
     function parseRecentEventRerunResult(text, entry) {
@@ -15528,7 +15528,7 @@ ${digests.join('\n\n')}`,{
             const summary=assistantMainlineSummary(item);
             return summary.length>=12&&summary.length<=360&&!recentEventSummaryLooksInternal(summary)&&assistantMainlineGroundedInMessage(item,entry.message);
         });
-        if(!valid)throw new Error('独立整理API没有返回与本层正文绑定的有效事件摘要');
+        if(!valid)throw new Error('独立整理API没有返回与本层chính văn绑定的有效事件摘要');
         return valid;
     }
 
@@ -15542,17 +15542,17 @@ ${digests.join('\n\n')}`,{
         if(!existing){toast('这条是手工事件或已不存在，不能用AI覆盖','warn');return false;}
         if(!independentApiReady()){toast('请先配置独立整理/总结API。','info');return false;}
         const pending=(operationState.summaryJobs||[]).some(record=>record?.kind==='recentEventRerun'&&Number(record.floor)===floor&&!record.applied&&['queued','running','completed'].includes(String(record.status||'')));
-        if(stateRuntime.recentEventRerunFloor>=0||pending){toast('已有最近事件正在重新提取，请等待完成','info');return false;}
+        if(stateRuntime.recentEventRerunFloor>=0||pending){toast('已有Sự kiện gần đây正在重新提取，请等待完成','info');return false;}
         stateRuntime.recentEventRerunFloor=floor;
-        setBusy(true,`正在重新提取第 ${floor} 层最近事件…`);
+        setBusy(true,`正在重新提取第 ${floor} 层Sự kiện gần đây…`);
         try{
             const dedupeKey=`recent-event-rerun:${getChatKey()}:${floor}:${entry.signature}:${Date.now()}:${uid('rerun')}`;
             const result=await runFeature('extract',recentEventRerunPrompt(floor),{kind:'recentEventRerun',floor,sourceMessageSignature:entry.signature,dedupeKey},{jsonMode:true,timeoutMs:95000});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const applied=result.record&&result.task?await applyCompletedJob(result.record,result.task):false;
-            if(!applied)throw new Error(result.record?.error||'最近事件结果未成功写入');
+            if(!applied)throw new Error(result.record?.error||'Sự kiện gần đây结果未成功写入');
             renderCurrentTab();
-            toast(`第 ${floor} 层最近事件已重新提取`,'success');
+            toast(`第 ${floor} 层Sự kiện gần đây已重新提取`,'success');
             return true;
         }catch(error){
             if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState)toast(`重新提取失败：${error.message}`,'error');
@@ -15565,7 +15565,7 @@ ${digests.join('\n\n')}`,{
 
     async function extractWithAI({ manual=false, fromRetry=false, targetFloor=null, targetSignature='', force=false }={}) {
         if(stateRuntime.extracting)return false;
-        if(!stateRuntime.state?.settings.enabled){if(manual)toast('记忆中枢已关闭，无法运行主记忆整理。请在设置中开启。','info');return false;}
+        if(!stateRuntime.state?.settings.enabled){if(manual)toast('记忆中枢已Đóng，无法运行主记忆整理。请在设置中开启。','info');return false;}
         const operationScope=captureChatScope();const operationState=stateRuntime.state;
         const hasExplicitFloor=hasExplicitFloorTarget(targetFloor);
         let entry=hasExplicitFloor?assistantEntryAtFloor(Number(targetFloor)):latestAssistantMemoryCandidate();
@@ -15595,7 +15595,7 @@ ${digests.join('\n\n')}`,{
             await saveState({immediate:true,refresh:true,reason:'assistant-memory-once'});if(!chatScopeIsCurrent(operationScope))return false;scheduleReindex();notifyPipelineDone(`第 ${entry.index} 层记忆整理完成，可以继续下一条。`,'success',{fullscreen:true});runLaterForScope(operationScope,30,()=>drainAssistantMemoryQueue());return true;
         }catch(error){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            console.error('[vvv记忆中枢] 单AI楼层整理失败',error);
+            console.error('[vvv记忆中枢] 单AITầng整理失败',error);
             if(isPermanentAiRetryError(error))return finalizeFailedAssistantMemory(error,{targetFloor:entry.index,targetSignature:entry.signature,reason:'permanent-error'});
             const scheduled=scheduleExtractRetry(error,{targetFloor:entry.index,targetSignature:entry.signature});
             if(!scheduled)return finalizeFailedAssistantMemory(error,{targetFloor:entry.index,targetSignature:entry.signature,reason:'retry-limit'});
@@ -15605,11 +15605,11 @@ ${digests.join('\n\n')}`,{
     }
 
     function bigSummaryPrompt(rows) {
-        return `请把以下${rows.length}份连续阶段总结合并成一份大总结。保留完整时间轴、人物关系演变、关键因果、长期约定、物品和未解决伏笔；去掉重复句但不要遗漏变化。只输出总结正文。\n\n${rows.map((row, index) => `【阶段${index + 1}｜${row['覆盖楼层']}】\n${row['总结内容']}`).join('\n\n')}`;
+        return `请把以下${rows.length}份连续阶段总结合并成一份大总结。保留完整时间轴、Quan hệ nhân vật演变、关键因果、长期Lời hẹn、物品和未解决伏笔；去掉重复句但不要遗漏变化。只输出总结chính văn。\n\n${rows.map((row, index) => `【阶段${index + 1}｜${row['Tầng bao phủ']}】\n${row['Nội dung tổng kết']}`).join('\n\n')}`;
     }
 
     function eraSummaryPrompt(rows) {
-        return `你正在整理超长角色扮演档案。请把以下${rows.length}份连续“大总结”压缩成一份“时代总结”。它用于1000层级别乃至2万层长期记忆，必须保留：时间轴、核心人物身份/关系演变、恋爱亲密分手复合等里程碑、身份揭示/伤亡/搬家/毕业/工作/长期目标、仍有效约定/秘密边界/关键物品/未解决伏笔，以及影响未来行为的因果。删除重复日常描写但不要抹掉重大事实。禁止脑补。只输出高密度总结正文。\n\n${rows.map((row,index)=>`【大总结${index+1}｜${row['覆盖楼层']}】\n${row['总结内容']}`).join('\n\n')}`;
+        return `你正在整理超长角色扮演档案。请把以下${rows.length}份连续“大总结”压缩成一份“时代总结”。它用于1000层级别乃至2万层长期记忆，必须保留：时间轴、核心人物Thân phận/关系演变、恋爱亲密分手复合等里程碑、Thân phận揭示/伤亡/搬家/毕业/工作/长期目标、仍有效Lời hẹn/秘密边界/关键物品/未解决伏笔，以及影响未来行为的因果。删除重复日常描写但不要抹掉重大事实。禁止脑补。只输出高密度总结chính văn。\n\n${rows.map((row,index)=>`【大总结${index+1}｜${row['Tầng bao phủ']}】\n${row['Nội dung tổng kết']}`).join('\n\n')}`;
     }
 
     function standardStageRange(start,end) {
@@ -15618,14 +15618,14 @@ ${digests.join('\n\n')}`,{
     }
 
     function findStageSummaryByRange(start,end) {
-        return (stateRuntime.state?.tables?.summaries||[]).slice().reverse().find(row=>(row['类型']||row['表格类型'])==='阶段总结' && parseRange(row['覆盖楼层']).start===start && parseRange(row['覆盖楼层']).end===end);
+        return (stateRuntime.state?.tables?.summaries||[]).slice().reverse().find(row=>(row['Loại']||row['Loại bảng'])==='阶段总结' && parseRange(row['Tầng bao phủ']).start===start && parseRange(row['Tầng bao phủ']).end===end);
     }
 
     function recalculateSummaryProgress() {
         const s=stateRuntime.state;if(!s)return;
         const interval=Math.max(5,Number(s.settings.summaryEvery||20));
         const chatLength=context()?.chat?.length||0;
-        const completed=new Set(completedSummaryRows('阶段总结').map(row=>{const r=parseRange(row['覆盖楼层']);return `${r.start}-${r.end}`}));
+        const completed=new Set(completedSummaryRows('阶段总结').map(row=>{const r=parseRange(row['Tầng bao phủ']);return `${r.start}-${r.end}`}));
         let next=0;
         while(next+interval<=chatLength && completed.has(`${next}-${next+interval-1}`)) next+=interval;
         s.progress.nextSummaryStart=next;
@@ -15639,13 +15639,13 @@ ${digests.join('\n\n')}`,{
         const summaries=stateRuntime.state.tables.summaries||[];
         const bigIds=[];
         for(const row of summaries){
-            if((row['类型']||row['表格类型'])==='大总结' && (row._sourceSummaryIds||[]).includes(sourceId)){
-                row._previousStatus=row._previousStatus||row['状态']; row['状态']='需重算'; row._staleReason=reason; bigIds.push(row._id);
+            if((row['Loại']||row['Loại bảng'])==='大总结' && (row._sourceSummaryIds||[]).includes(sourceId)){
+                row._previousStatus=row._previousStatus||row['Trạng thái']; row['Trạng thái']='需重算'; row._staleReason=reason; bigIds.push(row._id);
             }
         }
         for(const row of summaries){
-            if((row['类型']||row['表格类型'])==='时代总结' && (row._sourceSummaryIds||[]).some(id=>bigIds.includes(id))){
-                row._previousStatus=row._previousStatus||row['状态']; row['状态']='需重算'; row._staleReason='上游大总结需重算';
+            if((row['Loại']||row['Loại bảng'])==='时代总结' && (row._sourceSummaryIds||[]).some(id=>bigIds.includes(id))){
+                row._previousStatus=row._previousStatus||row['Trạng thái']; row['Trạng thái']='需重算'; row._staleReason='上游大总结需重算';
             }
         }
         return bigIds;
@@ -15653,24 +15653,24 @@ ${digests.join('\n\n')}`,{
 
     async function rebuildDependentSummaryChain(stageRow, operationScope=captureChatScope(), operationState=stateRuntime.state) {
         if(!stageRow||!operationScope||!operationState||!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-        const s=operationState;const bigRows=(s.tables.summaries||[]).filter(row=>(row['类型']||row['表格类型'])==='大总结' && (row._sourceSummaryIds||[]).includes(stageRow._id));
+        const s=operationState;const bigRows=(s.tables.summaries||[]).filter(row=>(row['Loại']||row['Loại bảng'])==='大总结' && (row._sourceSummaryIds||[]).includes(stageRow._id));
         for(const big of bigRows){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-            const sources=(big._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['类型']||row['表格类型'])==='阶段总结' && /完成|成功/.test(row['状态']||''));
-            if(sources.length !== (big._sourceSummaryIds||[]).length){ big['状态']='需重算'; big._staleReason='缺少上游阶段总结'; continue; }
+            const sources=(big._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['Loại']||row['Loại bảng'])==='阶段总结' && /完成|成功/.test(row['Trạng thái']||''));
+            if(sources.length !== (big._sourceSummaryIds||[]).length){ big['Trạng thái']='需重算'; big._staleReason='缺少上游阶段总结'; continue; }
             const result=await runValidatedTransientLlm('bigSummary',bigSummaryPrompt(sources),{workflowMeta:{workflow:'bigSummary-rebuild',sourceSummaryIds:sources.map(row=>row._id)},validate:value=>requireSummaryQuality(value,'大总结',100),maxAttempts:3,label:'大总结重算'});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-            big._history ||= []; big._history.push({content:big['总结内容'],time:nowText(),reason:'上游阶段总结重做'});
-            big['总结内容']=result.text.trim(); big['模型']=result.model||big['模型']; big['生成时间']=nowText(); big['状态']='已完成'; delete big._staleReason;
-            const eras=(s.tables.summaries||[]).filter(row=>(row['类型']||row['表格类型'])==='时代总结' && (row._sourceSummaryIds||[]).includes(big._id));
+            big._history ||= []; big._history.push({content:big['Nội dung tổng kết'],time:nowText(),reason:'上游阶段总结重做'});
+            big['Nội dung tổng kết']=result.text.trim(); big['模型']=result.model||big['模型']; big['Thời điểm tạo']=nowText(); big['Trạng thái']='Đã hoàn thành'; delete big._staleReason;
+            const eras=(s.tables.summaries||[]).filter(row=>(row['Loại']||row['Loại bảng'])==='时代总结' && (row._sourceSummaryIds||[]).includes(big._id));
             for(const era of eras){
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-                const bigSources=(era._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['类型']||row['表格类型'])==='大总结' && /完成|成功/.test(row['状态']||''));
-                if(bigSources.length !== (era._sourceSummaryIds||[]).length){ era['状态']='需重算'; era._staleReason='缺少上游大总结'; continue; }
+                const bigSources=(era._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['Loại']||row['Loại bảng'])==='大总结' && /完成|成功/.test(row['Trạng thái']||''));
+                if(bigSources.length !== (era._sourceSummaryIds||[]).length){ era['Trạng thái']='需重算'; era._staleReason='缺少上游大总结'; continue; }
                 const er=await runValidatedTransientLlm('eraSummary',eraSummaryPrompt(bigSources),{workflowMeta:{workflow:'eraSummary-rebuild',sourceSummaryIds:bigSources.map(row=>row._id)},validate:value=>requireSummaryQuality(value,'时代总结',120),maxAttempts:3,label:'时代总结重算'});
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-                era._history ||= []; era._history.push({content:era['总结内容'],time:nowText(),reason:'上游链重做'});
-                era['总结内容']=er.text.trim(); era['模型']=er.model||era['模型']; era['生成时间']=nowText(); era['状态']='已完成'; delete era._staleReason;
+                era._history ||= []; era._history.push({content:era['Nội dung tổng kết'],time:nowText(),reason:'上游链重做'});
+                era['Nội dung tổng kết']=er.text.trim(); era['模型']=er.model||era['模型']; era['Thời điểm tạo']=nowText(); era['Trạng thái']='Đã hoàn thành'; delete era._staleReason;
             }
         }
         return chatScopeIsCurrent(operationScope)&&stateRuntime.state===s;
@@ -15681,15 +15681,15 @@ ${digests.join('\n\n')}`,{
         if(!isFixedStageSummaryText(fixedText))throw new Error('阶段总结不是U1.6.1固定格式，已拒绝写入；原聊天保持可见');
         const s=stateRuntime.state; let row=existing||findStageSummaryByRange(start,end);
         if(row){
-            row._history ||= []; row._history.push({content:row['总结内容'],time:nowText(),reason:source});
-            row['总结内容']=fixedText; row['状态']='已完成'; row['模型']=result.model||row['模型']||'独立总结API'; row['生成时间']=nowText(); row['覆盖楼层']=`${start}-${end}`; row._error='';row._structuredSummary=result.structured||null;row._formatVersion=Number(result._formatVersion||STAGE_SUMMARY_FORMAT_VERSION);row._updatedAt=Date.now();
+            row._history ||= []; row._history.push({content:row['Nội dung tổng kết'],time:nowText(),reason:source});
+            row['Nội dung tổng kết']=fixedText; row['Trạng thái']='Đã hoàn thành'; row['模型']=result.model||row['模型']||'独立总结API'; row['Thời điểm tạo']=nowText(); row['Tầng bao phủ']=`${start}-${end}`; row._error='';row._structuredSummary=result.structured||null;row._formatVersion=Number(result._formatVersion||STAGE_SUMMARY_FORMAT_VERSION);row._updatedAt=Date.now();
         } else {
             s.summaryRecycleBin ||= [];
-            const recycleIndex=s.summaryRecycleBin.findIndex(old=> (old['类型']||old['表格类型'])==='阶段总结' && parseRange(old['覆盖楼层']).start===start && parseRange(old['覆盖楼层']).end===end);
+            const recycleIndex=s.summaryRecycleBin.findIndex(old=> (old['Loại']||old['Loại bảng'])==='阶段总结' && parseRange(old['Tầng bao phủ']).start===start && parseRange(old['Tầng bao phủ']).end===end);
             const recycled=recycleIndex>=0?s.summaryRecycleBin.splice(recycleIndex,1)[0]:null;
             if(recycled){
-                row={...recycled,'状态':'已完成','总结内容':fixedText,'覆盖楼层':`${start}-${end}`,'模型':result.model||recycled['模型']||'独立总结API','生成时间':nowText(),'锁定':'否','隐藏状态':'未隐藏',_history:[...(recycled._history||[]),{content:recycled['总结内容'],time:nowText(),reason:'删除前版本'}],_restoredFromRecycle:true,_structuredSummary:result.structured||null,_formatVersion:Number(result._formatVersion||STAGE_SUMMARY_FORMAT_VERSION),_updatedAt:Date.now()};
-            } else row={'类型':'阶段总结','状态':'已完成','总结内容':fixedText,'覆盖楼层':`${start}-${end}`,'模型':result.model||'独立总结API','生成时间':nowText(),'锁定':'否','隐藏状态':'未隐藏',_id:uid('stage-summary'),_history:[],_includedInBig:false,_includedInEra:false,_structuredSummary:result.structured||null,_formatVersion:Number(result._formatVersion||STAGE_SUMMARY_FORMAT_VERSION),_updatedAt:Date.now()};
+                row={...recycled,'Trạng thái':'Đã hoàn thành','Nội dung tổng kết':fixedText,'Tầng bao phủ':`${start}-${end}`,'模型':result.model||recycled['模型']||'独立总结API','Thời điểm tạo':nowText(),'锁定':'否','隐藏Trạng thái':'未隐藏',_history:[...(recycled._history||[]),{content:recycled['Nội dung tổng kết'],time:nowText(),reason:'删除前版本'}],_restoredFromRecycle:true,_structuredSummary:result.structured||null,_formatVersion:Number(result._formatVersion||STAGE_SUMMARY_FORMAT_VERSION),_updatedAt:Date.now()};
+            } else row={'Loại':'阶段总结','Trạng thái':'Đã hoàn thành','Nội dung tổng kết':fixedText,'Tầng bao phủ':`${start}-${end}`,'模型':result.model||'独立总结API','Thời điểm tạo':nowText(),'锁定':'否','隐藏Trạng thái':'未隐藏',_id:uid('stage-summary'),_history:[],_includedInBig:false,_includedInEra:false,_structuredSummary:result.structured||null,_formatVersion:Number(result._formatVersion||STAGE_SUMMARY_FORMAT_VERSION),_updatedAt:Date.now()};
             s.tables.summaries.push(row);
         }
         recalculateSummaryProgress();
@@ -15711,7 +15711,7 @@ ${digests.join('\n\n')}`,{
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const row=await upsertStageSummaryFromText(start,end,result,{existing:replaceExisting?existing:null,source:replaceExisting?'重做本段':'阶段总结'});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            // 先保存“总结存在但原文未隐藏”的安全状态；随后再hide并再次落盘。
+            // 先保存“总结存在但原文未隐藏”的安全Trạng thái；随后再hide并再次落盘。
             await saveState({ immediate:true, refresh:true, reason:replaceExisting?'summary-redo-before-hide':'summary-create-before-hide', forceSnapshot:Boolean(replaceExisting) });
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             if(stateRuntime.state.settings.autoHideSummarized){
@@ -15722,7 +15722,7 @@ ${digests.join('\n\n')}`,{
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
                 } catch(error){
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-                    row['隐藏状态']=`隐藏失败：${error.message}`;
+                    row['隐藏Trạng thái']=`隐藏失败：${error.message}`;
                     await saveState({immediate:true,refresh:true,reason:'summary-hide-failed'});
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
                     console.warn('[vvv小剧场] 阶段总结已保存，但自动hide失败',error);
@@ -15752,10 +15752,10 @@ ${digests.join('\n\n')}`,{
     }
 
     async function redoStageSummary(row) {
-        if(!row) return false;const operationScope=captureChatScope(),operationState=stateRuntime.state;const range=parseRange(row['覆盖楼层']);
+        if(!row) return false;const operationScope=captureChatScope(),operationState=stateRuntime.state;const range=parseRange(row['Tầng bao phủ']);
         if(!operationScope||!operationState)return false;
         if(range.start===null||range.end===null) throw new Error('无法识别总结范围');
-        if((row['类型']||row['表格类型'])!=='阶段总结') throw new Error('只有阶段总结支持按原文重做');
+        if((row['Loại']||row['Loại bảng'])!=='阶段总结') throw new Error('只有阶段总结支持按原文重做');
         if(row['锁定']==='是') throw new Error('该总结已锁定，请先解锁');
         await createSafetySnapshot(`before-redo-${range.start}-${range.end}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
@@ -15784,17 +15784,17 @@ ${digests.join('\n\n')}`,{
         if(row['锁定']==='是') throw new Error('该总结已锁定，请先解锁');
         const history=Array.isArray(row._history)?row._history:[];
         if(!history.length) throw new Error('这条总结没有可恢复的历史版本');
-        await createSafetySnapshot(`before-summary-version-restore-${row['覆盖楼层']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
+        await createSafetySnapshot(`before-summary-version-restore-${row['Tầng bao phủ']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         const previous=history.at(-1);
-        if((row['类型']||row['表格类型'])==='阶段总结'&&!isFixedStageSummaryText(previous?.content||''))throw new Error('上一版是旧自由格式阶段总结，U1.6.1禁止恢复为“已完成”；请用“重做本段”从原聊天重建');
+        if((row['Loại']||row['Loại bảng'])==='阶段总结'&&!isFixedStageSummaryText(previous?.content||''))throw new Error('上一版是旧自由格式阶段总结，U1.6.1禁止恢复为“Đã hoàn thành”；请用“重做本段”从原聊天重建');
         history.pop();
-        const current={content:row['总结内容'],time:nowText(),reason:'恢复前的当前版本'};
-        row['总结内容']=String(previous?.content||'').trim();
-        row['生成时间']=nowText(); row['状态']='已完成';
+        const current={content:row['Nội dung tổng kết'],time:nowText(),reason:'恢复前的当前版本'};
+        row['Nội dung tổng kết']=String(previous?.content||'').trim();
+        row['Thời điểm tạo']=nowText(); row['Trạng thái']='Đã hoàn thành';
         history.push(current); row._history=history;
         let chainOk=true;
-        if((row['类型']||row['表格类型'])==='阶段总结') {
+        if((row['Loại']||row['Loại bảng'])==='阶段总结') {
             markDependentSummariesStale(row._id,'阶段总结恢复了历史版本');
             await saveState({immediate:true,refresh:true,reason:'summary-version-restore-mark-stale',forceSnapshot:true});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
@@ -15811,7 +15811,7 @@ ${digests.join('\n\n')}`,{
         try{
             await createSafetySnapshot(`before-supplement-${start}-${end}`,{force:true});if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const result=requireSummaryQuality(await generateCompleteStageSummary(start,end),'局部补充',60);if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            operationState.tables.summaries.push({'类型':'局部补充','状态':'已完成','总结内容':result.text.trim(),'覆盖楼层':`${start}-${end}`,'模型':result.model||'独立总结API','生成时间':nowText(),'锁定':'否','隐藏状态':'不参与自动隐藏',_id:uid('supplement-summary'),_history:[]});
+            operationState.tables.summaries.push({'Loại':'局部补充','Trạng thái':'Đã hoàn thành','Nội dung tổng kết':result.text.trim(),'Tầng bao phủ':`${start}-${end}`,'模型':result.model||'独立总结API','Thời điểm tạo':nowText(),'锁定':'否','隐藏Trạng thái':'不参与自动隐藏',_id:uid('supplement-summary'),_history:[]});
             await saveState({immediate:true,refresh:true,reason:'summary-supplement',forceSnapshot:true});scheduleReindex();toast(`已生成 ${start}-${end} 层局部补充记忆，不改变主总结进度`,'success');return true;
         }catch(error){if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState)toast(`补充总结失败：${error.message}`,'error');return false;}finally{if(stateRuntime.summaryOperationToken===operationToken){stateRuntime.summaryOperationToken=null;stateRuntime.summaryRunning=false;}if(chatScopeIsCurrent(operationScope))setBusy(false);}
     }
@@ -15820,21 +15820,21 @@ ${digests.join('\n\n')}`,{
         if(!row)return false;const operationScope=captureChatScope(),operationState=stateRuntime.state;
         if(!operationScope||!operationState)return false;
         if(row['锁定']==='是') throw new Error('该总结已锁定，请先解锁');
-        const type=row['类型']||row['表格类型']||'总结'; const range=parseRange(row['覆盖楼层']);
-        await createSafetySnapshot(`before-delete-${type}-${row['覆盖楼层']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
+        const type=row['Loại']||row['Loại bảng']||'总结'; const range=parseRange(row['Tầng bao phủ']);
+        await createSafetySnapshot(`before-delete-${type}-${row['Tầng bao phủ']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         await withDestructiveSave(async()=>{
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
             if(type==='阶段总结'){
                 markDependentSummariesStale(row._id,'上游阶段总结已删除');
-                if(range.start!==null&&range.end!==null&&row['隐藏状态']==='已隐藏'){
-                    try{await applySummaryHideState(row,false,{silent:true});}catch(error){if(chatScopeIsCurrent(operationScope))console.warn('[vvv小剧场] 删除总结时恢复原楼层失败',error);}
+                if(range.start!==null&&range.end!==null&&row['隐藏Trạng thái']==='已隐藏'){
+                    try{await applySummaryHideState(row,false,{silent:true});}catch(error){if(chatScopeIsCurrent(operationScope))console.warn('[vvv小剧场] 删除总结时恢复原Tầng失败',error);}
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
                 }
             } else if(type==='大总结'){
                 const sourceIds=new Set(row._sourceSummaryIds||[]);
                 for(const lower of operationState.tables.summaries||[]) if(sourceIds.has(lower._id)) lower._includedInBig=false;
-                for(const upper of operationState.tables.summaries||[]) if((upper['类型']||'')==='时代总结'&&(upper._sourceSummaryIds||[]).includes(row._id)){upper['状态']='需重算';upper._staleReason='上游大总结已删除';}
+                for(const upper of operationState.tables.summaries||[]) if((upper['Loại']||'')==='时代总结'&&(upper._sourceSummaryIds||[]).includes(row._id)){upper['Trạng thái']='需重算';upper._staleReason='上游大总结已删除';}
             } else if(type==='时代总结'){
                 const sourceIds=new Set(row._sourceSummaryIds||[]);
                 for(const lower of operationState.tables.summaries||[]) if(sourceIds.has(lower._id)) lower._includedInEra=false;
@@ -15850,9 +15850,9 @@ ${digests.join('\n\n')}`,{
 
     function contiguousSummaryGroup(type,includedField,count,{force=false}={}) {
         const candidates=completedSummaryRows(type).filter(row=>!row[includedField]);const groups=[];let current=[];let lastEnd=null;
-        for(const row of candidates){const range=parseRange(row['覆盖楼层']);if(range.start===null||range.end===null)continue;if(!current.length||range.start===lastEnd+1)current.push(row);else{groups.push(current);current=[row];}lastEnd=range.end;if(current.length===count)return current.slice(0,count);}
+        for(const row of candidates){const range=parseRange(row['Tầng bao phủ']);if(range.start===null||range.end===null)continue;if(!current.length||range.start===lastEnd+1)current.push(row);else{groups.push(current);current=[row];}lastEnd=range.end;if(current.length===count)return current.slice(0,count);}
         if(current.length)groups.push(current);if(!force)return [];
-        return groups.sort((a,b)=>b.length-a.length||parseRange(a[0]?.['覆盖楼层']).start-parseRange(b[0]?.['覆盖楼层']).start)[0]?.slice(0,count)||[];
+        return groups.sort((a,b)=>b.length-a.length||parseRange(a[0]?.['Tầng bao phủ']).start-parseRange(b[0]?.['Tầng bao phủ']).start)[0]?.slice(0,count)||[];
     }
 
     async function maybeCreateBigSummary({ force = false, quiet = false, throwOnError = false } = {}) {
@@ -15864,7 +15864,7 @@ ${digests.join('\n\n')}`,{
         setBusy(true, '正在合并大总结…');
         try {
             const sourceSummaryIds = rows.map(row => row._id).filter(Boolean);
-            const sourceRanges = rows.map(row => row['覆盖楼层']);
+            const sourceRanges = rows.map(row => row['Tầng bao phủ']);
             const result = await runFeature('bigSummary', bigSummaryPrompt(rows), {
                 kind: 'bigSummary', sourceSummaryIds, sourceRanges,
                 rangeLabel: `${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}`,
@@ -15910,7 +15910,7 @@ ${digests.join('\n\n')}`,{
         const end=start+interval-1;
         const existing=findStageSummaryByRange(start,end);
         // 历史被编辑/删除后，旧阶段会被标记需重算。自动流程在这里停住，避免每轮重复烧API或静默覆盖；用户可选择重做本段或从0完整重建。
-        if(existing && !/完成|成功/.test(String(existing['状态']||'')))return;
+        if(existing && !/完成|成功/.test(String(existing['Trạng thái']||'')))return;
         await createStageSummary(start, end);
     }
 
@@ -15927,7 +15927,7 @@ ${digests.join('\n\n')}`,{
             const start = Math.max(0, Number(operationState.progress.nextSummaryStart ?? 0));
             if ((context()?.chat?.length ?? 0) - start < interval) break;
             const existing=findStageSummaryByRange(start,start+interval-1);
-            if(existing&&/完成|成功/.test(String(existing['状态']||''))){operationState.progress.nextSummaryStart=start+interval;guard+=1;continue;}
+            if(existing&&/完成|成功/.test(String(existing['Trạng thái']||''))){operationState.progress.nextSummaryStart=start+interval;guard+=1;continue;}
             const ok = await createStageSummary(start, start + interval - 1, { manual: true });
             if (!ok||!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState) return false;
             guard += 1;
@@ -15946,14 +15946,14 @@ ${digests.join('\n\n')}`,{
             return 'cold';
         };
         const typeTags = Object.freeze({
-            'timeline-event':['时间线','事件'], relations:['关系','人物关系'], promises:['约定','承诺'], secret:['秘密','知情边界'],
+            'timeline-event':['Dòng thời gian','事件'], relations:['关系','Quan hệ nhân vật'], promises:['Lời hẹn','承诺'], secret:['秘密','知情边界'],
             appearance:['外观','穿着'], 'character-world':['NPC','幕后生活','世界动态'], 'episode-anchor':['事件锚点','长期记忆'], 'episode-fact':['小事件','原子事实','生活轨迹'],
-            'life-fact':['生活认知','习惯','偏好'], 'npc-identity':['NPC','身份'], chapter:['章节','长期剧情'],
+            'life-fact':['生活认知','习惯','偏好'], 'npc-identity':['NPC','Thân phận'], chapter:['章节','长期剧情'],
             'phone-wechat':['微信','通讯'], 'phone-sms':['短信','通讯'], 'phone-calls':['电话','通讯'],
             'phone-group':['微信群','通讯'], 'phone-group-profile':['微信群','群生态'],
-            'phone-order':['手机订单','消费','生活轨迹'], 'phone-order-event':['订单进度','生活轨迹'], 'phone-transaction':['手机账单','消费'], 'phone-route':['地图','路线','出行'],
-            'story-moments':['朋友圈','生活痕迹'], 'story-diary':['日记','生活痕迹'], 'story-anniversaries':['纪念日','重要日期'],
-            'chat-floor':['原始楼层','原始正文'], 'important-message':['重要楼层','原始正文'], 'stage-summary':['阶段总结'], 'big-summary':['大总结'], 'era-summary':['时代总结'],
+            'phone-order':['Đơn hàng điện thoại','消费','生活轨迹'], 'phone-order-event':['订单进度','生活轨迹'], 'phone-transaction':['手机账单','消费'], 'phone-route':['地图','路线','出行'],
+            'story-moments':['朋友圈','生活痕迹'], 'story-diary':['日记','生活痕迹'], 'story-anniversaries':['纪念日','重要Ngày'],
+            'chat-floor':['原始Tầng','原始chính văn'], 'important-message':['重要Tầng','原始chính văn'], 'stage-summary':['阶段总结'], 'big-summary':['大总结'], 'era-summary':['时代总结'],
         });
         const cleanTag = value => compactText(String(value || '').replace(/[\n\r\t]+/g, ' ').trim(), 48);
         const tagList = (...groups) => [...new Set(groups.flat(Infinity).map(cleanTag).filter(tag => tag && tag.length <= 48))].slice(0, 32);
@@ -15978,45 +15978,45 @@ ${digests.join('\n\n')}`,{
         for (const [key, def] of Object.entries(TABLE_DEFS)) {
             for (const row of s.tables[key] || []) {
                 if(!memoryRecordUsable(row))continue;
-                const range = parseRange(row['覆盖楼层'] || row['楼层']);
+                const range = parseRange(row['Tầng bao phủ'] || row['Tầng']);
                 if (key === 'mainline') {
-                    const cleanSummary=sanitizeTimelineSummary(row['事件概要'],360);
+                    const cleanSummary=sanitizeTimelineSummary(row['Tóm tắt sự kiện'],360);
                     if(!cleanSummary||recentEventSummaryLooksInternal(cleanSummary))continue;
-                    const floor = Number.isFinite(Number(row['楼层'])) ? Number(row['楼层']) : range.end;
+                    const floor = Number.isFinite(Number(row['Tầng'])) ? Number(row['Tầng']) : range.end;
                     const title = compactText(cleanSummary || def.title, 220);
-                    const detail = `日期:${row['日期'] || ''}；开始:${row['开始时间'] || ''}；结束:${row['完结时间'] || ''}；状态:${row['状态'] || ''}；事件:${cleanSummary}`;
-                    add('timeline-event', title, detail, floor, floor, /重大|关键|核心/.test(row['重要程度'] || ''), `${row['日期'] || ''} ${row['开始时间'] || ''}`.trim(), { timeline:true, tags:['时间线', row['状态'] || '', row['日期'] || ''], importanceWeight:/重大|关键|核心/.test(row['重要程度'] || '') ? 1 : 0.55 });
+                    const detail = `Ngày:${row['Ngày'] || ''}；开始:${row['Giờ bắt đầu'] || ''}；结束:${row['Giờ kết thúc'] || ''}；Trạng thái:${row['Trạng thái'] || ''}；事件:${cleanSummary}`;
+                    add('timeline-event', title, detail, floor, floor, /重大|关键|核心/.test(row['Mức quan trọng'] || ''), `${row['Ngày'] || ''} ${row['Giờ bắt đầu'] || ''}`.trim(), { timeline:true, tags:['Dòng thời gian', row['Trạng thái'] || '', row['Ngày'] || ''], importanceWeight:/重大|关键|核心/.test(row['Mức quan trọng'] || '') ? 1 : 0.55 });
                     continue;
                 }
                 if (key === 'summaries') {
                     // 需重算/失败/被删除的上级总结绝不能继续进入检索，否则AI会同时读到新阶段与旧大总结。
-                    if (!/完成|成功/.test(String(row['状态'] || '已完成')) || !String(row['总结内容'] || '').trim()) continue;
-                    const summaryType = row['类型'] || row['表格类型'] || '阶段总结';
+                    if (!/完成|成功/.test(String(row['Trạng thái'] || 'Đã hoàn thành')) || !String(row['Nội dung tổng kết'] || '').trim()) continue;
+                    const summaryType = row['Loại'] || row['Loại bảng'] || '阶段总结';
                     const type = summaryType === '时代总结' ? 'era-summary' : (summaryType === '大总结' ? 'big-summary' : 'stage-summary');
-                    add(type, `${summaryType} ${row['覆盖楼层'] || ''}`, row['总结内容'] || rowText(row, def.columns), range.start, range.end,
-                        summaryType !== '阶段总结', row['生成时间'] || '', { summaryType, tags:[summaryType], importanceWeight: summaryType === '时代总结' ? 0.95 : (summaryType === '大总结' ? 0.85 : 0.6) });
+                    add(type, `${summaryType} ${row['Tầng bao phủ'] || ''}`, row['Nội dung tổng kết'] || rowText(row, def.columns), range.start, range.end,
+                        summaryType !== '阶段总结', row['Thời điểm tạo'] || '', { summaryType, tags:[summaryType], importanceWeight: summaryType === '时代总结' ? 0.95 : (summaryType === '大总结' ? 0.85 : 0.6) });
                     continue;
                 }
-                const important = /重要|核心|关键/.test(row['重要程度'] || '') || key === 'relations' || key === 'promises';
+                const important = /重要|核心|关键/.test(row['Mức quan trọng'] || '') || key === 'relations' || key === 'promises';
                 add(key, row[def.columns[0]] || def.title, rowText(row, def.columns), range.start, range.end,
-                    important, row['日期'] || row['时间'] || row['生成时间'] || '', {
-                        tags:[def.title, row['角色A'] || '', row['角色B'] || '', row['角色名'] || '', row['姓名'] || '', row['重要程度'] || ''],
-                        characters:[row['角色A'] || '', row['角色B'] || '', row['角色名'] || '', row['姓名'] || ''],
+                    important, row['Ngày'] || row['时间'] || row['Thời điểm tạo'] || '', {
+                        tags:[def.title, row['Nhân vật A'] || '', row['Nhân vật B'] || '', row['Tên nhân vật'] || '', row['Họ tên'] || '', row['Mức quan trọng'] || ''],
+                        characters:[row['Nhân vật A'] || '', row['Nhân vật B'] || '', row['Tên nhân vật'] || '', row['Họ tên'] || ''],
                         importanceWeight: key === 'promises' ? 0.95 : (key === 'relations' ? 0.88 : (important ? 0.82 : 0.3)),
                     });
             }
         }
 
         s.secrets.filter(memoryRecordUsable).forEach(item => add('secret', item.subject, `${item.content}；知道者：${item.knowers}；怀疑者：${item.suspects}；不知道者：${item.unknown}`, Number(item._sourceFloor), Number(item._sourceFloor), true, item.updatedAt, { tags:['秘密',item.subject], characters:[item.subject], importanceWeight:1 }));
-        (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character, `${item.outfit}${item.hair ? `；发型：${item.hair}` : ''}${item.accessories ? `；配饰：${item.accessories}` : ''}${item.shoes ? `；鞋履：${item.shoes}` : ''}${item.condition ? `；状态：${item.condition}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['外观','衣着',item.character], characters:[item.character], importanceWeight:0.5 }));
+        (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character, `${item.outfit}${item.hair ? `；发型：${item.hair}` : ''}${item.accessories ? `；配饰：${item.accessories}` : ''}${item.shoes ? `；鞋履：${item.shoes}` : ''}${item.condition ? `；Trạng thái：${item.condition}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['外观','衣着',item.character], characters:[item.character], importanceWeight:0.5 }));
         (s.characterWorld?.events || []).filter(memoryRecordUsable).forEach(item => add('character-world', item.character, `${item.activity}${item.goal ? `；目标：${item.goal}` : ''}${item.social ? `；社交：${item.social}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['幕后生活','世界动态',item.character], characters:[item.character], importanceWeight:0.45 }));
         (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || '事件锚点', `${item.date||''} ${item.time||''}｜${(item.people||[]).join('、')}｜${item.event||''}${item.details?`；${item.details}`:''}${item.rawFallbackText?`；原文保底:${item.rawFallbackText}`:''}${item.tags?.length?`；标签:${item.tags.join('、')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance), `${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
         (s.episodeFacts || []).filter(memoryRecordUsable).forEach(item => add('episode-fact', `小事件:${item.category||'detail'}`, `第${item.floor??'?'}层｜${(item.people||[]).join('、')}｜${item.fact||''}｜实体:${(item.entities||[]).join('、')}｜证据:${item.evidenceText||''}`, Number(item.floor), Number(item.floor), false, item.createdAt||'', { tags:['小事件',item.category,...(item.entities||[])], characters:item.people||[], importanceWeight:0.7, entityId:item.id, eventId:item.id, timeline:true }));
-        (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact', `生活认知:${item.subject||''}`, `${item.subject||''}｜${item.category||''}｜${item.key||''}=${item.value||item.fact||''}；状态:${item.status||'observed'}；证据楼层:${(item.evidenceFloors||[]).join('、')}；${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['生活认知',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
-        (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName, `${item.currentName}${item.aliases?.length?`；旧称:${item.aliases.join('、')}`:''}${item.identity?`；身份:${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false, '', { tags:['NPC','身份',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
+        (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact', `生活认知:${item.subject||''}`, `${item.subject||''}｜${item.category||''}｜${item.key||''}=${item.value||item.fact||''}；Trạng thái:${item.status||'observed'}；证据Tầng:${(item.evidenceFloors||[]).join('、')}；${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['生活认知',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
+        (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName, `${item.currentName}${item.aliases?.length?`；旧称:${item.aliases.join('、')}`:''}${item.identity?`；Thân phận:${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false, '', { tags:['NPC','Thân phận',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
         s.chapters.filter(memoryRecordUsable).forEach(item => add('chapter', item.title, item.summary, Number(item.startFloor), Number(item.endFloor), true, item.time, { tags:['章节',item.title], importanceWeight:0.82 }));
 
-        // R9：旧电话/微信/短信/朋友圈/日记/纪念日也进入长期检索，避免几千层后只记得正文、不记得“生活痕迹”。
+        // R9：旧电话/微信/短信/朋友圈/日记/纪念日也进入长期检索，避免几千层后只记得chính văn、不记得“生活痕迹”。
         for (const key of ['wechat','sms','calls']) {
             for (const item of (s.phone?.[key] || []).filter(memoryRecordUsable)) {
                 const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
@@ -16027,7 +16027,7 @@ ${digests.join('\n\n')}`,{
         }
         for (const item of s.phone?.groupProfiles || []) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-group-profile', `群/频道生态:${item.groupName || '群组'}`, `类型:${item.type || 'other'}；范围:${item.scope||'origin'}；世界:${item.homeWorldKey||''}；载体:${item.channelType||'wechat'}；状态:${item.availability||'active'}；成员:${(item.members || []).join('、')}；长期话题:${item.topic || ''}；活跃度:${item.activityLevel || 'medium'}；来源:${item.source || ''}`, floor, floor, false, item.updatedAt || item.createdAt || '', { tags:['群生态',item.channelType,item.availability,item.groupName,item.topic], characters:item.members||[], importanceWeight:0.35 });
+            add('phone-group-profile', `群/频道生态:${item.groupName || '群组'}`, `Loại:${item.type || 'other'}；范围:${item.scope||'origin'}；世界:${item.homeWorldKey||''}；载体:${item.channelType||'wechat'}；Trạng thái:${item.availability||'active'}；成员:${(item.members || []).join('、')}；长期话题:${item.topic || ''}；活跃度:${item.activityLevel || 'medium'}；来源:${item.source || ''}`, floor, floor, false, item.updatedAt || item.createdAt || '', { tags:['群生态',item.channelType,item.availability,item.groupName,item.topic], characters:item.members||[], importanceWeight:0.35 });
         }
         for (const item of (s.phone?.wechatGroups || []).filter(memoryRecordUsable)) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
@@ -16047,7 +16047,7 @@ ${digests.join('\n\n')}`,{
             }
         }
 
-        // 手机实体是 VCP 检索的一等来源：订单、状态事件、商户、交易和路线必须能被剧情问答直接召回。
+        // 手机实体是 VCP 检索的一等来源：订单、Trạng thái事件、商户、交易和路线必须能被剧情问答直接召回。
         const phone = s.phone || {};
         const phoneOrderRows = [];
         for (const platform of ['taobao','jd','eleme','meituan']) for (const order of phone.commerce?.[platform]?.orders || []) phoneOrderRows.push({ ...order, platform });
@@ -16057,12 +16057,12 @@ ${digests.join('\n\n')}`,{
             const floor = Number(order.sourceFloor ?? order._floor ?? order.floor);
             const items = (order.items || []).map(item => `${item.name || '商品'}×${Number(item.qty || 1)}`).join('、');
             const title = `${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}订单 ${order.storeName || order.destination || order.code || order.id || ''}`;
-            add('phone-order', title, `订单号:${order.id}；平台:${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}；状态:${s8OrderStatusLabel(order)}；金额:${s8MoneyText(order.amount)}；明细:${items || order.title || '无'}；故事时间:${order.storyTime || order.time || ''}`, floor, floor, true, order.storyTime || order.time || '', { tags:['手机订单',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,s8OrderStatusLabel(order),order.storeName||order.destination||''], characters:[], importanceWeight:0.86, entityId:order.id, orderId:order.id, phoneEntityType:'order' });
+            add('phone-order', title, `订单号:${order.id}；平台:${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}；Trạng thái:${s8OrderStatusLabel(order)}；金额:${s8MoneyText(order.amount)}；明细:${items || order.title || '无'}；故事时间:${order.storyTime || order.time || ''}`, floor, floor, true, order.storyTime || order.time || '', { tags:['Đơn hàng điện thoại',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,s8OrderStatusLabel(order),order.storeName||order.destination||''], characters:[], importanceWeight:0.86, entityId:order.id, orderId:order.id, phoneEntityType:'order' });
             for (const event of order.timeline || []) add('phone-order-event', `${title} · ${event.label || event.status}`, `${event.storyTime || event.time || ''}｜${event.detail || event.label || event.status}`, floor, floor, false, event.storyTime || event.time || '', { tags:['订单进度',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,event.status || ''], importanceWeight:0.62, entityId:order.id, orderId:order.id, eventId:event.id || `${order.id}:${event.status}`, phoneEntityType:'order-event' });
         }
-        for (const event of phone.orderEvents || []) add('phone-order-event', `${S8_ORDER_PLATFORM_LABELS[event.platform] || event.platform || '订单'} · ${event.label || event.status || '状态更新'}`, `${event.storyTime || event.time || ''}｜订单:${event.orderId || ''}｜${event.detail || ''}`, Number(event.sourceFloor), Number(event.sourceFloor), false, event.storyTime || event.time || '', { tags:['订单进度',event.platform || '',event.status || ''], importanceWeight:0.58, entityId:event.orderId, orderId:event.orderId, eventId:event.id, phoneEntityType:'order-event' });
+        for (const event of phone.orderEvents || []) add('phone-order-event', `${S8_ORDER_PLATFORM_LABELS[event.platform] || event.platform || '订单'} · ${event.label || event.status || 'Trạng thái更新'}`, `${event.storyTime || event.time || ''}｜订单:${event.orderId || ''}｜${event.detail || ''}`, Number(event.sourceFloor), Number(event.sourceFloor), false, event.storyTime || event.time || '', { tags:['订单进度',event.platform || '',event.status || ''], importanceWeight:0.58, entityId:event.orderId, orderId:event.orderId, eventId:event.id, phoneEntityType:'order-event' });
         for (const tx of phone.finance?.transactions || []) add('phone-transaction', tx.title || tx.counterparty || '钱包交易', `${tx.time || ''}｜账户:${tx.account || ''}｜金额:${s8MoneyText(tx.amount)}｜对方:${tx.counterparty || ''}｜来源:${tx.source || ''}`, Number(tx._floor), Number(tx._floor), Boolean(tx._important), tx.time || '', { tags:['手机账单',tx.account || '',tx.category || '',tx.counterparty || ''], importanceWeight:0.58, entityId:tx.id, transactionId:tx.id, phoneEntityType:'transaction' });
-        for (const route of phone.maps?.history || []) add('phone-route', `地图路线:${route.destination || '未命名目的地'}`, `${route.time || ''}｜从:${route.from || s.scene?.location || '当前位置'}到:${route.destination || ''}｜距离:${route.km || ''}｜方式:${route.mode || ''}`, Number(route.floor ?? route._floor), Number(route.floor ?? route._floor), false, route.time || '', { tags:['地图','路线',route.destination || ''], importanceWeight:0.42, entityId:route.id, phoneEntityType:'route' });
+        for (const route of phone.maps?.history || []) add('phone-route', `地图路线:${route.destination || 'Chưa đặt tên目的地'}`, `${route.time || ''}｜从:${route.from || s.scene?.location || 'Vị trí hiện tại'}到:${route.destination || ''}｜距离:${route.km || ''}｜方式:${route.mode || ''}`, Number(route.floor ?? route._floor), Number(route.floor ?? route._floor), false, route.time || '', { tags:['地图','路线',route.destination || ''], importanceWeight:0.42, entityId:route.id, phoneEntityType:'route' });
 
         const chat = context()?.chat || [];
         const userNameKey=npcNameKey(context()?.name1||'{{user}}'),characterNameKey=npcNameKey(context()?.name2||context()?.characterName||'');
@@ -16071,17 +16071,17 @@ ${digests.join('\n\n')}`,{
             const role=String(message?.role||'').toLowerCase();
             let speaker=message?.is_user?'{{user}}':compactText(message?.name||message?.speaker||'',120);
             let indexable=message?.is_user===true||role==='user'||role==='assistant'||(!message?.is_system&&role!=='system');
-            // SillyTavern 的 /hide 可能把原角色楼层标成 is_system；姓名仍是角色/用户时保留原文索引。
+            // SillyTavern 的 /hide 可能把原角色Tầng标成 is_system；Họ tên仍是角色/用户时保留原文索引。
             const speakerKey=npcNameKey(speaker);
             if(!indexable&&message?.is_system&&speakerKey&&(speakerKey===userNameKey||speakerKey===characterNameKey))indexable=true;
             if(!indexable||role==='system'||/^(?:系统|system|vvv记忆中枢|0-32剧情导演|0-32本轮接续边界)$/i.test(speaker))continue;
             if(!speaker)speaker=message?.is_user?'{{user}}':'角色';
             const floorRole=message?.is_user||role==='user'?'user':'assistant';
-            add('chat-floor',`${floor}层 ${speaker}`,text,floor,floor,false,compactText(message?.send_date||message?.date||'',120),{tags:['原始楼层',`${floor}层`,floorRole,speaker],characters:[speaker],importanceWeight:0.46,timeline:true,vectorEligible:false,retrievalEligible:false,sourceRole:floorRole,sourceSpeaker:speaker});
+            add('chat-floor',`${floor}层 ${speaker}`,text,floor,floor,false,compactText(message?.send_date||message?.date||'',120),{tags:['原始Tầng',`${floor}层`,floorRole,speaker],characters:[speaker],importanceWeight:0.46,timeline:true,vectorEligible:false,retrievalEligible:false,sourceRole:floorRole,sourceSpeaker:speaker});
         }
         for (const floor of s.importantFloors || []) {
             const message = chat[Number(floor)];
-            if (message) add('important-message', `${floor}层 ${messageSpeaker(message)}`, memoryNarrativeText(message), Number(floor), Number(floor), true, '', { tags:['重要楼层',messageSpeaker(message)], characters:[messageSpeaker(message)], importanceWeight:1, retrievalEligible:false });
+            if (message) add('important-message', `${floor}层 ${messageSpeaker(message)}`, memoryNarrativeText(message), Number(floor), Number(floor), true, '', { tags:['重要Tầng',messageSpeaker(message)], characters:[messageSpeaker(message)], importanceWeight:1, retrievalEligible:false });
         }
         return documents;
     }
@@ -16102,14 +16102,14 @@ ${digests.join('\n\n')}`,{
         ['到账','入账','收款','打款','汇款','转账成功','款项到了'], ['工资','薪水','薪资','月薪','发薪'],
         ['画稿','稿费','稿酬','约稿','插画费','设计费'], ['购买','买了','买东西','下单','订单'],
         ['外卖','点餐','饿了么','美团','送餐'], ['电话','来电','通话'], ['朋友圈','动态','好友圈'],
-        ['约定','承诺','答应','说好'], ['楼层','哪一层','第几层','回合'], ['第一次','最早','首次'], ['最后一次','最近一次','上一次'],
+        ['Lời hẹn','承诺','答应','说好'], ['Tầng','哪一层','第几层','回合'], ['第一次','最早','首次'], ['最后一次','最近一次','上一次'],
     ]);
 
     function planMemoryQuery(query) {
         const raw=compactText(query,6000),extra=[];
         for(const group of MEMORY_QUERY_SYNONYM_GROUPS)if(group.some(term=>raw.includes(term)))extra.push(...group);
-        const temporalIntent=/第一次|最早|首次/.test(raw)?'first':(/最后一次|最近一次|上一次|最近/.test(raw)?'last':(/目前|现在|当前状态/.test(raw)?'current':''));
-        return {raw,lexicalText:[raw,...new Set(extra)].join(' '),temporalIntent,timelineIntent:/时间线|什么时候|哪一层|第几层|几层|多少层|第\s*\d+\s*层|当时|那天|发生了什么|还记得|第一次|最后一次|最早|最近一次/.test(raw)};
+        const temporalIntent=/第一次|最早|首次/.test(raw)?'first':(/最后一次|最近一次|上一次|最近/.test(raw)?'last':(/目前|现在|当前Trạng thái/.test(raw)?'current':''));
+        return {raw,lexicalText:[raw,...new Set(extra)].join(' '),temporalIntent,timelineIntent:/Dòng thời gian|什么时候|哪一层|第几层|几层|多少层|第\s*\d+\s*层|当时|那天|发生了什么|还记得|第一次|最后一次|最早|最近一次/.test(raw)};
     }
 
     function chineseNumeralToNumber(value) {
@@ -16166,7 +16166,7 @@ ${digests.join('\n\n')}`,{
         return (Array.isArray(hits) ? hits : []).filter(retrievalDocumentAllowed).map(hit=>{
             const next={...hit};
             if(String(hit?.type||'')==='timeline-event'){
-                next.title=sanitizeTimelineSummary(hit?.title,220)||'时间线事件';
+                next.title=sanitizeTimelineSummary(hit?.title,220)||'Dòng thời gian事件';
                 const raw=String(hit?.text||'');
                 const eventMatch=raw.match(/(?:^|；)事件:([\s\S]*)$/);
                 const clean=sanitizeTimelineSummary(eventMatch?.[1]??raw,360);
@@ -16323,15 +16323,15 @@ ${digests.join('\n\n')}`,{
     function recentlyMentionedPeople(state=stateRuntime.state,recentText='') {
         const text=String(recentText||'');if(!text.trim())return [];
         const names=[];const push=value=>{value=compactText(value,120);if(value&&!names.some(name=>npcNameKey(name)===npcNameKey(value)))names.push(value);};
-        for(const row of state?.tables?.people||[])if(row?.['姓名']&&text.includes(String(row['姓名'])))push(row['姓名']);
+        for(const row of state?.tables?.people||[])if(row?.['Họ tên']&&text.includes(String(row['Họ tên'])))push(row['Họ tên']);
         for(const entry of state?.npcRegistry||[]){const aliases=[entry?.currentName,...(entry?.aliases||[])].filter(Boolean);if(aliases.some(name=>text.includes(String(name))))push(entry.currentName||aliases[0]);}
-        for(const row of state?.tables?.relations||[])for(const name of [row?.['角色A'],row?.['角色B']])if(name&&text.includes(String(name)))push(name);
+        for(const row of state?.tables?.relations||[])for(const name of [row?.['Nhân vật A'],row?.['Nhân vật B']])if(name&&text.includes(String(name)))push(name);
         return names.slice(0,40);
     }
 
     function currentRelationshipRows(state=stateRuntime.state,activeNames=[]) {
         const keys=new Set([...activeNames].map(npcNameKey).filter(Boolean)),rows=(state?.tables?.relations||[]).filter(memoryRecordUsable),selected=[];
-        for(const row of rows){const a=npcNameKey(row?.['角色A']),b=npcNameKey(row?.['角色B']);if(keys.has(a)||keys.has(b))selected.push(row);}
+        for(const row of rows){const a=npcNameKey(row?.['Nhân vật A']),b=npcNameKey(row?.['Nhân vật B']);if(keys.has(a)||keys.has(b))selected.push(row);}
         for(const row of rows.slice(-14))if(!selected.includes(row))selected.push(row);
         return selected.slice(-32);
     }
@@ -16346,7 +16346,7 @@ ${digests.join('\n\n')}`,{
         const chat = sourceChat.filter(message => message && !message.is_system && String(messageText(message) || '').trim());
         const recent = chat.slice(-12);
         const recentText = recent.map(message => String(messageText(message) || '')).join('\n');
-        const changeCount = (recentText.match(/离开|到达|回来|回到|决定|发现|确认|开始|结束|冲突|答应|拒绝|约定|任务|出门|回家|上课|下课|出发|抵达/g) || []).length;
+        const changeCount = (recentText.match(/离开|到达|回来|回到|决定|发现|确认|开始|结束|冲突|答应|拒绝|Lời hẹn|任务|出门|回家|上课|下课|出发|抵达/g) || []).length;
         const latestUser = [...chat].reverse().find(message => message.is_user);
         const latestUserText = compactText(messageText(latestUser), 900);
         const explicitJump = /第二天|几小时后|数日后|后来|时间推进|出发|旅行|跨城|回到|来到|进入|离开|前往|抵达|转场|跳到/.test(latestUserText);
@@ -16376,19 +16376,19 @@ ${digests.join('\n\n')}`,{
 【当前导演判定】
 - 阶段：${snap.stage}
 - 当前地点：${currentLocation || '以最新聊天结尾为准'}
-- 当前时间：${currentTime || '未明确'}
+- 当前时间：${currentTime || 'Chưa xác định'}
 - 当前氛围：${currentMood || '以最新聊天为准'}
 - 最新user：${snap.latestUserText || '未读取到'}
 
 【本轮导演要求】
 1. 第一优先级：真正回应最新user刚刚说的话、问的问题、做的动作或给出的选择；不要绕开它另起一段。
 2. 承接“现在”，再自然推进一个有意义的小节拍。可以完整写 {{char}}/NPC 的对白、动作、表情、主动性和世界反馈；但不要一次跳过多个场景或把几轮才能完成的事一口气写完。
-3. 已完成事件不得重演。旧总结、旧检索、旧地点只可当历史；与最新user/最新assistant冲突时，永远选择最新现实。
-4. {{char}}/NPC 可以主动，不要像木偶等user喂指令；但主动必须符合人物性格、关系阶段、当前时代/世界、距离和知情边界。
+3. Đã hoàn thành事件不得重演。旧总结、旧检索、旧地点只可当历史；与最新user/最新assistant冲突时，永远选择最新现实。
+4. {{char}}/NPC 可以主动，不要像木偶等user喂指令；但主动必须符合人物Tính cách、关系阶段、当前时代/世界、距离和知情边界。
 5. USER主权锁始终更高：不得替user新增对白、决定、主动动作、心理结论或主动身体反应；需要user回应的位置就停下。
-6. ${snap.explicitJump ? '最新user已经明确要求/造成地点或时间变化：允许完成这一次明确转场，并从新状态继续。' : '最新user没有明确要求大转场：保持当前时间/地点/核心人物，不凭空换场。'}
+6. ${snap.explicitJump ? '最新user已经明确要求/造成地点或时间变化：允许完成这一次明确转场，并从新Trạng thái继续。' : '最新user没有明确要求大转场：保持当前时间/地点/核心人物，不凭空换场。'}
 7. ${snap.directNeed ? '本轮存在明确提问/等待回应信号：先给角色的实际回应，再考虑附加新的小推进。' : '若当前互动已连续多轮原地踏步，可加入一个低影响、合设定的小变量或NPC主动动作；禁止为了刺激硬塞重大事故。'}
-8. 不要解释“导演规则”，不要输出分析/计划/标签，直接输出角色正文。
+8. 不要解释“导演规则”，不要输出分析/计划/标签，直接输出角色chính văn。
 ${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
 
 如果本导演提示与最新user明确意图、角色卡、世界书硬设定、当前现实锁冲突，以那些更具体、更高优先级事实为准。`;
@@ -16448,8 +16448,8 @@ ${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
         for (const match of value.matchAll(/(?:回到|返回到|来到|走到|移到|移动到|进入|进到|抵达|到达|到了|坐到|躺到|站到|靠到)\s*(?:了\s*)?([^，。！？；;]{1,28})/g)) if (isCompletedMovement(match)) addUnique(arrived, match[1]);
 
         const donePatterns = [
-            [/(?:穿好|换好|脱下|脱掉|戴好|系好|包好|裹好)[^，。！？；;]{0,24}/g, '衣着/装备变化已完成'],
-            [/(?:坐下|躺下|站起|起身|关上|打开|放下|拿起|收好|穿过)[^，。！？；;]{0,24}/g, '动作已完成'],
+            [/(?:穿好|换好|脱下|脱掉|戴好|系好|包好|裹好)[^，。！？；;]{0,24}/g, '衣着/装备变化Đã hoàn thành'],
+            [/(?:坐下|躺下|站起|起身|关上|打开|放下|拿起|收好|穿过)[^，。！？；;]{0,24}/g, '动作Đã hoàn thành'],
         ];
         for (const [rx, label] of donePatterns) {
             if (rx.test(value) && !completed.includes(label)) completed.push(label);
@@ -16472,7 +16472,7 @@ ${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
         const inferred = [
             signals.left.length ? `最新user已明确离开：${signals.left.join('、')}` : '',
             signals.currentLocation ? `最新user已明确到达/处于：${signals.currentLocation}` : '',
-            signals.completed.length ? `最新user已完成：${signals.completed.join('、')}` : '',
+            signals.completed.length ? `最新userĐã hoàn thành：${signals.completed.join('、')}` : '',
         ].filter(Boolean).join('\n');
 
         return `【0-32 · 当前现实防回滚锁｜最高优先级】
@@ -16484,7 +16484,7 @@ ${String(latestUser.text).slice(-5200)}
 【上一条 assistant 结尾｜仅用于理解这次 user 是从哪里接过来的】
 ${String(previousAssistant?.text || '').slice(-1800)}
 
-${inferred ? `【代码识别到的明确状态迁移】\n${inferred}\n` : ''}【单一世界真值｜手机/正文/彼间私文同为现实，按知情边界使用】
+${inferred ? `【代码识别到的明确Trạng thái迁移】\n${inferred}\n` : ''}【单一世界真值｜手机/chính văn/彼间私文同为现实，按知情边界使用】
 ${s39UnifiedStorylineBrief(20, previousAssistant?.text || '')}
 
 【旧 scene 仅作历史参考】
@@ -16494,20 +16494,20 @@ mood=${storedScene.mood || ''}
 
 【不可违反】
 1. 最新 user > 最新 assistant > 0-32旧scene > 检索旧记忆 > 总结/世界书中的历史场景。
-2. 如果最新 user 已经“离开A并到达B”，从你正文第一句开始，当前地点就是B；A只属于上一阶段历史。禁止再次把人物写回A，除非最新 user 明确说“返回A”。
+2. 如果最新 user 已经“离开A并到达B”，从你chính văn第一句开始，当前地点就是B；A只属于上一阶段历史。禁止再次把人物写回A，除非最新 user 明确说“返回A”。
 3. 禁止重演最新 user 已经做完的动作。比如 user 已写“走出浴室回到沙发旁”，你不能再写“浴室里……/你还在淋浴区……/你再次走出浴室”。
-4. 旧记忆中“浴室、卧室、餐厅”等高相关关键词只能解释过去，不能覆盖最新 user 已经改变的地点、衣着、姿势、物品状态。
-5. 回应开始前，先在内部确定：当前地点、人物位置、衣着/身体状态、手里物品、刚完成动作。若与旧scene冲突，以最新 user 为准。
-6. 角色可以基于“现在”的状态继续行动，但不得为了方便剧情把状态倒退。
+4. 旧记忆中“浴室、卧室、餐厅”等高相关关键词只能解释过去，不能覆盖最新 user 已经改变的地点、衣着、姿势、物品Trạng thái。
+5. 回应开始前，先在内部确定：当前地点、人物位置、衣着/身体Trạng thái、手里物品、刚完成动作。若与旧scene冲突，以最新 user 为准。
+6. 角色可以基于“现在”的Trạng thái继续行动，但不得为了方便剧情把Trạng thái倒退。
 7. 本锁与 USER主权锁同时生效：不能通过“场景连续性”之名替user新增动作或对白。
 
-除非最新 user 自己明确要求回到旧地点/重做旧动作，否则“已完成事件不可回滚”。`;
+除非最新 user 自己明确要求回到旧地点/重做旧动作，否则“Đã hoàn thành事件不可回滚”。`;
     }
 
     function userAgencyGuardInstruction() {
         if (stateRuntime.state?.settings?.protectUserAgency === false) return '';
         return `【0-32 · USER主权锁｜最高优先级】
-正常 assistant / 角色正文中，你只能控制 {{char}}、NPC、环境和世界，不得替 {{user}} 新增任何未由最新 user 消息明确写出的内容。
+正常 assistant / 角色chính văn中，你只能控制 {{char}}、NPC、环境和世界，不得替 {{user}} 新增任何未由最新 user 消息明确写出的内容。
 严禁替 {{user}}：
 - 说任何新对白、回答、同意、拒绝、承诺；
 - 做任何新动作、移动、触碰、脱穿衣物、姿势变化或主动身体行为；
@@ -16526,7 +16526,7 @@ mood=${storedScene.mood || ''}
         return `【0-32 · 本轮接续边界｜仅本次生成有效】
 最后一条 user 消息中的动作、对白、移动、触碰、决定已经全部发生，是当前现实，不是待你重新描写的剧情提纲。
 
-你的正文必须从“这些事情发生之后”开始：
+你的chính văn必须从“这些事情发生之后”开始：
 - 第一项新的叙事事件必须是 {{char}} / NPC / 环境对最新 user 的新反应或后果。
 - 禁止逐句复述、概括复述、同义改写、换视角重演最新 user 的动作链与对白链。
 - 可以自然回应最新 user；若确实需要提到其刚才行为，只允许一句极短的事实指代，不得重新铺写动作过程。
@@ -16559,7 +16559,7 @@ mood=${storedScene.mood || ''}
         if (realitySignals.currentLocation) effectiveScene.location = `${realitySignals.currentLocation}（最新user已明确到达，覆盖旧scene）`;
         const scene=Object.entries(effectiveScene).filter(([,v])=>String(v??'').trim()).map(([k,v])=>`${k}:${v}`).join('；');
         add('当前场景',scene,900,10);
-        add('手机正文单一故事线',s39UnifiedStorylineBrief(24,realityTurn.previousAssistant?.text||''),2400,10);
+        add('手机chính văn单一故事线',s39UnifiedStorylineBrief(24,realityTurn.previousAssistant?.text||''),2400,10);
         add('0-32规则账本与命运约束',controlLayerMemoryText(),1500,10);
         if(Number.isFinite(Number(s.progress?.historyMutationFloor)))add('历史一致性警告',`聊天历史从第${s.progress.historyMutationFloor}层起发生过${s.progress.historyMutationReason||'修改'}；该范围之后的旧派生记忆已冻结、旧总结已标记需重算。当前不要把被冻结旧事实当成有效依据。`,700,10);
 
@@ -16571,20 +16571,20 @@ mood=${storedScene.mood || ''}
 
         const activeNames=new Set();const activeChar=compactText(context()?.name2||context()?.characterName||'',120);if(activeChar)activeNames.add(activeChar);
         recentlyMentionedPeople(s,recentTranscript(12)).forEach(name=>activeNames.add(name));
-        (s.tables.states||[]).filter(memoryRecordUsable).slice(-12).forEach(r=>r['角色名']&&activeNames.add(r['角色名']));
+        (s.tables.states||[]).filter(memoryRecordUsable).slice(-12).forEach(r=>r['Tên nhân vật']&&activeNames.add(r['Tên nhân vật']));
         const relationshipRows=currentRelationshipRows(s,activeNames);
-        relationshipRows.forEach(r=>{r['角色A']&&activeNames.add(r['角色A']);if(r['角色B']&&!/^(user|\{\{user\}\})$/i.test(String(r['角色B'])))activeNames.add(r['角色B']);});
-        let people=(s.tables.people||[]).filter(memoryRecordUsable).filter(r=>activeNames.has(r['姓名'])).slice(-10);if(!people.length)people=(s.tables.people||[]).filter(memoryRecordUsable).slice(-6);
-        add('当前核心人物',people.map(r=>`- ${r['姓名']}：${r['身份']||''}；${r['年龄']||''}；地点=${r['地点']||''}；性格=${compactText(r['性格'],180)}；备注=${compactText(r['备注'],220)}`).join('\n'),1500,9);
+        relationshipRows.forEach(r=>{r['Nhân vật A']&&activeNames.add(r['Nhân vật A']);if(r['Nhân vật B']&&!/^(user|\{\{user\}\})$/i.test(String(r['Nhân vật B'])))activeNames.add(r['Nhân vật B']);});
+        let people=(s.tables.people||[]).filter(memoryRecordUsable).filter(r=>activeNames.has(r['Họ tên'])).slice(-10);if(!people.length)people=(s.tables.people||[]).filter(memoryRecordUsable).slice(-6);
+        add('当前核心人物',people.map(r=>`- ${r['Họ tên']}：${r['Thân phận']||''}；${r['Tuổi']||''}；地点=${r['地点']||''}；Tính cách=${compactText(r['Tính cách'],180)}；Ghi chú=${compactText(r['Ghi chú'],220)}`).join('\n'),1500,9);
 
         const latestAppearance=new Map();for(const item of [...(s.appearances||[])].filter(memoryRecordUsable).reverse()){if(!item?.character||latestAppearance.has(item.character))continue;if(activeNames.size&&!activeNames.has(item.character))continue;latestAppearance.set(item.character,item);if(latestAppearance.size>=8)break;}
-        add('当前人物外观',[...latestAppearance.values()].map(i=>`- ${i.character}：${i.outfit||''}${i.hair?`；发型:${i.hair}`:''}${i.accessories?`；配饰:${i.accessories}`:''}${i.shoes?`；鞋履:${i.shoes}`:''}${i.condition?`；状态:${i.condition}`:''}`).join('\n'),1200,8);
-        add('当前人物关系',relationshipRows.map(row=>`- ${rowText(row,TABLE_DEFS.relations.columns)}`).join('\n'),1800,10);
-        add('角色状态',compactTable('states',10),900,8);
-        const activePromises=(s.tables.promises||[]).filter(memoryRecordUsable).filter(row=>!promiseClosedStatus(row['状态'])).slice(-10);
-        add('待兑现约定',activePromises.map(row=>`- 记录于:${promiseRecordedStamp(row)}｜ID=${promiseObjectId(row)||'未分配'}｜兑现:${row._due||row['约定时间']||'未定'}｜${row['约定内容']||''}｜相关人:${row['核心角色']||''}｜状态:${row['状态']||'待兑现'}`).join('\n'),1100,9);
+        add('当前人物外观',[...latestAppearance.values()].map(i=>`- ${i.character}：${i.outfit||''}${i.hair?`；发型:${i.hair}`:''}${i.accessories?`；配饰:${i.accessories}`:''}${i.shoes?`；鞋履:${i.shoes}`:''}${i.condition?`；Trạng thái:${i.condition}`:''}`).join('\n'),1200,8);
+        add('当前Quan hệ nhân vật',relationshipRows.map(row=>`- ${rowText(row,TABLE_DEFS.relations.columns)}`).join('\n'),1800,10);
+        add('角色Trạng thái',compactTable('states',10),900,8);
+        const activePromises=(s.tables.promises||[]).filter(memoryRecordUsable).filter(row=>!promiseClosedStatus(row['Trạng thái'])).slice(-10);
+        add('Lời hẹn chờ thực hiện',activePromises.map(row=>`- 记录于:${promiseRecordedStamp(row)}｜ID=${promiseObjectId(row)||'未分配'}｜兑现:${row._due||row['Thời điểm hẹn']||'未定'}｜${row['Nội dung lời hẹn']||''}｜相关人:${row['Nhân vật cốt lõi']||''}｜Trạng thái:${row['Trạng thái']||'Chờ thực hiện'}`).join('\n'),1100,9);
         const stableLifeFacts=(s.lifeFacts||[]).filter(memoryRecordUsable).filter(item=>['stable','confirmed'].includes(item.status)).filter(item=>item.status!=='historical').slice(-24);
-        add('长期生活认知',stableLifeFacts.map(item=>`- ${item.subject}｜${item.key||item.category}：${item.value||item.fact}${item.fact&&item.value?`；${item.fact}`:''}（${item.status==='confirmed'?'明确陈述':'多次证据'}，证据楼层:${(item.evidenceFloors||[]).slice(-6).join('、')||'?'}）`).join('\n'),1400,9);
+        add('长期生活认知',stableLifeFacts.map(item=>`- ${item.subject}｜${item.key||item.category}：${item.value||item.fact}${item.fact&&item.value?`；${item.fact}`:''}（${item.status==='confirmed'?'明确陈述':'多次证据'}，证据Tầng:${(item.evidenceFloors||[]).slice(-6).join('、')||'?'}）`).join('\n'),1400,9);
         const recentEpisodes=(s.episodeFacts||[]).filter(memoryRecordUsable).slice(-16);
         add('近期原子小事件',recentEpisodes.map(item=>`- 第${item.floor??'?'}层｜${(item.people||[]).join('、')}｜${compactText(item.fact,360)}`).join('\n'),1600,8);
 
@@ -16595,36 +16595,36 @@ mood=${storedScene.mood || ''}
         add('终身核心事件锚点',selected.map(i=>`- ${i.date||''} ${i.time||''}｜第${i.floor??'?'}层｜${(i.people||[]).join('、')}｜${compactText(i.event,300)}${i.details?`；${compactText(i.details,260)}`:''}`).join('\n'),2200,10);
 
         const eras=completedSummaryRows('时代总结').slice(-2),bigs=completedSummaryRows('大总结').slice(-2),stages=completedSummaryRows('阶段总结').slice(-3);
-        add('时代总结',eras.map(r=>`${r['覆盖楼层']}：${compactText(r['总结内容'],1500)}`).join('\n'),1700,8);
-        add('近期大总结',bigs.map(r=>`${r['覆盖楼层']}：${compactText(r['总结内容'],1100)}`).join('\n'),1400,8);
-        add('近期阶段总结',stages.map(r=>`${r['覆盖楼层']}：${compactText(r['总结内容'],800)}`).join('\n'),1200,7);
-        add('近期时间线',(s.tables.mainline||[]).filter(memoryRecordUsable).map(r=>({...r,_cleanTimelineSummary:sanitizeTimelineSummary(r['事件概要'],360)})).filter(r=>r._cleanTimelineSummary&&!recentEventSummaryLooksInternal(r._cleanTimelineSummary)).slice(-8).map(r=>`- ${timelineRowStamp(r)}｜第${r['楼层']??'?'}层｜发生:${r._cleanTimelineSummary}｜${r['状态']||''}`).join('\n'),1450,9);
+        add('时代总结',eras.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],1500)}`).join('\n'),1700,8);
+        add('近期大总结',bigs.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],1100)}`).join('\n'),1400,8);
+        add('近期阶段总结',stages.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],800)}`).join('\n'),1200,7);
+        add('近期Dòng thời gian',(s.tables.mainline||[]).filter(memoryRecordUsable).map(r=>({...r,_cleanTimelineSummary:sanitizeTimelineSummary(r['Tóm tắt sự kiện'],360)})).filter(r=>r._cleanTimelineSummary&&!recentEventSummaryLooksInternal(r._cleanTimelineSummary)).slice(-8).map(r=>`- ${timelineRowStamp(r)}｜第${r['Tầng']??'?'}层｜发生:${r._cleanTimelineSummary}｜${r['Trạng thái']||''}`).join('\n'),1450,9);
         add('秘密与知情边界',(s.secrets||[]).filter(memoryRecordUsable).slice(-10).map(i=>`- ${i.subject}：${i.content}；知道者:${i.knowers}；怀疑者:${i.suspects}；不知道者:${i.unknown}`).join('\n'),1000,10);
         add('世界设定',compactTable('world',8),800,7);add('关键物品',compactTable('items',8),800,7);
         const registry=(s.npcRegistry||[]).slice().sort((a,b)=>Number(b.lastSeenFloor||0)-Number(a.lastSeenFloor||0)).slice(0,24);
-        add('NPC身份与旧称呼',registry.map(i=>`- ${i.currentName}${i.aliases?.length?`（曾称:${i.aliases.join('、')}）`:''}${i.identity?`：${i.identity}`:''}`).join('\n'),900,8);
+        add('NPCThân phận与旧称呼',registry.map(i=>`- ${i.currentName}${i.aliases?.length?`（曾称:${i.aliases.join('、')}）`:''}${i.identity?`：${i.identity}`:''}`).join('\n'),900,8);
         const phone=[...['wechat','sms','calls'].flatMap(type=>(s.phone?.[type]||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${type}｜${i.time||''}｜${i.author||i.contact||i.caller||''}：${i.content||i.summary||i.status||''}`)),...(s.phone?.wechatGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- 微信群「${i.groupName||''}」｜${i.sender||''}：${i.content||''}`),...(s.phone?.channelGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${i.channelType||'时代频道'}「${i.groupName||''}」｜${i.sender||''}：${i.content||''}`)].slice(-14);
         add('近期通讯',phone.join('\n'),950,7);
         const realtimePhone=(s.phone?.realtimeEvents||[]).filter(row=>row?.handled&&row?.realtimeHandled&&!row?.privateInnerFiction).slice(-18).map(row=>`- ${row.time||''}｜${row.kind||'手机事件'}｜${row.summary||''}｜已由手机实时API处理，幕后七条禁止重复回复`);
-        add('已完成的手机实时事件',realtimePhone.join('\n'),1600,10);
+        add('Đã hoàn thành的手机实时事件',realtimePhone.join('\n'),1600,10);
         add('近期朋友圈与好友互动',momentSocialFeedBrief(10),1800,9);
         add('手机转账固定事实',phoneTransferRealityBrief(),1800,10);
         add('联网订单与到货事实',phoneOrdersRealityBrief(),1800,10);
         add('NPC手机事件知情账本',phoneKnowledgeBrief(30),1800,10);
         const transit=s.worldTransit||{};const cp=s.communicationProfile||{};
-        add('当前时空与通讯',`原世界=${transit.origin?.worldType||'未知'} ${transit.origin?.era||''}；当前=${cp.worldType||transit.current?.worldType||'未知'} ${cp.era||''} ${cp.location||''}；当前载体=${cp.deviceLabel||''}；原世界网络=${cp.originReachable?'可达':'不可达'}；原设备=${cp.personalDeviceLabel||''}${cp.personalDeviceAvailable?'可用':'离线/不可用'}`,900,10);
+        add('当前时空与通讯',`原世界=${transit.origin?.worldType||'Chưa rõ'} ${transit.origin?.era||''}；当前=${cp.worldType||transit.current?.worldType||'Chưa rõ'} ${cp.era||''} ${cp.location||''}；当前载体=${cp.deviceLabel||''}；原世界网络=${cp.originReachable?'可达':'不可达'}；原设备=${cp.personalDeviceLabel||''}${cp.personalDeviceAvailable?'可用':'离线/不可用'}`,900,10);
         const worldLines=(s.characterWorld?.events||[]).filter(memoryRecordUsable).slice(-12).map(i=>`- ${i.time||''}｜${i.character||'世界'}@${i.location||''}：${i.activity||''}${i.goal?`；目标:${i.goal}`:''}${i.social?`；社交:${i.social}`:''}`);
         add('后台同世界镜头外事实（按参与者知情）',worldLines.join('\n'),1100,8);
         if(s.directorInstruction)add('本轮导演指令',s.directorInstruction,700,10);
 
-        const head='以下是「0-32 · 永不落幕的剧场·记忆中枢」长期记忆。聊天可以到2万层以上，但每轮只注入固定预算：本轮召回、当前人物关系、终身核心事件、三级总结、时间线和世界动态都各自保底，不允许某一块过长把其它关键记忆挤没。严格遵守角色知情边界，不复述记忆表。手机、现实正文、彼间私文与NPC后台行动全部共用同一世界总账、同一条时间线；彼间私文不是番外，只是发生在{{user}}看不到的位置。镜头外事件参与者知道自己经历过什么，未参与者与{{user}}默认不知道，直到真实目击/消息/告知发生。手机订单/支付是系统事实；最新订单的店铺、商品、数量、规格与金额是一级真值，正文必须逐字沿用，任何旧摘要冲突时最新订单优先（例如订单为米线就绝不能写成辣汤面）。订单事实不代表所有NPC知道：对具体手机事件，只有知情账本或单一世界总账knownBy中列名的人可以知道。支付宝成功转账固定为收款人账户自动到账，禁止写成等待点击接收；只有微信转账卡才需要接收或退还。远处NPC禁止全知。NPC日记只授予日记作者知情；彼间私文只授予实际参与/目击者知情，但两者都必须作为真实世界历史影响参与NPC后续行为。USER主权锁开启时，正常assistant正文绝不能替{{user}}新增对白、动作、决定、心理或主动身体反应。';
+        const head='以下是「0-32 · 永不落幕的剧场·记忆中枢」长期记忆。聊天可以到2万层以上，但每轮只注入固定预算：本轮召回、当前Quan hệ nhân vật、终身核心事件、三级总结、Dòng thời gian和世界动态都各自保底，不允许某一块过长把其它关键记忆挤没。严格遵守角色知情边界，不复述记忆表。手机、现实chính văn、彼间私文与NPC后台行动全部共用同一世界总账、同一条Dòng thời gian；彼间私文不是番外，只是发生在{{user}}看不到的位置。镜头外事件参与者知道自己经历过什么，未参与者与{{user}}默认不知道，直到真实目击/消息/告知发生。Đơn hàng điện thoại/支付是系统事实；最新订单的店铺、商品、数量、规格与金额是一级真值，chính văn必须逐字沿用，任何旧摘要冲突时最新订单优先（例如订单为米线就绝不能写成辣汤面）。订单事实不代表所有NPC知道：对具体手机事件，只有知情账本或单一世界总账knownBy中列名的人可以知道。支付宝成功转账固定为收款人账户自动到账，禁止写成等待点击接收；只有微信转账卡才需要接收或退还。远处NPC禁止全知。NPC日记只授予日记作者知情；彼间私文只授予实际参与/目击者知情，但两者都必须作为真实世界历史影响参与NPC后续行为。USER主权锁开启时，正常assistantchính văn绝不能替{{user}}新增对白、动作、决定、心理或主动身体反应。';
         const headCost=head.length+4;let remaining=Math.max(1000,maxChars-headCost);
         // 高优先级先分配，且每个模块最多使用自己的预算。
         const ordered=slots.slice().sort((a,b)=>b.priority-a.priority);
         const rendered=[];
         for(const slot of ordered){if(remaining<120)break;const budget=Math.min(slot.budget,Math.max(100,remaining-20));const body=slot.text.length>budget?`${slot.text.slice(0,Math.max(0,budget-12))}\n…[本区截短]`:slot.text;const block=`[${slot.title}]\n${body}`;if(block.length<=remaining){rendered.push({title:slot.title,block,priority:slot.priority});remaining-=block.length+2;}}
         // 输出时按更自然的剧情阅读顺序，而不是预算排序。
-        const order=['当前场景','手机正文单一故事线','联网订单与到货事实','手机转账固定事实','0-32规则账本与命运约束','历史一致性警告','本轮精准召回','已完成的手机实时事件','NPC手机事件知情账本','近期朋友圈与好友互动','当前核心人物','当前人物外观','当前人物关系','角色状态','待兑现约定','长期生活认知','近期原子小事件','终身核心事件锚点','时代总结','近期大总结','近期阶段总结','近期时间线','秘密与知情边界','世界设定','关键物品','NPC身份与旧称呼','当前时空与通讯','近期通讯','后台同世界镜头外事实（按参与者知情）','本轮导演指令'];
+        const order=['当前场景','手机chính văn单一故事线','联网订单与到货事实','手机转账固定事实','0-32规则账本与命运约束','历史一致性警告','本轮精准召回','Đã hoàn thành的手机实时事件','NPC手机事件知情账本','近期朋友圈与好友互动','当前核心人物','当前人物外观','当前Quan hệ nhân vật','角色Trạng thái','Lời hẹn chờ thực hiện','长期生活认知','近期原子小事件','终身核心事件锚点','时代总结','近期大总结','近期阶段总结','近期Dòng thời gian','秘密与知情边界','世界设定','关键物品','NPCThân phận与旧称呼','当前时空与通讯','近期通讯','后台同世界镜头外事实（按参与者知情）','本轮导演指令'];
         rendered.sort((a,b)=>order.indexOf(a.title)-order.indexOf(b.title));
         return `${head}\n\n${rendered.map(x=>x.block).join('\n\n')}`.slice(0,maxChars);
     }
@@ -16675,7 +16675,7 @@ mood=${storedScene.mood || ''}
     function generationRetrievalNote(chat) {
         const hits=filterStructuredRetrievalHits(stateRuntime.retrievalHits).slice(0,Math.max(1,Number(stateRuntime.state?.settings?.retrievalTopK||12)));
         if(!hits.length)return null;
-        const text=`【本轮精准记忆召回｜结构化记录优先】\n下列记录只来自结构化记忆、事件锚点、时间线、总结或生活账本，不再把完整聊天正文塞回检索。回答“哪一层、何时、是否已经发生”时，优先采用带准确楼层与已完成状态的结构化记录；若旧总结与较新的结构化事实冲突，以较新的已完成状态为准。\n${hits.map(hit=>`- 来源:${hit.type||'memory'}｜第${hit.floorStart??'?'}${hit.floorEnd!==null&&hit.floorEnd!==undefined&&hit.floorEnd!==hit.floorStart?`-${hit.floorEnd}`:''}层｜${compactText(hit.text,900)}`).join('\n')}`.slice(0,3200);
+        const text=`【本轮精准记忆召回｜结构化记录优先】\n下列记录只来自结构化记忆、事件锚点、Dòng thời gian、总结或生活账本，不再把完整聊天chính văn塞回检索。回答“哪一层、何时、是否已经发生”时，优先采用带准确Tầng与Đã hoàn thànhTrạng thái的结构化记录；若旧总结与较新的结构化事实冲突，以较新的Đã hoàn thànhTrạng thái为准。\n${hits.map(hit=>`- 来源:${hit.type||'memory'}｜第${hit.floorStart??'?'}${hit.floorEnd!==null&&hit.floorEnd!==undefined&&hit.floorEnd!==hit.floorStart?`-${hit.floorEnd}`:''}层｜${compactText(hit.text,900)}`).join('\n')}`.slice(0,3200);
         const sample=Array.isArray(chat)&&chat.length?chat[chat.length-1]:{};
         return Object.prototype.hasOwnProperty.call(sample,'role')||Object.prototype.hasOwnProperty.call(sample,'content')
             ? {role:'system',content:text}
@@ -16689,9 +16689,9 @@ mood=${storedScene.mood || ''}
             const attachmentText = phoneAttachmentSummary(item.attachments);
             const suffix = attachmentText ? `｜附件：${attachmentText}` : '';
             if (item.type === 'call-action') return `- pendingId=${item.id}｜通话动作：${item.action === 'answer' ? '接听' : item.action==='end'?'结束通话':'挂断/拒接'} ${item.contact || ''} 的来电｜${item.time || ''}${suffix}`;
-            if (item.type === 'outgoing-call') return `- pendingId=${item.id}｜{{user}} 主动拨打 ${item.contact || '未知联系人'}｜${item.time || ''}｜必须决定：接通/拒接/未接/占线，并在phone.calls写结果${suffix}`;
+            if (item.type === 'outgoing-call') return `- pendingId=${item.id}｜{{user}} 主动拨打 ${item.contact || 'Chưa rõ联系人'}｜${item.time || ''}｜必须决定：接通/拒接/未接/占线，并在phone.calls写结果${suffix}`;
             if (item.type === 'wechat-group' || item.type === 'channel-group' || item.groupName) return `- pendingId=${item.id}｜${item.sender || '{{user}}'} → ${item.type==='channel-group'?'当前时代群/频道':'微信群'}「${item.groupName || item.contact}」｜${item.time || ''}：${item.content || '[仅附件]'}${suffix}`;
-            return `- pendingId=${item.id}｜类型=${item.type || 'wechat'}｜${item.sender || '{{user}}'} → ${item.contact}｜${item.time || ''}：${item.content || '[仅附件]'}${suffix}`;
+            return `- pendingId=${item.id}｜Loại=${item.type || 'wechat'}｜${item.sender || '{{user}}'} → ${item.contact}｜${item.time || ''}：${item.content || '[仅附件]'}${suffix}`;
         }).join('\n');
     }
 
@@ -16703,21 +16703,21 @@ mood=${storedScene.mood || ''}
     function mainCompanionInstruction() {
         if (!shouldInjectMainCompanion()) return '';
         const userName = compactText(context()?.name1 || '{{user}}', 80) || '{{user}}';
-        return `【0-32 · 主AI纯正文模式｜P28】
-本轮可见回复只负责正常角色扮演正文。不要输出 VVV_EXTRA、幕后JSON、手机JSON、彼间私文JSON、总结JSON或任何程序尾包；幕后模块会在正文结束后通过单独的后台静默请求另行生成。
+        return `【0-32 · 主AI纯chính văn模式｜P28】
+本轮可见回复只负责正常角色扮演chính văn。不要输出 VVV_EXTRA、幕后JSON、手机JSON、彼间私文JSON、总结JSON或任何程序尾包；幕后模块会在chính văn结束后通过单独的后台静默请求另行生成。
 - 先直接承接${userName}最新发言/动作和当前现实，不复播已经完成的旧剧情。
 - NPC与世界可以自然主动，但绝不能替${userName}说话、行动、同意、拒绝、选择或决定。
-- 当前地点/时代/世界以最近正文结束瞬间为准；没有明确转场就不要自行回到旧地点。
+- 当前地点/时代/世界以最近chính văn结束瞬间为准；没有明确转场就不要自行回到旧地点。
 - 世界不是围绕${userName}静止：同场NPC可自然交流、行动、离开、工作或处理自己的事；远处NPC生活由幕后七条后台写作维护。
-- 手机订单、支付、地图和点评记录是固定事实，但不是全员广播。同场且实际能观察到屏幕、付款、骑手、包裹或餐品的人可以自然知道；远处且未被明确告知的人绝不能自动知道或发消息谈论。订单里的店铺和具体商品不得替换。
-- 支付宝成功转账后收款人账户已自动到账，绝不能描写“没有点接收”“等待领取”或要求确认；只有微信转账卡才可能需要接收或退还。金额、收款人、渠道、备注和状态以“手机转账固定事实/单一故事线总账”为准，精确到分，禁止18.89改成18或19。
+- Đơn hàng điện thoại、支付、地图和点评记录是固定事实，但不是全员广播。同场且实际能观察到屏幕、付款、骑手、包裹或餐品的人可以自然知道；远处且未被明确告知的人绝不能自动知道或发消息谈论。订单里的店铺和具体商品不得替换。
+- 支付宝成功转账后收款人账户已自动到账，绝不能描写“没有点接收”“等待领取”或要求确认；只有微信转账卡才可能需要接收或退还。金额、收款人、渠道、Ghi chú和Trạng thái以“手机转账固定事实/单一故事线总账”为准，精确到分，禁止18.89改成18或19。
 - 手机聊天史、电话史、转账史与现实见面史属于同一人物连续记忆：线上认识的人现实登场不能失忆成陌生人；现实见过的人回到手机也必须记得。
 - 微信/支付宝/银行卡等数字账户事实只能沿用“单一故事线总账”里已经发生的精确交易，不得因为项目通过、老板答应结算、提交稿件等前置剧情自行抢跑成“已经到账”。若总账没有到账事件，就写尚未到账或根本不提钱。精确金额禁止四舍五入、取整和口语化改写。
-- 当前线下同场NPC不得被幕后手机生态同时自动安排远程微信/短信/来电，除非正文明确写TA此刻在用手机或已经离场。
-- 彼间私文/镜头外NPC行动与当前正文属于同一个世界。你可以让参与NPC的行为自然承接其镜头外经历，但除非{{user}}亲历、目击、收到消息或被告知，禁止把镜头外事件原文/具体事实直接写成{{user}}已知。
-- 手机订单与正文下单也只有一份订单：店铺、商品、数量、规格、金额、订单状态必须逐项照总账，不得另造第二单或换商品。
-- NPC日记与彼间私文仍属于同一世界的真实事件：日记作者知道自己写了什么；彼间事件参与者知道自己经历了什么。它们默认不授予{{user}}或无关NPC知情权，但必须影响参与NPC后续的状态、关系和选择。
-- 正文结尾正常结束即可，不要附加任何隐藏协议。`;
+- 当前线下同场NPC不得被幕后手机生态同时自动安排远程微信/短信/来电，除非chính văn明确写TA此刻在用手机或已经离场。
+- 彼间私文/镜头外NPC行动与当前chính văn属于同一个世界。你可以让参与NPC的行为自然承接其镜头外经历，但除非{{user}}亲历、目击、收到消息或被告知，禁止把镜头外事件原文/具体事实直接写成{{user}}已知。
+- Đơn hàng điện thoại与chính văn下单也只有一份订单：店铺、商品、数量、规格、金额、订单Trạng thái必须逐项照总账，不得另造第二单或换商品。
+- NPC日记与彼间私文仍属于同一世界的真实事件：日记作者知道自己写了什么；彼间事件参与者知道自己经历了什么。它们默认不授予{{user}}或无关NPC知情权，但必须影响参与NPC后续的Trạng thái、关系和选择。
+- chính văn结尾正常结束即可，不要附加任何隐藏协议。`;
     }
 
     function updatePromptInjection() {
@@ -16812,7 +16812,7 @@ mood=${storedScene.mood || ''}
             await saveChatExtras(operationScope);
             if(!stillCurrent())return false;
             decorateCompanionOutput(index);
-            if (!silent) toast(`${shell.fallbackError}；正文不会受影响。`,'warn');
+            if (!silent) toast(`${shell.fallbackError}；chính văn不会受影响。`,'warn');
             return false;
         }
         const token={scope:operationScope,floor:index,at:Date.now()};stateRuntime.mainCompanionToken=token;stateRuntime.mainCompanionProcessing = true;
@@ -16822,7 +16822,7 @@ mood=${storedScene.mood || ''}
             const written = context()?.chat?.[index]?.extra?.vvvTheaterCompanion;
             if (written) {
                 if (!isCompanionPayloadSource(written.source)) written.source = companionPayloadSource();
-                // generate函数自己负责最终状态；这里禁止把retrying/fallback-ok误写成ok。
+                // generate函数自己负责最终Trạng thái；这里禁止把retrying/fallback-ok误写成ok。
                 if(ok && !['ok','fallback-ok','retrying-seven-api'].includes(String(written.parseStatus||''))) written.parseStatus='ok';
                 if(!ok && !written.parseStatus) written.parseStatus='seven-api-failed';
                 await saveChatExtras(operationScope);
@@ -16869,7 +16869,7 @@ mood=${storedScene.mood || ''}
     const MEMORY_REVIEW_RAW_TYPES=new Set(['chat-floor','important-message']);
     const MEMORY_REVIEW_STATUS_ORDER={context_only:0,remembered:1,partial:2,missing:3,contradictory:4};
     const MEMORY_REVIEW_STATUS_LABEL={context_only:'仅作上下文',remembered:'记住',partial:'部分记住',missing:'漏记',contradictory:'记错'};
-    const MEMORY_REVIEW_SOURCE_LABEL={structured:'结构化记忆',summary:'总结记忆',anchor:'事件锚点',raw_fallback:'原文保底',mixed:'多类记忆',none:'没有命中'};
+    const MEMORY_REVIEW_SOURCE_LABEL={structured:'结构化记忆',summary:'总结记忆',anchor:'事件锚点',raw_fallback:'原文保底',mixed:'多类记忆',none:'Không có kết quả'};
 
     function memoryReviewSourceQuality(document){
         const type=String(document?.type||'');
@@ -16909,9 +16909,9 @@ mood=${storedScene.mood || ''}
     function memoryReviewBlindPrompt(part,index,total){
         return `你是长篇剧情的“记忆盲测读取员”。这是第${index+1}/${total}片【插件平时可检索的记忆资料】，不是原聊天。你现在只能依据本片回忆，禁止猜测、续写或把常识当剧情。
 
-任务：把本片能明确支持的事实全部整理成紧凑的原子回忆，尤其不能漏掉人物身份/关系、小事件、吃喝购物、金额、物品、约定、出行、通讯、外观变化和秘密知情边界。相同事实可合并，但不得为了简短丢掉具体食物、商品、金额、姓名或状态。
+任务：把本片能明确支持的事实全部整理成紧凑的原子回忆，尤其不能漏掉人物Thân phận/关系、小事件、吃喝购物、金额、物品、Lời hẹn、出行、通讯、外观变化和秘密知情边界。相同事实可合并，但不得为了简短丢掉具体食物、商品、金额、Họ tên或Trạng thái。
 
-sourceIds必须引用资料中的真实id；floorStart/floorEnd未知时为null。sourceQuality只能是structured、summary、anchor、raw_fallback或mixed；若多个来源共同支持则mixed。只输出JSON：
+sourceIds必须引用资料中的真实id；floorStart/floorEndChưa rõ时为null。sourceQuality只能是structured、summary、anchor、raw_fallback或mixed；若多个来源共同支持则mixed。只输出JSON：
 {"partSummary":"","recollections":[{"category":"event|identity|relationship|promise|item|small_event|money|food|shopping|travel|communication|appearance|secret|other","claim":"","floorStart":0,"floorEnd":0,"people":[],"confidence":"high|medium|low","sourceQuality":"structured|summary|anchor|raw_fallback|mixed","sourceIds":["M1"]}],"conflicts":[{"topic":"","versions":[],"sourceIds":[]}],"weakSignals":[{"claim":"","reason":"","sourceIds":[]}]}
 
 记忆资料：
@@ -16952,12 +16952,12 @@ ${part.text}`;
 
 逐层判断：
 1. user/system层status固定为context_only，只说明其作用，不计记忆分数。
-2. assistant层必须各返回一项：盲测回忆完整覆盖该层关键事实=remembered；覆盖主干但漏细节=partial；没有对应回忆=missing；人物身份、关系、物品、金额或事件说错=contradictory。
-3. foods、购买物、金额、约定状态、人物身份/关系都算应记细节，不能因“剧情不重要”忽略。
+2. assistant层必须各返回一项：盲测回忆完整覆盖该层关键事实=remembered；覆盖主干但漏细节=partial；没有对应回忆=missing；人物Thân phận、关系、物品、金额或事件说错=contradictory。
+3. foods、购买物、金额、Lời hẹnTrạng thái、人物Thân phận/关系都算应记细节，不能因“剧情不重要”忽略。
 4. memorySource只能是structured、summary、anchor、raw_fallback、mixed、none。原文保底命中必须标raw_fallback，不能算结构化命中。
 5. rememberedAs只写盲测原本记住的内容；missing和contradiction只写原文核验发现的问题。不得输出思维过程。
 
-必须覆盖这些楼层：${floors.map(row=>`${row.floor}:${row.role}`).join('、')}
+必须覆盖这些Tầng：${floors.map(row=>`${row.floor}:${row.role}`).join('、')}
 只输出JSON：
 {"partSummary":"","floors":[{"floor":0,"role":"assistant|user|system","summary":"本层原文发生了什么","status":"remembered|partial|missing|contradictory|context_only","memorySource":"structured|summary|anchor|raw_fallback|mixed|none","rememberedAs":"","missing":"","contradiction":"","evidenceClaimIds":[]}],"findings":[{"category":"identity|relationship|promise|item|small_event|money|food|shopping|travel|communication|appearance|secret|event|other","truth":"","status":"remembered|partial|missing|contradictory","rememberedAs":"","floorStart":0,"floorEnd":0,"people":[],"importance":"core|detail"}]}
 
@@ -16973,7 +16973,7 @@ ${part.text}`;
         if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.floors))throw new Error('原文核验缺少 floors 数组');
         const expected=new Map(expectedFloors.map(row=>[Number(row.floor),row.role])),allowedStatus=new Set(Object.keys(MEMORY_REVIEW_STATUS_ORDER)),allowedSources=new Set(Object.keys(MEMORY_REVIEW_SOURCE_LABEL)),seen=new Set(),floors=[];
         for(const row of raw.floors){const floor=Number(row?.floor);if(!Number.isInteger(floor)||!expected.has(floor)||seen.has(floor))continue;const role=expected.get(floor),required=role==='assistant'?null:'context_only',status=required||String(row?.status||'missing');floors.push({floor,role,status:allowedStatus.has(status)?status:(role==='assistant'?'missing':'context_only'),memorySource:allowedSources.has(row?.memorySource)?row.memorySource:'none',summary:compactText(sanitizeRetrievalDocumentText(row?.summary),700)||'AI未给出本层概括',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),700),missing:compactText(sanitizeRetrievalDocumentText(row?.missing),700),contradiction:compactText(sanitizeRetrievalDocumentText(row?.contradiction),700),evidenceClaimIds:(Array.isArray(row?.evidenceClaimIds)?row.evidenceClaimIds:[]).map(String).slice(0,30)});seen.add(floor);}
-        const missingFloors=[...expected.keys()].filter(floor=>!seen.has(floor));if(missingFloors.length)throw new Error(`原文核验漏掉楼层：${missingFloors.join('、')}`);
+        const missingFloors=[...expected.keys()].filter(floor=>!seen.has(floor));if(missingFloors.length)throw new Error(`原文核验漏掉Tầng：${missingFloors.join('、')}`);
         const findings=(Array.isArray(raw.findings)?raw.findings:[]).map(row=>({category:compactText(row?.category||'other',40),truth:compactText(sanitizeRetrievalDocumentText(row?.truth),800),status:allowedStatus.has(row?.status)&&row.status!=='context_only'?row.status:'missing',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),600),floorStart:Number.isFinite(Number(row?.floorStart))?Number(row.floorStart):null,floorEnd:Number.isFinite(Number(row?.floorEnd))?Number(row.floorEnd):null,people:(Array.isArray(row?.people)?row.people:[]).map(value=>compactText(value,100)).filter(Boolean).slice(0,20),importance:row?.importance==='core'?'core':'detail'})).filter(row=>row.truth);
         return {...result,parsed:{partSummary:compactText(raw.partSummary,1200),floors,findings}};
     }
@@ -16999,9 +16999,9 @@ ${part.text}`;
         for(const row of findings.filter(item=>item.status==='remembered').map(compactRow)){const size=JSON.stringify(row).length;if(chars+size>36000)break;evidence.remembered.push(row);chars+=size;}
         return `你是“AI记忆体检总评员”。前面的AI已先盲读插件记忆库，再用原聊天核验；下面是核验结果。请用普通用户能看懂的中文给出诚实结论，不安慰、不夸大。
 
-必须明确区分：记忆库存储覆盖、AI读库后的复述能力、平时正文能否被检索命中。raw_fallback只能说明原文保底还在，不等于结构化记忆好；本体检也不能证明主正文模型在任何提问下都会自动命中，因为日常召回仍取决于用户问题和检索TopK。
+必须明确区分：记忆库存储覆盖、AI读库后的复述能力、平时chính văn能否被检索命中。raw_fallback只能说明原文保底还在，不等于结构化记忆好；本体检也不能证明主chính văn模型在任何提问下都会自动命中，因为日常召回仍取决于用户问题和检索TopK。
 
-scores.coverage必须参考给定stats.score，不得凭空给高分。重点说明人物身份/关系串档、虚构物品、金额、吃喝购买等小事件。只输出JSON：
+scores.coverage必须参考给定stats.score，不得凭空给高分。重点说明人物Thân phận/关系串档、虚构物品、金额、吃喝购买等小事件。只输出JSON：
 {"verdict":"一句话结论","overview":"详细总评","scores":{"coverage":0,"detail":0,"consistency":0,"retrievalReadiness":0},"strengths":[{"title":"","detail":"","floors":[]}],"weaknesses":[{"title":"","detail":"","floors":[]}],"rememberedExamples":[""],"partialExamples":[""],"missingExamples":[""],"contradictions":[""],"relationships":[""],"promisesItems":[""],"recommendations":[""],"caveat":""}
 
 核验资料：
@@ -17014,14 +17014,14 @@ ${JSON.stringify(evidence)}`;
         const list=(value,max=30)=>Array.isArray(value)?value.map(row=>typeof row==='object'?compactText(row?.detail||row?.title||JSON.stringify(row),1000):compactText(row,1000)).filter(Boolean).slice(0,max):[];
         const cards=(value,max=20)=>Array.isArray(value)?value.map(row=>({title:compactText(row?.title,200),detail:compactText(row?.detail,1000),floors:(Array.isArray(row?.floors)?row.floors:[]).map(Number).filter(Number.isFinite).slice(0,30)})).filter(row=>row.title||row.detail).slice(0,max):[];
         const clamp=value=>Math.max(0,Math.min(100,Number(value)||0)),scores=raw.scores&&typeof raw.scores==='object'?raw.scores:{};
-        return {...result,parsed:{verdict:compactText(raw.verdict,500)||'体检已完成',overview:compactText(raw.overview,5000),scores:{coverage:stats.score,detail:clamp(scores.detail),consistency:clamp(scores.consistency),retrievalReadiness:clamp(scores.retrievalReadiness)},strengths:cards(raw.strengths),weaknesses:cards(raw.weaknesses),rememberedExamples:list(raw.rememberedExamples),partialExamples:list(raw.partialExamples),missingExamples:list(raw.missingExamples),contradictions:list(raw.contradictions),relationships:list(raw.relationships),promisesItems:list(raw.promisesItems),recommendations:list(raw.recommendations),caveat:compactText(raw.caveat,2000)}};
+        return {...result,parsed:{verdict:compactText(raw.verdict,500)||'体检Đã hoàn thành',overview:compactText(raw.overview,5000),scores:{coverage:stats.score,detail:clamp(scores.detail),consistency:clamp(scores.consistency),retrievalReadiness:clamp(scores.retrievalReadiness)},strengths:cards(raw.strengths),weaknesses:cards(raw.weaknesses),rememberedExamples:list(raw.rememberedExamples),partialExamples:list(raw.partialExamples),missingExamples:list(raw.missingExamples),contradictions:list(raw.contradictions),relationships:list(raw.relationships),promisesItems:list(raw.promisesItems),recommendations:list(raw.recommendations),caveat:compactText(raw.caveat,2000)}};
     }
 
     function memoryReviewOperationCurrent(token){return Boolean(token&&stateRuntime.memoryReviewOperationToken===token&&!stateRuntime.memoryReviewAbort&&chatScopeIsCurrent(token.scope)&&stateRuntime.state===token.state);}
 
     function memoryReviewProgressMarkup(progress={}){
         const pct=Math.max(0,Math.min(100,Number(progress.percent)||0));
-        return `<header><div><small>0-32 · AI记忆体检</small><h2>回顾 · 盲测与原文核验</h2><p>先让AI只读实际记忆库，再用原聊天核验；结果不写入聊天历史，也不会进入下一轮正文。</p></div><div><button data-memory-review-abort>${progress.failed?'重试':'完成当前请求后停止'}</button><button data-memory-review-close>关闭</button></div></header><section class="vvvtm-memory-review-progress"><div><span>${esc(progress.label||'正在准备资料…')}</span><b>${esc(progress.current||0)} / ${esc(progress.total||0)}</b></div><i><span style="width:${pct}%"></span></i><p>${progress.failed?`体检停止：${esc(progress.error||'未知错误')}`:`已实际调用 ${Number(progress.apiCalls||0)} 次API${progress.cached?`，复用 ${Number(progress.cached)} 个已完成结果`:''}。切换聊天或点击停止后，不会把旧结果写到新聊天。`}</p></section>`;
+        return `<header><div><small>0-32 · AI记忆体检</small><h2>回顾 · 盲测与原文核验</h2><p>先让AI只读实际记忆库，再用原聊天核验；结果不写入聊天历史，也不会进入下一轮chính văn。</p></div><div><button data-memory-review-abort>${progress.failed?'重试':'完成当前请求后停止'}</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-progress"><div><span>${esc(progress.label||'正在准备资料…')}</span><b>${esc(progress.current||0)} / ${esc(progress.total||0)}</b></div><i><span style="width:${pct}%"></span></i><p>${progress.failed?`体检停止：${esc(progress.error||'Chưa rõ错误')}`:`已实际调用 ${Number(progress.apiCalls||0)} 次API${progress.cached?`，复用 ${Number(progress.cached)} 个Đã hoàn thành结果`:''}。切换聊天或点击停止后，不会把旧结果写到新聊天。`}</p></section>`;
     }
 
     function memoryReviewList(title,values,empty='AI没有列出相关内容'){
@@ -17032,7 +17032,7 @@ ${JSON.stringify(evidence)}`;
         const result=stateRuntime.memoryReviewResult;if(!result||result.chatKey!==getChatKey())return memoryReviewProgressMarkup({label:'等待开始AI体检'});
         const floors=result.floors||[],stats=result.stats||memoryReviewStats(floors),summary=result.final||{},pageSize=80,totalPages=Math.max(1,Math.ceil(floors.length/pageSize)),current=Math.max(0,Math.min(totalPages-1,Number(page)||0)),start=current*pageSize,rows=floors.slice(start,start+pageSize);
         const tone=row=>row.status==='remembered'?'covered':row.status==='partial'?'partial':row.status==='contradictory'?'contradictory':row.status==='missing'?'fallback':'context';
-        return `<header><div><small>0-32 · AI记忆体检</small><h2>回顾 · 第 0-${Math.max(0,result.totalFloors-1)} 层</h2><p>${esc(summary.verdict||'AI已完成盲测与原文核验。')} 本报告不是聊天消息，不进入下一轮上下文。</p></div><div><button data-memory-review-refresh>重新体检</button><button data-memory-review-close>关闭</button></div></header><section class="vvvtm-memory-review-stats"><span><b>${stats.score}%</b>记忆覆盖</span><span><b>${stats.counts.remembered}</b>完整记住</span><span class="${stats.counts.partial?'warn':''}"><b>${stats.counts.partial}</b>部分记住</span><span class="${stats.counts.missing?'warn':''}"><b>${stats.counts.missing}</b>漏记</span><span class="${stats.counts.contradictory?'danger':''}"><b>${stats.counts.contradictory}</b>记错</span><span><b>${result.apiCalls}</b>API调用</span></section><section class="vvvtm-memory-review-overview"><h3>AI总评</h3><p>${esc(summary.overview||'')}</p><div>${Object.entries(summary.scores||{}).map(([key,value])=>`<span><b>${esc(value)}%</b>${esc({coverage:'记忆覆盖',detail:'细节记忆',consistency:'一致性',retrievalReadiness:'日常召回准备度'}[key]||key)}</span>`).join('')}</div><small>${esc(summary.caveat||'')}</small></section><nav><button data-memory-review-page="${current-1}" ${current<=0?'disabled':''}>上一段</button><span>AI逐层核验 · 第 ${current+1}/${totalPages} 页</span><button data-memory-review-page="${current+1}" ${current>=totalPages-1?'disabled':''}>下一段</button></nav><section class="vvvtm-memory-review-timeline">${rows.map(row=>`<button data-memory-review-jump="${row.floor}" class="${tone(row)}"><span>第 ${row.floor} 层</span><b>${esc(MEMORY_REVIEW_STATUS_LABEL[row.status]||row.status)}</b><em>${esc(MEMORY_REVIEW_SOURCE_LABEL[row.memorySource]||row.memorySource)}</em><p>${esc(row.summary)}</p>${row.rememberedAs?`<small>原本记住：${esc(row.rememberedAs)}</small>`:''}${row.missing?`<small class="missing">漏掉：${esc(row.missing)}</small>`:''}${row.contradiction?`<small class="contradiction">记错：${esc(row.contradiction)}</small>`:''}</button>`).join('')}</section><section class="vvvtm-memory-review-ledgers">${memoryReviewList('记得好的内容',summary.rememberedExamples)}${memoryReviewList('只记住一部分',summary.partialExamples)}${memoryReviewList('明确漏记',summary.missingExamples)}${memoryReviewList('矛盾与串档',summary.contradictions)}${memoryReviewList('人物与关系核验',summary.relationships)}${memoryReviewList('约定与物品核验',summary.promisesItems)}${memoryReviewList('AI建议的加强方向',summary.recommendations)}</section>`;
+        return `<header><div><small>0-32 · AI记忆体检</small><h2>回顾 · 第 0-${Math.max(0,result.totalFloors-1)} 层</h2><p>${esc(summary.verdict||'AIĐã hoàn thành盲测与原文核验。')} 本报告不是聊天消息，不进入下一轮上下文。</p></div><div><button data-memory-review-refresh>重新体检</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-stats"><span><b>${stats.score}%</b>记忆覆盖</span><span><b>${stats.counts.remembered}</b>完整记住</span><span class="${stats.counts.partial?'warn':''}"><b>${stats.counts.partial}</b>部分记住</span><span class="${stats.counts.missing?'warn':''}"><b>${stats.counts.missing}</b>漏记</span><span class="${stats.counts.contradictory?'danger':''}"><b>${stats.counts.contradictory}</b>记错</span><span><b>${result.apiCalls}</b>API调用</span></section><section class="vvvtm-memory-review-overview"><h3>AI总评</h3><p>${esc(summary.overview||'')}</p><div>${Object.entries(summary.scores||{}).map(([key,value])=>`<span><b>${esc(value)}%</b>${esc({coverage:'记忆覆盖',detail:'细节记忆',consistency:'一致性',retrievalReadiness:'日常召回准备度'}[key]||key)}</span>`).join('')}</div><small>${esc(summary.caveat||'')}</small></section><nav><button data-memory-review-page="${current-1}" ${current<=0?'disabled':''}>上一段</button><span>AI逐层核验 · 第 ${current+1}/${totalPages} 页</span><button data-memory-review-page="${current+1}" ${current>=totalPages-1?'disabled':''}>下一段</button></nav><section class="vvvtm-memory-review-timeline">${rows.map(row=>`<button data-memory-review-jump="${row.floor}" class="${tone(row)}"><span>第 ${row.floor} 层</span><b>${esc(MEMORY_REVIEW_STATUS_LABEL[row.status]||row.status)}</b><em>${esc(MEMORY_REVIEW_SOURCE_LABEL[row.memorySource]||row.memorySource)}</em><p>${esc(row.summary)}</p>${row.rememberedAs?`<small>原本记住：${esc(row.rememberedAs)}</small>`:''}${row.missing?`<small class="missing">漏掉：${esc(row.missing)}</small>`:''}${row.contradiction?`<small class="contradiction">记错：${esc(row.contradiction)}</small>`:''}</button>`).join('')}</section><section class="vvvtm-memory-review-ledgers">${memoryReviewList('记得好的内容',summary.rememberedExamples)}${memoryReviewList('只记住一部分',summary.partialExamples)}${memoryReviewList('明确漏记',summary.missingExamples)}${memoryReviewList('矛盾与串档',summary.contradictions)}${memoryReviewList('人物与关系核验',summary.relationships)}${memoryReviewList('Lời hẹn与物品核验',summary.promisesItems)}${memoryReviewList('AI建议的加强方向',summary.recommendations)}</section>`;
     }
 
     function bindMemoryReviewReport(report,page=0){
@@ -17095,7 +17095,7 @@ ${JSON.stringify(evidence)}`;
             ${statCard('检索索引', index.count ?? '—', index.vectorCount ? `检索文档 · 向量 ${index.vectorCount}` : '检索文档数，不等于聊天轮数')}
             ${statCard('后台任务', running, stateRuntime.serverHealth?.ok === false ? '服务端未连接' : '可锁屏续跑')}
         </section>
-        <p class="vvvtm-counter-note">“记忆条目”统计的是主线、状态、人物、关系、约定、秘密、人物外观等结构化记录；一轮对话可能拆成多条，所以跑1轮显示3条、长期聊天显示几十条都可能正常。“检索索引”统计的是可搜索文档片段，也不是楼层数。</p>
+        <p class="vvvtm-counter-note">“记忆条目”统计的是主线、Trạng thái、人物、关系、Lời hẹn、秘密、人物外观等结构化记录；一轮对话可能拆成多条，所以跑1轮显示3条、长期聊天显示几十条都可能正常。“检索索引”统计的是可Tìm文档片段，也不是Tầng数。</p>
         ${(()=>{const p=s.progress||{};if(!p.extractRetryPending)return'';const remain=Math.max(0,Math.ceil((Number(p.extractRetryAt||0)-Date.now())/1000));return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏳ 第 ${Number(p.extractRetryFloor)} 层整理等待重试 ${Number(p.extractRetryAttempt||0)}/${extractRetryLimit()}</h3></div><p class="vvvtm-note">${remain?`${remain} 秒后启动下一次。`:'正在启动下一次。'} 上次错误：${esc(p.extractRetryReason||'未返回具体错误')}</p><p class="vvvtm-note">即时记忆只发送本轮目标回复和有限资料；失败时仅重试同一个独立API。达到有限上限后会保存原文保底并明确放行。</p></section>`;})()}
                 <section class="vvvtm-dashboard-grid">
             <article class="vvvtm-card scene-card"><div class="vvvtm-section-title"><h3>🎬 当前场景</h3><div><button data-overview-action="calibrate-time">🕒 校准时间</button><button data-overview-action="save-scene">保存</button></div></div><div class="vvvtm-form-grid">${sceneInput('time','时间')}${sceneInput('location','地点')}${sceneInput('weather','天气')}${sceneInput('mood','氛围')}${sceneInput('pace','节奏')}${sceneInput('goal','本轮目标')}</div></article>
@@ -17104,16 +17104,16 @@ ${JSON.stringify(evidence)}`;
                 <p class="vvvtm-note">整理/总结：${stateRuntime.serverConfig?.llm?.model || '尚未配置'} · 独立API · 有限资料；${esc(memoryPipelineAvailability().note)}；七条写作源：${esc(companionWritingSourceLabel())}；向量：${stateRuntime.serverConfig?.embedding?.enabled ? stateRuntime.serverConfig.embedding.model : '未启用，自动使用BM25'}。</p>
             </article>
         </section>
-        ${(()=>{const health=memoryHealthSummary(),pipeline=memoryPipelineAvailability();const pct=health.candidateCount?Math.round(health.covered/health.candidateCount*100):100;return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🩺 P13 记忆健康</h3><p class="vvvtm-note">U1.7.2：先剔除建议/假设/否定句等伪遗漏；同楼层多个锚点可共同覆盖一条事实。后台补抓最多重试3次，仍失败则直接用原文证据做确定性detail保底；快速切聊天时旧任务不会写入新聊天。${esc(pipeline.note)}${health.sidecarGaps?` 当前有 ${health.sidecarGaps} 个“幕后七条已完成、主记忆未整理”的楼层。`:''}</p></div><div><button data-memory-repair-all ${health.repairableCount?'':'disabled'}>🩹 一键修复全部遗漏${health.repairableCount?` (${health.repairableCount})`:''}</button></div></div><div class="vvvtm-grid stats">${statCard('最近20轮完整',health.total?`${health.ok}/${health.total}`:'—',health.total?'要求该轮所有检测到的生活细节都已覆盖':'等待真实剧情轮')}${statCard('生活细节覆盖',health.candidateCount?`${health.covered}/${health.candidateCount}`:'—',health.candidateCount?`${pct}% · 候选已去重并实时复检`:'未发现明确生活细节')}${statCard('自动补抓',health.pending?`${health.rescued} / 等待${health.pending}`:health.rescued,health.pending?'后台补抓中，不阻塞接力':(health.rescued?'自动发现漏记后已补回':'最近无需自动补抓'))}${statCard('稳定生活认知',health.stableFacts,health.manualRescued?`明确偏好/多证据沉淀 · 手动修复成功${health.manualRescued}轮`:'明确偏好或多次证据沉淀')}</div>${health.failures.length?`<div class="vvvtm-list">${health.failures.map(item=>`<div class="vvvtm-list-item"><span>第 ${item.floor} 层 · ${item.status==='memory-missing'?'整轮结构化记忆未确认':item.status==='pending-rescue'?'已发现遗漏，后台补抓中':'生活细节仍有遗漏'}</span><small>${esc((item.missingAfter||[]).map(x=>x.text).join(' / ').slice(0,260))}</small><div class="vvvtm-row-actions"><button data-memory-reextract-floor="${item.floor}">${item.status==='memory-missing'?'重建本层':'精准修复'}</button></div></div>`).join('')}</div>`:(health.sidecarGaps?'<div class="vvvtm-empty">幕后七条已生成，但主记忆尚未整理；请点击上方“一键修复”补齐本层。</div>':'<div class="vvvtm-empty">最近没有检测到漏记。</div>')}<p class="vvvtm-note">“一键修复全部遗漏”会先本地清掉历史伪遗漏，再串行修真正缺失项；AI连续失败时使用原文证据无脑补保底，因此可收敛而不会无限修复。生活细节不改当前场景、人物关系、主线和总结；修复请求固定使用独立整理API。</p></section>`;})()}
-        <section class="vvvtm-grid two"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>📌 最近事件</h3><button data-go-tab="timeline">全部</button></div>${listRecent('mainline','事件概要','楼层')}</article><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏰ 待兑现约定</h3><button data-go-tab="tables" data-table="promises">管理</button></div>${listRecentPromises()}</article></section>
-        <section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🎲 导演干预</h3><button data-overview-action="roll">随机事件</button></div><textarea id="vvvtm-director" placeholder="只对下一轮生效，不替{{user}}做决定。">${esc(s.directorInstruction)}</textarea><div class="vvvtm-row-actions"><button data-overview-action="save-director">注入下一轮</button><button data-overview-action="clear-director" class="danger-soft">清空</button></div></section>`;
+        ${(()=>{const health=memoryHealthSummary(),pipeline=memoryPipelineAvailability();const pct=health.candidateCount?Math.round(health.covered/health.candidateCount*100):100;return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🩺 P13 记忆健康</h3><p class="vvvtm-note">U1.7.2：先剔除建议/假设/否定句等伪遗漏；同Tầng多个锚点可共同覆盖一条事实。后台补抓最多重试3次，仍失败则直接用原文证据做确定性detail保底；快速切聊天时旧任务不会写入新聊天。${esc(pipeline.note)}${health.sidecarGaps?` 当前有 ${health.sidecarGaps} 个“幕后七条Đã hoàn thành、主记忆未整理”的Tầng。`:''}</p></div><div><button data-memory-repair-all ${health.repairableCount?'':'disabled'}>🩹 一键修复全部遗漏${health.repairableCount?` (${health.repairableCount})`:''}</button></div></div><div class="vvvtm-grid stats">${statCard('最近20轮完整',health.total?`${health.ok}/${health.total}`:'—',health.total?'要求该轮所有检测到的生活细节都已覆盖':'等待真实剧情轮')}${statCard('生活细节覆盖',health.candidateCount?`${health.covered}/${health.candidateCount}`:'—',health.candidateCount?`${pct}% · 候选已去重并实时复检`:'未发现明确生活细节')}${statCard('自动补抓',health.pending?`${health.rescued} / 等待${health.pending}`:health.rescued,health.pending?'后台补抓中，不阻塞接力':(health.rescued?'自动发现漏记后已补回':'最近无需自动补抓'))}${statCard('稳定生活认知',health.stableFacts,health.manualRescued?`明确偏好/多证据沉淀 · 手动修复成功${health.manualRescued}轮`:'明确偏好或多次证据沉淀')}</div>${health.failures.length?`<div class="vvvtm-list">${health.failures.map(item=>`<div class="vvvtm-list-item"><span>第 ${item.floor} 层 · ${item.status==='memory-missing'?'整轮结构化记忆未确认':item.status==='pending-rescue'?'已发现遗漏，后台补抓中':'生活细节仍有遗漏'}</span><small>${esc((item.missingAfter||[]).map(x=>x.text).join(' / ').slice(0,260))}</small><div class="vvvtm-row-actions"><button data-memory-reextract-floor="${item.floor}">${item.status==='memory-missing'?'重建本层':'精准修复'}</button></div></div>`).join('')}</div>`:(health.sidecarGaps?'<div class="vvvtm-empty">幕后七条已生成，但主记忆尚未整理；请点击上方“一键修复”补齐本层。</div>':'<div class="vvvtm-empty">最近没有检测到漏记。</div>')}<p class="vvvtm-note">“一键修复全部遗漏”会先本地清掉历史伪遗漏，再串行修真正缺失项；AI连续失败时使用原文证据无脑补保底，因此可收敛而不会无限修复。生活细节不改当前场景、Quan hệ nhân vật、主线和总结；修复请求固定使用独立整理API。</p></section>`;})()}
+        <section class="vvvtm-grid two"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>📌 Sự kiện gần đây</h3><button data-go-tab="timeline">全部</button></div>${listRecent('mainline','Tóm tắt sự kiện','Tầng')}</article><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏰ Lời hẹn chờ thực hiện</h3><button data-go-tab="tables" data-table="promises">管理</button></div>${listRecentPromises()}</article></section>
+        <section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🎲 导演干预</h3><button data-overview-action="roll">随机事件</button></div><textarea id="vvvtm-director" placeholder="只对下一轮生效，不替{{user}}做决定。">${esc(s.directorInstruction)}</textarea><div class="vvvtm-row-actions"><button data-overview-action="save-director">注入下一轮</button><button data-overview-action="clear-director" class="danger-soft">Bỏ chọn</button></div></section>`;
     }
 
     function renderSummaryCenter() {
         const s = stateRuntime.state;
         const hiddenIds = new Set(s.hiddenSummaryIds || []);
         const all = s.tables.summaries.slice().reverse().filter(row => !hiddenIds.has(row._id));
-        const rows = s.settings.hideCompletedSummaryCards ? all.filter(row => !/完成|成功/.test(row['状态'] || '')) : all;
+        const rows = s.settings.hideCompletedSummaryCards ? all.filter(row => !/完成|成功/.test(row['Trạng thái'] || '')) : all;
         const page = pageSlice(rows, 'summaries');
         const interval = Number(s.settings.summaryEvery || 20);
         const nextStart = Number(s.progress.nextSummaryStart || 0);
@@ -17124,31 +17124,31 @@ ${JSON.stringify(evidence)}`;
         const collectionStatus=String(collection.status||'idle');
         const collectionDone=Number(collection.completedParts||0),collectionTotal=Number(collection.totalParts||0);
         const collectionLabel=collectionStatus==='paused'||collectionStatus==='failed'?'继续记忆集合':'记忆集合';
-        const collectionTone=collectionStatus==='failed'?'失败，可从断点继续':collectionStatus==='paused'?'已暂停，可从断点继续':collectionStatus==='running'?'正在容量接力':collectionStatus==='completed'?'最近一次已完成':'尚未运行';
+        const collectionTone=collectionStatus==='failed'?'失败，可从断点继续':collectionStatus==='paused'?'已暂停，可从断点继续':collectionStatus==='running'?'正在容量接力':collectionStatus==='completed'?'最近一次Đã hoàn thành':'尚未运行';
         return `<section class="vvvtm-summary-head vvvtm-grid stats">
-            ${statCard('下次缺口/范围', `${nextStart}-${nextStart + interval - 1}`, canNext ? '可以总结' : '等待更多楼层')}
+            ${statCard('下次缺口/范围', `${nextStart}-${nextStart + interval - 1}`, canNext ? '可以总结' : '等待更多Tầng')}
             ${statCard('阶段总结', completedSummaryRows('阶段总结').length, `每 ${s.settings.summaryEvery} 层`)}
             ${statCard('大总结', completedSummaryRows('大总结').length, `每 ${s.settings.stageSummariesPerBig} 次阶段总结`)}
             ${statCard('时代总结', completedSummaryRows('时代总结').length, `每 ${s.settings.bigSummariesPerEra || 10} 次大总结`)}
-            ${statCard('安全快照', s.settings.safetySnapshots?'开启':'关闭', '服务器永久保留，不自动裁剪')}${statCard('总结回收站', (s.summaryRecycleBin||[]).length, '删除后同范围重建会自动接回依赖ID')}
+            ${statCard('安全快照', s.settings.safetySnapshots?'开启':'Đóng', '服务器永久保留，不自动裁剪')}${statCard('总结回收站', (s.summaryRecycleBin||[]).length, '删除后同范围重建会自动接回依赖ID')}
         </section>
         <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>总结操作 · U1.7 固定格式 + P13自愈/防串档</h3><p class="vvvtm-note">阶段总结由结构化JSON统一排版，固定为“时间与场景＋五个内容区”；质量不合格、过短、JSON坏掉或旧缓存异常时会废弃该缓存并自动重新请求，最多3次。只有校验通过才写入并隐藏原文。太长时仍会分片完整读取。</p></div><div><button data-summary-action="memory-collection" ${stateRuntime.memoryCollectionRunning?'disabled':''}>${stateRuntime.memoryCollectionRunning?'记忆集合运行中':collectionLabel}</button><button data-summary-action="next" ${canNext ? '' : 'disabled'}>总结下一段</button><button data-summary-action="catchup">补齐全部</button><button data-summary-action="big">立即大总结</button><button data-summary-action="era">立即时代总结</button><button data-summary-action="refresh">同步任务</button></div></div>${archiveGuard}
-        <div class="vvvtm-memory-collection-status"><b>记忆集合：${esc(collectionTone)}</b><span>${collectionTotal?`${collectionDone}/${collectionTotal} 次API · ${Number(collection.assistantFloors||0)} 个AI楼层`:'解除全部隐藏后，按单次上下文临界容量无限接力重读'}</span>${collection.error?`<small>${esc(collection.error)}</small>`:''}</div>
-        <div class="summary-custom-range"><label>开始楼层<input id="summary-custom-start" type="number" min="0" value="${nextStart}"></label><label>结束楼层<input id="summary-custom-end" type="number" min="0" value="${Math.max(nextStart, (context()?.chat?.length || 1) - 1)}"></label><button data-summary-action="custom">总结指定范围</button></div>
-        <p class="vvvtm-note">“记忆集合”不会删除或覆盖旧记忆：它先做安全快照、恢复全部 /hide，再按完整AI楼层装满单次安全容量；达到临界点就启动下一次API，调用次数不设上限。每片验收后立即按真实楼层增量保存，失败可续跑。标准20层范围若已有总结会原位重做；非标准范围保存为局部补充。</p></section>
+        <div class="vvvtm-memory-collection-status"><b>记忆集合：${esc(collectionTone)}</b><span>${collectionTotal?`${collectionDone}/${collectionTotal} 次API · ${Number(collection.assistantFloors||0)} 个AITầng`:'解除全部隐藏后，按单次上下文临界容量无限接力重读'}</span>${collection.error?`<small>${esc(collection.error)}</small>`:''}</div>
+        <div class="summary-custom-range"><label>开始Tầng<input id="summary-custom-start" type="number" min="0" value="${nextStart}"></label><label>结束Tầng<input id="summary-custom-end" type="number" min="0" value="${Math.max(nextStart, (context()?.chat?.length || 1) - 1)}"></label><button data-summary-action="custom">总结指定范围</button></div>
+        <p class="vvvtm-note">“记忆集合”不会删除或覆盖旧记忆：它先做安全快照、恢复全部 /hide，再按完整AITầng装满单次安全容量；达到临界点就启动下一次API，调用次数不设上限。每片验收后立即按真实Tầng增量保存，失败可续跑。标准20层范围若已有总结会原位重做；非标准范围保存为局部补充。</p></section>
         ${pagerMarkup(page)}
         <section class="vvvtm-summary-layout"><div class="vvvtm-summary-list">${page.items.length ? page.items.map(row => {
             const originalIndex = s.tables.summaries.indexOf(row);
-            const status = row['状态'] || '已完成';
-            const rowType = row['类型'] || row['表格类型'] || '总结';
+            const status = row['Trạng thái'] || 'Đã hoàn thành';
+            const rowType = row['Loại'] || row['Loại bảng'] || '总结';
             const isStage=rowType==='阶段总结';
-            const rangeToggle = isStage ? `<button data-summary-range-toggle="${originalIndex}">${row['隐藏状态']==='已隐藏'?'恢复楼层':'隐藏楼层'}</button>` : '';
+            const rangeToggle = isStage ? `<button data-summary-range-toggle="${originalIndex}">${row['隐藏Trạng thái']==='已隐藏'?'恢复Tầng':'隐藏Tầng'}</button>` : '';
             const redo = isStage ? `<button data-summary-redo="${originalIndex}">🔄 重做本段</button><button data-summary-delete-redo="${originalIndex}">🗑↻ 删除并重做</button>` : '';
             const restoreVersion = Array.isArray(row._history) && row._history.length ? `<button data-summary-restore-version="${originalIndex}">↩ 上一版</button>` : '';
             const stale=row._staleReason?`<small class="vvvtm-warn">⚠ ${esc(row._staleReason)}</small>`:'';
-            const legacyFormat=isStage&&!isFixedStageSummaryText(row['总结内容'])?'<small class="vvvtm-warn">⚠ 旧版自由格式；点击“重做本段”可转换为U1.6.2固定格式。</small>':'';
-            return `<article class="vvvtm-card summary-card ${/失败|需重算/.test(status)?'failed':''} ${rowType==='时代总结'?'era-summary-card':''}"><header><div><span class="summary-type">${esc(rowType)}</span><b>${esc(row['覆盖楼层'])} 层</b></div><span class="summary-status">${esc(status)}</span></header>${stale}${legacyFormat}<textarea data-summary-content="${originalIndex}" ${row['锁定']==='是'?'readonly':''}>${esc(row['总结内容'])}</textarea><footer><small>${esc(row['模型'] || '')} · ${esc(row['生成时间'] || '')} · ${esc(row['隐藏状态'] || '未隐藏')}</small><div><button data-jump="${esc(parseRange(row['覆盖楼层']).start)}">跳转</button>${rangeToggle}${redo}${restoreVersion}<button data-summary-save="${originalIndex}">保存</button><button data-summary-lock="${originalIndex}">${row['锁定']==='是'?'解锁':'锁定'}</button>${/失败/.test(status)?`<button data-summary-retry="${originalIndex}">重试</button>`:''}<button data-summary-hide="${originalIndex}">隐藏卡片</button><button class="danger-soft" data-summary-delete="${originalIndex}">删除</button></div></footer></article>`;
-        }).join('') : '<div class="vvvtm-empty big">还没有总结。</div>'}</div><aside class="vvvtm-card task-rail"><h3>任务队列</h3>${tasks.length ? tasks.map(job => `<div class="task-row"><b>${esc(job.kind)}</b><span>${esc(job.status)}</span><small>${esc(job.startFloor ?? '')}${job.endFloor!==undefined?`-${esc(job.endFloor)}`:''} ${esc(job.error || '')}</small></div>`).join('') : '<div class="vvvtm-empty">暂无任务</div>'}</aside></section>
+            const legacyFormat=isStage&&!isFixedStageSummaryText(row['Nội dung tổng kết'])?'<small class="vvvtm-warn">⚠ 旧版自由格式；点击“重做本段”可转换为U1.6.2固定格式。</small>':'';
+            return `<article class="vvvtm-card summary-card ${/失败|需重算/.test(status)?'failed':''} ${rowType==='时代总结'?'era-summary-card':''}"><header><div><span class="summary-type">${esc(rowType)}</span><b>${esc(row['Tầng bao phủ'])} 层</b></div><span class="summary-status">${esc(status)}</span></header>${stale}${legacyFormat}<textarea data-summary-content="${originalIndex}" ${row['锁定']==='是'?'readonly':''}>${esc(row['Nội dung tổng kết'])}</textarea><footer><small>${esc(row['模型'] || '')} · ${esc(row['Thời điểm tạo'] || '')} · ${esc(row['隐藏Trạng thái'] || '未隐藏')}</small><div><button data-jump="${esc(parseRange(row['Tầng bao phủ']).start)}">跳转</button>${rangeToggle}${redo}${restoreVersion}<button data-summary-save="${originalIndex}">保存</button><button data-summary-lock="${originalIndex}">${row['锁定']==='是'?'解锁':'锁定'}</button>${/失败/.test(status)?`<button data-summary-retry="${originalIndex}">重试</button>`:''}<button data-summary-hide="${originalIndex}">隐藏卡片</button><button class="danger-soft" data-summary-delete="${originalIndex}">Xóa</button></div></footer></article>`;
+        }).join('') : '<div class="vvvtm-empty big">还没有总结。</div>'}</div><aside class="vvvtm-card task-rail"><h3>任务队列</h3>${tasks.length ? tasks.map(job => `<div class="task-row"><b>${esc(job.kind)}</b><span>${esc(job.status)}</span><small>${esc(job.startFloor ?? '')}${job.endFloor!==undefined?`-${esc(job.endFloor)}`:''} ${esc(job.error || '')}</small></div>`).join('') : '<div class="vvvtm-empty">Chưa có任务</div>'}</aside></section>
         ${pagerMarkup(page)}`;
     }
 
@@ -17165,7 +17165,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-summary-action="custom"]')?.addEventListener('click', async () => {
             const start = Number(content.querySelector('#summary-custom-start')?.value || 0);
             const end = Number(content.querySelector('#summary-custom-end')?.value || start);
-            if (end < start) return toast('结束楼层不能小于开始楼层', 'warn');
+            if (end < start) return toast('结束Tầng不能小于开始Tầng', 'warn');
             const chatMax=(context()?.chat?.length||1)-1;if(end>chatMax)return toast(`当前最高只有第 ${chatMax} 层`,'warn');
             if(standardStageRange(start,end)){
                 const existing=findStageSummaryByRange(start,end);
@@ -17176,21 +17176,21 @@ ${JSON.stringify(evidence)}`;
         });
         content.querySelectorAll('[data-summary-redo]').forEach(button=>button.addEventListener('click',async()=>{
             const row=stateRuntime.state.tables.summaries[Number(button.dataset.summaryRedo)];
-            if(!confirm(`只重做 ${row?.['覆盖楼层']||''} 层这一个阶段吗？\n\n会完整重新读取本段原聊天，原总结进入历史版本，并自动重算受影响的大总结/时代总结。其它阶段不动。`))return;
+            if(!confirm(`只重做 ${row?.['Tầng bao phủ']||''} 层这一个阶段吗？\n\n会完整重新读取本段原聊天，原总结进入历史版本，并自动重算受影响的大总结/时代总结。其它阶段不动。`))return;
             const scope=captureChatScope(), operationState=stateRuntime.state;
             try{await redoStageSummary(row);}catch(error){if(chatScopeIsCurrent(scope))toast(`重做失败：${error.message}`,'error');}
             if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)renderCurrentTab();
         }));
         content.querySelectorAll('[data-summary-delete-redo]').forEach(button=>button.addEventListener('click',async()=>{
             const row=stateRuntime.state.tables.summaries[Number(button.dataset.summaryDeleteRedo)];
-            if(!confirm(`确认“删除并重做” ${row?.['覆盖楼层']||''} 层？\n\n安全实现会保留旧总结到历史版本，然后原位生成新总结，避免上级总结链断裂。`))return;
+            if(!confirm(`确认“删除并重做” ${row?.['Tầng bao phủ']||''} 层？\n\n安全实现会保留旧总结到历史版本，然后原位生成新总结，避免上级总结链断裂。`))return;
             const scope=captureChatScope(), operationState=stateRuntime.state;
             try{await redoStageSummary(row);}catch(error){if(chatScopeIsCurrent(scope))toast(`删除并重做失败：${error.message}`,'error');}
             if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)renderCurrentTab();
         }));
         content.querySelectorAll('[data-summary-restore-version]').forEach(button=>button.addEventListener('click',async()=>{
             const row=stateRuntime.state.tables.summaries[Number(button.dataset.summaryRestoreVersion)];
-            if(!confirm(`恢复 ${row?.['覆盖楼层']||''} 层总结的上一版吗？\n\n当前版本也会保留在历史里，之后仍可再次切换；阶段总结会同步重算受影响的大总结/时代总结。`))return;
+            if(!confirm(`恢复 ${row?.['Tầng bao phủ']||''} 层总结的上一版吗？\n\n当前版本也会保留在历史里，之后仍可再次切换；阶段总结会同步重算受影响的大总结/时代总结。`))return;
             const scope=captureChatScope(), operationState=stateRuntime.state;
             try{await restorePreviousSummaryVersion(row);}catch(error){if(chatScopeIsCurrent(scope))toast(`恢复失败：${error.message}`,'error');}
             if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)renderCurrentTab();
@@ -17203,14 +17203,14 @@ ${JSON.stringify(evidence)}`;
             if(!row)return;
             if (row['锁定'] === '是') return toast('先解锁再编辑', 'warn');
             const edited=content.querySelector(`[data-summary-content="${index}"]`)?.value.trim()||'';
-            if((row['类型']||row['表格类型'])==='阶段总结'&&!isFixedStageSummaryText(edited))return toast('阶段总结必须保留U1.6.2的“时间与场景＋五个内容区”固定标题；请补全标题后再保存。','error');
-            await createSafetySnapshot(`before-manual-summary-edit-${row['覆盖楼层']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
+            if((row['Loại']||row['Loại bảng'])==='阶段总结'&&!isFixedStageSummaryText(edited))return toast('阶段总结必须保留U1.6.2的“时间与场景＋五个内容区”固定标题；请补全标题后再保存。','error');
+            await createSafetySnapshot(`before-manual-summary-edit-${row['Tầng bao phủ']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
-            row._history = row._history || []; row._history.push({ content: row['总结内容'], time: nowText(), reason:'手动编辑' });
-            row['总结内容'] = edited;
-            row['生成时间'] = nowText();
+            row._history = row._history || []; row._history.push({ content: row['Nội dung tổng kết'], time: nowText(), reason:'手动编辑' });
+            row['Nội dung tổng kết'] = edited;
+            row['Thời điểm tạo'] = nowText();
             let chainOk=true;
-            if((row['类型']||'')==='阶段总结'){
+            if((row['Loại']||'')==='阶段总结'){
                 markDependentSummariesStale(row._id,'上游阶段总结被手动编辑');
                 await saveState({ immediate:true, refresh:true, reason:'summary-manual-edit-mark-stale', forceSnapshot:true });
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
@@ -17232,26 +17232,26 @@ ${JSON.stringify(evidence)}`;
             const operationScope=captureChatScope();const operationState=stateRuntime.state;
             if(!operationScope||!operationState)return;
             const row = operationState.tables.summaries[Number(button.dataset.summaryRangeToggle)];
-            if (!row || (row['类型'] || row['表格类型']) !== '阶段总结') return toast('只有阶段总结支持隐藏原楼层', 'warn');
+            if (!row || (row['Loại'] || row['Loại bảng']) !== '阶段总结') return toast('只有阶段总结支持隐藏原Tầng', 'warn');
             try {
-                const shouldHide = row['隐藏状态'] !== '已隐藏';
+                const shouldHide = row['隐藏Trạng thái'] !== '已隐藏';
                 await applySummaryHideState(row, shouldHide);
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
                 await saveState({ immediate: true, refresh: true, reason:'summary-hide-range' });
-            } catch (error) { if(chatScopeIsCurrent(operationScope))toast(`楼层操作失败：${error.message}`, 'error'); }
+            } catch (error) { if(chatScopeIsCurrent(operationScope))toast(`Tầng操作失败：${error.message}`, 'error'); }
         }));
         content.querySelectorAll('[data-summary-hide]').forEach(button => button.addEventListener('click', () => {
             const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryHide)]; if (!row._id) row._id = uid('summary');
             if (!stateRuntime.state.hiddenSummaryIds.includes(row._id)) stateRuntime.state.hiddenSummaryIds.push(row._id); saveState({ refresh: true, reason:'summary-card-hide' });
         }));
         content.querySelectorAll('[data-summary-retry]').forEach(button => button.addEventListener('click', async () => {
-            const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryRetry)]; const range = parseRange(row['覆盖楼层']);
-            if (range.start === null || range.end === null) return toast('无法识别总结楼层范围', 'error');
-            if((row['类型']||'')==='阶段总结')await createStageSummary(range.start,range.end,{manual:true,replaceExisting:Boolean(findStageSummaryByRange(range.start,range.end))});else toast('请使用对应上级总结重建','info'); renderCurrentTab();
+            const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryRetry)]; const range = parseRange(row['Tầng bao phủ']);
+            if (range.start === null || range.end === null) return toast('无法识别总结Tầng范围', 'error');
+            if((row['Loại']||'')==='阶段总结')await createStageSummary(range.start,range.end,{manual:true,replaceExisting:Boolean(findStageSummaryByRange(range.start,range.end))});else toast('请使用对应上级总结重建','info'); renderCurrentTab();
         }));
         content.querySelectorAll('[data-summary-delete]').forEach(button => button.addEventListener('click', async () => {
             const row=stateRuntime.state.tables.summaries[Number(button.dataset.summaryDelete)];
-            if (!confirm(`确认删除这份${row?.['类型']||'总结'}？\n\n删除阶段总结时会自动恢复该段原聊天的 /hide，并把受影响的上级总结标记为“需重算”。删除前会做安全快照。`)) return;
+            if (!confirm(`确认删除这份${row?.['Loại']||'总结'}？\n\n删除阶段总结时会自动恢复该段原聊天的 /hide，并把受影响的上级总结标记为“需重算”。删除前会做安全快照。`)) return;
             const scope=captureChatScope(), operationState=stateRuntime.state;
             try{await deleteSummarySafely(row);if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)toast('已安全删除该总结','success');}
             catch(error){if(chatScopeIsCurrent(scope))toast(`删除失败：${error.message}`,'error');}
@@ -17266,8 +17266,8 @@ ${JSON.stringify(evidence)}`;
         const status = stateRuntime.indexStatus || {};
         const estimatedChars = hits.reduce((sum,item)=>sum+String(item.text||'').length,0);
         return `<section class="vvvtm-grid stats">${statCard('索引文档',status.count??'—')}${statCard('热 / 冷档案',`${status.hotCount??'—'} / ${status.coldCount??'—'}`,`核心 ${status.coreCount??'—'}`)}${statCard('向量文档',status.vectorCount??0,status.vectorCount?'语义检索已启用':'自动降级BM25')}${statCard('本轮召回',hits.length)}${statCard('预计Token',Math.ceil(estimatedChars/3.2),'仅粗略估算')}</section>
-        <section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔎 检索预览</h3><div><button data-retrieval-action="search">检索</button><button data-retrieval-action="rebuild">重建索引</button><button data-retrieval-action="clear" class="danger-soft">清空索引</button></div></div><textarea id="vvvtm-retrieval-query" placeholder="默认使用最近一条{{user}}消息，也可输入测试问题。">${esc(stateRuntime.retrievalQuery)}</textarea><div class="retrieval-controls"><label>召回数<input type="number" id="vvvtm-topk" value="${esc(stateRuntime.state.settings.retrievalTopK)}" min="1" max="30"></label><label>最低相关度<input type="number" id="vvvtm-minscore" value="${esc(stateRuntime.state.settings.retrievalMinScore)}" min="0" max="1" step="0.01"></label><label>向量权重<input type="number" id="vvvtm-vweight" value="${esc(stateRuntime.state.settings.vectorWeight)}" min="0" max="1" step="0.05"></label><label>关键词权重<input type="number" id="vvvtm-lweight" value="${esc(stateRuntime.state.settings.lexicalWeight)}" min="0" max="1" step="0.05"></label><label>联想标签权重<input type="number" id="vvvtm-vcp-tag" value="${esc(stateRuntime.state.settings.vcpTagWeight)}" min="0" max="0.5" step="0.01"></label><label>标签图谱权重<input type="number" id="vvvtm-vcp-graph" value="${esc(stateRuntime.state.settings.vcpGraphWeight)}" min="0" max="0.5" step="0.01"></label></div></section>
-        <section class="vvvtm-retrieval-list">${hits.length ? hits.map((hit,index)=>`<article class="vvvtm-card retrieval-hit"><header><b>${index+1}. ${esc(hit.title||hit.type)}</b><span>${Number(hit.score||0).toFixed(3)}</span></header><p>${esc(hit.text)}</p><footer><small>${esc(hit.type)} · ${esc(hit.tier||'cold')} · ${hit.floorStart??'?'}-${hit.floorEnd??'?'}层${hit.timeline?' · 时间线':''} · 向量${Number(hit.vectorScore||0).toFixed(2)} / 关键词${Number(hit.lexicalScore||0).toFixed(2)} / 标签${Number(hit.tagScore||0).toFixed(2)} / 联想${Number(hit.graphScore||0).toFixed(2)}</small>${Number.isFinite(Number(hit.floorStart))?`<button data-jump="${hit.floorStart}">跳转</button>`:''}</footer></article>`).join(''):'<div class="vvvtm-empty big">输入查询后点击检索，查看下一轮会召回哪些旧记忆。</div>'}</section>`;
+        <section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔎 检索预览</h3><div><button data-retrieval-action="search">检索</button><button data-retrieval-action="rebuild">重建索引</button><button data-retrieval-action="clear" class="danger-soft">Bỏ chọn索引</button></div></div><textarea id="vvvtm-retrieval-query" placeholder="默认使用最近一条{{user}}消息，也可输入测试问题。">${esc(stateRuntime.retrievalQuery)}</textarea><div class="retrieval-controls"><label>召回数<input type="number" id="vvvtm-topk" value="${esc(stateRuntime.state.settings.retrievalTopK)}" min="1" max="30"></label><label>最低相关度<input type="number" id="vvvtm-minscore" value="${esc(stateRuntime.state.settings.retrievalMinScore)}" min="0" max="1" step="0.01"></label><label>向量权重<input type="number" id="vvvtm-vweight" value="${esc(stateRuntime.state.settings.vectorWeight)}" min="0" max="1" step="0.05"></label><label>关键词权重<input type="number" id="vvvtm-lweight" value="${esc(stateRuntime.state.settings.lexicalWeight)}" min="0" max="1" step="0.05"></label><label>联想标签权重<input type="number" id="vvvtm-vcp-tag" value="${esc(stateRuntime.state.settings.vcpTagWeight)}" min="0" max="0.5" step="0.01"></label><label>标签图谱权重<input type="number" id="vvvtm-vcp-graph" value="${esc(stateRuntime.state.settings.vcpGraphWeight)}" min="0" max="0.5" step="0.01"></label></div></section>
+        <section class="vvvtm-retrieval-list">${hits.length ? hits.map((hit,index)=>`<article class="vvvtm-card retrieval-hit"><header><b>${index+1}. ${esc(hit.title||hit.type)}</b><span>${Number(hit.score||0).toFixed(3)}</span></header><p>${esc(hit.text)}</p><footer><small>${esc(hit.type)} · ${esc(hit.tier||'cold')} · ${hit.floorStart??'?'}-${hit.floorEnd??'?'}层${hit.timeline?' · Dòng thời gian':''} · 向量${Number(hit.vectorScore||0).toFixed(2)} / 关键词${Number(hit.lexicalScore||0).toFixed(2)} / 标签${Number(hit.tagScore||0).toFixed(2)} / 联想${Number(hit.graphScore||0).toFixed(2)}</small>${Number.isFinite(Number(hit.floorStart))?`<button data-jump="${hit.floorStart}">跳转</button>`:''}</footer></article>`).join(''):'<div class="vvvtm-empty big">输入查询后点击检索，查看下一轮会召回哪些旧记忆。</div>'}</section>`;
     }
 
     function bindRetrieval(content) {
@@ -17283,7 +17283,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-retrieval-action="search"]')?.addEventListener('click', async () => { saveControls(); setBusy(true,'正在混合检索…'); await searchMemories(content.querySelector('#vvvtm-retrieval-query')?.value); setBusy(false); renderCurrentTab(); updatePromptInjection(); applyUiCollapse(); });
         content.querySelector('[data-retrieval-action="rebuild"]')?.addEventListener('click', async () => { saveControls(); await rebuildIndex(); await refreshServerState({ index:true }); renderCurrentTab(); });
         content.querySelector('[data-retrieval-action="clear"]')?.addEventListener('click', async () => {
-            if(!confirm('清空当前聊天检索索引？记忆表和总结不会删除。'))return;
+            if(!confirm('Bỏ chọn当前聊天检索索引？记忆表和总结不会删除。'))return;
             const scope=captureChatScope(), operationState=stateRuntime.state;
             if(!scope||!operationState)return;
             await serverFetch(`/indexes/${encodeURIComponent(scope.serverChatKey)}`,{method:'DELETE'});
@@ -17303,11 +17303,11 @@ ${JSON.stringify(evidence)}`;
         if (status === 'retrying-seven-api') return { kind:'working', text:`第${entry.index}层幕后七条正在自动重试；成功后手机会自动刷新。` };
         if (['waiting-seven-api','seven-api-running'].includes(status)) return { kind:'working', text:`第${entry.index}层幕后七条正在生成；成功后手机会自动刷新。` };
         if (status === 'seven-api-unconfigured') return { kind:'error', text:`幕后七条写作源不可用：${compactText(shell.fallbackError || '请检查幕后七条独立API配置', 180)}` };
-        if (status === 'seven-api-failed') return { kind:'error', text:`第${entry.index}层幕后七条生成失败：${compactText(shell.fallbackError || '未知错误', 180)}` };
+        if (status === 'seven-api-failed') return { kind:'error', text:`第${entry.index}层幕后七条生成失败：${compactText(shell.fallbackError || 'Chưa rõ错误', 180)}` };
         const p = shell.phone || {};
         const count = ['wechat','wechatGroups','channelGroups','sms','calls'].reduce((sum,key)=>sum+Number((p[key]||[]).length),0);
-        if (['ok','fallback-ok'].includes(status)) return { kind:'ok', text:count ? `第${entry.index}层幕后七条已完成，本轮手机写入 ${count} 条通讯。` : `第${entry.index}层幕后七条已完成；模型判断本轮没有合理的新通讯。` };
-        return { kind:'idle', text:`第${entry.index}层手机状态：${status || '等待生成'}。` };
+        if (['ok','fallback-ok'].includes(status)) return { kind:'ok', text:count ? `第${entry.index}层幕后七条Đã hoàn thành，本轮手机写入 ${count} 条通讯。` : `第${entry.index}层幕后七条Đã hoàn thành；模型判断本轮没有合理的新通讯。` };
+        return { kind:'idle', text:`第${entry.index}层手机Trạng thái：${status || '等待生成'}。` };
     }
 
     function undockRolePhoneFromTab({ hide = true } = {}) {
@@ -17367,9 +17367,9 @@ ${JSON.stringify(evidence)}`;
         const rows=(stateRuntime.state.appearances||[]).slice().sort((a,b)=>Number(b.floor||0)-Number(a.floor||0));
         const cards=rows.map(item=>{
             const reg=npcRegistryEntry(item.character); const alias=reg?.aliases?.length?`曾称：${reg.aliases.join('、')}`:'';
-            return `<article class="vvvtm-appearance-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location,item.floor!==undefined?`第${item.floor}层`:''].filter(Boolean).join(' · '))}</small>${alias?`<small>${esc(alias)}</small>`:''}</div><button class="danger-soft" data-appearance-delete="${esc(item.id)}">删除</button></header><p>${esc(item.outfit||'未记录服装')}</p><dl>${item.hair?`<div><dt>发型</dt><dd>${esc(item.hair)}</dd></div>`:''}${item.accessories?`<div><dt>配饰</dt><dd>${esc(item.accessories)}</dd></div>`:''}${item.shoes?`<div><dt>鞋履</dt><dd>${esc(item.shoes)}</dd></div>`:''}${item.condition?`<div><dt>状态</dt><dd>${esc(item.condition)}</dd></div>`:''}</dl></article>`;
+            return `<article class="vvvtm-appearance-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location,item.floor!==undefined?`第${item.floor}层`:''].filter(Boolean).join(' · '))}</small>${alias?`<small>${esc(alias)}</small>`:''}</div><button class="danger-soft" data-appearance-delete="${esc(item.id)}">Xóa</button></header><p>${esc(item.outfit||'Chưa ghi nhận服装')}</p><dl>${item.hair?`<div><dt>发型</dt><dd>${esc(item.hair)}</dd></div>`:''}${item.accessories?`<div><dt>配饰</dt><dd>${esc(item.accessories)}</dd></div>`:''}${item.shoes?`<div><dt>鞋履</dt><dd>${esc(item.shoes)}</dd></div>`:''}${item.condition?`<div><dt>Trạng thái</dt><dd>${esc(item.condition)}</dd></div>`:''}</dl></article>`;
         }).join('');
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>👗 人物当前外观</h3><p class="vvvtm-note">同一角色只保留一张当前卡片；新一轮外观会覆盖更新，旧版本只保存在内部回滚历史，不再重复铺满页面。</p></div><button class="danger-soft" data-appearance-clear>清空外观</button></div><section class="vvvtm-appearance-grid">${cards||'<div class="vvvtm-empty">暂无人物外观</div>'}</section></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>👗 人物当前外观</h3><p class="vvvtm-note">同一角色只保留一张当前卡片；新一轮外观会覆盖更新，旧版本只保存在内部回滚历史，不再重复铺满页面。</p></div><button class="danger-soft" data-appearance-clear>Bỏ chọn外观</button></div><section class="vvvtm-appearance-grid">${cards||'<div class="vvvtm-empty">Chưa có nhân vật外观</div>'}</section></section>`;
     }
 
     function bindAppearance(content) {
@@ -17382,7 +17382,7 @@ ${JSON.stringify(evidence)}`;
             scheduleReindex();
         }));
         content.querySelector('[data-appearance-clear]')?.addEventListener('click', () => {
-            if (!confirm('确认清空当前聊天的人物外观历史？其他记忆不会删除。')) return;
+            if (!confirm('确认Bỏ chọn当前聊天的人物外观历史？其他记忆不会删除。')) return;
             recordManualDeletion('appearances',stateRuntime.state.appearances||[]);
             stateRuntime.state.appearances = [];
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
@@ -17392,13 +17392,13 @@ ${JSON.stringify(evidence)}`;
 
     function renderDiagnostics() {
         const rows = stateRuntime.state.diagnostics.slice().reverse();
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🩺 剧情体检</h3><div><button data-diag-run>本地检查</button><button data-diag-ai>AI深度检查</button><button data-diag-clear class="danger-soft">清空</button></div></div><div class="vvvtm-diagnostics">${rows.length?rows.map(item=>`<article class="${item.ignored?'ignored':''}"><b>${esc(item.type)}</b><p>${esc(item.detail)}</p><small>${esc(item.floor)}层 · ${esc(item.time)}</small><button data-jump="${esc(item.floor)}">跳转</button></article>`).join(''):'<div class="vvvtm-empty">暂未发现问题</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🩺 剧情体检</h3><div><button data-diag-run>本地检查</button><button data-diag-ai>AI深度检查</button><button data-diag-clear class="danger-soft">Bỏ chọn</button></div></div><div class="vvvtm-diagnostics">${rows.length?rows.map(item=>`<article class="${item.ignored?'ignored':''}"><b>${esc(item.type)}</b><p>${esc(item.detail)}</p><small>${esc(item.floor)}层 · ${esc(item.time)}</small><button data-jump="${esc(item.floor)}">跳转</button></article>`).join(''):'<div class="vvvtm-empty">暂未发现问题</div>'}</div></section>`;
     }
 
     function bindDiagnostics(content) {
         content.querySelector('[data-diag-run]')?.addEventListener('click',()=>{runDiagnostics();renderCurrentTab();toast('本地检查完成','success');});
         content.querySelector('[data-diag-clear]')?.addEventListener('click',()=>{recordManualDeletion('diagnostics',stateRuntime.state.diagnostics||[]);stateRuntime.state.diagnostics=[];saveState({immediate:true,refresh:true,reason:'user-explicit-delete',allowDestructive:true});});
-        content.querySelector('[data-diag-ai]')?.addEventListener('click',async()=>{setBusy(true,'AI正在检查剧情连续性…');try{const promptText=`检查以下聊天是否存在：替{{user}}做决定、人物OOC、时间线矛盾、地点瞬移、角色知道不该知道的秘密、物品凭空出现、称呼错误、重复内容、剧情长期不推进。只输出JSON：{"issues":[{"type":"","detail":"","floor":0}]}。没有问题返回空数组。\n\n结构化记忆：\n${buildMemoryPrompt()}\n\n聊天：\n${recentTranscript(16)}`;const result=await runFeature('diagnostics',promptText,{kind:'diagnostics'},{jsonMode:true});const record=result.record||{kind:'diagnostics'};if(result.task)await applyCompletedJob(record,result.task);else await applyCompletedJob(record,{status:'completed',result:{text:result.text},model:result.model});renderCurrentTab();toast('AI体检完成','success');}catch(error){toast(`体检失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-diag-ai]')?.addEventListener('click',async()=>{setBusy(true,'AI正在检查剧情连续性…');try{const promptText=`检查以下聊天是否存在：替{{user}}做决定、人物OOC、Dòng thời gian矛盾、地点瞬移、角色知道不该知道的秘密、物品凭空出现、称呼错误、重复内容、剧情长期不推进。只输出JSON：{"issues":[{"type":"","detail":"","floor":0}]}。没有问题返回空数组。\n\n结构化记忆：\n${buildMemoryPrompt()}\n\n聊天：\n${recentTranscript(16)}`;const result=await runFeature('diagnostics',promptText,{kind:'diagnostics'},{jsonMode:true});const record=result.record||{kind:'diagnostics'};if(result.task)await applyCompletedJob(record,result.task);else await applyCompletedJob(record,{status:'completed',result:{text:result.text},model:result.model});renderCurrentTab();toast('AI体检完成','success');}catch(error){toast(`体检失败：${error.message}`,'error');}finally{setBusy(false);}});
     }
 
     function inputField(id,label,value,type='text',extra='') { return `<label class="api-field"><span>${label}</span><input id="${id}" type="${type}" value="${esc(value||'')}" ${extra}></label>`; }
@@ -17417,10 +17417,10 @@ ${JSON.stringify(evidence)}`;
             runLaterForScope(scope,0,async()=>{await refreshServerState({config:true,index:true,tasks:true});if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState&&stateRuntime.currentTab==='api')renderCurrentTab();});
         }
         return `<section class="vvvtm-grid stats">${statCard('服务端',health.ok===false?'未连接':'已连接',health.version||health.error||'')}${statCard('总结API',llm.model||'未配置',llm.apiKeyConfigured?'密钥已保存在宝塔':'未保存密钥')}${statCard('AI接力API',relay.model||'未配置','在AI接力设置中单独选择模型')}${statCard('七条写作源',companion.model||'未配置','独立API · 独立资料边界')}${statCard('手机实时API',phone.model||'未配置',phone.apiKeyConfigured?'密钥已保存在宝塔':'微信、电话、服务和里层酒馆共用')}${statCard('向量模型',emb.enabled?(emb.model||'已启用'):'未启用',emb.apiKeyConfigured?'密钥已保存':'可选')}${statCard('账号限制',health.enabledAccount||health.account||'当前账号','服务端按账号隔离调用')}</section>
-        <section class="vvvtm-api-layout"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🤖 独立整理 / 总结 API</h3><div><button data-api-action="models">获取模型</button><button data-api-action="test">测试完整链路</button><button data-api-action="save">保存</button></div></div><p class="vvvtm-note"><b>记忆最小上下文：</b>即时整理只发送本轮目标AI回复、有限记忆资料和结构化验收规则，不读取角色卡、Persona、世界书、酒馆预设或完整聊天历史。失败时仅在同一个独立API内有限重试，绝不会切换到酒馆主API。</p><div class="api-grid">${selectField('api-provider','接口类型',llm.provider||'openai-compatible',[['openai-compatible','OpenAI兼容'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('api-base','Base URL',llm.baseUrl)}${inputField('api-key','API Key','', 'password','placeholder="留空表示保留服务器旧密钥"')}${inputField('api-model','默认模型',llm.model,'text','list="vvvtm-model-list"')}${inputField('api-temp','Temperature',llm.temperature??0.15,'number','step="0.05" min="0" max="2"')}${inputField('api-max','最大输出Token',llm.maxTokens??4000,'number','min="256" max="100000"')}${inputField('api-timeout','独立API超时秒数',llm.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="api-headers">${esc(JSON.stringify(llm.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-model-list"></datalist><h4>各功能模型（留空使用默认模型）</h4><div class="api-grid feature-models">${inputField('api-f-extract','即时简记',llm.featureModels?.extract)}${inputField('api-f-stage','阶段总结',llm.featureModels?.stageSummary)}${inputField('api-f-big','大总结',llm.featureModels?.bigSummary)}${inputField('api-f-era','时代总结',llm.featureModels?.eraSummary)}${inputField('api-f-diag','剧情体检',llm.featureModels?.diagnostics)}${inputField('api-f-chapter','章节整理',llm.featureModels?.chapter)}</div><pre id="vvvtm-api-result" class="api-result">整理/总结使用独立资料边界；密钥仍只保存在当前登录账号自己的 data/&lt;账号&gt;/vvv-theater-memory/config.json。</pre></article>
-        <article class="vvvtm-card vvvtm-companion-api-card"><div class="vvvtm-section-title"><h3>🎭 幕后七条独立 API</h3><div><button data-companion-api-action="models">获取独立模型</button><button data-companion-api-action="test">测试写作源</button><button data-companion-api-action="save">保存</button></div></div><p class="vvvtm-note"><b>固定独立资料边界：</b>只发送刚完成的正文、有限结构化记忆、已确认角色资料和程序状态；不读取酒馆预设、角色世界书、Persona或 Prompt Manager。失败时仅在本独立API内有限重试。</p><div class="api-grid" data-companion-independent>${selectField('comp-provider','接口类型',companion.provider||'openai-compatible',[['openai-compatible','OpenAI兼容'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('comp-base','Base URL',companion.baseUrl)}${inputField('comp-key','API Key','', 'password','placeholder="留空表示保留幕后七条旧密钥"')}${inputField('comp-model','幕后七条模型',companion.model,'text','list="vvvtm-companion-model-list"')}${inputField('comp-temp','Temperature',companion.temperature??0.18,'number','step="0.05" min="0" max="2"')}${inputField('comp-max','最大输出Token',companion.maxTokens??7000,'number','min="512" max="100000"')}${inputField('comp-timeout','超时秒数',companion.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="comp-headers">${esc(JSON.stringify(companion.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-companion-model-list"></datalist><pre id="vvvtm-companion-api-result" class="api-result">当前模式：幕后七条独立API；不会调用酒馆主API，也不会继承酒馆预设或世界书。</pre></article>
-        <article class="vvvtm-card vvvtm-phone-api-card"><div class="vvvtm-section-title"><h3>📱 小手机实时 API</h3><div><button data-phone-api-action="models">获取模型</button><button data-phone-api-action="test">测试实时链路</button><button data-phone-api-action="save">保存</button></div></div><p class="vvvtm-note"><b>一套手机API，多种应用协议：</b>微信、短信、电话、转账、外卖/打车服务和浏览器里的酒馆共用这一组连接；每类应用使用独立结构规则。手机事件立即完成，并在下一轮以已处理事实交给正文和幕后七条，禁止重复回复。</p><div class="api-grid">${selectField('phone-provider','接口类型',phone.provider||'openai-compatible',[['openai-compatible','OpenAI兼容'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('phone-base','Base URL',phone.baseUrl)}${inputField('phone-key','API Key','', 'password','placeholder="留空表示保留手机API旧密钥"')}${inputField('phone-model','手机实时模型',phone.model,'text','list="vvvtm-phone-model-list"')}${inputField('phone-temp','Temperature',phone.temperature??0.55,'number','step="0.05" min="0" max="2"')}${inputField('phone-max','最大输出Token',phone.maxTokens??1200,'number','min="128" max="12000"')}${inputField('phone-timeout','超时秒数',phone.timeoutSeconds??90,'number','min="10" max="600"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="phone-headers">${esc(JSON.stringify(phone.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-phone-model-list"></datalist><pre id="vvvtm-phone-api-result" class="api-result">手机实时API完全独立；不会等待下一轮正文，也不会复用总结API。</pre></article>
-        <article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🧬 向量化模型</h3><div><button data-api-action="test-embedding">测试向量</button><button data-api-action="rebuild">保存并重建</button></div></div><label class="vvvtm-setting"><div><strong>启用向量检索</strong><small>关闭时自动使用 BM25 关键词检索，不影响插件工作。</small></div><input id="emb-enabled" type="checkbox" ${emb.enabled?'checked':''}></label><div class="api-grid">${selectField('emb-provider','接口类型',emb.provider||'openai-compatible',[['openai-compatible','OpenAI兼容 Embeddings'],['gemini','Gemini Embedding']])}${inputField('emb-base','Base URL',emb.baseUrl)}${inputField('emb-key','API Key','', 'password','placeholder="留空保留旧密钥"')}${inputField('emb-model','向量模型',emb.model)}${inputField('emb-dim','向量维度（0自动）',emb.dimensions??0,'number','min="0"')}${inputField('emb-timeout','超时秒数',emb.timeoutSeconds??120,'number','min="10" max="1800"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="emb-headers">${esc(JSON.stringify(emb.extraHeaders||{},null,2))}</textarea></label></div><p class="vvvtm-note">建议：长聊天开启。索引内容包含三级总结、一级时间线、人物/关系、长期事件锚点、NPC身份/旧称呼、秘密、电话/微信/朋友圈/日记/纪念日、章节和手动标记的重要楼层；不会把每句废话全部向量化。SiliconFlow若模型留空会自动使用 BAAI/bge-m3。</p></article></section>`;
+        <section class="vvvtm-api-layout"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🤖 独立整理 / 总结 API</h3><div><button data-api-action="models">获取模型</button><button data-api-action="test">测试完整链路</button><button data-api-action="save">保存</button></div></div><p class="vvvtm-note"><b>记忆最小上下文：</b>即时整理只发送本轮目标AI回复、有限记忆资料和结构化验收规则，不读取角色卡、Persona、世界书、酒馆预设或完整聊天历史。失败时仅在同一个独立API内有限重试，绝不会切换到酒馆主API。</p><div class="api-grid">${selectField('api-provider','接口Loại',llm.provider||'openai-compatible',[['openai-compatible','OpenAI兼容'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('api-base','Base URL',llm.baseUrl)}${inputField('api-key','API Key','', 'password','placeholder="留空表示保留服务器旧密钥"')}${inputField('api-model','默认模型',llm.model,'text','list="vvvtm-model-list"')}${inputField('api-temp','Temperature',llm.temperature??0.15,'number','step="0.05" min="0" max="2"')}${inputField('api-max','最大输出Token',llm.maxTokens??4000,'number','min="256" max="100000"')}${inputField('api-timeout','独立API超时秒数',llm.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="api-headers">${esc(JSON.stringify(llm.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-model-list"></datalist><h4>各功能模型（留空使用默认模型）</h4><div class="api-grid feature-models">${inputField('api-f-extract','即时简记',llm.featureModels?.extract)}${inputField('api-f-stage','阶段总结',llm.featureModels?.stageSummary)}${inputField('api-f-big','大总结',llm.featureModels?.bigSummary)}${inputField('api-f-era','时代总结',llm.featureModels?.eraSummary)}${inputField('api-f-diag','剧情体检',llm.featureModels?.diagnostics)}${inputField('api-f-chapter','章节整理',llm.featureModels?.chapter)}</div><pre id="vvvtm-api-result" class="api-result">整理/总结使用独立资料边界；密钥仍只保存在当前登录账号自己的 data/&lt;账号&gt;/vvv-theater-memory/config.json。</pre></article>
+        <article class="vvvtm-card vvvtm-companion-api-card"><div class="vvvtm-section-title"><h3>🎭 幕后七条独立 API</h3><div><button data-companion-api-action="models">获取独立模型</button><button data-companion-api-action="test">测试写作源</button><button data-companion-api-action="save">保存</button></div></div><p class="vvvtm-note"><b>固定独立资料边界：</b>只发送刚完成的chính văn、有限结构化记忆、已确认角色资料和程序Trạng thái；不读取酒馆预设、角色世界书、Persona或 Prompt Manager。失败时仅在本独立API内有限重试。</p><div class="api-grid" data-companion-independent>${selectField('comp-provider','接口Loại',companion.provider||'openai-compatible',[['openai-compatible','OpenAI兼容'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('comp-base','Base URL',companion.baseUrl)}${inputField('comp-key','API Key','', 'password','placeholder="留空表示保留幕后七条旧密钥"')}${inputField('comp-model','幕后七条模型',companion.model,'text','list="vvvtm-companion-model-list"')}${inputField('comp-temp','Temperature',companion.temperature??0.18,'number','step="0.05" min="0" max="2"')}${inputField('comp-max','最大输出Token',companion.maxTokens??7000,'number','min="512" max="100000"')}${inputField('comp-timeout','超时秒数',companion.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="comp-headers">${esc(JSON.stringify(companion.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-companion-model-list"></datalist><pre id="vvvtm-companion-api-result" class="api-result">当前模式：幕后七条独立API；不会调用酒馆主API，也不会继承酒馆预设或世界书。</pre></article>
+        <article class="vvvtm-card vvvtm-phone-api-card"><div class="vvvtm-section-title"><h3>📱 小手机实时 API</h3><div><button data-phone-api-action="models">获取模型</button><button data-phone-api-action="test">测试实时链路</button><button data-phone-api-action="save">保存</button></div></div><p class="vvvtm-note"><b>一套手机API，多种应用协议：</b>微信、短信、电话、转账、外卖/打车服务和浏览器里的酒馆共用这一组连接；每类应用使用独立结构规则。手机事件立即完成，并在下一轮以已处理事实交给chính văn和幕后七条，禁止重复回复。</p><div class="api-grid">${selectField('phone-provider','接口Loại',phone.provider||'openai-compatible',[['openai-compatible','OpenAI兼容'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('phone-base','Base URL',phone.baseUrl)}${inputField('phone-key','API Key','', 'password','placeholder="留空表示保留手机API旧密钥"')}${inputField('phone-model','手机实时模型',phone.model,'text','list="vvvtm-phone-model-list"')}${inputField('phone-temp','Temperature',phone.temperature??0.55,'number','step="0.05" min="0" max="2"')}${inputField('phone-max','最大输出Token',phone.maxTokens??1200,'number','min="128" max="12000"')}${inputField('phone-timeout','超时秒数',phone.timeoutSeconds??90,'number','min="10" max="600"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="phone-headers">${esc(JSON.stringify(phone.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-phone-model-list"></datalist><pre id="vvvtm-phone-api-result" class="api-result">手机实时API完全独立；不会等待下一轮chính văn，也不会复用总结API。</pre></article>
+        <article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🧬 向量化模型</h3><div><button data-api-action="test-embedding">测试向量</button><button data-api-action="rebuild">保存并重建</button></div></div><label class="vvvtm-setting"><div><strong>启用向量检索</strong><small>Đóng时自动使用 BM25 关键词检索，不影响插件工作。</small></div><input id="emb-enabled" type="checkbox" ${emb.enabled?'checked':''}></label><div class="api-grid">${selectField('emb-provider','接口Loại',emb.provider||'openai-compatible',[['openai-compatible','OpenAI兼容 Embeddings'],['gemini','Gemini Embedding']])}${inputField('emb-base','Base URL',emb.baseUrl)}${inputField('emb-key','API Key','', 'password','placeholder="留空保留旧密钥"')}${inputField('emb-model','向量模型',emb.model)}${inputField('emb-dim','向量维度（0自动）',emb.dimensions??0,'number','min="0"')}${inputField('emb-timeout','超时秒数',emb.timeoutSeconds??120,'number','min="10" max="1800"')}<label class="api-field wide"><span>额外请求头 JSON</span><textarea id="emb-headers">${esc(JSON.stringify(emb.extraHeaders||{},null,2))}</textarea></label></div><p class="vvvtm-note">建议：长聊天开启。索引内容包含三级总结、一级Dòng thời gian、人物/关系、长期事件锚点、NPCThân phận/旧称呼、秘密、电话/微信/朋友圈/日记/纪念日、章节和手动标记的重要Tầng；不会把每句废话全部向量化。SiliconFlow若模型留空会自动使用 BAAI/bge-m3。</p></article></section>`;
     }
 
     function readApiForm(content) {
@@ -17504,7 +17504,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试整理/总结完整链路…');await save();const data=await runFeature('extract','这是0-32整理/总结完整链路连接测试。只输出合法JSON对象：{"ok":true,"source":"memory-connection-test"}',{kind:'memoryConnectionTest'},{jsonMode:true,timeoutMs:95000});const parsed=parseGeneratedJson(data.text||'');if(data.record){data.record.applied=true;data.record.status='test-completed';await saveState({immediate:true,refresh:false,reason:'memory-connection-test'});}result({ok:true,source:data.source||data.record?.source||'memory-independent-api',response:parsed,promptPipeline:data.record?.promptPipeline||data.task?.promptPipeline||null});toast('整理/总结完整链路连接成功','success');}catch(error){result(error.message);toast(`测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取模型列表…');await save();const data=await serverFetch('/models');const list=content.querySelector('#vvvtm-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');result(`获取到 ${(data.models||[]).length} 个模型。`);toast('模型列表已载入','success');}catch(error){result(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-companion-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存幕后七条独立API…');await save();companionResult('幕后七条独立API已保存；固定使用独立资料边界。');toast('幕后七条独立API已保存','success');}catch(error){companionResult(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
-        content.querySelector('[data-companion-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试幕后七条完整链路…');await save();const data=await callCompanionJsonWithRecovery('这是0-32幕后七条完整链路连接测试。只输出严格JSON对象：{"ok":true,"source":"connection-test"}',{responseLength:512,jsonMode:true,generationType:'companion-scoped',finalInstruction:'只返回 {"ok":true,"source":"connection-test"} 这一类合法JSON对象，不要正文、Markdown或解释。'});const parsed=parseGeneratedJson(data?.text||'');companionResult({ok:true,source:data?.sourceLabel||companionWritingSourceLabel(),response:parsed,promptPipeline:data?.promptPipeline||null});toast('幕后七条完整链路连接成功','success');}catch(error){companionResult(error.message);toast(`幕后七条测试失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-companion-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试幕后七条完整链路…');await save();const data=await callCompanionJsonWithRecovery('这是0-32幕后七条完整链路连接测试。只输出严格JSON对象：{"ok":true,"source":"connection-test"}',{responseLength:512,jsonMode:true,generationType:'companion-scoped',finalInstruction:'只返回 {"ok":true,"source":"connection-test"} 这一类合法JSON对象，不要chính văn、Markdown或解释。'});const parsed=parseGeneratedJson(data?.text||'');companionResult({ok:true,source:data?.sourceLabel||companionWritingSourceLabel(),response:parsed,promptPipeline:data?.promptPipeline||null});toast('幕后七条完整链路连接成功','success');}catch(error){companionResult(error.message);toast(`幕后七条测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-companion-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取幕后七条模型列表…');await save();const data=await serverFetch('/companion/models');const list=content.querySelector('#vvvtm-companion-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');companionResult(`获取到 ${(data.models||[]).length} 个模型，可在“幕后七条模型”框中选择。`);toast('幕后七条模型列表已载入','success');}catch(error){companionResult(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存小手机实时API…');await save();phoneResult('小手机实时API已保存。微信、电话、转账、服务会话和里层酒馆会共用这一连接。');toast('小手机实时API已保存','success');}catch(error){phoneResult(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试小手机实时链路…');await save();const data=await serverFetch('/phone/test',{method:'POST',body:JSON.stringify({})});phoneResult({ok:true,source:data.source,model:data.model,response:parseGeneratedJson(data.text||'{}')});toast('小手机实时API连接成功','success');}catch(error){phoneResult(error.message);toast(`手机API测试失败：${error.message}`,'error');}finally{setBusy(false);}});
@@ -17518,15 +17518,15 @@ ${JSON.stringify(evidence)}`;
         const seen=new Set();
         const clean=[];
         for(const row of rows){
-            const event=compactText(row?.['事件概要'],1800);
+            const event=compactText(row?.['Tóm tắt sự kiện'],1800);
             if(!event) continue;
-            const floor=String(row?.['楼层']??'').trim();
-            const date=String(row?.['日期']??'').trim();
+            const floor=String(row?.['Tầng']??'').trim();
+            const date=String(row?.['Ngày']??'').trim();
             const key=`${floor}|${date}|${event}`;
             if(seen.has(key)) continue;
             seen.add(key);clean.push(row);
         }
-        clean.sort((a,b)=>Number(a?.['楼层']??0)-Number(b?.['楼层']??0));
+        clean.sort((a,b)=>Number(a?.['Tầng']??0)-Number(b?.['Tầng']??0));
         stateRuntime.state.tables.mainline=clean;
     }
 
@@ -17553,19 +17553,19 @@ ${JSON.stringify(evidence)}`;
         if(!candidates.length&&summary)candidates.push({date:'',start:'',end:'',event:summary.split(/\n+/)[0].slice(0,900),floor:end});
         for(const item of candidates){
             uniquePush(s.tables.mainline,{
-                '日期':item.date,'开始时间':item.start,'完结时间':item.end,'事件概要':item.event,'状态':'已完成','楼层':String(item.floor),
+                'Ngày':item.date,'Giờ bắt đầu':item.start,'Giờ kết thúc':item.end,'Tóm tắt sự kiện':item.event,'Trạng thái':'Đã hoàn thành','Tầng':String(item.floor),
                 _sourceFloor:Number(item.floor),_takeoverRange:`${start}-${end}`,_takeoverGenerated:true,
-            },row=>`${row['楼层']}|${row['事件概要']}`);
+            },row=>`${row['Tầng']}|${row['Tóm tắt sự kiện']}`);
         }
         cleanupLegacyTimeline();
 
         let summaryRow=null;
         if(fullStage&&summary){
-            summaryRow=s.tables.summaries.find(row=>row._takeoverRange===`${start}-${end}`&&row['类型']==='阶段总结');
+            summaryRow=s.tables.summaries.find(row=>row._takeoverRange===`${start}-${end}`&&row['Loại']==='阶段总结');
             if(!summaryRow){
-                // U1.6.1兼容升级前已经完成的旧接管任务：保留自由文本证据，但绝不把它标成“阶段总结已完成”。
-                const structured=normalizeStageSummaryPayload({timeScene:{date:'未明确',period:'未明确',location:'未明确',weatherAtmosphere:'未明确'},corePlotActions:[{fact:summary,cause:'旧任务未提供结构化字段',result:'需重新读取原文生成固定格式',floors:`${start}-${end}`}],peopleRelations:[],secretsKnowledge:[],items:[],promises:[],unresolved:[]},start,end);
-                summaryRow={'类型':'阶段总结','状态':'需重算','总结内容':formatStageSummaryPayload(structured),'覆盖楼层':`${start}-${end}`,'模型':model||'旧档接管','生成时间':nowText(),'锁定':'否','隐藏状态':'未隐藏',_id:uid('takeover-summary'),_takeoverRange:`${start}-${end}`,_history:[],_legacyFreeText:summary,_formatVersion:STAGE_SUMMARY_FORMAT_VERSION,_staleReason:'升级前旧接管任务为自由文本，未计入完成进度；请重做本段'};
+                // U1.6.1兼容升级前已经完成的旧接管任务：保留自由文本证据，但绝不把它标成“阶段总结Đã hoàn thành”。
+                const structured=normalizeStageSummaryPayload({timeScene:{date:'Chưa xác định',period:'Chưa xác định',location:'Chưa xác định',weatherAtmosphere:'Chưa xác định'},corePlotActions:[{fact:summary,cause:'旧任务未提供结构化字段',result:'需重新读取原文生成固定格式',floors:`${start}-${end}`}],peopleRelations:[],secretsKnowledge:[],items:[],promises:[],unresolved:[]},start,end);
+                summaryRow={'Loại':'阶段总结','Trạng thái':'需重算','Nội dung tổng kết':formatStageSummaryPayload(structured),'Tầng bao phủ':`${start}-${end}`,'模型':model||'旧档接管','Thời điểm tạo':nowText(),'锁定':'否','隐藏Trạng thái':'未隐藏',_id:uid('takeover-summary'),_takeoverRange:`${start}-${end}`,_history:[],_legacyFreeText:summary,_formatVersion:STAGE_SUMMARY_FORMAT_VERSION,_staleReason:'升级前旧接管任务为自由文本，未计入完成进度；请重做本段'};
                 s.tables.summaries.push(summaryRow);
             }
         }
@@ -17590,7 +17590,7 @@ ${JSON.stringify(evidence)}`;
                 if(typeof chats.hideChatMessageRange!=='function')throw slashError;
                 await chats.hideChatMessageRange(0,end,true,'');
                 return chatScopeIsCurrent(scope);
-            }catch(error){console.warn('[vvv小剧场] 全量恢复隐藏楼层失败',error);return false;}
+            }catch(error){console.warn('[vvv小剧场] 全量恢复隐藏Tầng失败',error);return false;}
         }
     }
 
@@ -17631,17 +17631,17 @@ ${JSON.stringify(evidence)}`;
 
     async function wipeCurrentTheaterData({unhide=true,silent=false}={}) {
         const scope=captureChatScope();const operationState=stateRuntime.state;const startCtx=context();
-        if(!scope||!operationState)throw new Error('当前聊天尚未完成载入，请稍后再清空');
+        if(!scope||!operationState)throw new Error('当前聊天尚未完成载入，请稍后再Bỏ chọn');
         const preservedSettings=clone(operationState.settings||defaultState().settings);
-        // 极稳模式：真正清空前固定留一份“pre-wipe”保险快照。它不参与当前数据，也不会被正文AI读取；只用于误删恢复。
+        // 极稳模式：真正Bỏ chọn前固定留一份“pre-wipe”保险快照。它不参与当前数据，也不会被chính vănAI读取；只用于误删恢复。
         await createSafetySnapshot('pre-wipe-safety-vault',{force:true,stateSnapshot:clone(operationState),scope});
-        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('清空过程中已切换聊天，操作已安全中止；原聊天保险快照已保留');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('Bỏ chọn过程中已切换聊天，操作已安全中止；原聊天保险快照已保留');
         resetTransientRuntimeForWipe(scope);
-        if(!await clearTheaterMessageExtras(scope))throw new Error('清空过程中聊天发生变化，已停止继续写入');
-        if(unhide&&!await unhideEntireCurrentChat(scope))throw new Error('恢复隐藏楼层时聊天发生变化，已停止继续写入');
-        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('清空过程中已切换聊天，已停止继续写入');
+        if(!await clearTheaterMessageExtras(scope))throw new Error('Bỏ chọn过程中聊天发生变化，已停止继续写入');
+        if(unhide&&!await unhideEntireCurrentChat(scope))throw new Error('恢复隐藏Tầng时聊天发生变化，已停止继续写入');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('Bỏ chọn过程中已切换聊天，已停止继续写入');
         const serverErrors=await clearServerDataForCurrentChat(scope.serverChatKey);
-        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('清空服务器索引期间已切换聊天；当前聊天未被改写');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)throw new Error('Bỏ chọn服务器索引期间已切换聊天；当前聊天未被改写');
         try{localStorage.removeItem(scope.localStorageKey);}catch{}
         if(startCtx?.chatMetadata&&getChatKey(startCtx)===scope.chatKey&&Object.prototype.hasOwnProperty.call(startCtx.chatMetadata,META_KEY))delete startCtx.chatMetadata[META_KEY];
         const next=defaultState();next.settings={...next.settings,...preservedSettings};next.chatIdentity=scope.chatKey;next.chatAnchor=scope.chatAnchor;next.intentionalResetAt=Date.now();next.progress.maxObservedFloor=(startCtx?.chat?.length||0)-1;
@@ -17649,7 +17649,7 @@ ${JSON.stringify(evidence)}`;
         await withDestructiveSave(()=>saveState({immediate:true,refresh:false,reason:'wipe-reset',allowDestructive:true,forceSnapshot:true}));
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==next)return {serverErrors,switched:true};
         updatePromptInjection();applyUiCollapse();
-        if(!silent){toast(serverErrors.length?`本聊天已清空；${serverErrors.join('；')}（清空前安全快照仍可恢复）`:'本聊天的vvv小剧场活动数据已清空；清空前安全快照已保存在保险库',serverErrors.length?'warn':'success');renderCurrentTab();}
+        if(!silent){toast(serverErrors.length?`本聊天已Bỏ chọn；${serverErrors.join('；')}（Bỏ chọn前安全快照仍可恢复）`:'本聊天的vvv小剧场活动数据已Bỏ chọn；Bỏ chọn前安全快照已保存在保险库',serverErrors.length?'warn':'success');renderCurrentTab();}
         return {serverErrors,switched:false};
     }
 
@@ -17657,23 +17657,23 @@ ${JSON.stringify(evidence)}`;
         const s=stateRuntime.state.settings;
         const toggle=(key,label,description)=>{
             if(key==='syncWorldBooksAcrossClients')return '';
-            if(key==='autoCompanionOutput')description='每轮可见正文结束后，用幕后七条独立API读取本轮正文、有限记忆、已确认角色资料，以及“强读世界书”显式摘录（开启时）；不读取酒馆预设、Persona或Prompt Manager。正文和幕后始终分开输出。';
-            if(key==='phoneAutoGenerate')description='每轮由幕后七条根据当前正文、当前场景、有限记忆与强读世界书摘录重新判断通讯方式；现代场景固定iPhone17Promax，其他时代按当前地点选择合理载体。';
-            if(key==='autoEcologyRepair')return `<label class="vvvtm-setting"><div><strong>缺失栏目自动补写（固定开启）</strong><small>主结果若漏掉人物外观、朋友圈/日记、通讯终端或彼间私文，会只补缺失栏目并再次验收；不会重写正文或重复已经生成的栏目。</small></div><input type="checkbox" checked disabled></label>`;
+            if(key==='autoCompanionOutput')description='每轮可见chính văn结束后，用幕后七条独立API读取本轮chính văn、有限记忆、已确认角色资料，以及“强读世界书”显式摘录（开启时）；不读取酒馆预设、Persona或Prompt Manager。chính văn和幕后始终分开输出。';
+            if(key==='phoneAutoGenerate')description='每轮由幕后七条根据当前chính văn、当前场景、有限记忆与强读世界书摘录重新判断通讯方式；现代场景固定iPhone17Promax，其他时代按当前地点选择合理载体。';
+            if(key==='autoEcologyRepair')return `<label class="vvvtm-setting"><div><strong>缺失栏目自动补写（固定开启）</strong><small>主结果若漏掉人物外观、朋友圈/日记、通讯终端或彼间私文，会只补缺失栏目并再次验收；不会重写chính văn或重复已经生成的栏目。</small></div><input type="checkbox" checked disabled></label>`;
             return `<label class="vvvtm-setting"><div><strong>${label}</strong><small>${description}</small></div><input type="checkbox" data-setting="${key}" ${s[key]?'checked':''}></label>`;
         };
         const number=(key,label,min,max,step=1)=>{if(key==='companionRetryMaxAttempts')max=8;return `<label class="vvvtm-setting"><div><strong>${label}</strong></div><input type="number" min="${min}" max="${max}" step="${step}" data-setting-number="${key}" value="${esc(s[key])}"></label>`;};
-        return `<section class="vvvtm-settings-columns"><article class="vvvtm-card"><h3>🧠 记忆流水线</h3><label class="vvvtm-setting"><div><strong>记忆与总结AI来源</strong><small>整理、阶段总结、大总结和时代总结固定使用独立API与有限资料；不读取酒馆预设、世界书或Persona，也不会切换酒馆主API。</small></div><select data-setting-select="aiMode" disabled><option value="server" selected>独立API · 独立资料边界</option></select></label>${toggle('autoExtract','即时简记 · 每条AI回复一次','正常游玩时每完成1条AI/角色回复就运行1次主记忆；user发送只作为上下文，绝不单独触发，也不生成user时间线。')}<div class="vvvtm-note">固定策略：1条AI回复 = 1次记忆流水线；整理结果只写后台记忆，不会在聊天区生成第二条回复。</div>${toggle('detailRescueEnabled','生活细节漏记保底','主记忆负责anchors/lifeFacts；本地健康检查发现明确漏项后，在settled之后自动补抓。幕后七条成功与否都不会阻止补漏。')}${number('detailRescueMaxCandidates','每轮生活细节保底上限',4,24)}${number('detailRescueTimeoutMs','后台补抓超时（毫秒）',10000,60000,1000)}${number('detailRescueMaxAttempts','P13自动补抓最大尝试',1,5)}${number('detailRescueRetryBaseMs','P13重试基础等待（毫秒）',250,10000,250)}${number('lifeFactStabilityEvidence','习惯沉淀证据次数',2,8)}${toggle('autoSummary','自动阶段总结','按固定楼层边界总结，失败不会跳过。')}${toggle('autoHideSummarized','总结成功后自动 /hide','阶段总结完成后自动执行 /hide 开始楼层-结束楼层；原消息仍可见，但不再进入AI提示词。')}${number('memoryCollectionMaxChars','记忆集合单次原文安全容量（字符）',12000,240000,1000)}${number('summaryEvery','每次阶段总结楼层',5,200)}${number('stageSummariesPerBig','每几次阶段总结合并大总结',2,20)}${number('bigSummariesPerEra','每几次大总结合并时代总结',2,50)}${toggle('parseMemoryTags','读取 <Memory> JSON标签','回复中自带结构化记忆时直接导入。')}</article>
-        <article class="vvvtm-card"><h3>🔎 检索与注入</h3>${toggle('ultraLongArchiveMode','2万层长期档案模式','启用三级总结、冷热记忆与超长列表分页；不会把全部旧聊天塞给正文AI。')}${toggle('injectMemory','注入记忆','发送当前人物/关系、终身核心事件、三级总结，以及按当前剧情从冷档案召回的精确旧细节。')}${toggle('strongWorldBookRead','强读世界书（推荐）','每次正常角色回复前，额外读取当前角色主世界书、角色附加世界书、聊天世界书与已启用全局世界书；常驻/命中条目优先，其余绑定条目按预算补读。不修改世界书本身。')}${number('strongWorldBookMaxChars','强读世界书最大字符',2000,30000,1000)}${toggle('protectSceneContinuity','当前现实/场景防回滚锁（强烈推荐）','最新user的地点、姿势、衣着、物品与已完成动作拥有最高优先级；旧scene/旧记忆不得把剧情拉回已经离开的地点。')}${toggle('protectUserAgency','USER主权锁（强烈推荐）','正常角色正文只允许AI控制char/NPC/环境；禁止替user新增对白、动作、决定、心理和主动身体反应。AI剧情接力代写user时不受此开关限制。')}${number('maxInjectChars','每轮最大记忆注入字符',1000,30000)}${number('hotMemoryFloors','热记忆窗口（最近楼层）',50,3000)}${toggle('retrievalEnabled','启用混合检索','时间线、总结、人物关系、电话/微信/朋友圈/日记/纪念日都可检索；向量未配置时用BM25。')}${toggle('vcpMemoryEnabled','VCP式联想记忆（推荐）','不复制VCP源码；服务器会把人物、事件、物品、地点、关系、约定、秘密、通讯与生活痕迹构成标签关联图，再做跨类型联想与核心记忆重排。')}${number('vcpTagWeight','直接标签权重',0,.5,.01)}${number('vcpGraphWeight','跨记忆联想权重',0,.5,.01)}${number('vcpCoreWeight','核心记忆引力',0,.3,.01)}${number('vcpMaxExpandedTags','每轮最多联想标签',2,24,1)}${toggle('autoReindex','记忆变化后自动重建索引','正常聊天自动异步重建；大型后台任务由独立统一队列调度。')}${number('retrievalTopK','召回数量',1,30)}${number('retrievalMinScore','最低相关度',0,1,.01)}${number('vectorWeight','向量权重',0,1,.05)}${number('lexicalWeight','关键词权重',0,1,.05)}</article>
-        <article class="vvvtm-card"><h3>🙈 折叠与上下文压缩</h3>${toggle('uiCollapseSummarized','界面折叠已总结楼层','只影响你肉眼看到的聊天，不影响AI。')}${toggle('compressSummarizedContext','上下文压缩已总结楼层','AI不再收到旧原文，改发总结和检索记忆。')}${number('preserveFirst','始终保留开头楼层',0,30)}${number('keepLast','始终保留最近楼层',5,300)}${toggle('preserveImportant','保留手动标记的重要楼层','重要消息不会折叠或压缩。')}${toggle('keepRetrievedFloors','保留本轮检索命中的楼层','便于AI读取原始细节。')}<div class="vvvtm-row-actions"><button data-setting-action="expand-ui">临时展开全部</button><button data-setting-action="mark-current">标记当前层重要</button></div></article>
-        <article class="vvvtm-card"><h3>🎨 界面与辅助</h3>${number('uiPageSize','超长列表每页条数',10,100,5)}${toggle('hideCompletedSummaryCards','总结中心隐藏已完成卡片','数据仍保留。')}${toggle('autoCompanionOutput','幕后七条后台写作（推荐）','每轮可见正文完成后，由幕后七条专用独立API单独调用1次，一次性生成当前场景、约定/秘密、人物外观、朋友圈/日记/纪念日、通讯终端和彼间私文；模型可在“API与模型”单独选择。')}${toggle('autoEcologyRepair','手机/彼间私文二次补活（可选，额外1次）','幕后七条本身已经读取静默债务并负责活化。仅在你主动开启本开关且七条结果仍死寂时，再额外调用1次同一个幕后七条写作源；默认关闭以固定每轮只用1次后台请求。')}${number('companionRetryMaxAttempts','幕后七条失败最多自动重试次数',1,5,1)}${toggle('companionSkipGreeting','开场白保护','新卡开场白、替换开场白和仅加载聊天时不读取、不生成通讯与彼间私文。')}${toggle('phoneAutoGenerate','AI自主判断通讯方式与联系内容','每轮读取当前场景+角色卡+世界书重新判断：现代场景固定iPhone17Promax（断网/无信号只标记不可用）；其他时代/区域由AI按当前地点自由选择具体通讯载体。')}${toggle('phoneEcologyEnabled','手机生态增强','让联系人、群聊/频道、时代通讯噪声和实时联络像真实社会一样在后台生活；user不打开终端也会积累NPC↔NPC互动。')}${toggle('phoneInstitutionBootstrap','按人设自动建立稳定社交群','P26把原世界身份与当前时空拆开：原班级/朋友群跨世界时保留但离线；若剧情在异世界/历史时代加入当地学校或组织，则建立当地传讯频道/电报簿/联络簿，不会硬塞微信。')}${number('phoneGroupActivity','群聊/频道后台活跃度（0-1）',0,1,.05)}${number('phoneServiceNoise','通讯环境噪声（0-1）',0,1,.05)}${number('phoneDeadAirMaxFloors','手机最多连续静默楼层',1,12,1)}${number('phoneDirectContactMaxFloors','NPC最多几层不直接找user',2,20,1)}${number('phonePrivateMaxMessages','每轮私聊最多条数',1,8,1)}${number('phoneGroupMaxMessages','每轮群聊最多条数',1,12,1)}${number('phoneSmsMaxMessages','每轮短信最多条数',1,8,1)}${number('phoneCallMaxEvents','每轮电话最多事件',1,4,1)}${toggle('npcCallVariety','NPC来电自然度增强','避免NPC长期只发文字：连续多次NPC文字联系后，遇到合理即时沟通动机会优先考虑真实来电，但不会每轮强制打电话。')}${number('npcCallEscalationAfter','连续几次NPC文字联系后加强来电倾向',2,12)}${toggle('autoCharacterWorld','推进彼间私文','由每轮幕后七条后台写作持续映射全部NPC的独立生活；NPC可主动联系/打断user。')}${toggle('npcWorldAutonomy','NPC大世界自治增强','NPC彼此之间也会生活、交友、恋爱、争吵、工作、搬家、失联或改变目标；不是所有事件都围绕user。')}${number('npcWorldSpontaneity','NPC世界自发度（0-1）',0,1,.05)}${number('worldDeadAirMaxFloors','彼间私文最多连续静默楼层',1,12,1)}${number('worldMinPulseEvents','触发世界心跳时最低NPC动态数',1,8,1)}${number('companionWorldMaxEvents','彼间私文最低并行槽位（会自动扩展覆盖全部NPC）',1,80)}<label class="vvvtm-setting"><div><strong>通讯回复方式</strong><small>推荐模式会等下一轮正文结束后，由同一次幕后七条后台请求顺便回复，不再增加另一条请求。</small></div><select data-setting-select="phoneInteractiveMode"><option value="next-main" ${s.phoneInteractiveMode!=='plugin-immediate'?'selected':''}>下一轮幕后七条合并回复（推荐）</option><option value="plugin-immediate" ${s.phoneInteractiveMode==='plugin-immediate'?'selected':''}>幕后七条立即回复（额外一次）</option></select></label>${toggle('removeDuplicateAssistantReplies','自动清理完全重复的相邻AI楼层','仅处理同角色、相邻、五分钟内且正文完全相同的两层。')}${toggle('companionAlwaysShowShell','每轮显示通讯与彼间私文入口','即使本轮七条没有新内容或写作源不可用，也显示状态，避免误以为插件没运行。')}${toggle('syncWorldBooksAcrossClients','跨端世界书刷新保护','每次打开/切换聊天时重新读取酒馆实际启用的角色/聊天/全局世界书，减少手机和电脑显示/读取状态不同步。')}${toggle('diagnosticsUseAI','剧情体检使用AI','本地规则始终可用。')}</article></section>
-        <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🛡️ 极稳数据保护</h3><p class="vvvtm-note">服务器持续保存当前聊天完整0-32状态，历史快照永久保留、不自动裁剪；打开/切换聊天不执行破坏性裁剪；检测到记忆数量异常骤减时直接拒绝覆盖。</p></div></div>${toggle('safetySnapshots','服务器完整状态安全快照','推荐永久开启。metadata异常、浏览器localStorage超限或误清空时可恢复。')}${number('safetySnapshotIntervalSeconds','自动快照最小间隔（秒）',15,600,5)}<div class="vvvtm-action-grid"><button data-setting-action="snapshot-now">📸 立即安全快照</button><button data-setting-action="restore-latest">♻️ 恢复最近安全快照</button><button data-setting-action="restore-history">🗂 选择历史快照恢复</button></div></section><section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🗑 已删除资料 / 回收站</h3><p class="vvvtm-note">U1.4：你亲手删除的结构化资料先进入墓碑回收站；这里可恢复。普通升级、同步、正文删除不会产生墓碑，也没有删除权。</p></div></div>${recycleBinMarkup()}</section><section class="vvvtm-card vvvtm-danger-zone"><div class="vvvtm-section-title"><div><h3>数据、安全与恢复</h3><p class="vvvtm-note">“一键彻底清空”会清空当前活动数据并恢复 /hide；极稳模式会在清空前额外留一份保险快照，不参与AI读取，可在误操作时恢复。真实聊天、角色卡、世界书、插件本体和独立API配置不会删除。</p></div></div><div class="vvvtm-action-grid"><button data-setting-action="migrate">迁移旧Memory-Context</button><button data-setting-action="import">导入备份</button><button data-setting-action="export">导出备份</button><button data-setting-action="rebuild">重建检索索引</button><button data-setting-action="reset-progress">重算总结缺口</button><button data-setting-action="clear-tasks">清理已完成任务记录</button><button data-setting-action="wipe-all" class="danger-soft">🗑 一键清空本聊天活动数据</button></div><input id="vvvtm-import-file" type="file" accept="application/json,.json" hidden></section>`;
+        return `<section class="vvvtm-settings-columns"><article class="vvvtm-card"><h3>🧠 记忆流水线</h3><label class="vvvtm-setting"><div><strong>记忆与总结AI来源</strong><small>整理、阶段总结、大总结和时代总结固定使用独立API与有限资料；不读取酒馆预设、世界书或Persona，也不会切换酒馆主API。</small></div><select data-setting-select="aiMode" disabled><option value="server" selected>独立API · 独立资料边界</option></select></label>${toggle('autoExtract','即时简记 · 每条AI回复一次','正常游玩时每完成1条AI/角色回复就运行1次主记忆；user发送只作为上下文，绝不单独触发，也不生成userDòng thời gian。')}<div class="vvvtm-note">固定策略：1条AI回复 = 1次记忆流水线；整理结果只写后台记忆，不会在聊天区生成第二条回复。</div>${toggle('detailRescueEnabled','生活细节漏记保底','主记忆负责anchors/lifeFacts；本地健康检查发现明确漏项后，在settled之后自动补抓。幕后七条成功与否都不会阻止补漏。')}${number('detailRescueMaxCandidates','每轮生活细节保底上限',4,24)}${number('detailRescueTimeoutMs','后台补抓超时（毫秒）',10000,60000,1000)}${number('detailRescueMaxAttempts','P13自动补抓最大尝试',1,5)}${number('detailRescueRetryBaseMs','P13重试基础等待（毫秒）',250,10000,250)}${number('lifeFactStabilityEvidence','习惯沉淀证据次数',2,8)}${toggle('autoSummary','自动阶段总结','按固定Tầng边界总结，失败不会跳过。')}${toggle('autoHideSummarized','总结成功后自动 /hide','阶段总结完成后自动执行 /hide 开始Tầng-结束Tầng；原消息仍可见，但不再进入AI提示词。')}${number('memoryCollectionMaxChars','记忆集合单次原文安全容量（字符）',12000,240000,1000)}${number('summaryEvery','每次阶段总结Tầng',5,200)}${number('stageSummariesPerBig','每几次阶段总结合并大总结',2,20)}${number('bigSummariesPerEra','每几次大总结合并时代总结',2,50)}${toggle('parseMemoryTags','读取 <Memory> JSON标签','回复中自带结构化记忆时直接导入。')}</article>
+        <article class="vvvtm-card"><h3>🔎 检索与注入</h3>${toggle('ultraLongArchiveMode','2万层长期档案模式','启用三级总结、冷热记忆与超长列表分页；不会把全部旧聊天塞给chính vănAI。')}${toggle('injectMemory','注入记忆','发送当前人物/关系、终身核心事件、三级总结，以及按当前剧情从冷档案召回的精确旧细节。')}${toggle('strongWorldBookRead','强读世界书（推荐）','每次正常角色回复前，额外读取当前角色主世界书、角色附加世界书、聊天世界书与已启用全局世界书；常驻/命中条目优先，其余绑定条目按预算补读。不修改世界书本身。')}${number('strongWorldBookMaxChars','强读世界书最大字符',2000,30000,1000)}${toggle('protectSceneContinuity','当前现实/场景防回滚锁（强烈推荐）','最新user的地点、姿势、衣着、物品与Đã hoàn thành动作拥有最高优先级；旧scene/旧记忆不得把剧情拉回已经离开的地点。')}${toggle('protectUserAgency','USER主权锁（强烈推荐）','正常角色chính văn只允许AI控制char/NPC/环境；禁止替user新增对白、动作、决定、心理和主动身体反应。AI剧情接力代写user时不受此开关限制。')}${number('maxInjectChars','每轮最大记忆注入字符',1000,30000)}${number('hotMemoryFloors','热记忆窗口（最近Tầng）',50,3000)}${toggle('retrievalEnabled','启用混合检索','Dòng thời gian、总结、Quan hệ nhân vật、电话/微信/朋友圈/日记/纪念日都可检索；向量未配置时用BM25。')}${toggle('vcpMemoryEnabled','VCP式联想记忆（推荐）','不复制VCP源码；服务器会把人物、事件、物品、地点、关系、Lời hẹn、秘密、通讯与生活痕迹构成标签关联图，再做跨Loại联想与核心记忆重排。')}${number('vcpTagWeight','直接标签权重',0,.5,.01)}${number('vcpGraphWeight','跨记忆联想权重',0,.5,.01)}${number('vcpCoreWeight','核心记忆引力',0,.3,.01)}${number('vcpMaxExpandedTags','每轮最多联想标签',2,24,1)}${toggle('autoReindex','记忆变化后自动重建索引','正常聊天自动异步重建；大型后台任务由独立统一队列调度。')}${number('retrievalTopK','召回数量',1,30)}${number('retrievalMinScore','最低相关度',0,1,.01)}${number('vectorWeight','向量权重',0,1,.05)}${number('lexicalWeight','关键词权重',0,1,.05)}</article>
+        <article class="vvvtm-card"><h3>🙈 折叠与上下文压缩</h3>${toggle('uiCollapseSummarized','界面折叠已总结Tầng','只影响你肉眼看到的聊天，不影响AI。')}${toggle('compressSummarizedContext','上下文压缩已总结Tầng','AI不再收到旧原文，改发总结和检索记忆。')}${number('preserveFirst','始终保留开头Tầng',0,30)}${number('keepLast','始终保留最近Tầng',5,300)}${toggle('preserveImportant','保留手动标记的重要Tầng','重要消息不会折叠或压缩。')}${toggle('keepRetrievedFloors','保留本轮检索命中的Tầng','便于AI读取原始细节。')}<div class="vvvtm-row-actions"><button data-setting-action="expand-ui">临时展开全部</button><button data-setting-action="mark-current">标记当前层重要</button></div></article>
+        <article class="vvvtm-card"><h3>🎨 界面与辅助</h3>${number('uiPageSize','超长列表每页条数',10,100,5)}${toggle('hideCompletedSummaryCards','总结中心隐藏Đã hoàn thành卡片','数据仍保留。')}${toggle('autoCompanionOutput','幕后七条后台写作（推荐）','每轮可见chính văn完成后，由幕后七条专用独立API单独调用1次，一次性生成当前场景、Lời hẹn/秘密、人物外观、朋友圈/日记/纪念日、通讯终端和彼间私文；模型可在“API与模型”单独选择。')}${toggle('autoEcologyRepair','手机/彼间私文二次补活（可选，额外1次）','幕后七条本身已经读取静默债务并负责活化。仅在你主动开启本开关且七条结果仍死寂时，再额外调用1次同一个幕后七条写作源；默认Đóng以固定每轮只用1次后台请求。')}${number('companionRetryMaxAttempts','幕后七条失败最多自动重试次数',1,5,1)}${toggle('companionSkipGreeting','开场白保护','新卡开场白、替换开场白和仅加载聊天时不读取、不生成通讯与彼间私文。')}${toggle('phoneAutoGenerate','AI自主判断通讯方式与联系内容','每轮读取当前场景+角色卡+世界书重新判断：现代场景固定iPhone17Promax（断网/无信号只标记不可用）；其他时代/区域由AI按当前地点自由选择具体通讯载体。')}${toggle('phoneEcologyEnabled','手机生态增强','让联系人、群聊/频道、时代通讯噪声和实时联络像真实社会一样在后台生活；user不打开终端也会积累NPC↔NPC互动。')}${toggle('phoneInstitutionBootstrap','按人设自动建立稳定社交群','P26把原世界Thân phận与当前时空拆开：原班级/朋友群跨世界时保留但离线；若剧情在异世界/历史时代加入当地学校或组织，则建立当地传讯频道/电报簿/联络簿，不会硬塞微信。')}${number('phoneGroupActivity','群聊/频道后台活跃度（0-1）',0,1,.05)}${number('phoneServiceNoise','通讯环境噪声（0-1）',0,1,.05)}${number('phoneDeadAirMaxFloors','手机最多连续静默Tầng',1,12,1)}${number('phoneDirectContactMaxFloors','NPC最多几层不直接找user',2,20,1)}${number('phonePrivateMaxMessages','每轮私聊最多条数',1,8,1)}${number('phoneGroupMaxMessages','每轮群聊最多条数',1,12,1)}${number('phoneSmsMaxMessages','每轮短信最多条数',1,8,1)}${number('phoneCallMaxEvents','每轮电话最多事件',1,4,1)}${toggle('npcCallVariety','NPC来电自然度增强','避免NPC长期只发文字：连续多次NPC文字联系后，遇到合理即时沟通动机会优先考虑真实来电，但不会每轮强制打电话。')}${number('npcCallEscalationAfter','连续几次NPC文字联系后加强来电倾向',2,12)}${toggle('autoCharacterWorld','推进彼间私文','由每轮幕后七条后台写作持续映射全部NPC的独立生活；NPC可主动联系/打断user。')}${toggle('npcWorldAutonomy','NPC大世界自治增强','NPC彼此之间也会生活、交友、恋爱、争吵、工作、搬家、失联或改变目标；不是所有事件都围绕user。')}${number('npcWorldSpontaneity','NPC世界自发度（0-1）',0,1,.05)}${number('worldDeadAirMaxFloors','彼间私文最多连续静默Tầng',1,12,1)}${number('worldMinPulseEvents','触发世界心跳时最低NPC动态数',1,8,1)}${number('companionWorldMaxEvents','彼间私文最低并行槽位（会自动扩展覆盖全部NPC）',1,80)}<label class="vvvtm-setting"><div><strong>通讯回复方式</strong><small>推荐模式会等下一轮chính văn结束后，由同一次幕后七条后台请求顺便回复，不再增加另一条请求。</small></div><select data-setting-select="phoneInteractiveMode"><option value="next-main" ${s.phoneInteractiveMode!=='plugin-immediate'?'selected':''}>下一轮幕后七条合并回复（推荐）</option><option value="plugin-immediate" ${s.phoneInteractiveMode==='plugin-immediate'?'selected':''}>幕后七条立即回复（额外一次）</option></select></label>${toggle('removeDuplicateAssistantReplies','自动清理完全重复的相邻AITầng','仅处理同角色、相邻、五分钟内且chính văn完全相同的两层。')}${toggle('companionAlwaysShowShell','每轮显示通讯与彼间私文入口','即使本轮七条没有新内容或写作源不可用，也显示Trạng thái，避免误以为插件没运行。')}${toggle('syncWorldBooksAcrossClients','跨端世界书刷新保护','每次打开/切换聊天时重新读取酒馆实际启用的角色/聊天/全局世界书，减少手机和电脑显示/读取Trạng thái不同步。')}${toggle('diagnosticsUseAI','剧情体检使用AI','本地规则始终可用。')}</article></section>
+        <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🛡️ 极稳数据保护</h3><p class="vvvtm-note">服务器持续保存当前聊天完整0-32Trạng thái，历史快照永久保留、不自动裁剪；打开/切换聊天不执行破坏性裁剪；检测到记忆数量异常骤减时直接拒绝覆盖。</p></div></div>${toggle('safetySnapshots','服务器完整Trạng thái安全快照','推荐永久开启。metadata异常、浏览器localStorage超限或误Bỏ chọn时可恢复。')}${number('safetySnapshotIntervalSeconds','自动快照最小间隔（秒）',15,600,5)}<div class="vvvtm-action-grid"><button data-setting-action="snapshot-now">📸 立即安全快照</button><button data-setting-action="restore-latest">♻️ 恢复最近安全快照</button><button data-setting-action="restore-history">🗂 选择历史快照恢复</button></div></section><section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🗑 已删除资料 / 回收站</h3><p class="vvvtm-note">U1.4：你亲手删除的结构化资料先进入墓碑回收站；这里可恢复。普通升级、同步、chính văn删除不会产生墓碑，也没有删除权。</p></div></div>${recycleBinMarkup()}</section><section class="vvvtm-card vvvtm-danger-zone"><div class="vvvtm-section-title"><div><h3>数据、安全与恢复</h3><p class="vvvtm-note">“一键彻底Bỏ chọn”会Bỏ chọn当前活动数据并恢复 /hide；极稳模式会在Bỏ chọn前额外留一份保险快照，不参与AI读取，可在误操作时恢复。真实聊天、角色卡、世界书、插件本体和独立API配置不会删除。</p></div></div><div class="vvvtm-action-grid"><button data-setting-action="migrate">迁移旧Memory-Context</button><button data-setting-action="import">导入备份</button><button data-setting-action="export">导出备份</button><button data-setting-action="rebuild">重建检索索引</button><button data-setting-action="reset-progress">重算总结缺口</button><button data-setting-action="clear-tasks">清理Đã hoàn thành任务记录</button><button data-setting-action="wipe-all" class="danger-soft">🗑 一键Bỏ chọn本聊天活动数据</button></div><input id="vvvtm-import-file" type="file" accept="application/json,.json" hidden></section>`;
     }
 
     function bindSettings(content) {
         content.querySelector('[data-setting-select="phoneInteractiveMode"]')?.closest('.vvvtm-setting')?.remove();
         content.querySelectorAll('[data-setting]').forEach(input=>input.addEventListener('change',()=>{stateRuntime.state.settings[input.dataset.setting]=input.checked;stateRuntime.uiExpanded=false;applyButtonVisibility();saveState({refresh:true});applyUiCollapse();}));
-        content.querySelectorAll('[data-setting-number]').forEach(input=>input.addEventListener('change',()=>{const key=input.dataset.settingNumber;const next=Number(input.value);if(key==='summaryEvery'&&next!==Number(stateRuntime.state.settings.summaryEvery||20)&&completedSummaryRows('阶段总结').length){input.value=stateRuntime.state.settings.summaryEvery;toast('已有阶段总结时不能直接改变分段长度，否则会让总结链重叠或断层。请保持当前长度，或先明确清空后重建。','warn');return;}stateRuntime.state.settings[key]=next;if(key==='summaryEvery')recalculateSummaryProgress();saveState();}));
+        content.querySelectorAll('[data-setting-number]').forEach(input=>input.addEventListener('change',()=>{const key=input.dataset.settingNumber;const next=Number(input.value);if(key==='summaryEvery'&&next!==Number(stateRuntime.state.settings.summaryEvery||20)&&completedSummaryRows('阶段总结').length){input.value=stateRuntime.state.settings.summaryEvery;toast('已有阶段总结时不能直接改变分段长度，否则会让总结链重叠或断层。请保持当前长度，或先明确Bỏ chọn后重建。','warn');return;}stateRuntime.state.settings[key]=next;if(key==='summaryEvery')recalculateSummaryProgress();saveState();}));
         content.querySelectorAll('[data-setting-select]').forEach(input=>input.addEventListener('change',()=>{stateRuntime.state.settings[input.dataset.settingSelect]=input.value;saveState();}));
         content.querySelector('[data-setting-action="migrate"]')?.addEventListener('click',manualMigrate);
         content.querySelector('[data-setting-action="export"]')?.addEventListener('click',exportData);
@@ -17683,7 +17683,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-setting-action="expand-ui"]')?.addEventListener('click',()=>{stateRuntime.uiExpanded=true;applyUiCollapse();toast('本次页面已展开；刷新后按设置重新折叠','success');});
         content.querySelector('[data-setting-action="mark-current"]')?.addEventListener('click',()=>{const floor=Math.max(0,(context()?.chat?.length||1)-1);if(!stateRuntime.state.importantFloors.includes(floor))stateRuntime.state.importantFloors.push(floor);saveState({refresh:true});scheduleReindex();toast(`已标记第 ${floor} 层重要`,'success');});
         content.querySelector('[data-setting-action="snapshot-now"]')?.addEventListener('click',async()=>{setBusy(true,'正在保存完整安全快照…');try{const snap=await createSafetySnapshot('manual-snapshot',{force:true});toast(snap?'安全快照已保存':'快照未保存（请确认服务端插件已更新）',snap?'success':'warn');}finally{setBusy(false);}});
-        content.querySelector('[data-setting-action="restore-latest"]')?.addEventListener('click',async()=>{if(!confirm('恢复最近服务器安全快照会覆盖当前vvv小剧场活动数据，但不会改真实聊天。恢复前当前状态也会先做一份快照。继续吗？'))return;setBusy(true,'正在恢复最近安全快照…');try{await createSafetySnapshot('before-manual-restore',{force:true});await restoreLatestSafetySnapshot();}catch(error){toast(`恢复失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-setting-action="restore-latest"]')?.addEventListener('click',async()=>{if(!confirm('恢复最近服务器安全快照会覆盖当前vvv小剧场活动数据，但不会改真实聊天。恢复前当前Trạng thái也会先做一份快照。继续吗？'))return;setBusy(true,'正在恢复最近安全快照…');try{await createSafetySnapshot('before-manual-restore',{force:true});await restoreLatestSafetySnapshot();}catch(error){toast(`恢复失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-setting-action="restore-history"]')?.addEventListener('click',async()=>{setBusy(true,'正在读取安全快照历史…');try{await chooseSafetySnapshotHistory();}catch(error){toast(`恢复失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-setting-action="reset-progress"]')?.addEventListener('click',()=>{recalculateSummaryProgress();saveState({refresh:true,reason:'recalculate-summary-progress'});toast('已按现有阶段总结重新计算缺口，不会重复生成已有阶段','success');});
         content.querySelector('[data-setting-action="clear-tasks"]')?.addEventListener('click',()=>{stateRuntime.state.summaryJobs=stateRuntime.state.summaryJobs.filter(job=>!job.applied&&!['error','completed'].includes(job.status));saveState({refresh:true});});
@@ -17692,7 +17692,7 @@ ${JSON.stringify(evidence)}`;
             if(!confirm(`恢复 ${row.path} 中的 ${row.items?.length||0} 项已删除资料？`))return;
             setBusy(true,'正在从回收站恢复资料…');try{await createSafetySnapshot('before-recycle-restore',{force:true});const count=await restoreManualDeletionTombstone(row.id);toast(`已从回收站恢复 ${count} 项资料`,'success');}catch(error){toast(`恢复失败：${error.message}`,'error');}finally{setBusy(false);}
         }));
-        content.querySelector('[data-setting-action="wipe-all"]')?.addEventListener('click',async()=>{if(!confirm(`确认一键彻底清空当前聊天的全部vvv小剧场数据吗？\n\n会同时清空记忆、总结、时间线、人物/关系、手机、彼间私文、章节、检索索引、任务记录，并恢复被 /hide 的聊天楼层。\n\n真实聊天、角色卡、世界书、插件本体和API配置不会删除。`))return;setBusy(true,'正在彻底清空本聊天…');try{await wipeCurrentTheaterData({unhide:true,silent:false});}finally{setBusy(false);}});
+        content.querySelector('[data-setting-action="wipe-all"]')?.addEventListener('click',async()=>{if(!confirm(`确认一键彻底Bỏ chọn当前聊天的全部vvv小剧场数据吗？\n\n会同时Bỏ chọn记忆、总结、Dòng thời gian、人物/关系、手机、彼间私文、章节、检索索引、任务记录，并恢复被 /hide 的聊天Tầng。\n\n真实聊天、角色卡、世界书、插件本体和API配置不会删除。`))return;setBusy(true,'正在彻底Bỏ chọn本聊天…');try{await wipeCurrentTheaterData({unhide:true,silent:false});}finally{setBusy(false);}});
     }
 
     function renderCurrentTab() {
@@ -17790,7 +17790,7 @@ ${JSON.stringify(evidence)}`;
 
         await syncStateWithCurrentChat({reason:'chat-open'});if(!stillCurrent())return;
         await refreshServerState({config:true,tasks:true,index:true});if(!stillCurrent())return;
-        await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv记忆中枢] 已完成主记忆任务恢复失败',error));if(!stillCurrent())return;
+        await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv记忆中枢] Đã hoàn thành主记忆任务恢复失败',error));if(!stillCurrent())return;
         scheduleIndexSchemaUpgrade();
         renderCurrentTab();applyButtonVisibility();applyUiCollapse();
         runLaterForScope(scope,120,()=>decorateAllCompanionOutputs());
@@ -17820,7 +17820,7 @@ ${JSON.stringify(evidence)}`;
             stateRuntime.baselineChatLength=context()?.chat?.length||0;stateRuntime.generationActive=false;stateRuntime.liveUserPending=false;stateRuntime.liveUserFloor=-1;stateRuntime.liveTurnChatKey='';stateRuntime.liveGenerationType='';stateRuntime.foregroundAwaitingUser=false;ensureUI();registerSettingsEntry();
             await syncStateWithCurrentChat({reason:'initial-load'});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
             await refreshServerState({config:true,tasks:true,index:true});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
-            await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv记忆中枢] 初始化恢复已完成主记忆任务失败',error));if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
+            await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv记忆中枢] 初始化恢复Đã hoàn thành主记忆任务失败',error));if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
             scheduleIndexSchemaUpgrade();
             initScope=scope;
         }
@@ -17834,7 +17834,7 @@ ${JSON.stringify(evidence)}`;
             return ()=>{};
         };
         {
-            // fixed40-new-chat-turn-guard：空白新存档没有真实user楼层时，任何初始化/开场生成都不得触发0-32自动整理。
+            // fixed40-new-chat-turn-guard：空白新存档没有真实userTầng时，任何初始化/开场生成都不得触发0-32自动整理。
             const isLiveTurn=()=>Boolean(stateRuntime.generationActive&&stateRuntime.liveUserPending&&liveTurnUserEntry());
             const finishLiveTurn=()=>{stateRuntime.generationActive=false;stateRuntime.liveUserPending=false;stateRuntime.liveUserFloor=-1;stateRuntime.liveTurnChatKey='';stateRuntime.liveGenerationType='';stateRuntime.foregroundAwaitingUser=false;stateRuntime.baselineChatLength=context()?.chat?.length||stateRuntime.baselineChatLength;captureChatMessageKeySnapshot();};
             bind('CHAT_CHANGED',handleChatChanged);
@@ -17862,8 +17862,8 @@ ${JSON.stringify(evidence)}`;
             bind('GENERATION_STARTED',(type,_options,dryRun)=>{
                 const generationType=String(type??'normal').toLowerCase();
                 // SillyTavern 官方 Generate() 对 quiet/dryRun 也会发 GENERATION_STARTED。
-                // quiet 还会在结束时发 GENERATION_ENDED；若把它当真实轮处理，其异步收尾会和下一轮正文并发，
-                // 最终把 generationActive/liveUserPending 在真实正文生成途中清掉，导致第二轮没有小剧场也没有 settled。
+                // quiet 还会在结束时发 GENERATION_ENDED；若把它当真实轮处理，其异步收尾会和下一轮chính văn并发，
+                // 最终把 generationActive/liveUserPending 在真实chính văn生成途中清掉，导致第二轮没有小剧场也没有 settled。
                 if(dryRun===true){
                     console.debug('[vvv小剧场] 忽略 dry-run GENERATION_STARTED');
                     return;
@@ -17874,7 +17874,7 @@ ${JSON.stringify(evidence)}`;
                     return;
                 }
                 // fixed40：normal GENERATION_STARTED 本身不再等价于“user真的说过一句话”。
-                // 新存档/开场白初始化也可能发 normal；没有本轮user楼层就直接视为未武装生成，禁止0-32自动整理。
+                // 新存档/开场白初始化也可能发 normal；没有本轮userTầng就直接视为未武装生成，禁止0-32自动整理。
                 const armed=armLiveTurnFromCurrentChat(generationType);
                 if(!armed){
                     // fixed41：SillyTavern 在部分版本/设备上会先发 GENERATION_STARTED，再把 user 消息写进 chat。
@@ -17887,10 +17887,10 @@ ${JSON.stringify(evidence)}`;
                     stateRuntime.liveGenerationType=generationType;
                     stateRuntime.foregroundAwaitingUser=true;
                     stateRuntime.backgroundGenerationActive=false;
-                    console.debug(`[vvv小剧场] fixed41 前台生成等待真实user楼层：${generationType}`);
+                    console.debug(`[vvv小剧场] fixed41 前台生成等待真实userTầng：${generationType}`);
                     return;
                 }
-                // 如果此前后台生成异常结束且没有发 ENDED，真实正文开始时也要清除残留后台标记。
+                // 如果此前后台生成异常结束且没有发 ENDED，真实chính văn开始时也要清除残留后台标记。
                 stateRuntime.backgroundGenerationActive=false;
                 stateRuntime.foregroundAwaitingUser=false;
                 stateRuntime.mainGenerationSerial=Number(stateRuntime.mainGenerationSerial||0)+1;
@@ -17898,7 +17898,7 @@ ${JSON.stringify(evidence)}`;
             });
             bind('MESSAGE_RECEIVED',()=>{
                 if(!isLiveTurn())return;const scope=captureChatScope();
-                // P28：真实正文生成过程中不再提前启动总结API简记，避免与“七条API”并发导致正常一轮多扣一次请求。
+                // P28：真实chính văn生成过程中不再提前启动总结API简记，避免与“七条API”并发导致正常一轮多扣一次请求。
                 scheduleContextRefresh();[80,350,900,1800].forEach(delay=>runLaterForScope(scope,delay,()=>removeImmediateDuplicateAssistantReply()));
             });
             bind('CHARACTER_MESSAGE_RENDERED',(_messageId,type)=>{
@@ -17920,7 +17920,7 @@ ${JSON.stringify(evidence)}`;
                     return;
                 }
                 if(!isLiveTurn()){
-                    // fixed41：若本次只是新存档/开场初始化，到结束仍未出现真实 user，安全释放等待状态。
+                    // fixed41：若本次只是新存档/开场初始化，到结束仍未出现真实 user，安全释放等待Trạng thái。
                     releaseUnarmedForegroundGeneration();
                     applyUiCollapse();runLaterForScope(scope,60,()=>decorateAllCompanionOutputs());return;
                 }
@@ -17929,19 +17929,19 @@ ${JSON.stringify(evidence)}`;
                 const endedEntry=assistantAfterLiveTurnUser();
                 if(!endedEntry){finishLiveTurn();return;}
                 const endedFloor=Number(endedEntry?.index);const endedSignature=endedEntry?messageSignature(endedFloor,endedEntry.message):'';
-                console.debug(`[vvv小剧场] 正文结束事件已到，锁定第${endedFloor}层并启动后台收尾`);
+                console.debug(`[vvv小剧场] chính văn结束事件已到，锁定第${endedFloor}层并启动后台收尾`);
                 if(!scopeStateStillCurrent())return;
                 const confirmed=Number.isFinite(endedFloor)?context()?.chat?.[endedFloor]:null;
                 if(!confirmed||confirmed.is_user||confirmed.is_system||messageSignature(endedFloor,confirmed)!==endedSignature)return;
-                // fixed39 单一世界：正文刚结束就立即把可结构化现实写进同一手机/世界总账，不等待幕后七条API。
-                // 因此即使七条接口失败，正文里已发生的下单/现实见面也不会出现“剧情有、手机没有”的断层。
+                // fixed39 单一世界：chính văn刚结束就立即把可结构化现实写进同一手机/世界总账，不等待幕后七条API。
+                // 因此即使七条接口失败，chính văn里Đã xảy ra的下单/现实见面也不会出现“剧情有、手机没有”的断层。
                 const narrativeRealityChanged=s39SyncNarrativePhoneRealityImmediate(endedFloor,endedSignature);
                 const phoneEcosystemChanged=s8TickPhoneEcosystem(endedFloor);
                 if(narrativeRealityChanged||phoneEcosystemChanged)updatePromptInjection();
-                console.debug('[vvv小剧场] 正文请求完全结束；并行启动幕后七条和即时记忆整理');
+                console.debug('[vvv小剧场] chính văn请求完全结束；并行启动幕后七条和即时记忆整理');
                 const companionTask=processDedicatedCompanionForLatest({silent:true,targetFloor:endedFloor,targetSignature:endedSignature})
                     .catch(error=>{console.warn('[vvv小剧场] 幕后七条失败，不阻断记忆整理',error);return false;});
-                // 幕后七条继续独立收尾，不再占着真实正文轮标记或拖住整理/总结。
+                // 幕后七条继续独立收尾，不再占着真实chính văn轮标记或拖住整理/总结。
                 void companionTask.then(()=>{if(chatScopeIsCurrent(scope))decorateCompanionOutput(endedFloor);});
                 await flushAutoExtract(endedFloor,endedSignature).catch(error=>console.warn('[vvv小剧场] 即时记忆整理失败',error));if(!scopeStateStillCurrent())return;
                 const memoryHealthAttempt=await auditLatestTurnMemoryHealth(endedFloor,endedSignature).catch(error=>{console.warn('[vvv小剧场] 记忆健康检查失败',error);return null;});if(!scopeStateStillCurrent())return;
@@ -17960,18 +17960,18 @@ ${JSON.stringify(evidence)}`;
                 const scope=captureChatScope();
                 if(stateRuntime.backgroundGenerationActive&&!isLiveTurn()){
                     stateRuntime.backgroundGenerationActive=false;
-                    console.debug('[vvv小剧场] 后台生成已停止，状态标记已释放');
+                    console.debug('[vvv小剧场] 后台生成已停止，Trạng thái标记已释放');
                     applyUiCollapse();return;
                 }
                 if(!isLiveTurn()){
                     releaseUnarmedForegroundGeneration();
                     applyUiCollapse();return;
                 }
-                // 半截AI不写七条，也不启动总结API简记，避免把中止内容写入长期状态。
+                // 半截AI不写七条，也不启动总结API简记，避免把中止内容写入长期Trạng thái。
                 clearTimeout(stateRuntime.autoTimer);scheduleContextRefresh();await removeImmediateDuplicateAssistantReply();if(!chatScopeIsCurrent(scope))return;stateRuntime.mainCompanionPendingFallback=false;finishLiveTurn();
             });
             bind('MESSAGE_DELETED',async()=>{const scope=captureChatScope(),changedFloor=detectFirstChangedFloor(),synced=await syncHistoryMutationOnce({reason:'message-deleted',changedFloor});if(!synced||!chatScopeIsCurrent(scope))return;captureChatMessageKeySnapshot();stateRuntime.baselineChatLength=context()?.chat?.length||0;const r=stateRuntime.lastHistoryReconciliation||{};toast(`⚠️ 第 ${changedFloor} 层附近已删除：旧分支记忆清理 ${Number(r.removed||0)} 条、迁移 ${Number(r.rebased||0)} 条，受影响总结已标记“需重算”。`,'warn');applyUiCollapse();});
-            bind('MESSAGES_DELETED',async()=>{const scope=captureChatScope(),changedFloor=detectFirstChangedFloor(),synced=await syncHistoryMutationOnce({reason:'messages-deleted',changedFloor});if(!synced||!chatScopeIsCurrent(scope))return;captureChatMessageKeySnapshot();stateRuntime.baselineChatLength=context()?.chat?.length||0;const r=stateRuntime.lastHistoryReconciliation||{};toast(`⚠️ 第 ${changedFloor} 层附近已批量删除：旧分支记忆清理 ${Number(r.removed||0)} 条、迁移 ${Number(r.rebased||0)} 条，受影响总结已标记“需重算”。`,'warn');applyUiCollapse();});
+            bind('MESSAGES_DELETED',async()=>{const scope=captureChatScope(),changedFloor=detectFirstChangedFloor(),synced=await syncHistoryMutationOnce({reason:'messages-deleted',changedFloor});if(!synced||!chatScopeIsCurrent(scope))return;captureChatMessageKeySnapshot();stateRuntime.baselineChatLength=context()?.chat?.length||0;const r=stateRuntime.lastHistoryReconciliation||{};toast(`⚠️ 第 ${changedFloor} 层附近已Xóa hàng loạt：旧分支记忆清理 ${Number(r.removed||0)} 条、迁移 ${Number(r.rebased||0)} 条，受影响总结已标记“需重算”。`,'warn');applyUiCollapse();});
             bind('MESSAGE_EDITED',async()=>{const scope=captureChatScope(),changedFloor=detectFirstChangedFloor();clearTimeout(stateRuntime.mainCompanionTimer);stateRuntime.mainCompanionPendingFallback=false;const synced=await syncHistoryMutationOnce({reason:'message-edited',changedFloor});if(!synced||!chatScopeIsCurrent(scope))return;captureChatMessageKeySnapshot();scheduleReindex();scheduleContextRefresh();const r=stateRuntime.lastHistoryReconciliation||{};toast(`⚠️ 第 ${changedFloor} 层附近内容已编辑：旧版本派生记忆清理 ${Number(r.removed||0)} 条，现有消息已重新对齐。`,'warn');runLaterForScope(scope,80,()=>decorateAllCompanionOutputs());});
             bind('MESSAGE_SWIPED',async()=>{const scope=captureChatScope(),changedFloor=detectFirstChangedFloor();clearTimeout(stateRuntime.mainCompanionTimer);stateRuntime.mainCompanionPendingFallback=false;const synced=await syncHistoryMutationOnce({reason:'message-swiped',changedFloor});if(!synced||!chatScopeIsCurrent(scope))return;captureChatMessageKeySnapshot();scheduleReindex();scheduleContextRefresh();toast(`⚠️ 已切换第 ${changedFloor} 层附近的剧情分支，旧分支派生记忆已清理并等待新分支重建。`,'warn');runLaterForScope(scope,80,()=>decorateAllCompanionOutputs());});
             bind('APP_READY',async()=>{const scope=captureChatScope();ensureUI();registerSettingsEntry();if(!chatScopeIsCurrent(scope))return;applyUiCollapse();runLaterForScope(scope,120,()=>decorateAllCompanionOutputs());});
@@ -18040,9 +18040,9 @@ ${JSON.stringify(evidence)}`;
                     const protectedFloors=new Set((s.importantFloors||[]).map(Number));if(s.settings.keepRetrievedFloors)stateRuntime.retrievalHits.forEach(hit=>{const a=Number(hit.floorStart),b=Number(hit.floorEnd??a);if(Number.isFinite(a))for(let i=a;i<=Math.min(b,a+50);i+=1)protectedFloors.add(i);});
                     const kept=[];for(let i=0;i<Math.min(preserve,chat.length);i+=1)kept.push(chat[i]);
                     const middleProtected=[];for(let i=preserve;i<recentStart;i+=1){if(!floorCoveredByCompletedStage(i)||protectedFloors.has(i))middleProtected.push(i);}
-                    const summaries=[...completedSummaryRows('大总结').slice(-2),...completedSummaryRows('阶段总结').slice(-5)].map(row=>`【${row['类型']||row['表格类型']} ${row['覆盖楼层']}层】${row['总结内容']}`).join('\n\n');
+                    const summaries=[...completedSummaryRows('大总结').slice(-2),...completedSummaryRows('阶段总结').slice(-5)].map(row=>`【${row['Loại']||row['Loại bảng']} ${row['Tầng bao phủ']}层】${row['Nội dung tổng kết']}`).join('\n\n');
                     const safeRetrievalHits=(stateRuntime.retrievalHits||[]).map(h=>sanitizeRetrievalDocumentText(h?.text)).filter(Boolean);
-                    kept.push({name:'vvv记忆中枢',is_user:false,is_system:true,mes:`[已总结旧楼层的压缩记忆]\n${summaries}\n\n${safeRetrievalHits.length?`[本轮相关旧记忆]\n${safeRetrievalHits.map(text=>`- ${text}`).join('\n')}`:''}`.slice(0,Number(s.settings.maxInjectChars||8000)),send_date:Date.now()});
+                    kept.push({name:'vvv记忆中枢',is_user:false,is_system:true,mes:`[已总结旧Tầng的压缩记忆]\n${summaries}\n\n${safeRetrievalHits.length?`[本轮相关旧记忆]\n${safeRetrievalHits.map(text=>`- ${text}`).join('\n')}`:''}`.slice(0,Number(s.settings.maxInjectChars||8000)),send_date:Date.now()});
                     middleProtected.forEach(i=>{if(chat[i])kept.push(chat[i]);});for(let i=recentStart;i<chat.length;i+=1)if(chat[i])kept.push(chat[i]);
                     chat.splice(0,chat.length,...kept);
                 }
@@ -18123,26 +18123,26 @@ ${JSON.stringify(evidence)}`;
     function s93RouteInfoV2(from,destination,mode='drive'){
         const seed=s9Hash(String(from)+'|'+String(destination)+'|'+String(mode)),km=Number(((seed%240)/10+0.6).toFixed(1));
         const profile={drive:{label:'驾车',minutes:Math.max(3,Math.ceil(km*3)),detail:'红绿灯'+(2+seed%18)+'个'},transit:{label:'公交',minutes:Math.max(5,Math.ceil(km*5)),detail:'步行约'+(5+seed%20)+'分钟'},walk:{label:'步行',minutes:Math.max(8,Math.ceil(km*12)),detail:'沿街步行导航'}}[mode]||{label:'驾车',minutes:Math.max(3,Math.ceil(km*3)),detail:'红绿灯'+(2+seed%18)+'个'};
-        return {from:compactText(from,180)||'当前位置',destination:compactText(destination,180),mode,label:profile.label,minutes:profile.minutes,km,detail:profile.detail,fare:Math.round((8+km*2.2)*100)/100};
+        return {from:compactText(from,180)||'Vị trí hiện tại',destination:compactText(destination,180),mode,label:profile.label,minutes:profile.minutes,km,detail:profile.detail,fare:Math.round((8+km*2.2)*100)/100};
     }
     function s93RideSnapshotV2(order={}){
         const seed=s9Hash(String(order.id||'')+'|'+String(order.destination||'')),drivers=['陈师傅','李师傅','王师傅','赵师傅','周师傅'],cars=['比亚迪秦PLUS','丰田凯美瑞','大众帕萨特','广汽埃安S','特斯拉Model 3'];
         const plate=['沪','京','粤','川','浙'][seed%5]+'·'+String(10000+seed%89999).slice(0,5);
-        return {platformName:'滴滴出行',driverName:drivers[seed%drivers.length],vehicle:cars[(seed>>>4)%cars.length],plate,driverRating:(4.8+(seed%20)/100).toFixed(2),etaMinutes:Math.max(2,3+seed%9),distanceKm:Number(((seed%180)/10+0.8).toFixed(1)),pickup:compactText(order.pickup||stateRuntime.state?.scene?.location||'当前位置',180)||'当前位置',hotline:'400-000-0999'};
+        return {platformName:'滴滴出行',driverName:drivers[seed%drivers.length],vehicle:cars[(seed>>>4)%cars.length],plate,driverRating:(4.8+(seed%20)/100).toFixed(2),etaMinutes:Math.max(2,3+seed%9),distanceKm:Number(((seed%180)/10+0.8).toFixed(1)),pickup:compactText(order.pickup||stateRuntime.state?.scene?.location||'Vị trí hiện tại',180)||'Vị trí hiện tại',hotline:'400-000-0999'};
     }
     phoneMapMarkupS9V2=function phoneMapMarkupWithRoutesAndWorldMap(){
-        const p=s9EnsureExtendedApps(),scene=stateRuntime.state.scene||{},from=compactText(scene.location||'当前位置',180)||'当前位置',dest=compactText(stateRuntime.phoneMapDestination||'',180);
+        const p=s9EnsureExtendedApps(),scene=stateRuntime.state.scene||{},from=compactText(scene.location||'Vị trí hiện tại',180)||'Vị trí hiện tại',dest=compactText(stateRuntime.phoneMapDestination||'',180);
         const history=(p.maps.history||[]).slice().reverse().filter(row=>row&&row.destination).slice(0,30),lastMode=history.find(row=>row.destination===dest&&row.mode)?.mode;
         const mode=['drive','transit','walk'].includes(stateRuntime.phoneMapMode)?stateRuntime.phoneMapMode:(lastMode||'drive'),route=dest?s93RouteInfoV2(from,dest,mode):null,modes=[['drive','驾车'],['transit','公交'],['walk','步行']];
         const cards=route?'<section class="vvvtm-route-options">'+modes.map(pair=>{const key=pair[0],label=pair[1],info=s93RouteInfoV2(from,dest,key);return '<button class="'+(mode===key?'active':'')+'" data-phone-map-mode="'+key+'" aria-pressed="'+(mode===key?'true':'false')+'"><b>'+label+' '+info.minutes+'分钟</b><small>'+info.km.toFixed(1)+'km · '+esc(info.detail)+'</small></button>';}).join('')+'</section><section class="vvvtm-route-summary"><div><small>当前路线</small><strong>'+esc(route.label)+' · '+route.minutes+'分钟</strong><span>'+route.km.toFixed(1)+'km · '+esc(route.from)+' → '+esc(route.destination)+'</span></div><button data-phone-map-start="1">开始导航</button><button data-phone-map-clear="1" title="清除目的地">清除</button></section><button class="vvvtm-map-dianping" data-phone-app="dianping">⭐ 查看 '+esc(dest)+' 的大众点评</button>':'<button class="vvvtm-map-search-card" data-phone-map-search>你要去哪儿？</button>';
-        const historyMarkup=history.length?'<section class="vvvtm-map-history">'+history.map(row=>'<button data-phone-map-dest="'+esc(row.destination)+'" data-phone-map-history-mode="'+esc(row.mode||'drive')+'">📍 '+esc(row.destination)+'<small>'+esc(row.mode==='transit'?'公交':row.mode==='walk'?'步行':row.mode==='drive'?'驾车':'搜索')+' · '+esc(row.time||'')+'</small></button>').join('')+'</section>':'';
+        const historyMarkup=history.length?'<section class="vvvtm-map-history">'+history.map(row=>'<button data-phone-map-dest="'+esc(row.destination)+'" data-phone-map-history-mode="'+esc(row.mode||'drive')+'">📍 '+esc(row.destination)+'<small>'+esc(row.mode==='transit'?'公交':row.mode==='walk'?'步行':row.mode==='drive'?'驾车':'Tìm')+' · '+esc(row.time||'')+'</small></button>').join('')+'</section>':'';
         const worldMapButton='<button class="vvvtm-map-world-open" data-vvvtm-open-world-map>打开完整剧情世界地图 · M</button>';
         return '<div class="vvvtm-phone-app-page vvvtm-map-page s9-map"><header class="vvvtm-phone-app-head map-head"><button data-phone-home>‹</button><div><b>地图导航</b><small>'+esc(from)+(dest?' · '+esc(dest):'')+'</small></div><button data-phone-map-search>🔎</button></header><main><section class="vvvtm-map-canvas '+(dest?'has-route':'')+'"><div class="route-line"></div><span class="me">●</span>'+(dest?'<span class="dest">📍</span>':'')+'<b>'+esc(from)+'</b>'+(dest?'<strong>'+esc(dest)+'</strong>':'')+'</section>'+cards+historyMarkup+worldMapButton+'</main></div>';
     };
     phoneRideMarkup=function(){
-        const p=s9EnsureExtendedApps(),orders=(p.ride.orders||[]).slice().reverse(),pickup=compactText(stateRuntime.state.scene?.location||'当前位置',180)||'当前位置';
-        const rows=orders.length?orders.slice(0,30).map(order=>{const info={...s93RideSnapshotV2(order),...order};return '<article class="vvvtm-ride-trip" data-phone-order-open="'+esc(order.id)+'"><span class="vvvtm-ride-trip-icon">🚕</span><div><header><b>'+esc(info.destination||'目的地')+'</b><small>'+esc(s8OrderStatusLabel(order))+'</small></header><p>'+esc(info.driverName||'司机待分配')+' · '+esc(info.vehicle||'车型确认中')+' · '+esc(info.plate||'车牌待定')+'</p><small>上车点：'+esc(info.pickup||pickup)+' · '+esc(order.carType||'快车')+' · '+esc(order.time||'')+'</small></div><em>'+s8MoneyText(order.amount)+'</em>'+(['司机接单','司机到达','行程中'].includes(order.status)?'<button data-phone-order-action="rider" data-phone-order-id="'+esc(order.id)+'" title="联系司机">☎</button>':'')+'</article>';}).join(''):'<p class="vvvtm-ride-empty">暂无行程，输入目的地即可呼叫滴滴。</p>';
-        return '<div class="vvvtm-phone-app-page vvvtm-ride-page"><header class="vvvtm-phone-app-head ride-head"><button data-phone-home>‹</button><div><b>滴滴出行</b><small>快车 · 优享 · 专车 · 出租车 · 剧情模拟</small></div><button data-phone-ride-new title="呼叫滴滴">＋</button></header><main><section class="vvvtm-ride-map"><span>🚕</span><div><small>上车点</small><b>'+esc(pickup)+'</b><small>滴滴实时估价与司机接驾状态</small></div><button data-phone-ride-new>输入目的地</button></section><section class="vvvtm-didi-services"><button data-phone-ride-new="快车">快车<small>快速接驾</small></button><button data-phone-ride-new="优享">优享<small>舒适车型</small></button><button data-phone-ride-new="专车">专车<small>品质出行</small></button></section><section class="vvvtm-ride-orders"><header><b>行程记录</b><small>'+orders.length+' 笔 · 点击查看详情</small></header>'+rows+'</section></main></div>';
+        const p=s9EnsureExtendedApps(),orders=(p.ride.orders||[]).slice().reverse(),pickup=compactText(stateRuntime.state.scene?.location||'Vị trí hiện tại',180)||'Vị trí hiện tại';
+        const rows=orders.length?orders.slice(0,30).map(order=>{const info={...s93RideSnapshotV2(order),...order};return '<article class="vvvtm-ride-trip" data-phone-order-open="'+esc(order.id)+'"><span class="vvvtm-ride-trip-icon">🚕</span><div><header><b>'+esc(info.destination||'目的地')+'</b><small>'+esc(s8OrderStatusLabel(order))+'</small></header><p>'+esc(info.driverName||'司机待分配')+' · '+esc(info.vehicle||'车型确认中')+' · '+esc(info.plate||'车牌待定')+'</p><small>上车点：'+esc(info.pickup||pickup)+' · '+esc(order.carType||'快车')+' · '+esc(order.time||'')+'</small></div><em>'+s8MoneyText(order.amount)+'</em>'+(['司机接单','司机到达','行程中'].includes(order.status)?'<button data-phone-order-action="rider" data-phone-order-id="'+esc(order.id)+'" title="联系司机">☎</button>':'')+'</article>';}).join(''):'<p class="vvvtm-ride-empty">Chưa có行程，输入目的地即可呼叫滴滴。</p>';
+        return '<div class="vvvtm-phone-app-page vvvtm-ride-page"><header class="vvvtm-phone-app-head ride-head"><button data-phone-home>‹</button><div><b>滴滴出行</b><small>快车 · 优享 · 专车 · 出租车 · 剧情模拟</small></div><button data-phone-ride-new title="呼叫滴滴">＋</button></header><main><section class="vvvtm-ride-map"><span>🚕</span><div><small>上车点</small><b>'+esc(pickup)+'</b><small>滴滴实时估价与司机接驾Trạng thái</small></div><button data-phone-ride-new>输入目的地</button></section><section class="vvvtm-didi-services"><button data-phone-ride-new="快车">快车<small>快速接驾</small></button><button data-phone-ride-new="优享">优享<small>舒适车型</small></button><button data-phone-ride-new="专车">专车<small>品质出行</small></button></section><section class="vvvtm-ride-orders"><header><b>行程记录</b><small>'+orders.length+' 笔 · 点击查看详情</small></header>'+rows+'</section></main></div>';
     };
     const s13PhoneDialogMarkupBase=phoneDialogMarkup;
     phoneDialogMarkup=function(dialog){
@@ -18156,7 +18156,7 @@ ${JSON.stringify(evidence)}`;
         if(!result||action?.kind!=='ride')return result;
         const phone=s9EnsureExtendedApps(),orderId=stateRuntime.lastPaymentOrderId,order=(phone.ride.orders||[]).find(row=>row.id===orderId);
         if(!order)return result;
-        Object.assign(order,s93RideSnapshotV2({...order,pickup:action.pickup||stateRuntime.state?.scene?.location||'当前位置'}),{platformName:'滴滴出行',merchant:'滴滴出行',storeName:'滴滴出行'});
+        Object.assign(order,s93RideSnapshotV2({...order,pickup:action.pickup||stateRuntime.state?.scene?.location||'Vị trí hiện tại'}),{platformName:'滴滴出行',merchant:'滴滴出行',storeName:'滴滴出行'});
         const tx=[...(phone.finance?.transactions||[])].reverse().find(row=>row.source==='ride'&&!row._s13Didi);if(tx){tx.title='滴滴出行 · '+compactText(order.destination,140);tx.counterparty='滴滴出行';tx._s13Didi=true;}
         const notice=[...(phone.notifications||[])].reverse().find(row=>row.app==='打车'&&String(row.content||'').includes(String(order.destination||'')));if(notice){notice.app='滴滴出行';notice.title='滴滴司机已接单';notice.content=order.driverName+' · '+order.vehicle+' · '+order.plate+' · 前往'+order.destination;}
         s8RecordPhoneActivity('ride-order','滴滴出行已接单',order.driverName+' · '+order.vehicle+' · '+order.destination,{relatedId:order.id,floor:order.sourceFloor});
@@ -18183,7 +18183,7 @@ ${JSON.stringify(evidence)}`;
                 }
                 if(!destination)return;
                 const mode=target.dataset.phoneMapMode||stateRuntime.phoneMapMode||'drive';stateRuntime.phoneMapMode=mode;
-                const from=stateRuntime.state.scene?.location||'当前位置',info=s93RouteInfoV2(from,destination,mode);
+                const from=stateRuntime.state.scene?.location||'Vị trí hiện tại',info=s93RouteInfoV2(from,destination,mode);
                 p.maps.history.push({id:uid(target.hasAttribute('data-phone-map-start')?'map-start':'map-route'),destination,from,mode,status:target.hasAttribute('data-phone-map-start')?'navigating':'selected',minutes:info.minutes,km:info.km,time:phoneClock().time,createdAt:Date.now(),floor:Math.max(0,(context()?.chat?.length||1)-1)});
                 s8RecordPhoneActivity('maps',target.hasAttribute('data-phone-map-start')?'开始导航':'选择导航路线',info.label+' · '+destination,{relatedId:destination});
                 if(target.hasAttribute('data-phone-map-start'))s8AddNotification('地图','导航已开始',info.label+' '+info.minutes+'分钟 · '+destination,{route:'maps',relatedId:destination,dedupeKey:'map-start-'+destination+'-'+mode});
@@ -18253,7 +18253,7 @@ ${JSON.stringify(evidence)}`;
     function s15EnsureSystems(){
         const s=stateRuntime.state;if(!s)return null;
         s.worldMap=s.worldMap&&typeof s.worldMap==='object'?s.worldMap:{};
-        const map=s.worldMap,oldSchema=Number(map.schemaVersion||0),legacyLocations=Array.isArray(map.locations)?map.locations:[];map.schemaVersion=3;map.city=compactText(map.city||s15CityFromLocation(s.scene?.location),100)||'当前城市';map.currentLocation=compactText(s.scene?.location||map.currentLocation||'当前位置',200)||'当前位置';
+        const map=s.worldMap,oldSchema=Number(map.schemaVersion||0),legacyLocations=Array.isArray(map.locations)?map.locations:[];map.schemaVersion=3;map.city=compactText(map.city||s15CityFromLocation(s.scene?.location),100)||'当前城市';map.currentLocation=compactText(s.scene?.location||map.currentLocation||'Vị trí hiện tại',200)||'Vị trí hiện tại';
         map.locations=oldSchema<3?[]:legacyLocations;map.travelEvents=Array.isArray(map.travelEvents)?map.travelEvents:[];map.activeTravel=map.activeTravel&&typeof map.activeTravel==='object'?map.activeTravel:null;
         const add=(raw,source='bootstrap')=>{
             const originalName=compactText(raw?.name,160),name=s15MapLandmarkName(originalName,map);if(!name)return null;const city=compactText(raw?.city||map.city,100)||map.city,type=s15InteriorPlace(originalName)?'home':s15MapType(raw?.type),id=compactText(raw?.id,160)||s15StableId('place',`${city}|${name}`);
@@ -18287,7 +18287,7 @@ ${JSON.stringify(evidence)}`;
         for(const item of mapPayload.locations||[])addLocation(item,'companion');
         if(mapPayload.residence){const row=addLocation({name:mapPayload.residence,type:'home',city:mapPayload.city||map.city,description:'剧情已确认的user住所',floor:payload?.floor},'companion');if(row)map.residenceId=row.id;}
         const sceneLocation=compactText(payload?.scene?.location||stateRuntime.state?.scene?.location,200);
-        if(sceneLocation){const row=addLocation({name:sceneLocation,type:/家|住所|公寓|宿舍/.test(sceneLocation)?'home':'other',city:map.city,description:'正文最新场景',floor:payload?.floor},'scene');map.currentLocation=sceneLocation;map.currentLocationId=row?.id||map.currentLocationId;}
+        if(sceneLocation){const row=addLocation({name:sceneLocation,type:/家|住所|公寓|宿舍/.test(sceneLocation)?'home':'other',city:map.city,description:'chính văn最新场景',floor:payload?.floor},'scene');map.currentLocation=sceneLocation;map.currentLocationId=row?.id||map.currentLocationId;}
         if(map.activeTravel&&sceneLocation&&s15ShouldMergePlace({name:map.activeTravel.destination,city:map.city,type:map.locations.find(row=>row.id===map.activeTravel.destinationId)?.type||'other'},{name:s15MapLandmarkName(sceneLocation,map),city:map.city,type:/家|住所|公寓|宿舍/.test(sceneLocation)||s15InteriorPlace(sceneLocation)?'home':'other'})){
             const travel=map.activeTravel,destination=map.locations.find(row=>row.id===travel.destinationId)||map.locations.find(row=>s15SamePlace(row.name,travel.destination));
             if(destination){destination.aliases=[...new Set([...(destination.aliases||[]),...(npcNameKey(destination.name)!==npcNameKey(sceneLocation)?[sceneLocation]:[])])].slice(0,24);destination.lastSeenFloor=Math.max(Number(destination.lastSeenFloor||-1),Number(payload?.floor||-1));map.currentLocationId=destination.id;}
@@ -18298,7 +18298,7 @@ ${JSON.stringify(evidence)}`;
     companionPrompt=async function(index,message,options={}){
         const base=await s15CompanionPromptBase(index,message,options),systems=s15EnsureSystems(),map=systems?.map||{};
         const known=(map.locations||[]).slice(-80).map(row=>({name:row.name,type:row.type,city:row.city,district:row.district,address:row.address,description:row.description}));
-        return `${base}\n\n【U1.7.15剧情世界地图｜与幕后七条同轮生成】\n在原JSON的 world 对象内额外返回 map：{"city":"","currentLocation":"","residence":"","locations":[{"name":"","type":"home|family|convenience|market|food|school|work|medical|park|other","city":"","district":"","address":"","description":"","owner":"","distance":"","tags":[]}]}。只登记当前正文、角色资料或世界设定能支持的地点；同名地点沿用，不得每轮改名。地图粒度固定为住所/建筑/店铺/校园/公园等可导航地点：卧室、客厅、床上、门口、楼下、车内等只是场景内微位置，绝对不得各自新增地图点，必须归入所属住所或地点。住所、父母家、学校、公司、便利店、超市、餐馆、路边小摊等一旦出现就永久保留。currentLocation仍须准确抄写正文结束时的微位置，但locations只登记归一后的可导航地点。未知门牌留空，不伪造现实精确地址。\n【现有地图】城市=${map.city||''}；当前位置=${map.currentLocation||''}；已知地点=${JSON.stringify(known)}\n【镜子与衣架权威数据】${s15AvatarPromptText(2600)}`;
+        return `${base}\n\n【U1.7.15剧情世界地图｜与幕后七条同轮生成】\n在原JSON的 world 对象内额外返回 map：{"city":"","currentLocation":"","residence":"","locations":[{"name":"","type":"home|family|convenience|market|food|school|work|medical|park|other","city":"","district":"","address":"","description":"","owner":"","distance":"","tags":[]}]}。只登记当前chính văn、角色资料或世界设定能支持的地点；同名地点沿用，不得每轮改名。地图粒度固定为住所/建筑/店铺/校园/公园等可导航地点：卧室、客厅、床上、门口、楼下、车内等只是场景内微位置，绝对不得各自新增地图点，必须归入所属住所或地点。住所、父母家、学校、公司、便利店、超市、餐馆、路边小摊等一旦出现就永久保留。currentLocation仍须准确抄写chính văn结束时的微位置，但locations只登记归一后的可导航地点。Chưa rõ门牌留空，不伪造现实精确地址。\n【现有地图】城市=${map.city||''}；Vị trí hiện tại=${map.currentLocation||''}；已知地点=${JSON.stringify(known)}\n【镜子与衣架权威数据】${s15AvatarPromptText(2600)}`;
     };
     const s15NormalizeCompanionPayloadBase=normalizeCompanionPayload;
     normalizeCompanionPayload=function(raw,floor,signature){const payload=s15NormalizeCompanionPayloadBase(raw,floor,signature);payload.worldMap=s15CleanMapPayload(raw?.world?.map||raw?.worldMap,floor);return payload;};
@@ -18308,14 +18308,14 @@ ${JSON.stringify(evidence)}`;
     buildMemoryPrompt=function(){
         const base=s15BuildMemoryPromptBase(),systems=s15EnsureSystems();if(!systems||!base)return base;
         const map=systems.map,active=map.activeTravel,nearby=(map.locations||[]).filter(row=>row.discovered!==false).slice(-24).map(row=>`${row.name}(${row.type}${row.city?`/${row.city}`:''})`).join('、');
-        const appendix=`\n\n[剧情世界地图与旅行状态｜程序权威]\n当前城市=${map.city||'未知'}；当前地点=${map.currentLocation||stateRuntime.state?.scene?.location||'未知'}；住所=${map.locations.find(row=>row.id===map.residenceId)?.name||'未确认'}；已知地点=${nearby||'无'}${active?`；已授权旅行=${active.from}→${active.destination}，状态=${active.status}，交通/同行说明=${active.custom||'未填写'}。该点击等同user明确发起出行，不得误当NPC决定。`:''}\n\n[镜子与衣架｜程序权威外观]\n${s15AvatarPromptText(2600)}\n镜子/衣架由user手动操作，属于已授权且已经发生的外观与换装事实；正文可以承接结果，但不得替user再次换一遍。`;
+        const appendix=`\n\n[剧情世界地图与旅行Trạng thái｜程序权威]\n当前城市=${map.city||'Chưa rõ'}；当前地点=${map.currentLocation||stateRuntime.state?.scene?.location||'Chưa rõ'}；住所=${map.locations.find(row=>row.id===map.residenceId)?.name||'未确认'}；已知地点=${nearby||'无'}${active?`；已授权旅行=${active.from}→${active.destination}，Trạng thái=${active.status}，交通/同行说明=${active.custom||'未填写'}。该点击等同user明确发起出行，不得误当NPC决定。`:''}\n\n[镜子与衣架｜程序权威外观]\n${s15AvatarPromptText(2600)}\n镜子/衣架由user手动操作，属于已授权且已经发生的外观与换装事实；chính văn可以承接结果，但不得替user再次换一遍。`;
         const limit=Math.max(5000,Number(stateRuntime.state?.settings?.maxInjectChars||12000));return `${base.slice(0,Math.max(0,limit-appendix.length))}${appendix}`.slice(0,limit);
     };
     const s15RenderCompanionInlineBase=renderCompanionInline;
     renderCompanionInline=function(payload){
         let html=s15RenderCompanionInlineBase(payload);const systems=s15EnsureSystems(),map=systems?.map;if(!map)return html;
         const nearby=(map.locations||[]).filter(row=>row.id!==map.currentLocationId).slice(-4);const portrait=systems.studio.portraits.find(row=>Number(row.floor)===Number(payload?.floor));
-        const card=`<section class="vvvtm-inline-worldmap"><header><div><b>🗺 剧情世界地图</b><small>${esc(map.city||'当前城市')} · ${map.locations.length}个地点</small></div><button data-vvvtm-open-world-map>按 M 打开</button></header><p><strong>${esc(map.currentLocation||payload?.scene?.location||'当前位置')}</strong>${nearby.length?`<span>附近：${nearby.map(row=>esc(row.name)).join('、')}</span>`:''}</p></section>${portrait?`<section class="vvvtm-inline-portrait">${s15PortraitImageMarkup(portrait,portrait.subjectName||'剧情画像')}<div><b>本轮剧情画像</b><small>${esc(portrait.subjectName||'')} · NovelAI参考图工作流</small></div></section>`:''}`;
+        const card=`<section class="vvvtm-inline-worldmap"><header><div><b>🗺 剧情世界地图</b><small>${esc(map.city||'当前城市')} · ${map.locations.length}个地点</small></div><button data-vvvtm-open-world-map>按 M 打开</button></header><p><strong>${esc(map.currentLocation||payload?.scene?.location||'Vị trí hiện tại')}</strong>${nearby.length?`<span>附近：${nearby.map(row=>esc(row.name)).join('、')}</span>`:''}</p></section>${portrait?`<section class="vvvtm-inline-portrait">${s15PortraitImageMarkup(portrait,portrait.subjectName||'剧情画像')}<div><b>本轮剧情画像</b><small>${esc(portrait.subjectName||'')} · NovelAI参考图工作流</small></div></section>`:''}`;
         if(portrait)setTimeout(()=>s15HydratePortraitImages(document),0);
         const index=html.lastIndexOf('</section>');return index>=0?`${html.slice(0,index)}${card}${html.slice(index)}`:`${html}${card}`;
     };
@@ -18326,12 +18326,12 @@ ${JSON.stringify(evidence)}`;
     function s15WorldMapDetail(row,map){
         if(!row)return `<div class="vvvtm-worldmap-empty"><b>选择一个地点</b><p>地图会随剧情和幕后七条继续扩展。按住地图拖动，滚轮或右上角按钮缩放。</p></div>`;
         const current=row.id===map.currentLocationId||npcNameKey(row.name)===npcNameKey(map.currentLocation),travel=map.activeTravel?.destinationId===row.id;
-        return `<article class="vvvtm-worldmap-place-card"><span class="place-icon">${s15MapIcon(row.type)}</span><small>${esc([row.city,row.district,s15MapType(row.type)].filter(Boolean).join(' · '))}</small><h2>${esc(row.name)}</h2><p>${esc(row.description||'这个地点已经进入剧情地图，详细信息会在后续正文中继续补全。')}</p>${row.address?`<dl><dt>地址</dt><dd>${esc(row.address)}</dd></dl>`:''}${row.owner?`<dl><dt>关联人物</dt><dd>${esc(row.owner)}</dd></dl>`:''}${row.distance?`<dl><dt>距离</dt><dd>${esc(row.distance)}</dd></dl>`:''}<footer>${current?'<button disabled>当前所在</button>':`<button class="primary" data-worldmap-travel="${esc(row.id)}">${travel?'重新编辑出发方式':'前往这里'}</button>`}<button data-worldmap-open-phone="${esc(row.name)}">手机导航</button></footer></article>`;
+        return `<article class="vvvtm-worldmap-place-card"><span class="place-icon">${s15MapIcon(row.type)}</span><small>${esc([row.city,row.district,s15MapType(row.type)].filter(Boolean).join(' · '))}</small><h2>${esc(row.name)}</h2><p>${esc(row.description||'这个地点已经进入剧情地图，详细信息会在后续chính văn中继续补全。')}</p>${row.address?`<dl><dt>地址</dt><dd>${esc(row.address)}</dd></dl>`:''}${row.owner?`<dl><dt>关联人物</dt><dd>${esc(row.owner)}</dd></dl>`:''}${row.distance?`<dl><dt>距离</dt><dd>${esc(row.distance)}</dd></dl>`:''}<footer>${current?'<button disabled>当前所在</button>':`<button class="primary" data-worldmap-travel="${esc(row.id)}">${travel?'重新编辑出发方式':'前往这里'}</button>`}<button data-worldmap-open-phone="${esc(row.name)}">手机导航</button></footer></article>`;
     }
     function s15WorldMapOverlayMarkup(){
         const systems=s15EnsureSystems(),map=systems?.map;if(!map)return '';
         const selected=map.locations.find(row=>row.id===stateRuntime.worldMapSelectedId),zoom=Math.max(.55,Math.min(1.8,Number(stateRuntime.worldMapZoom||1)));
-        return `<div class="vvvtm-worldmap-shell"><header><div><small>0-32 · 永不落幕的剧场</small><h1>${esc(map.city||'剧情世界')}</h1><p>当前位置：${esc(map.currentLocation||'未知')} · ${map.locations.length} 个已知地点</p></div><div class="map-tools"><button data-worldmap-zoom="out" title="缩小">−</button><button data-worldmap-center title="回到当前位置">⌖</button><button data-worldmap-zoom="in" title="放大">＋</button><button data-worldmap-add title="新增地点">＋地点</button><button data-worldmap-close title="关闭地图">×</button></div></header><main><section class="vvvtm-worldmap-viewport" data-worldmap-viewport><div class="vvvtm-worldmap-spacer" style="width:${Math.round(2400*zoom)}px;height:${Math.round(1640*zoom)}px"><div class="vvvtm-worldmap-plane" style="transform:scale(${zoom})">${map.locations.filter(row=>row.discovered!==false).map(row=>s15MapPlaceMarkup(row,map)).join('')}<div class="vvvtm-worldmap-road road-a"></div><div class="vvvtm-worldmap-road road-b"></div><div class="vvvtm-worldmap-district">${esc(map.city||'当前城市')}</div></div></div></section><aside>${s15WorldMapDetail(selected,map)}<section class="vvvtm-worldmap-legend"><span><i>你</i>当前位置</span><span><i>⌂</i>住所</span><span><i>便</i>便利店</span><span><i>食</i>餐饮/小摊</span><span><i>购</i>超市</span></section></aside></main></div>`;
+        return `<div class="vvvtm-worldmap-shell"><header><div><small>0-32 · 永不落幕的剧场</small><h1>${esc(map.city||'剧情世界')}</h1><p>Vị trí hiện tại：${esc(map.currentLocation||'Chưa rõ')} · ${map.locations.length} 个已知地点</p></div><div class="map-tools"><button data-worldmap-zoom="out" title="缩小">−</button><button data-worldmap-center title="回到Vị trí hiện tại">⌖</button><button data-worldmap-zoom="in" title="放大">＋</button><button data-worldmap-add title="新增地点">＋地点</button><button data-worldmap-close title="Đóng地图">×</button></div></header><main><section class="vvvtm-worldmap-viewport" data-worldmap-viewport><div class="vvvtm-worldmap-spacer" style="width:${Math.round(2400*zoom)}px;height:${Math.round(1640*zoom)}px"><div class="vvvtm-worldmap-plane" style="transform:scale(${zoom})">${map.locations.filter(row=>row.discovered!==false).map(row=>s15MapPlaceMarkup(row,map)).join('')}<div class="vvvtm-worldmap-road road-a"></div><div class="vvvtm-worldmap-road road-b"></div><div class="vvvtm-worldmap-district">${esc(map.city||'当前城市')}</div></div></div></section><aside>${s15WorldMapDetail(selected,map)}<section class="vvvtm-worldmap-legend"><span><i>你</i>Vị trí hiện tại</span><span><i>⌂</i>住所</span><span><i>便</i>便利店</span><span><i>食</i>餐饮/小摊</span><span><i>购</i>超市</span></section></aside></main></div>`;
     }
     function s15OpenWorldMap(placeId=''){
         s15EnsureSystems();stateRuntime.worldMapSelectedId=compactText(placeId,160)||stateRuntime.worldMapSelectedId||stateRuntime.state?.worldMap?.currentLocationId||'';stateRuntime.worldMapZoom=Math.max(.55,Math.min(1.8,Number(stateRuntime.worldMapZoom||1)));
@@ -18369,11 +18369,11 @@ ${JSON.stringify(evidence)}`;
     function s15TravelComposer(place){
         const overlay=document.getElementById('vvvtm-worldmap-overlay'),map=stateRuntime.state?.worldMap;if(!overlay||!place||!map)return;
         const existing=map.activeTravel?.destinationId===place.id?map.activeTravel.custom:'';
-        overlay.insertAdjacentHTML('beforeend',`<div class="vvvtm-travel-compose"><div class="backdrop" data-travel-close></div><section><header><div><small>出发 AI 接力</small><h2>${esc(map.currentLocation)} → ${esc(place.name)}</h2></div><button data-travel-close>×</button></header><p>这里只保留一个自定义项。可以写怎么过去、和谁同行，也可以留空让接力按当前剧情自然决定。</p><textarea data-travel-custom maxlength="800" placeholder="例如：我开车过去，和同行人一起；或者先步行到地铁站……">${esc(existing||'')}</textarea><p class="vvvtm-travel-error" data-travel-error hidden></p><footer><button data-travel-close>取消</button><button class="primary" data-travel-generate>生成出发接力</button></footer></section></div>`);
+        overlay.insertAdjacentHTML('beforeend',`<div class="vvvtm-travel-compose"><div class="backdrop" data-travel-close></div><section><header><div><small>出发 AI 接力</small><h2>${esc(map.currentLocation)} → ${esc(place.name)}</h2></div><button data-travel-close>×</button></header><p>这里只保留一个自定义项。可以写怎么过去、和谁同行，也可以留空让接力按当前剧情自然决定。</p><textarea data-travel-custom maxlength="800" placeholder="例如：我开车过去，和同行人一起；或者先步行到地铁站……">${esc(existing||'')}</textarea><p class="vvvtm-travel-error" data-travel-error hidden></p><footer><button data-travel-close>Hủy</button><button class="primary" data-travel-generate>生成出发接力</button></footer></section></div>`);
         const modal=overlay.querySelector('.vvvtm-travel-compose');modal.querySelectorAll('[data-travel-close]').forEach(button=>button.addEventListener('click',()=>modal.remove()));modal.querySelector('[data-travel-generate]')?.addEventListener('click',async()=>{
             const generateButton=modal.querySelector('[data-travel-generate]'),errorNode=modal.querySelector('[data-travel-error]');
             if(generateButton?.disabled)return;
-            const custom=compactText(modal.querySelector('[data-travel-custom]')?.value,800),floor=Math.max(0,(context()?.chat?.length||1)-1),prior=map.activeTravel?.destinationId===place.id?map.activeTravel:null,event={id:prior?.id||uid('travel'),from:map.currentLocation||stateRuntime.state?.scene?.location||'当前位置',destination:place.name,destinationId:place.id,custom,status:'departure-planned',floor,createdAt:prior?.createdAt||Date.now(),updatedAt:Date.now(),time:phoneClock().time};
+            const custom=compactText(modal.querySelector('[data-travel-custom]')?.value,800),floor=Math.max(0,(context()?.chat?.length||1)-1),prior=map.activeTravel?.destinationId===place.id?map.activeTravel:null,event={id:prior?.id||uid('travel'),from:map.currentLocation||stateRuntime.state?.scene?.location||'Vị trí hiện tại',destination:place.name,destinationId:place.id,custom,status:'departure-planned',floor,createdAt:prior?.createdAt||Date.now(),updatedAt:Date.now(),time:phoneClock().time};
             const instruction=`旅行/前往：从“${event.from}”前往“${event.destination}”。只写user开始出发的这一阶段，不要直接替NPC回应，也不要一口气写到抵达后的结果。交通方式与同行人说明：${custom||'结合当前剧情自然决定，但不得凭空让不在场NPC同行。'}`;
             try{
                 if(generateButton){generateButton.disabled=true;generateButton.textContent='AI接力生成中…';}
@@ -18393,7 +18393,7 @@ ${JSON.stringify(evidence)}`;
         });setTimeout(()=>modal.querySelector('textarea')?.focus(),0);
     }
     function s15AddMapPlaceDialog(){
-        const overlay=document.getElementById('vvvtm-worldmap-overlay');if(!overlay)return;overlay.insertAdjacentHTML('beforeend',`<div class="vvvtm-travel-compose"><div class="backdrop" data-place-close></div><section><header><h2>登记剧情地点</h2><button data-place-close>×</button></header><label>地点名称<input data-place-name maxlength="160"></label><label>类型<select data-place-type><option value="other">普通地点</option><option value="home">住所</option><option value="family">家人住所</option><option value="convenience">便利店</option><option value="market">超市</option><option value="food">餐饮/小摊</option><option value="school">学校</option><option value="work">工作地点</option><option value="medical">医疗</option><option value="park">公园</option></select></label><label>说明<textarea data-place-description maxlength="800"></textarea></label><footer><button data-place-close>取消</button><button class="primary" data-place-save>保存地点</button></footer></section></div>`);const modal=overlay.querySelector('.vvvtm-travel-compose');modal.querySelectorAll('[data-place-close]').forEach(button=>button.addEventListener('click',()=>modal.remove()));modal.querySelector('[data-place-save]')?.addEventListener('click',async()=>{const name=compactText(modal.querySelector('[data-place-name]')?.value,160);if(!name)return toast('先填写地点名称','info');const systems=s15EnsureSystems(),row=systems.addLocation({name,type:modal.querySelector('[data-place-type]')?.value,description:modal.querySelector('[data-place-description]')?.value,city:systems.map.city},'manual');stateRuntime.worldMapSelectedId=row.id;await saveState({immediate:true,refresh:false,reason:'world-map-manual-place'});modal.remove();s15RefreshWorldMap();});
+        const overlay=document.getElementById('vvvtm-worldmap-overlay');if(!overlay)return;overlay.insertAdjacentHTML('beforeend',`<div class="vvvtm-travel-compose"><div class="backdrop" data-place-close></div><section><header><h2>登记剧情地点</h2><button data-place-close>×</button></header><label>地点名称<input data-place-name maxlength="160"></label><label>Loại<select data-place-type><option value="other">普通地点</option><option value="home">住所</option><option value="family">家人住所</option><option value="convenience">便利店</option><option value="market">超市</option><option value="food">餐饮/小摊</option><option value="school">学校</option><option value="work">工作地点</option><option value="medical">医疗</option><option value="park">公园</option></select></label><label>说明<textarea data-place-description maxlength="800"></textarea></label><footer><button data-place-close>Hủy</button><button class="primary" data-place-save>保存地点</button></footer></section></div>`);const modal=overlay.querySelector('.vvvtm-travel-compose');modal.querySelectorAll('[data-place-close]').forEach(button=>button.addEventListener('click',()=>modal.remove()));modal.querySelector('[data-place-save]')?.addEventListener('click',async()=>{const name=compactText(modal.querySelector('[data-place-name]')?.value,160);if(!name)return toast('先填写地点名称','info');const systems=s15EnsureSystems(),row=systems.addLocation({name,type:modal.querySelector('[data-place-type]')?.value,description:modal.querySelector('[data-place-description]')?.value,city:systems.map.city},'manual');stateRuntime.worldMapSelectedId=row.id;await saveState({immediate:true,refresh:false,reason:'world-map-manual-place'});modal.remove();s15RefreshWorldMap();});
     }
     function s15BindWorldMap(overlay){
         overlay.querySelector('[data-worldmap-close]')?.addEventListener('click',s15CloseWorldMap);overlay.querySelector('[data-worldmap-center]')?.addEventListener('click',s15CenterWorldMap);overlay.querySelector('[data-worldmap-add]')?.addEventListener('click',s15AddMapPlaceDialog);
@@ -18415,16 +18415,16 @@ ${JSON.stringify(evidence)}`;
     function s15SyncGarments(){
         const systems=s15EnsureSystems();if(!systems)return;const {studio}=systems,userName=compactText(context()?.name1||'{{user}}',120)||'{{user}}';
         const add=(name,description='',sourceId='',owner=userName,source='memory')=>{name=compactText(name,160);if(!name)return;const id=s15StableId('garment',sourceId||`${owner}|${name}`);if(studio.garments.some(row=>row.id===id))return;studio.garments.push({id,name,description:compactText(description,800)||name,category:/鞋|靴/.test(name)?'shoes':/帽|耳环|项链|围巾|包|眼镜/.test(name)?'accessory':'clothing',owner:compactText(owner,120)||userName,source,sourceId:compactText(sourceId,160),wornBy:[],createdAt:Date.now()});};
-        for(const row of stateRuntime.state?.tables?.items||[]){const text=`${row?.['物品名称']||''} ${row?.['物品描述']||''}`;if(!/(?:衣|裙|裤|鞋|靴|袜|帽|外套|衬衫|毛衣|卫衣|西装|领带|围巾|耳环|项链|眼镜|背心|睡衣|包)/.test(text))continue;add(row['物品名称'],row['物品描述'],promiseObjectId(row)||row._entityId||`${row['楼层']||''}-${row['物品名称']}`,row['持有者']||userName,'记忆物品');}
+        for(const row of stateRuntime.state?.tables?.items||[]){const text=`${row?.['Tên vật phẩm']||''} ${row?.['Mô tả vật phẩm']||''}`;if(!/(?:衣|裙|裤|鞋|靴|袜|帽|外套|衬衫|毛衣|卫衣|西装|领带|围巾|耳环|项链|眼镜|背心|睡衣|包)/.test(text))continue;add(row['Tên vật phẩm'],row['Mô tả vật phẩm'],promiseObjectId(row)||row._entityId||`${row['Tầng']||''}-${row['Tên vật phẩm']}`,row['Người sở hữu']||userName,'记忆物品');}
         try{for(const order of s8AllPhoneOrders()){if(!['delivered','completed','已送达'].includes(String(order.status)))continue;for(const item of order.items||[]){const text=`${item.name||''} ${item.description||''}`;if(/(?:衣|裙|裤|鞋|靴|袜|帽|外套|衬衫|毛衣|卫衣|西装|领带|围巾|耳环|项链|眼镜|背心|睡衣|包)/.test(text))add(item.name,item.description||item.flavor,`${order.id}|${item.id||item.name}`,userName,'已送达订单');}}}catch{}
         if(studio.garments.length>800)studio.garments=studio.garments.slice(-800);
     }
     function s15SubjectAppearance(subject){return [...(stateRuntime.state?.appearances||[])].reverse().find(row=>npcNameKey(row.character)===npcNameKey(subject?.name));}
     function s15WornGarments(subject){return (s15EnsureSystems()?.studio?.garments||[]).filter(row=>(row.wornBy||[]).includes(subject?.id));}
     function s15AvatarPromptText(limit=2600){
-        const studio=s15EnsureSystems()?.studio;if(!studio)return '暂无镜子或衣架资料。';
-        const lines=studio.subjects.map(subject=>{const mirror=subject.mirror||{},appearance=s15SubjectAppearance(subject),worn=s15WornGarments(subject);return `- ${subject.name}(${subject.role})：发型=${mirror.hair||appearance?.hair||'未记录'}；面部/样貌=${mirror.face||'未记录'}；体态=${mirror.body||'未记录'}；长期变化=${mirror.modifications||'无'}；当前穿着=${worn.length?worn.map(row=>row.description||row.name).join(' + '):(mirror.outfit||appearance?.outfit||'未记录')}；配饰=${mirror.accessories||appearance?.accessories||'无'}；备注=${mirror.notes||'无'}`;});
-        return (lines.join('\n')||'暂无镜子或衣架资料。').slice(0,Math.max(200,Number(limit)||2600));
+        const studio=s15EnsureSystems()?.studio;if(!studio)return 'Chưa có镜子或衣架资料。';
+        const lines=studio.subjects.map(subject=>{const mirror=subject.mirror||{},appearance=s15SubjectAppearance(subject),worn=s15WornGarments(subject);return `- ${subject.name}(${subject.role})：发型=${mirror.hair||appearance?.hair||'Chưa ghi nhận'}；面部/样貌=${mirror.face||'Chưa ghi nhận'}；体态=${mirror.body||'Chưa ghi nhận'}；长期变化=${mirror.modifications||'无'}；当前穿着=${worn.length?worn.map(row=>row.description||row.name).join(' + '):(mirror.outfit||appearance?.outfit||'Chưa ghi nhận')}；配饰=${mirror.accessories||appearance?.accessories||'无'}；Ghi chú=${mirror.notes||'无'}`;});
+        return (lines.join('\n')||'Chưa có镜子或衣架资料。').slice(0,Math.max(200,Number(limit)||2600));
     }
     function s15PortraitComposition(value=''){
         const mode=String(value||'').trim().toLowerCase();
@@ -18562,7 +18562,7 @@ ${JSON.stringify(evidence)}`;
     function s15OpenAvatarCreateDialog(kind,active){
         document.getElementById('vvvtm-avatar-editor')?.remove();const systems=s15EnsureSystems();if(!systems)return;
         const garment=kind==='garment',dialog=document.createElement('div');dialog.id='vvvtm-avatar-editor';dialog.className='vvvtm-travel-compose';
-        dialog.innerHTML=`<div class="backdrop" data-avatar-editor-close></div><section><header><div><small>人物外观工作室</small><h2>${garment?'登记一件衣物':'添加角色或 NPC'}</h2></div><button data-avatar-editor-close title="关闭">×</button></header>${garment?'<p>衣物会进入当前角色的衣架；穿上后会同步镜子、正文记忆和 NovelAI 换装工作流。</p><label>衣物名称<input data-avatar-editor-name maxlength="160" placeholder="例如：黑色羊毛大衣"></label><label>颜色、材质、版型和穿法<textarea data-avatar-editor-description maxlength="800" placeholder="例如：及膝黑色羊毛大衣，收腰剪裁，敞开穿"></textarea></label>':'<p>新增人物会拥有独立的镜子、参考图、外观提示词和剧情画廊。</p><label>角色/NPC 名称<input data-avatar-editor-name maxlength="120" placeholder="输入剧情中使用的名字"></label>'}<footer><button data-avatar-editor-close>取消</button><button class="primary" data-avatar-editor-save>${garment?'保存到衣架':'添加人物'}</button></footer></section>`;
+        dialog.innerHTML=`<div class="backdrop" data-avatar-editor-close></div><section><header><div><small>人物外观工作室</small><h2>${garment?'登记一件衣物':'添加角色或 NPC'}</h2></div><button data-avatar-editor-close title="Đóng">×</button></header>${garment?'<p>衣物会进入当前角色的衣架；穿上后会同步镜子、chính văn记忆和 NovelAI 换装工作流。</p><label>衣物名称<input data-avatar-editor-name maxlength="160" placeholder="例如：黑色羊毛大衣"></label><label>颜色、材质、版型和穿法<textarea data-avatar-editor-description maxlength="800" placeholder="例如：及膝黑色羊毛大衣，收腰剪裁，敞开穿"></textarea></label>':'<p>新增人物会拥有独立的镜子、参考图、外观提示词和剧情画廊。</p><label>角色/NPC 名称<input data-avatar-editor-name maxlength="120" placeholder="输入剧情中使用的名字"></label>'}<footer><button data-avatar-editor-close>Hủy</button><button class="primary" data-avatar-editor-save>${garment?'保存到衣架':'添加人物'}</button></footer></section>`;
         const close=()=>dialog.remove();dialog.querySelectorAll('[data-avatar-editor-close]').forEach(button=>button.addEventListener('click',close));
         dialog.querySelector('[data-avatar-editor-save]')?.addEventListener('click',async()=>{
             const name=compactText(dialog.querySelector('[data-avatar-editor-name]')?.value,garment?160:120);if(!name)return toast(garment?'先填写衣物名称':'先填写人物名称','info');
@@ -18575,21 +18575,21 @@ ${JSON.stringify(evidence)}`;
     renderAppearance=function(){
         const systems=s15EnsureSystems();s15SyncGarments();const {studio}=systems,active=s15Subject(),mirror=active?.mirror||{},portrait=s15CurrentPortrait(active),garments=studio.garments.filter(row=>!row.owner||npcNameKey(row.owner)===npcNameKey(active?.name)||active?.role==='user'),portraits=studio.portraits.filter(row=>row.subjectId===active?.id).slice().reverse();stateRuntime.avatarSubjectId=active?.id||'';
         if(!stateRuntime.portraitAssetsLoaded&&!stateRuntime.portraitAssetsLoading){stateRuntime.portraitAssetsLoading=true;const scope=captureChatScope();s15LoadPortraitAssets().then(()=>{stateRuntime.portraitAssetsLoading=false;if(chatScopeIsCurrent(scope)&&stateRuntime.currentTab==='appearance')renderCurrentTab();}).catch(error=>{stateRuntime.portraitAssetsLoading=false;console.warn(error);});}
-        return `<section class="vvvtm-avatar-studio"><header class="vvvtm-avatar-head"><div><small>镜子 · 衣架 · NovelAI</small><h2>人物外观工作室</h2><p>原始上传图是永久母图；生成图只进画廊，不参与下一次传代。镜子和衣架变化会叠加在母图身份上。</p></div><label>随剧情自动画图 <input type="checkbox" data-avatar-auto ${studio.settings.autoIllustrate!==false?'checked':''}></label></header><div class="vvvtm-avatar-layout"><aside>${s15AvatarSubjectOptions(studio,active)}<button data-avatar-add-subject>＋ 添加NPC/角色</button></aside><main><section class="vvvtm-mirror-panel"><div class="vvvtm-mirror-image">${portrait?s15PortraitImageMarkup(portrait,active?.name||'角色画像'):`<div><b>${esc(active?.name||'角色')}</b><span>等待上传永久母图</span></div>`}<input type="file" data-avatar-reference-file accept="image/png,image/jpeg,image/webp" hidden><button data-avatar-reference>${active?.referenceAssetId?'更换永久母图':'上传永久母图'}</button><button data-avatar-generate ${active?.referenceAssetId?'':'disabled'}>${stateRuntime.portraitGenerating?'生成中…':'按当前外观生成'}</button></div><div class="vvvtm-mirror-form"><h3>镜子里的 ${esc(active?.name||'角色')}</h3><label>原始角色提示词<textarea data-avatar-base-prompt>${esc(active?.basePrompt||'')}</textarea></label><div class="form-grid"><label>发型/发色<input data-avatar-mirror="hair" value="${esc(mirror.hair||'')}"></label><label>面部与样貌<input data-avatar-mirror="face" value="${esc(mirror.face||'')}"></label><label>体态<input data-avatar-mirror="body" value="${esc(mirror.body||'')}"></label><label>耳洞/纹身/伤疤等长期变化<input data-avatar-mirror="modifications" value="${esc(mirror.modifications||'')}"></label><label>配饰<input data-avatar-mirror="accessories" value="${esc(mirror.accessories||'')}"></label><label>补充备注<input data-avatar-mirror="notes" value="${esc(mirror.notes||'')}"></label></div><label>负面提示词<textarea data-avatar-negative>${esc(active?.negativePrompt||'')}</textarea></label><footer><button data-avatar-save-mirror>保存镜子</button><button class="primary" data-avatar-take-snapshot>照镜子并留档</button></footer></div></section><section class="vvvtm-hanger-panel"><header><div><h3>衣架</h3><p>已送达订单和物品表中的衣服会自动入架，也可以手工登记。</p></div><button data-avatar-add-garment>＋ 登记衣物</button></header><div class="vvvtm-hanger-list">${garments.length?garments.map(row=>s15GarmentCard(row,active)).join(''):'<div class="vvvtm-empty">衣架还是空的</div>'}</div></section><section class="vvvtm-portrait-gallery"><header><h3>剧情画廊</h3><small>${portraits.length} 张生成图</small></header><div>${portraits.length?portraits.map(row=>`<figure>${s15PortraitImageMarkup(row,row.subjectName||active?.name)}<figcaption>第${Number(row.floor)>=0?esc(row.floor):'手动'}层 · ${row.reason==='auto'?'随剧情':'手动/换装'}${row.fallbackUsed?' · 低幅回退':''}</figcaption><button data-avatar-image-delete="${esc(row.id)}">删除</button></figure>`).join(''):'<div class="vvvtm-empty">配置 NovelAI 并上传永久母图后，生成图会保存在这里。</div>'}</div></section></main></div></section>`;
+        return `<section class="vvvtm-avatar-studio"><header class="vvvtm-avatar-head"><div><small>镜子 · 衣架 · NovelAI</small><h2>人物外观工作室</h2><p>原始上传图是永久母图；生成图只进画廊，不参与下一次传代。镜子和衣架变化会叠加在母图Thân phận上。</p></div><label>随剧情自动画图 <input type="checkbox" data-avatar-auto ${studio.settings.autoIllustrate!==false?'checked':''}></label></header><div class="vvvtm-avatar-layout"><aside>${s15AvatarSubjectOptions(studio,active)}<button data-avatar-add-subject>＋ 添加NPC/角色</button></aside><main><section class="vvvtm-mirror-panel"><div class="vvvtm-mirror-image">${portrait?s15PortraitImageMarkup(portrait,active?.name||'角色画像'):`<div><b>${esc(active?.name||'角色')}</b><span>等待上传永久母图</span></div>`}<input type="file" data-avatar-reference-file accept="image/png,image/jpeg,image/webp" hidden><button data-avatar-reference>${active?.referenceAssetId?'更换永久母图':'上传永久母图'}</button><button data-avatar-generate ${active?.referenceAssetId?'':'disabled'}>${stateRuntime.portraitGenerating?'生成中…':'按当前外观生成'}</button></div><div class="vvvtm-mirror-form"><h3>镜子里的 ${esc(active?.name||'角色')}</h3><label>原始角色提示词<textarea data-avatar-base-prompt>${esc(active?.basePrompt||'')}</textarea></label><div class="form-grid"><label>发型/发色<input data-avatar-mirror="hair" value="${esc(mirror.hair||'')}"></label><label>面部与样貌<input data-avatar-mirror="face" value="${esc(mirror.face||'')}"></label><label>体态<input data-avatar-mirror="body" value="${esc(mirror.body||'')}"></label><label>耳洞/纹身/伤疤等长期变化<input data-avatar-mirror="modifications" value="${esc(mirror.modifications||'')}"></label><label>配饰<input data-avatar-mirror="accessories" value="${esc(mirror.accessories||'')}"></label><label>补充Ghi chú<input data-avatar-mirror="notes" value="${esc(mirror.notes||'')}"></label></div><label>负面提示词<textarea data-avatar-negative>${esc(active?.negativePrompt||'')}</textarea></label><footer><button data-avatar-save-mirror>保存镜子</button><button class="primary" data-avatar-take-snapshot>照镜子并留档</button></footer></div></section><section class="vvvtm-hanger-panel"><header><div><h3>衣架</h3><p>已送达订单和物品表中的衣服会自动入架，也可以手工登记。</p></div><button data-avatar-add-garment>＋ 登记衣物</button></header><div class="vvvtm-hanger-list">${garments.length?garments.map(row=>s15GarmentCard(row,active)).join(''):'<div class="vvvtm-empty">衣架还是空的</div>'}</div></section><section class="vvvtm-portrait-gallery"><header><h3>剧情画廊</h3><small>${portraits.length} 张生成图</small></header><div>${portraits.length?portraits.map(row=>`<figure>${s15PortraitImageMarkup(row,row.subjectName||active?.name)}<figcaption>第${Number(row.floor)>=0?esc(row.floor):'手动'}层 · ${row.reason==='auto'?'随剧情':'手动/换装'}${row.fallbackUsed?' · 低幅回退':''}</figcaption><button data-avatar-image-delete="${esc(row.id)}">Xóa</button></figure>`).join(''):'<div class="vvvtm-empty">配置 NovelAI 并上传永久母图后，生成图会保存在这里。</div>'}</div></section></main></div></section>`;
     };
     function s15SaveMirrorForm(content,subject){
         if(!subject)return;subject.basePrompt=compactText(content.querySelector('[data-avatar-base-prompt]')?.value,12000);subject.negativePrompt=compactText(content.querySelector('[data-avatar-negative]')?.value,12000);subject.composition=s15PortraitComposition(content.querySelector('[data-avatar-composition]')?.value||subject.composition);subject.styleProfile=s15PortraitStyleProfile(content.querySelector('[data-avatar-style-profile]')?.value||subject.styleProfile);subject.mirror=subject.mirror||{};content.querySelectorAll('[data-avatar-mirror]').forEach(input=>subject.mirror[input.dataset.avatarMirror]=compactText(input.value,1200));subject.mirror.updatedAt=nowText();
     }
     function s15InsertCompositionControl(content,subject){
         if(content.querySelector('[data-avatar-composition]')&&content.querySelector('[data-avatar-style-profile]'))return;const prompt=content.querySelector('[data-avatar-base-prompt]'),label=prompt?.closest('label');if(!label)return;const mode=s15PortraitComposition(subject?.composition),style=s15PortraitStyleProfile(subject?.styleProfile),options=[['full-body','全身（默认，完整到脚）'],['three-quarter','四分之三身（到膝盖）'],['half-body','半身（到腰部）'],['headshot','大头/头像'],['story','跟随剧情镜头（中远景优先）']],styles=[['anime-accent','二次元顶级精绘（默认）'],['anime-cel','日系赛璐璐·明显'],['anime-cinematic','动画电影感·氛围'],['reference','完全跟随母图']];
-        label.insertAdjacentHTML('afterend',`<label>生成构图<select data-avatar-composition>${options.map(([value,text])=>`<option value="${value}" ${mode===value?'selected':''}>${text}</option>`).join('')}</select><small>母图只锁定人物身份；这里单独决定镜头范围。上传大头照也可以生成全身和场景图。</small></label><label>绘制风格<select data-avatar-style-profile>${styles.map(([value,text])=>`<option value="${value}" ${style===value?'selected':''}>${text}</option>`).join('')}</select><small>默认目标是高完成度日系游戏立绘：通透眼睛、分层发丝、精细线稿、材质高光和干净上色，同时压制Q版、幼态大眼、塑料皮肤与廉价3D感。</small></label>`);
+        label.insertAdjacentHTML('afterend',`<label>生成构图<select data-avatar-composition>${options.map(([value,text])=>`<option value="${value}" ${mode===value?'selected':''}>${text}</option>`).join('')}</select><small>母图只锁定人物Thân phận；这里单独决定镜头范围。上传大头照也可以生成全身和场景图。</small></label><label>绘制风格<select data-avatar-style-profile>${styles.map(([value,text])=>`<option value="${value}" ${style===value?'selected':''}>${text}</option>`).join('')}</select><small>默认目标是高完成度日系游戏立绘：通透眼睛、分层发丝、精细线稿、材质高光和干净上色，同时压制Q版、幼态大眼、塑料皮肤与廉价3D感。</small></label>`);
     }
     async function s15ApplyWornAppearance(subject,reason='衣架换装'){
         const worn=s15WornGarments(subject),mirror=subject.mirror||{},floor=Math.max(0,(context()?.chat?.length||1)-1),outfit=worn.length?worn.map(row=>row.description||row.name).join('；'):(mirror.outfit||'未穿戴衣架中的服饰');mirror.outfit=outfit;mirror.updatedAt=nowText();
         upsertAppearanceSnapshot({character:subject.name,outfit,hair:mirror.hair,accessories:mirror.accessories,condition:`${reason}，由user在外观工作室明确操作`,time:phoneClock().time,location:stateRuntime.state?.scene?.location||'',source:'mirror-hanger'},uid('avatar-change'),floor);s15EnsureSystems().studio.changeEvents.push({id:uid('avatar-change'),subjectId:subject.id,subjectName:subject.name,outfit,reason,floor,time:nowText(),createdAt:Date.now()});logAudit('镜子与衣架',`${subject.name}：${reason}；${outfit}`);updatePromptInjection();await saveState({immediate:true,refresh:false,reason:'mirror-hanger-change'});
     }
     bindAppearance=function(content){
-        const systems=s15EnsureSystems(),studio=systems.studio,active=s15Subject();s15HydratePortraitImages(content);s15InsertCompositionControl(content,active);content.querySelectorAll('.vvvtm-portrait-gallery figcaption').forEach(node=>{node.textContent=node.textContent.replace('低幅回退','旧版身份参考失败图');});content.querySelectorAll('[data-avatar-subject]').forEach(button=>button.addEventListener('click',()=>{stateRuntime.avatarSubjectId=button.dataset.avatarSubject;renderCurrentTab();}));
+        const systems=s15EnsureSystems(),studio=systems.studio,active=s15Subject();s15HydratePortraitImages(content);s15InsertCompositionControl(content,active);content.querySelectorAll('.vvvtm-portrait-gallery figcaption').forEach(node=>{node.textContent=node.textContent.replace('低幅回退','旧版Thân phận参考失败图');});content.querySelectorAll('[data-avatar-subject]').forEach(button=>button.addEventListener('click',()=>{stateRuntime.avatarSubjectId=button.dataset.avatarSubject;renderCurrentTab();}));
         content.querySelector('[data-avatar-auto]')?.addEventListener('change',async event=>{studio.settings.autoIllustrate=event.target.checked;await saveState({immediate:true,refresh:false,reason:'avatar-auto-setting'});});
         content.querySelector('[data-avatar-reference]')?.addEventListener('click',()=>content.querySelector('[data-avatar-reference-file]')?.click());content.querySelector('[data-avatar-reference-file]')?.addEventListener('change',async event=>{try{setBusy(true,'正在上传角色参考图…');s15SaveMirrorForm(content,active);await s15UploadReference(active,event.target.files?.[0],content);}catch(error){toast(`参考图上传失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-avatar-save-mirror]')?.addEventListener('click',async()=>{s15SaveMirrorForm(content,active);await s15ApplyWornAppearance(active,'镜子资料更新');toast('镜子数据已保存','success');renderCurrentTab();});
@@ -18603,7 +18603,7 @@ ${JSON.stringify(evidence)}`;
     };
     const s15RenderApiBase=renderApi;
     renderApi=function(){
-        const html=s15RenderApiBase(),image=stateRuntime.serverConfig?.image||{},mode=image.workflowMode||'strict-character-reference',card=`<article class="vvvtm-card vvvtm-image-api-card"><div class="vvvtm-section-title"><div><h3>🖼 NovelAI 剧情画像 API</h3><p class="vvvtm-note">上传的原始图是永久母图。严格模式使用 NovelAI 4.5 Character Reference 锁住人物与画风；剧情画廊里的生成图永远不会反过来当下一代参考图。</p></div><div class="vvvtm-row-actions"><button data-image-api-action="test" title="会真实生成一张测试图并消耗 NovelAI 额度；Character Reference 通常额外消耗点数">测试 NovelAI（消耗额度）</button><button data-image-api-action="save">保存 NovelAI</button></div></div><label class="vvvtm-setting"><div><strong>启用随剧情画图</strong><small>幕后七条完成后，若本轮角色已有参考图则自动生成一张。</small></div><input id="image-enabled" type="checkbox" ${image.enabled?'checked':''}></label><div class="api-grid"><label class="api-field wide"><span>角色稳定工作流</span><select id="image-workflow"><option value="strict-character-reference" ${mode==='strict-character-reference'?'selected':''}>严格保持原角色（推荐，锁人物＋画风）</option><option value="flexible-character-reference" ${mode==='flexible-character-reference'?'selected':''}>保持同一人物（允许画风轻微变化）</option><option value="img2img-redesign" ${mode==='img2img-redesign'?'selected':''}>普通重绘（仅用于主动重新设计）</option></select><small>前两项需要 NAI 4.5；若接口拒绝角色参考，会自动退回低幅重绘并在测试结果中标明。</small></label>${inputField('image-base','NovelAI Base URL',image.baseUrl||'https://image.novelai.net')}${inputField('image-key','NovelAI API Token','', 'password','placeholder="留空保留服务器旧Token"')}${inputField('image-model','模型（角色参考必须 4.5）',image.model||'nai-diffusion-4-5-curated')}${inputField('image-sampler','采样器',image.sampler||'k_euler_ancestral')}${inputField('image-noise-schedule','Noise Schedule',image.noiseSchedule||'karras')}${inputField('image-seed','Seed（-1 随机）',Number.isFinite(Number(image.seed))?image.seed:-1,'number','min="-1" max="4294967295"')}${inputField('image-cfg-rescale','CFG Rescale',image.cfgRescale??0,'number','min="0" max="1" step="0.01"')}${inputField('image-width','宽度',image.width||832,'number','min="256" max="2048" step="64"')}${inputField('image-height','高度',image.height||1216,'number','min="256" max="2048" step="64"')}${inputField('image-steps','步数',image.steps||28,'number','min="1" max="50"')}${inputField('image-scale','Prompt Guidance',image.scale||5,'number','min="1" max="20" step="0.1"')}${inputField('image-identity-strength','人物身份锁强度',image.identityStrength??1,'number','min="0" max="2" step="0.05"')}${inputField('image-style-fidelity','原图画风保真',image.styleFidelity??.85,'number','min="0" max="2" step="0.05"')}${inputField('image-strength','低幅回退/普通重绘幅度',image.strength??.24,'number','min="0.01" max="0.99" step="0.01"')}${inputField('image-noise','低幅回退/普通重绘噪声',image.noise??.03,'number','min="0" max="0.99" step="0.01"')}${inputField('image-timeout','超时秒数',image.timeoutSeconds||180,'number','min="20" max="900"')}<label class="api-field wide"><span>默认负面提示词</span><textarea id="image-negative">${esc(image.negativePrompt||'')}</textarea></label></div><pre id="vvvtm-image-api-result" class="api-result">${image.apiKeyConfigured?'NovelAI Token 已保存在服务器。':'尚未保存 NovelAI Token。'} 当前默认使用永久母图角色参考；测试会真实消耗额度。</pre></article>`;
+        const html=s15RenderApiBase(),image=stateRuntime.serverConfig?.image||{},mode=image.workflowMode||'strict-character-reference',card=`<article class="vvvtm-card vvvtm-image-api-card"><div class="vvvtm-section-title"><div><h3>🖼 NovelAI 剧情画像 API</h3><p class="vvvtm-note">上传的原始图是永久母图。严格模式使用 NovelAI 4.5 Character Reference 锁住人物与画风；剧情画廊里的生成图永远不会反过来当下一代参考图。</p></div><div class="vvvtm-row-actions"><button data-image-api-action="test" title="会真实生成一张测试图并消耗 NovelAI 额度；Character Reference 通常额外消耗点数">测试 NovelAI（消耗额度）</button><button data-image-api-action="save">保存 NovelAI</button></div></div><label class="vvvtm-setting"><div><strong>启用随剧情画图</strong><small>幕后七条完成后，若本轮角色已有参考图则自动生成一张。</small></div><input id="image-enabled" type="checkbox" ${image.enabled?'checked':''}></label><div class="api-grid"><label class="api-field wide"><span>角色稳定工作流</span><select id="image-workflow"><option value="strict-character-reference" ${mode==='strict-character-reference'?'selected':''}>严格保持原角色（推荐，锁人物＋画风）</option><option value="flexible-character-reference" ${mode==='flexible-character-reference'?'selected':''}>保持同一人物（允许画风轻微变化）</option><option value="img2img-redesign" ${mode==='img2img-redesign'?'selected':''}>普通重绘（仅用于主动重新设计）</option></select><small>前两项需要 NAI 4.5；若接口拒绝角色参考，会自动退回低幅重绘并在测试结果中标明。</small></label>${inputField('image-base','NovelAI Base URL',image.baseUrl||'https://image.novelai.net')}${inputField('image-key','NovelAI API Token','', 'password','placeholder="留空保留服务器旧Token"')}${inputField('image-model','模型（角色参考必须 4.5）',image.model||'nai-diffusion-4-5-curated')}${inputField('image-sampler','采样器',image.sampler||'k_euler_ancestral')}${inputField('image-noise-schedule','Noise Schedule',image.noiseSchedule||'karras')}${inputField('image-seed','Seed（-1 随机）',Number.isFinite(Number(image.seed))?image.seed:-1,'number','min="-1" max="4294967295"')}${inputField('image-cfg-rescale','CFG Rescale',image.cfgRescale??0,'number','min="0" max="1" step="0.01"')}${inputField('image-width','宽度',image.width||832,'number','min="256" max="2048" step="64"')}${inputField('image-height','高度',image.height||1216,'number','min="256" max="2048" step="64"')}${inputField('image-steps','步数',image.steps||28,'number','min="1" max="50"')}${inputField('image-scale','Prompt Guidance',image.scale||5,'number','min="1" max="20" step="0.1"')}${inputField('image-identity-strength','人物Thân phận锁强度',image.identityStrength??1,'number','min="0" max="2" step="0.05"')}${inputField('image-style-fidelity','原图画风保真',image.styleFidelity??.85,'number','min="0" max="2" step="0.05"')}${inputField('image-strength','低幅回退/普通重绘幅度',image.strength??.24,'number','min="0.01" max="0.99" step="0.01"')}${inputField('image-noise','低幅回退/普通重绘噪声',image.noise??.03,'number','min="0" max="0.99" step="0.01"')}${inputField('image-timeout','超时秒数',image.timeoutSeconds||180,'number','min="20" max="900"')}<label class="api-field wide"><span>默认负面提示词</span><textarea id="image-negative">${esc(image.negativePrompt||'')}</textarea></label></div><pre id="vvvtm-image-api-result" class="api-result">${image.apiKeyConfigured?'NovelAI Token 已保存在服务器。':'尚未保存 NovelAI Token。'} 当前默认使用永久母图角色参考；测试会真实消耗额度。</pre></article>`;
         const index=html.lastIndexOf('</section>');return index>=0?`${html.slice(0,index)}${card}${html.slice(index)}`:`${html}${card}`;
     };
     const s15ReadApiFormBase=readApiForm;
@@ -18620,7 +18620,7 @@ ${JSON.stringify(evidence)}`;
             updateElapsed();setBusy(true,'NovelAI 正在真实生成测试图，会消耗额度…');
             try{
                 await persist();const subject=s15Subject(),body=subject?.referenceAssetId?{subjectId:subject.id,referenceId:subject.referenceAssetId,referenceData:await s15NovelAiReferenceData(subject.referenceAssetId),prompt:s15PortraitPrompt(subject,-1,'API connection test, current scene illustration')}:{},data=await serverFetch('/portrait/test',{method:'POST',body:JSON.stringify(body)});
-                const seconds=(Number(data.durationMs||0)/1000).toFixed(1),labels={'strict-character-reference':'严格角色＋画风参考','flexible-character-reference':'角色身份参考',text2img:'文生图'},mode=labels[data.mode]||data.mode||'未知工作流';if(result)result.textContent=`NovelAI 实际生图成功 · ${mode} · ${compactText(data.model||'未知模型',180)} · ${Math.round(Number(data.size||0)/1024)}KB · ${seconds}s\nCharacter Reference 已真实通过；没有使用普通图生图回退。本次测试已经消耗 NovelAI 额度，测试图没有写入剧情画廊。`;toast('NovelAI 角色参考实际生图测试成功','success');
+                const seconds=(Number(data.durationMs||0)/1000).toFixed(1),labels={'strict-character-reference':'严格角色＋画风参考','flexible-character-reference':'角色Thân phận参考',text2img:'文生图'},mode=labels[data.mode]||data.mode||'Chưa rõ工作流';if(result)result.textContent=`NovelAI 实际生图成功 · ${mode} · ${compactText(data.model||'Chưa rõ模型',180)} · ${Math.round(Number(data.size||0)/1024)}KB · ${seconds}s\nCharacter Reference 已真实通过；没有使用普通图生图回退。本次测试已经消耗 NovelAI 额度，测试图没有写入剧情画廊。`;toast('NovelAI 角色参考实际生图测试成功','success');
             }catch(error){if(result)result.textContent=`NovelAI 测试失败：${error.message}`;toast(`NovelAI 测试失败：${error.message}`,'error');}
             finally{active=false;clearTimeout(timer);testButton.textContent=originalText;testButton.disabled=false;testButton.removeAttribute('aria-busy');delete testButton.dataset.imageTestRunning;setBusy(false);}
         });
@@ -18653,7 +18653,7 @@ ${JSON.stringify(evidence)}`;
                     let value=action.value;if(kind==='boolean')value=Boolean(value);else{value=Number(value);if(!Number.isFinite(value))throw new Error(`${key} 必须是数字`);if(key==='memoryCollectionMaxChars')value=Math.max(12000,Math.min(240000,value));if(key==='summaryEvery')value=Math.max(5,Math.min(200,value));if(key==='retrievalTopK')value=Math.max(1,Math.min(30,value));if(key==='maxInjectChars')value=Math.max(1000,Math.min(30000,value));if(key==='strongWorldBookMaxChars')value=Math.max(2000,Math.min(30000,value));}
                     state.settings[key]=value;results.push(`${key}=${String(value)}`);continue;
                 }
-                throw new Error(`未知0-32动作：${action.type}`);
+                throw new Error(`Chưa rõ0-32动作：${action.type}`);
             }
             await saveState({immediate:true,refresh:true,reason:'control-agent-confirmed-action',forceSnapshot:true});updatePromptInjection();applyUiCollapse();return results;
         }catch(error){state.settings=backup;await saveState({immediate:true,refresh:true,reason:'control-agent-action-rollback',forceSnapshot:true});throw error;}

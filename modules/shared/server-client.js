@@ -35,10 +35,10 @@ function responseError(response, body, rawText, label) {
     const status = Number(response?.status || 0);
     const accountDenied = body?.error === 'only-vvv';
     const fallback = accountDenied
-        ? '当前酒馆账号没有启用 VVV 服务端功能'
+        ? 'Tài khoản SillyTavern hiện tại chưa bật tính năng máy chủ VVV'
         : status === 403
-            ? '酒馆拒绝请求（HTTP 403）：当前页面缺少有效 CSRF 请求头，请关闭旧酒馆页签后重新打开'
-            : `${label || '服务端请求'}失败（HTTP ${status || '未知'}）`;
+            ? 'SillyTavern từ chối yêu cầu (HTTP 403): trang hiện tại thiếu header CSRF hợp lệ, hãy đóng các tab SillyTavern cũ rồi mở lại'
+            : `${label || 'Yêu cầu tới máy chủ'} thất bại (HTTP ${status || 'không rõ'})`;
     const message = accountDenied
         ? fallback
         : body?.error || body?.message || body?.raw || readableResponseText(rawText) || fallback;
@@ -54,7 +54,7 @@ function responseError(response, body, rawText, label) {
 
 export async function serverJsonRequest(baseUrl, path, options = {}, {
     getContext = defaultContext,
-    label = '服务端请求',
+    label = 'Yêu cầu tới máy chủ',
 } = {}) {
     const headers = await sillyTavernRequestHeaders({ getContext });
     const response = await fetch(`${baseUrl}${path}`, {

@@ -42,14 +42,14 @@ function closingTags(text, tag, encoded) {
 }
 
 function recapOpenLinePattern(flags = 'gim') {
-  return new RegExp('(?:^|\\r?\\n)[ \\t]*(?:<\\s*前文回顾\\s*>|&lt;\\s*前文回顾\\s*&gt;)[ \\t]*(?=\\r?\\n|$)', flags);
+  return new RegExp('(?:^|\\r?\\n)[ \\t]*(?:<\\s*Hồi cố tiền văn\\s*>|&lt;\\s*Hồi cố tiền văn\\s*&gt;)[ \\t]*(?=\\r?\\n|$)', flags);
 }
 
 function firstRecapBoundary(text, after = 0) {
   const tail=String(text||'').slice(after);
   const patterns=[
     recapOpenLinePattern('im'),
-    /(?:^|\n)\s*[-—_\s]*前文章节与重要设定回顾开始[-—_\s]*(?:\n|$)/im,
+    /(?:^|\n)\s*[-—_\s]*Bắt đầu hồi cố chương trước và thiết định quan trọng[-—_\s]*(?:\n|$)/im,
   ];
   const indexes=patterns.map(pattern=>tail.search(pattern)).filter(index=>index>=0);
   return indexes.length?after+Math.min(...indexes):text.length;
@@ -68,7 +68,7 @@ function lastContentBoundary(text, after = 0) {
 
 // Models occasionally obey the visible ECoT plan but forget the literal
 // </Think> close before starting the scene protocol.  The old fallback then
-// treated <time> +正文 as reasoning and the pretty fold swallowed the title.
+// treated <time> + the story body as reasoning and the pretty fold swallowed the title.
 // Only accept protocol tags on their own line as a recovery boundary so a
 // discussion that merely mentions "<time>" inside a Phase is not split.
 function firstPostReasoningBoundary(text, after = 0, before = null) {
@@ -79,7 +79,7 @@ function firstPostReasoningBoundary(text, after = 0, before = null) {
     // Hidden post-think transport blocks can appear before <time>. They are
     // display-regex material, not ECoT. Cut reasoning here so the normal
     // SillyTavern regex pipeline can hide/transform them afterwards.
-    /(?:^|\r?\n)[ \t]*(?:\[STATEMENT\]|\[神本无相\])[ \t]*(?=\r?\n|$)/im,
+    /(?:^|\r?\n)[ \t]*(?:\[STATEMENT\]|\[Thần bản vô tướng\])[ \t]*(?=\r?\n|$)/im,
     /(?:^|\r?\n)[ \t]*(?:<\s*time\s*>|&lt;\s*time\s*&gt;)[ \t]*(?=\r?\n|$)/im,
     /(?:^|\r?\n)[ \t]*(?:<\s*content\b[^>]*>|&lt;\s*content\b[^&]*&gt;)[ \t]*(?=\r?\n|$)/im,
     /(?:^|\r?\n)[ \t]*(?:<\s*LinLanStatus\b[^>]*>|&lt;\s*LinLanStatus\b[^&]*&gt;)[ \t]*(?=\r?\n|$)/im,
@@ -88,9 +88,9 @@ function firstPostReasoningBoundary(text, after = 0, before = null) {
   if(!hits.length)return null;
   const relative=Math.min(...hits);
   // Patterns may include the preceding newline; keep that newline out of the
-  // reasoning card while returning the actual tag position for正文 rendering.
+  // reasoning card while returning the actual tag position for story-body rendering.
   const chunk=tail.slice(relative);
-  const tagOffset=chunk.search(/(?:\[STATEMENT\]|\[神本无相\]|<|&lt;)/i);
+  const tagOffset=chunk.search(/(?:\[STATEMENT\]|\[Thần bản vô tướng\]|<|&lt;)/i);
   return after+relative+(tagOffset>=0?tagOffset:0);
 }
 
@@ -129,7 +129,7 @@ export function splitLeakedWorkflowAnchorsForDisplay(value) {
   let source=String(value??'');
   if(!source)return {text:'',anchors:[]};
   const anchors=[];
-  const startPattern=/(?:<!--|<![—–-]{1,2}|&lt;![—–-]{1,2})\s*((?:(?:第[一二三四五六七八九十\d]+次)?(?:风格|剧情|进度|写作))锚定)\s*[：:]?/gi;
+  const startPattern=/(?:<!--|<![—–-]{1,2}|&lt;![—–-]{1,2})\s*((?:Neo\s*(?:văn phong|cốt truyện|tiến độ|hành văn))(?:\s*lần\s*(?:thứ\s*)?\d+)?)\s*[：:]?/gi;
   let guard=0;
   while(guard++<12){
     startPattern.lastIndex=0;
@@ -166,27 +166,27 @@ export function splitLeakedRecapForDisplay(value) {
   if (!source) return { text: '', recaps: [] };
   const recaps = [];
 
-  // Closed transport blocks may occur before or after正文. Extract their
+  // Closed transport blocks may occur before or after the story body. Extract their
   // payload for a collapsed card while preserving narrative on both sides.
-  source = source.replace(/(?:^|\r?\n)[ \t]*(?:<\s*前文回顾\s*>|&lt;\s*前文回顾\s*&gt;)[ \t]*\r?\n([\s\S]*?)(?:^|\r?\n)[ \t]*(?:<\s*\/\s*前文回顾\s*>|&lt;\s*\/\s*前文回顾\s*&gt;)[ \t]*(?=\r?\n|$)/gim, (_whole, body) => {
+  source = source.replace(/(?:^|\r?\n)[ \t]*(?:<\s*Hồi cố tiền văn\s*>|&lt;\s*Hồi cố tiền văn\s*&gt;)[ \t]*\r?\n([\s\S]*?)(?:^|\r?\n)[ \t]*(?:<\s*\/\s*Hồi cố tiền văn\s*>|&lt;\s*\/\s*Hồi cố tiền văn\s*&gt;)[ \t]*(?=\r?\n|$)/gim, (_whole, body) => {
     const clean=String(body||'').trim();
     if(clean)recaps.push(clean);
     return '';
   });
 
   // A truncated recap has no closing tag. Its paired protocol headers and
-  // source labels distinguish it from ordinary narrative uses of “回顾”.
+  // source labels distinguish it from ordinary narrative uses of “hồi cố”.
   const open = recapOpenLinePattern('gim');
-  const header = /(?:^|\n)\s*[-—_\s]*前文章节与重要设定回顾开始[-—_\s]*(?:\n|$)/gim;
+  const header = /(?:^|\n)\s*[-—_\s]*Bắt đầu hồi cố chương trước và thiết định quan trọng[-—_\s]*(?:\n|$)/gim;
   const openCandidates=[...source.matchAll(open)];
   const headerCandidates=[...source.matchAll(header)];
-  const leaked = [...openCandidates,...headerCandidates.filter(item => /(?:虚构叙事|剧情至上|非现实事件|来源:(?:chat-floor|important-message)|本轮精准原文召回)/i.test(source.slice(item.index, item.index + 520)))].sort((a,b)=>a.index-b.index)[0];
+  const leaked = [...openCandidates,...headerCandidates.filter(item => /(?:tự sự hư cấu|cốt truyện là trên hết|sự kiện phi hiện thực|nguồn:(?:chat-floor|important-message)|gợi nhớ nguyên văn chính xác lượt này)/i.test(source.slice(item.index, item.index + 520)))].sort((a,b)=>a.index-b.index)[0];
   if (leaked) {
     const content=lastContentBoundary(source,leaked.index+leaked[0].length);
     const recapEnd=content?.index??source.length;
     const payload=source.slice(leaked.index,recapEnd)
-      .replace(/^(?:\r?\n)?[ \t]*(?:<\s*前文回顾\s*>|&lt;\s*前文回顾\s*&gt;)[ \t]*(?=\r?\n|$)/i,'')
-      .replace(/^\s*[-—_\s]*前文章节与重要设定回顾开始[-—_\s]*/i,'')
+      .replace(/^(?:\r?\n)?[ \t]*(?:<\s*Hồi cố tiền văn\s*>|&lt;\s*Hồi cố tiền văn\s*&gt;)[ \t]*(?=\r?\n|$)/i,'')
+      .replace(/^\s*[-—_\s]*Bắt đầu hồi cố chương trước và thiết định quan trọng[-—_\s]*/i,'')
       .trim();
     if(payload)recaps.push(payload);
     source = `${source.slice(0, leaked.index)}\n${content?source.slice(content.index):''}`;
@@ -239,7 +239,7 @@ function stripEmbeddedUiPayloads(value) {
 
 // Retrieval must index the visible story, never the preset's private workflow.
 // Keep this beside the display boundary parser so both paths agree on where
-// reasoning ends and正文 begins.
+// reasoning ends and the story body begins.
 export function sanitizeRetrievalDocumentText(value) {
   let source=String(value??'').replace(/\r\n?/g,'\n').trim();
   if(!source)return '';
@@ -257,7 +257,7 @@ export function sanitizeRetrievalDocumentText(value) {
     .replace(/<\/?[A-Za-z][\w:.-]*\b[^>]*>/g,' ')
     .replace(/&lt;\/?[A-Za-z][\w:.-]*\b[^&]*&gt;/gi,' ')
     .replace(/(?:^|\n)\s*(?:<!doctype\s+html\b[^>]*>|&lt;!doctype\s+html\b[^&]*&gt;)\s*/gi,'\n')
-    .replace(/^\s*(?:正文|正式正文|开始正文)[。．.:：]*\s*$/gmi,'')
+    .replace(/^\s*(?:chính văn|chính văn chính thức|bắt đầu chính văn)[。．.:：]*\s*$/gmi,'')
     .replace(/[ \t]+\n/g,'\n')
     .replace(/\n[ \t]+/g,'\n')
     .replace(/\n{3,}/g,'\n\n')
@@ -271,7 +271,7 @@ export function normalizeECoTText(value) {
     .replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&amp;/gi, '&')
     .replace(/<!--\s*(?:Start|End)\s+(?:of\s+)?(?:the\s+)?ECoT\s*-->/gi, '')
     .replace(/<\/?\s*(?:think|thinking|analysis|reasoning|ecot|vvv_ecot)\b[^>]*>/gi, '')
-    .replace(/^\s*(?:正文|正式正文|开始正文)[。．.:：]*\s*$/gmi, '')
+    .replace(/^\s*(?:chính văn|chính văn chính thức|bắt đầu chính văn)[。．.:：]*\s*$/gmi, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -306,7 +306,7 @@ export function splitECoTForDisplay(value) {
     }
 
     // If only the End comment is missing, the final matching reasoning close
-    // is still a safe boundary and preserves正文 emitted afterwards.
+    // is still a safe boundary and preserves the story body emitted afterwards.
     const tail = source.slice(start.end);
     OPEN_TAG.lastIndex = 0;
     const opening = OPEN_TAG.exec(tail);
@@ -355,7 +355,7 @@ export function splitECoTForDisplay(value) {
   const openingEnd=opening.index+opening[0].length;
   // Some presets omit the Start comment and emit extra internal checks after
   // </thinking>. The explicit final ECoT marker remains the authoritative
-  // boundary; otherwise those checks leak between the fold and正文.
+  // boundary; otherwise those checks leak between the fold and the story body.
   const recapBoundary=firstRecapBoundary(source,openingEnd);
   const protocolBoundary=firstPostReasoningBoundary(source,openingEnd,recapBoundary);
   const ends=matches(source,END_MARKERS).filter(item=>item.index>=openingEnd&&item.index<recapBoundary);
