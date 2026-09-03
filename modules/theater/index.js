@@ -6878,58 +6878,58 @@ ${scene.mood||''}`,12000);
         const preferenceSpecific = /(mê ăn|mê uống|thích ăn|thích uống|không ăn|không uống|ghét ăn|ghét uống|khoái ăn|khoái uống|kiêng|dị ứng|không ăn được|không uống được|quen ăn|quen uống|thường ăn|thường uống)/i;
         const generalPreference = /(thích|không thích|ghét|ưa)/i;
         const hasNamedConsumable = namedFood.test(s) || concreteDrink.test(s) || tasteOrSpec.test(s);
-        const genericWithFoodVerb = /(?:吃了?|点了?|点单|早餐|早饭|午饭|午餐|晚饭|晚餐|夜宵|宵夜|外卖).{0,18}(?:鱼|虾|蟹|面|粉|菜|汤|粥)/.test(s);
-        const genericWithPreference = /(?:爱吃|喜欢吃|不吃|讨厌吃|偏爱吃|不能吃|习惯吃|通常吃).{0,28}[^，。；！？!?]{1,24}/.test(s)
-            || /(?:爱喝|喜欢喝|不喝|讨厌喝|偏爱喝|不能喝|习惯喝|通常喝).{0,28}[^，。；！？!?]{1,24}/.test(s);
+        const genericWithFoodVerb = /(?:ăn|gọi món|bữa sáng|bữa trưa|bữa tối|ăn khuya|giao đồ ăn).{0,18}(?:cá|tôm|cua|mì|bún|phở|rau|canh|cháo)/i.test(s);
+        const genericWithPreference = /(?:mê ăn|thích ăn|không ăn|ghét ăn|khoái ăn|không ăn được|quen ăn|thường ăn).{0,28}[^,.;!?]{1,24}/i.test(s)
+            || /(?:mê uống|thích uống|không uống|ghét uống|khoái uống|không uống được|quen uống|thường uống).{0,28}[^,.;!?]{1,24}/i.test(s);
 
-        if ((preferenceSpecific.test(s) && (hasNamedConsumable || genericWithPreference)) || (generalPreference.test(s) && hasNamedConsumable) || /(?:对|吃|喝).{0,20}(?:过敏|忌口)/.test(s)) return 'preference';
+        if ((preferenceSpecific.test(s) && (hasNamedConsumable || genericWithPreference)) || (generalPreference.test(s) && hasNamedConsumable) || /(?:với|ăn|uống).{0,20}(?:dị ứng|kiêng)/i.test(s)) return 'preference';
         if(hasDeniedCompletedAction)return '';
-        // Đã xảy ra的“吃/喝/点单”允许Chưa rõ菜名进入保底；比只维护菜名字典更稳。上面的惯用语黑名单先过滤“吃亏/喝西北风”等非Sự thật đời thường。
-        const directConsume = /(?:吃(?:了|完了|掉了|光了)?|喝(?:了|完了|掉了|光了)?)\s*[^，。；！？!?]{1,36}/.test(s);
-        const directOrder = /(?:点了?|点单(?:要了?)?)\s*(?:(?:一|两|二|三|四|五)?(?:份|碗|杯|盘|锅|串|盒|个|套)|[^，。；！？!?]{0,12}(?:饭|菜|面|粉|粥|汤|饮料|奶茶|咖啡|果汁|套餐|外卖))[^，。；！？!?]{0,28}/.test(s);
-        const directMeal = directConsume || directOrder || /(?:早餐吃|早饭吃|午饭吃|午餐吃|晚饭吃|晚餐吃|夜宵吃|宵夜吃)\s*[^，。；！？!?]{1,36}/.test(s);
-        if (directMeal || (/(吃|喝|点了|点的|点单|早餐|早饭|午饭|午餐|晚饭|晚餐|夜宵|宵夜|外卖)/.test(s) && (hasNamedConsumable || genericWithFoodVerb))) return 'meal';
+        // Những lần “ăn/uống/gọi món” đã xảy ra được phép giữ lại cả tên món lạ làm phương án tối thiểu; cách này chắc hơn là chỉ duy trì một từ điển tên món. Danh sách đen thành ngữ ở trên đã lọc trước các cụm không phải sự thật đời sống.
+        const directConsume = /(?:(?:đã |vừa )?(?:ăn|uống)(?:\s*(?:xong|hết|sạch))?)\s+[^,.;!?]{1,36}/i.test(s);
+        const directOrder = /(?:(?:đã |vừa )?gọi(?: món)?)\s*(?:(?:một|hai|ba|bốn|năm|\d+)?\s*(?:phần|bát|tô|cốc|ly|đĩa|nồi|xiên|hộp|suất)|[^,.;!?]{0,12}(?:cơm|rau|mì|bún|phở|cháo|canh|nước|trà sữa|cà phê|nước ép|combo|đồ ăn))[^,.;!?]{0,28}/i.test(s);
+        const directMeal = directConsume || directOrder || /(?:bữa sáng ăn|bữa trưa ăn|bữa tối ăn|ăn khuya)\s+[^,.;!?]{1,36}/i.test(s);
+        if (directMeal || (/(ăn|uống|đã gọi|gọi món|bữa sáng|bữa trưa|bữa tối|ăn khuya|giao đồ ăn)/i.test(s) && (hasNamedConsumable || genericWithFoodVerb))) return 'meal';
 
-        const money = /\d+(?:\.\d+)?\s*(?:元|块钱|块|美元|人民币|港币|日元|欧元)/.test(s);
-        if (/(付款|支付|花了|售价|价格|消费)/.test(s) && money) return 'money';
-        if (/(买了|购买(?:了)?|下单(?:了)?)/.test(s)) {
+        const money = /\d+(?:[.,]\d+)?\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\b|USD|đô la|euro|yên)/i.test(s);
+        if (/(trả tiền|thanh toán|đã tiêu|giá bán|giá|chi tiêu)/i.test(s) && money) return 'money';
+        if (/(đã mua|mua sắm|đã đặt đơn|đặt đơn)/i.test(s)) {
             if (money) return 'money';
             return 'shopping';
         }
-        const receivedObject=s.match(/(?:收到|收下|拿到|领到|取回|交付|交到|递给|送给|赠送)(?:了)?\s*[^，。；！？!?]{1,48}/);
-        if (receivedObject && !/(?:消息|电话|来电|回复|通知|信息|邮件|短信|拥抱|安慰|帮助|道歉)/.test(receivedObject[0])) return 'shopping';
-        const place = '(?:店|餐厅|饭馆|商场|超市|便利店|菜市场|药店|医院|学校|图书馆|博物馆|美术馆|公园|电影院|影院|酒店|机场|车站|地铁站|网吧|景区|公司|银行|邮局|宿舍|家里|咖啡馆|酒吧|漫展|展馆|海边|游乐园|健身房|工作室)';
-        if (new RegExp('(?:去了|去到|前往|到达|逛了|来到|回到|返回(?:了)?|回了)\\s*[^，。；！？!?]{0,24}' + place).test(s)) return 'travel';
-        // “穿着/换上/戴上”本身就是明确穿搭谓词，允许Chưa rõ服饰名；不匹配“穿过小路”，也排除“穿了三小时”这种时长描述。
-        const wearMatch=s.match(/(?:穿了|穿着|换上|脱下|披上|戴上|戴着|套上)\s*([^，。；！？!?]{1,36})/);
-        if ((wearMatch && !/^(?:\d+|[一二两三四五六七八九十百半]+)(?:个)?(?:小时|分钟|天|周|月)/.test(String(wearMatch[1]||'').trim())) || (/(穿了|穿着|换上|脱下|披上|戴上|套上)/.test(s) && clothing.test(s))) return 'clothing';
+        const receivedObject=s.match(/(?:nhận được|nhận lấy|lấy được|được cấp|lấy lại|bàn giao|giao cho|đưa cho|tặng cho|tặng)\s+[^,.;!?]{1,48}/i);
+        if (receivedObject && !/(?:tin nhắn|điện thoại|cuộc gọi đến|trả lời|thông báo|thông tin|email|SMS|cái ôm|lời an ủi|sự giúp đỡ|lời xin lỗi)/i.test(receivedObject[0])) return 'shopping';
+        const place = '(?:cửa hàng|nhà hàng|quán ăn|trung tâm thương mại|siêu thị|cửa hàng tiện lợi|chợ|nhà thuốc|bệnh viện|trường học|thư viện|bảo tàng|phòng tranh|công viên|rạp chiếu phim|rạp phim|khách sạn|sân bay|bến xe|ga tàu điện|quán net|khu du lịch|công ty|ngân hàng|bưu điện|ký túc xá|ở nhà|quán cà phê|quán bar|hội chợ truyện tranh|nhà triển lãm|bãi biển|khu vui chơi|phòng gym|studio)';
+        if (new RegExp('(?:đã đi|đi tới|tới|đến nơi|dạo|ghé|quay về|trở về|về)\\s*[^,.;!?]{0,24}' + place,'i').test(s)) return 'travel';
+        // “đang mặc/thay sang/đeo lên” bản thân đã là vị ngữ trang phục rõ ràng nên chấp nhận cả tên đồ lạ; không khớp với “băng qua con hẻm”, và loại luôn kiểu mô tả thời lượng như “mặc suốt ba tiếng”.
+        const wearMatch=s.match(/(?:đã mặc|đang mặc|thay sang|cởi ra|khoác lên|đeo lên|đang đeo|tròng vào)\s+([^,.;!?]{1,36})/i);
+        if ((wearMatch && !/^(?:\d+|một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|nửa)\s*(?:tiếng|giờ|phút|ngày|tuần|tháng)/i.test(String(wearMatch[1]||'').trim())) || (/(đã mặc|đang mặc|thay sang|cởi ra|khoác lên|đeo lên|tròng vào)/i.test(s) && clothing.test(s))) return 'clothing';
         return '';
     }
 
     function splitAtomicDetailClauses(sentence) {
-        const actionStart='(?:(?:又|还|后来|最终|最后|转而|还是)\\s*)?(?:答应|承诺|同意|Lời hẹn|说好|接受|确认|吃|喝|点|买|购买|下单|去|前往|到达|回到|穿|换上|戴上|花|支付|洗|收拾|打扫|刷|擦|清理|整理)';
-        const routineStart='(?:(?:洗|收拾|打扫|刷|擦|清理|整理)|(?:把\\s*)?(?:碗|餐具|厨房|房间|衣服|家务|卫生|桌子|地面|垃圾)[^，。；！？!?]{0,16}(?:洗|收拾|打扫|刷|擦|清理|整理))';
-        const mealThenRoutine=new RegExp(`((?:吃|喝)(?:完|了|过)[^，。；！？!?]{0,20}?)(?:(?:之后|以后|后)(?:便|就|又|再|还|才)?|便|就|又|再|还|才|并(?:且)?)?(?=${routineStart})`,'g');
-        const parts=String(sentence||'').split(new RegExp(`(?:，|,|；|;|然后|随后|接着|并且|但|但是|不过|却)(?=\\s*${actionStart})`,'g'));
+        const actionStart='(?:(?:lại|còn|về sau|cuối cùng|rồi thì|vẫn)\\s*)?(?:đồng ý|hứa|chấp nhận|hẹn|đã hẹn|nhận lời|xác nhận|ăn|uống|gọi|mua|đặt đơn|đi|tới|đến nơi|quay về|mặc|thay|đeo|tiêu|thanh toán|rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)';
+        const routineStart='(?:(?:rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)|(?:bát|chén|bát đũa|bếp|căn phòng|quần áo|việc nhà|vệ sinh|bàn|sàn nhà|rác)[^,.;!?]{0,16}(?:rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp))';
+        const mealThenRoutine=new RegExp(`((?:ăn|uống)\\s*(?:xong|hết)?[^,.;!?]{0,20}?)(?:\\s*(?:sau đó|rồi thì|rồi|xong rồi|liền|lại|mới|và)\\s*)?(?=${routineStart})`,'gi');
+        const parts=String(sentence||'').split(new RegExp(`(?:,|;|rồi thì|sau đó|tiếp đó|đồng thời|nhưng|nhưng mà|có điều|thế nhưng)(?=\\s*${actionStart})`,'gi'));
         return parts.flatMap(part=>{
-            const commitmentPlan=/(?:答应|承诺|同意|Lời hẹn|说好|接受)(?:了)?[^，。；！？!?]{0,56}(?:吃|喝)[^，。；！？!?]{0,36}(?:洗|收拾|打扫|刷|擦|清理|整理)/.test(part);
+            const commitmentPlan=/(?:đồng ý|hứa|chấp nhận|hẹn|đã hẹn|nhận lời)[^,.;!?]{0,56}(?:ăn|uống)[^,.;!?]{0,36}(?:rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)/i.test(part);
             return (commitmentPlan?part:part.replace(mealThenRoutine,'$1\n')).split(/\n+/);
         }).map(item=>compactText(item,520)).filter(item=>item.length>=2);
     }
 
     function splitDetailSentences(text) {
-        // U1.7.2：兼容旧健康记录里用“ / ”、①②③拼在一起的多段文本。先拆段再判定，
-        // 避免一条候选同时包含“Đã xảy ra事实 + 未来建议”，从而永远无法被单个锚点覆盖。
+        // U1.7.2: tương thích với các bản ghi sức khỏe cũ nối nhiều đoạn bằng “ / ” hay ①②③. Hãy tách đoạn trước rồi mới phán định,
+        // tránh để một ứng viên chứa cả “sự thật đã xảy ra + gợi ý tương lai”, khiến không mốc neo đơn lẻ nào phủ được nó.
         const prepared=String(text||'').replace(/\s*\/+(?=\s|[①②③④⑤⑥⑦⑧⑨⑩])/g,'\n').replace(/(?=[①②③④⑤⑥⑦⑧⑨⑩])/g,'\n');
-        return prepared.split(/(?<=[。！？!?；;])|\n+/).flatMap(splitAtomicDetailClauses).filter(Boolean);
+        return prepared.split(/(?<=[.!?;])|\n+/).flatMap(splitAtomicDetailClauses).filter(Boolean);
     }
 
     function cleanDetectedDetailText(text) {
         return compactText(text,520)
             .replace(/^(?:[-*•]\s*)/,'')
-            .replace(/^(?:输入解析|input\s*analysis)\s*[:：]\s*/i,'')
+            .replace(/^(?:phân tích đầu vào|input\s*analysis)\s*[:]\s*/i,'')
             .replace(/^<user_input>\s*/i,'')
-            .replace(/^(?:明确(?:了)?(?:最新)?现实|确认(?:了)?(?:最新)?现实)\s*[:：]\s*/i,'')
+            .replace(/^(?:(?:đã )?làm rõ hiện thực(?: mới nhất)?|(?:đã )?xác nhận hiện thực(?: mới nhất)?)\s*[:]\s*/i,'')
             .replace(/^<\/?user_input>\s*/i,'')
             .replace(/\s*<\/?user_input>\s*$/i,'')
             .trim();
@@ -6938,7 +6938,7 @@ ${scene.mood||''}`,12000);
     function lifeDetailCandidateScore(item) {
         const base = { preference:8, commitment:8, money:7, shopping:6, travel:6, clothing:6, routine:5, meal:5 }[item?.category] || 3;
         const text = String(item?.text || '');
-        const spec = /\d+(?:\.\d+)?\s*(?:元|块钱|块|美元|人民币|港币|日元|欧元)|微辣|中辣|重辣|特辣|无糖|少糖|三分糖|五分糖|七分糖|全糖|去冰|少冰|常温/.test(text) ? 2 : 0;
+        const spec = /\d+(?:[.,]\d+)?\s*(?:đồng|đ|VND|nghìn|ngàn|triệu|k\b|USD|đô la|euro|yên)|hơi cay|cay vừa|cay nhiều|siêu cay|không đường|ít đường|30% đường|50% đường|70% đường|100% đường|không đá|ít đá|nhiệt độ thường/i.test(text) ? 2 : 0;
         return base + spec + Math.min(2, text.length / 180);
     }
 
@@ -6957,7 +6957,7 @@ ${scene.mood||''}`,12000);
         }
         const configured=Math.max(4,Math.min(24,Number(stateRuntime.state?.settings?.detailRescueMaxCandidates || 16)));
         const cap=limit===Number.POSITIVE_INFINITY?Number.POSITIVE_INFINITY:(limit!==null&&limit!==undefined&&Number.isFinite(Number(limit))?Math.max(1,Math.min(2000,Number(limit))):configured);
-        // P13不再“前6条截断”。按信息密度排序后最多保留16（可设至24），金额/偏好/出行/穿着等不会被长段饭菜挤掉。
+        // P13 không còn “cắt sau 6 mục”. Sau khi sắp theo mật độ thông tin thì giữ tối đa 16 mục (có thể đặt tới 24), nhờ đó số tiền/sở thích/đi lại/trang phục không bị các đoạn ăn uống dài chiếm chỗ.
         const sorted=result.sort((a,b)=>lifeDetailCandidateScore(b)-lifeDetailCandidateScore(a)||Number(a.floor)-Number(b.floor));
         return Number.isFinite(cap)?sorted.slice(0,cap):sorted;
     }
