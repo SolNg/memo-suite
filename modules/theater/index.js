@@ -5490,24 +5490,24 @@ ${scene.mood||''}`,12000);
         const fantasy = /(ma pháp|kỳ ảo|trung cổ|cổ đại|tu tiên|tiên hiệp|dị giới|tinh linh|thú nhân|đoàn kỵ sĩ|luyện kim|thần thuật)/i.test(raw);
         const university = /(đại học|hệ chính quy|cao học|năm nhất|năm hai|năm ba|năm tư|university|college|undergraduate|graduate|대학)/i.test(raw) || (!fantasy && /học viện/i.test(raw));
         const dorm = /(ký túc xá|phòng ở|bạn cùng phòng|bạn ở ghép|ở nội trú|nội trú|dorm|roommate|기숙사)/i.test(raw);
-        const club = /(社团|学生会|俱乐部|club|student union|동아리)/i.test(raw);
-        const work = /(公司|职场|同事|部门|项目组|上班|office|company|coworker|department|project team)/i.test(raw);
-        const family = /(家庭|家人|父母|妈妈|母亲|爸爸|父亲|兄弟|姐妹|亲戚|family|parents|siblings|relative)/i.test(raw);
-        const friends = /(朋友|好友|闺蜜|发小|兄弟|朋友圈子|friends?|best friend|close friend)/i.test(raw);
-        const guild = /(公会|组织群|游戏群|战队|guild|clan|gaming group|team chat)/i.test(raw);
-        // 原世界时代必须让明确年份/世界观压过“大学/手机”等Thân phận词。
-        // 例如“1900年香港大学学生”不能因为出现“大学”就被误判成2026现代人。
+        const club = /(câu lạc bộ|hội sinh viên|hội nhóm|club|student union|동아리)/i.test(raw);
+        const work = /(công ty|chốn công sở|đồng nghiệp|phòng ban|nhóm dự án|đi làm|office|company|coworker|department|project team)/i.test(raw);
+        const family = /(gia đình|người nhà|bố mẹ|má|mẹ|ba|bố|anh em|chị em|họ hàng|family|parents|siblings|relative)/i.test(raw);
+        const friends = /(bạn bè|bạn thân|bạn gái thân|bạn từ nhỏ|anh em|nhóm bạn|friends?|best friend|close friend)/i.test(raw);
+        const guild = /(công hội|nhóm tổ chức|nhóm game|đội tuyển|guild|clan|gaming group|team chat)/i.test(raw);
+        // Thời đại của thế giới gốc phải để năm tháng/thế giới quan rõ ràng lấn át những từ chỉ thân phận như “đại học/điện thoại”.
+        // Ví dụ “sinh viên Đại học Hồng Kông năm 1900” không được vì có chữ “đại học” mà bị hiểu nhầm thành người hiện đại năm 2026.
         const originEra = inferEraFromEvidence(raw);
-        const modern = originEra.kind === 'modern' || (originEra.kind === 'unknown' && !fantasy && /(现代|当代|手机|微信|iPhone|Android|大学|本科|研究生|大一|大二|大三|大四|university|college|smartphone)/i.test(raw));
-        const schoolMatch = raw.match(/([\u4e00-\u9fffA-Za-z0-9·]{2,28}?(?:大学|学院|学校|高中|中学))/);
-        const classMatch = raw.match(/([\u4e00-\u9fffA-Za-z0-9·]{1,24}?(?:专业|系|班))/);
+        const modern = originEra.kind === 'modern' || (originEra.kind === 'unknown' && !fantasy && /(hiện đại|đương đại|điện thoại|WeChat|iPhone|Android|đại học|hệ chính quy|cao học|năm nhất|năm hai|năm ba|năm tư|university|college|smartphone)/i.test(raw));
+        const schoolMatch = raw.match(/((?:Đại học|Học viện|Trường|Trường THPT|Trường trung học)[A-Za-zÀ-ỹ0-9\s]{2,28}?)(?=[,.;!?\n]|$)/);
+        const classMatch = raw.match(/((?:ngành|khoa|lớp)\s+[A-Za-zÀ-ỹ0-9\s]{1,24}?)(?=[,.;!?\n]|$)/i);
         const cleanInstitution = (value) => {
             const cleaned = compactText(value,80)
-                .replace(/^(?:我是|本人是|来自|就读于|现就读于|目前(?:就读|在)|现在(?:就读|在))/, '')
-                .replace(/^(?:公元)?(?:1[0-9]\d{2}|20\d{2}|21\d{2})年/, '')
-                .replace(/^(?:在|于)/, '')
-                .replace(/^(?:一名|一个)/, '');
-            return /^(?:大学|学院|学校|高中|中学|书院|学堂)$/.test(cleaned) ? '' : cleaned;
+                .replace(/^(?:tôi là|bản thân là|đến từ|học tại|đang học tại|hiện (?:đang học|ở)|bây giờ (?:đang học|ở))/i, '')
+                .replace(/^(?:năm\s*)?(?:1[0-9]\d{2}|20\d{2}|21\d{2})/, '')
+                .replace(/^(?:tại|ở)\s*/i, '')
+                .replace(/^(?:một)\s*/i, '');
+            return /^(?:đại học|học viện|trường|trường học|trung học phổ thông|trung học|thư viện|trường tư thục)$/i.test(cleaned) ? '' : cleaned;
         };
         return { raw, student, university, dorm, club, work, family, friends, guild, fantasy, modern, schoolName:cleanInstitution(schoolMatch?.[1]), className:cleanInstitution(classMatch?.[1]) };
     }
@@ -5522,33 +5522,33 @@ ${scene.mood||''}`,12000);
                 const index=m.index??-1;
                 if (ignoreNegated) {
                     const prefix=text.slice(Math.max(0,index-36),index);
-                    if (/(?:没有|并没有|还没|尚未|未曾|并未|不曾|并不|没有真正|并没有真的)\s*$/i.test(prefix)) continue;
-                    // 假设、举例、回忆、转述中的“穿越到1900年”不是当前时空迁移。
-                    if (/(?:如果|假如|假设|假定|要是|倘若|比如|例如|想象|可能|也许|计划|打算|回忆|想起|曾经|当年|过去|故事里|小说里|小说中|梦里|梦中|提到|说起)[^。！？\n]{0,28}$/i.test(prefix)) continue;
+                    if (/(?:không có|chưa có|vẫn chưa|chưa từng|không hề|chưa thực sự|không thật sự)\s*$/i.test(prefix)) continue;
+                    // Câu “xuyên về năm 1900” trong giả định, ví dụ, hồi tưởng hay lời thuật lại không phải là một lần dịch chuyển không-thời gian hiện tại.
+                    if (/(?:nếu|giả như|giả sử|giả định|nếu mà|ví dụ|chẳng hạn|tưởng tượng|có thể|có lẽ|kế hoạch|dự định|hồi tưởng|nhớ lại|từng|hồi đó|quá khứ|trong truyện|trong tiểu thuyết|trong mơ|nhắc tới|nói tới)[^.!?\n]{0,28}$/i.test(prefix)) continue;
                 }
                 found={index,match:m};
             }
             return found;
         };
-        const fantasyCalendar = /(?:魔法历|帝国历|王国历|圣历|神历|精灵历|星历)\s*\d{3,4}/i.test(text);
-        const fantasyTransition = lastMatch(/(?:来到|进入|穿越(?:到|进)?|传送(?:到|进)?|掉进|身处|当前(?:位于|处于)?)[^。！？\n]{0,36}(?:异世界|魔法世界|修仙界|仙界|秘境|位面|魔法学院|精灵国|兽人国)/i,{ignoreNegated:true});
-        const futureTransition = lastMatch(/(?:来到|进入|穿越(?:到|进)?|传送(?:到|进)?|身处|当前(?:位于|处于)?)[^。！？\n]{0,36}(?:未来|星际|空间站|殖民星|星舰|太空殖民|赛博都市)/i,{ignoreNegated:true});
-        const modernReturn = lastMatch(/(?:回到|返回|回归|回来了|重新回到|抵达|来到)[^。！？\n]{0,24}(?:原世界|现实世界|现代(?:社会|世界)?|20\d{2}年)/i,{ignoreNegated:true});
-        const historicalTransition = lastMatch(/(?:回到|来到|穿越(?:到|进)?|传送(?:到|进)?|抵达)[^。！？\n]{0,32}((?:1[0-9]\d{2}|20\d{2}|21\d{2})年)/i,{ignoreNegated:true});
+        const fantasyCalendar = /(?:lịch ma pháp|đế lịch|vương quốc lịch|thánh lịch|thần lịch|tinh linh lịch|tinh lịch)\s*\d{3,4}/i.test(text);
+        const fantasyTransition = lastMatch(/(?:tới|bước vào|xuyên (?:tới|vào)|dịch chuyển (?:tới|vào)|rơi vào|đang ở|hiện (?:ở|đang ở))[^.!?\n]{0,36}(?:dị giới|thế giới ma pháp|tu tiên giới|tiên giới|bí cảnh|thế giới song song|học viện ma pháp|vương quốc tinh linh|vương quốc thú nhân)/i,{ignoreNegated:true});
+        const futureTransition = lastMatch(/(?:tới|bước vào|xuyên (?:tới|vào)|dịch chuyển (?:tới|vào)|đang ở|hiện (?:ở|đang ở))[^.!?\n]{0,36}(?:tương lai|liên sao|trạm không gian|hành tinh thuộc địa|phi thuyền|thuộc địa vũ trụ|đô thị cyber)/i,{ignoreNegated:true});
+        const modernReturn = lastMatch(/(?:quay về|trở về|trở lại|đã về|quay lại|tới nơi|tới)[^.!?\n]{0,24}(?:thế giới gốc|thế giới thực|(?:xã hội |thế giới )?hiện đại|năm 20\d{2})/i,{ignoreNegated:true});
+        const historicalTransition = lastMatch(/(?:quay về|tới|xuyên (?:tới|về)|dịch chuyển (?:tới|về)|tới nơi)[^.!?\n]{0,32}(năm\s*(?:1[0-9]\d{2}|20\d{2}|21\d{2}))/i,{ignoreNegated:true});
 
-        // U1.7.2：孤立“1000年/1900年”不再自动等于当前时代。
-        // 必须是完整Ngày，或附近明确出现“当前/现在/背景/故事发生/时代/时间/穿越/抵达”等当前时空语义。
+        // U1.7.2: một con số lẻ loi kiểu “năm 1000/năm 1900” không còn mặc nhiên là thời đại hiện tại.
+        // Phải là một ngày đầy đủ, hoặc gần đó có ngữ nghĩa không-thời gian hiện tại rõ ràng như “hiện tại/bây giờ/bối cảnh/câu chuyện diễn ra/thời đại/thời gian/xuyên/tới nơi”.
         const yearCandidates=[];
-        for(const m of text.matchAll(/(?:公元|西元)?\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*年/ig)) yearCandidates.push({index:m.index??-1,match:m,kind:'marked'});
+        for(const m of text.matchAll(/năm\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\b/ig)) yearCandidates.push({index:m.index??-1,match:m,kind:'marked'});
         for(const m of text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))[-\/.](?:0?[1-9]|1[0-2])(?:[-\/.](?:0?[1-9]|[12]\d|3[01]))?/ig)) yearCandidates.push({index:m.index??-1,match:m,kind:'date'});
-        const historicalRef=/(?:回忆|想起|记得|曾经|过去|当年|此前|从前|往事|旧事|历史|史料|资料|书中|照片|建校|成立|传承|已有|拥有|延续|距今|年前|寿命|活了|纪念)[^。！？\n]{0,30}$/i;
-        const speculativeRef=/(?:如果|假如|假设|假定|要是|倘若|比如|例如|想象|可能|也许|计划|打算|故事里|小说里|小说中|梦里|梦中|提到|说起)[^。！？\n]{0,36}$/i;
-        const currentCue=/(?:当前|现在|如今|今日|今天|此刻|时间|Ngày|年代|时代|背景|故事发生|剧情发生|世界设定|设定为|穿越|抵达|来到|进入|回到|返回|醒来)/i;
+        const historicalRef=/(?:hồi tưởng|nhớ lại|còn nhớ|từng|quá khứ|hồi đó|trước đó|ngày trước|chuyện xưa|chuyện cũ|lịch sử|sử liệu|tư liệu|trong sách|bức ảnh|thành lập trường|thành lập|kế thừa|đã có|sở hữu|kéo dài|cách nay|năm trước|tuổi thọ|sống được|kỷ niệm)[^.!?\n]{0,30}$/i;
+        const speculativeRef=/(?:nếu|giả như|giả sử|giả định|nếu mà|ví dụ|chẳng hạn|tưởng tượng|có thể|có lẽ|kế hoạch|dự định|trong truyện|trong tiểu thuyết|trong mơ|nhắc tới|nói tới)[^.!?\n]{0,36}$/i;
+        const currentCue=/(?:hiện tại|bây giờ|ngày nay|hôm nay|lúc này|thời gian|ngày tháng|niên đại|thời đại|bối cảnh|câu chuyện diễn ra|mạch truyện diễn ra|thiết định thế giới|được đặt là|xuyên|tới nơi|tới|bước vào|quay về|trở về|tỉnh dậy)/i;
         const contextualYears=yearCandidates.filter(hit=>{
             const at=hit.index; const before=text.slice(Math.max(0,at-42),at); const around=text.slice(Math.max(0,at-42),Math.min(text.length,at+72));
             const after=text.slice(Math.min(text.length,at+String(hit.match?.[0]||'').length),Math.min(text.length,at+String(hit.match?.[0]||'').length+24));
-            // “1000年历史 / 1900年成立 / 20年传统”是背景事实，不是当前公历年份。
-            const historicalAfter=/^\s*(?:的)?\s*(?:历史|传统|传承|文化|校史|店史|家史|底蕴|寿命|成立|创立|建成|开业|竣工|出生|逝世|以前|以来|之久|前|后)(?![A-Za-z0-9_])/i;
+            // “1000 năm lịch sử / thành lập năm 1900 / truyền thống 20 năm” là sự thật bối cảnh, không phải năm dương lịch hiện tại.
+            const historicalAfter=/^\s*(?:lịch sử|truyền thống|kế thừa|văn hóa|lịch sử trường|lịch sử cửa hàng|gia sử|bề dày|tuổi thọ|thành lập|sáng lập|xây xong|khai trương|hoàn công|sinh|mất|trước đây|tới nay|ròng rã|trước|sau)(?![A-Za-zÀ-ỹ0-9_])/i;
             if(historicalRef.test(before)||speculativeRef.test(before)||historicalAfter.test(after)) return false;
             if(hit.kind==='date') return true;
             return currentCue.test(around);
@@ -5557,11 +5557,11 @@ ${scene.mood||''}`,12000);
         const year = yearHit ? Number(yearHit.match[1]) : NaN;
         const byYear = () => {
             if (!Number.isFinite(year) || fantasyCalendar) return null;
-            if (year >= 2100) return { era:`${year}年`, technologyLevel:'future-networked', kind:'future' };
-            if (year >= 2000) return { era:`${year}年`, technologyLevel:'modern-digital', kind:'modern' };
-            if (year >= 1950) return { era:`${year}年`, technologyLevel:'analog', kind:'analog' };
-            if (year >= 1850) return { era:`${year}年`, technologyLevel:'industrial-telegraph', kind:'industrial' };
-            return { era:`${year}年`, technologyLevel:'preindustrial', kind:'ancient' };
+            if (year >= 2100) return { era:`năm ${year}`, technologyLevel:'future-networked', kind:'future' };
+            if (year >= 2000) return { era:`năm ${year}`, technologyLevel:'modern-digital', kind:'modern' };
+            if (year >= 1950) return { era:`năm ${year}`, technologyLevel:'analog', kind:'analog' };
+            if (year >= 1850) return { era:`năm ${year}`, technologyLevel:'industrial-telegraph', kind:'industrial' };
+            return { era:`năm ${year}`, technologyLevel:'preindustrial', kind:'ancient' };
         };
         const decisive = [
             fantasyTransition && {kind:'fantasy',index:fantasyTransition.index},
@@ -5570,59 +5570,59 @@ ${scene.mood||''}`,12000);
             historicalTransition && {kind:'year',index:historicalTransition.index},
             yearHit && {kind:'year',index:yearHit.index},
         ].filter(Boolean).sort((a,b)=>b.index-a.index)[0];
-        if (decisive?.kind === 'fantasy') return { era:'异世界/奇幻时代', technologyLevel:'fantasy', kind:'fantasy' };
-        if (decisive?.kind === 'future') return Number.isFinite(year)&&year>=2100?{era:`${year}年`,technologyLevel:'future-networked',kind:'future'}:{ era:'未来', technologyLevel:'future-networked', kind:'future' };
-        if (decisive?.kind === 'modern-return') return Number.isFinite(year)&&year>=2000&&year<2100 ? byYear() : { era:'现代', technologyLevel:'modern-digital', kind:'modern' };
+        if (decisive?.kind === 'fantasy') return { era:'Dị giới/thời đại kỳ ảo', technologyLevel:'fantasy', kind:'fantasy' };
+        if (decisive?.kind === 'future') return Number.isFinite(year)&&year>=2100?{era:`năm ${year}`,technologyLevel:'future-networked',kind:'future'}:{ era:'Tương lai', technologyLevel:'future-networked', kind:'future' };
+        if (decisive?.kind === 'modern-return') return Number.isFinite(year)&&year>=2000&&year<2100 ? byYear() : { era:'Hiện đại', technologyLevel:'modern-digital', kind:'modern' };
         if (decisive?.kind === 'year') { const y=byYear(); if(y)return y; }
 
-        // U1.7.2：没有明确“穿越/当前年份”时，不再让一个关键词（例如“王国历史”“魔法游戏”）抢走当前时代。
-        // 对普通chính văn只按“生态证据”计分；现代数字生态出现多个强信号时优先判现代。
+        // U1.7.2: khi không có “xuyên không/năm hiện tại” rõ ràng thì không để một từ khóa đơn lẻ (ví dụ “lịch sử vương quốc”, “game ma pháp”) cướp lấy thời đại hiện tại.
+        // Với chính văn thông thường chỉ chấm điểm theo “bằng chứng hệ sinh thái”; khi hệ sinh thái số hiện đại có nhiều tín hiệu mạnh thì ưu tiên kết luận là hiện đại.
         const countSignals = rx => (text.match(rx) || []).length;
-        const modernScore = countSignals(/(?:现代|当代|微信|朋友圈|智能手机|手机|iPhone|Android|5G|4G|Wi-?Fi|互联网|网络|手机信号|信号恢复|直播|主播|粉丝|社交平台|短视频|APP|应用程序|二维码|外卖|快递|电商|网购|淘宝|京东|支付宝|微信支付|网约车|高铁|动车|地铁|笔记本电脑|电脑|键盘|电子邮件|邮箱|语音直播|视频通话)/ig);
-        const futureScore = countSignals(/(?:未来|星际|太空殖民|宇宙时代|赛博都市|星舰|空间站|殖民星|量子通讯|个人终端)/ig);
-        const fantasyScore = countSignals(/(?:异世界|魔法世界|魔法学院|修仙界|仙界|仙侠|神术|灵力|传讯水晶|灵符传讯|飞剑传书|精灵国|兽人国|地下城|秘境)/ig);
-        const ancientScore = countSignals(/(?:古代|中世纪|民国以前|清朝|明朝|宋朝|唐朝|驿站|飞鸽传书|古代信使|王国宫廷|帝国宫廷)/ig);
-        const industrialScore = countSignals(/(?:民国|电报局|电报机|蒸汽时代|殖民地港口|19世纪末|20世纪初)/ig);
-        const analogScore = countSignals(/(?:寻呼机|BP机|固定电话|录像带|20世纪中后期)/ig);
-        if (fantasyCalendar) return { era:'异世界/奇幻时代', technologyLevel:'fantasy', kind:'fantasy' };
-        if (modernScore >= 2 && modernScore >= Math.max(futureScore,fantasyScore,ancientScore,industrialScore,analogScore)) return { era:'现代', technologyLevel:'modern-digital', kind:'modern' };
-        if (futureScore >= 2 && futureScore > modernScore) return { era:'未来', technologyLevel:'future-networked', kind:'future' };
-        if (fantasyScore >= 2 && fantasyScore > modernScore) return { era:'异世界/奇幻时代', technologyLevel:'fantasy', kind:'fantasy' };
-        if (industrialScore >= 2 && industrialScore > modernScore) return { era:'近代', technologyLevel:'industrial-telegraph', kind:'industrial' };
-        if (analogScore >= 2 && analogScore > modernScore) return { era:'现代早期', technologyLevel:'analog', kind:'analog' };
-        if (ancientScore >= 2 && ancientScore > modernScore) return { era:'古代/前现代', technologyLevel:'preindustrial', kind:'ancient' };
-        // 一个“微信/iPhone/直播”比一个孤立历史名词更能证明当前仍在现代；反过来单个历史/奇幻名词留给角色卡基线或已确认worldTransit裁决。
-        if (modernScore >= 1 && Math.max(futureScore,fantasyScore,ancientScore,industrialScore,analogScore) <= 1) return { era:'现代', technologyLevel:'modern-digital', kind:'modern' };
+        const modernScore = countSignals(/(?:hiện đại|đương đại|WeChat|Khoảnh khắc|điện thoại thông minh|điện thoại|iPhone|Android|5G|4G|Wi-?Fi|Internet|mạng|sóng điện thoại|khôi phục sóng|livestream|streamer|người hâm mộ|mạng xã hội|video ngắn|APP|ứng dụng|mã QR|giao đồ ăn|chuyển phát nhanh|thương mại điện tử|mua sắm online|Taobao|JD|Alipay|WeChat Pay|xe công nghệ|tàu cao tốc|tàu điện|tàu điện ngầm|laptop|máy tính|bàn phím|email|hộp thư|phát thanh trực tuyến|gọi video)/ig);
+        const futureScore = countSignals(/(?:tương lai|liên sao|thuộc địa vũ trụ|thời đại vũ trụ|đô thị cyber|phi thuyền|trạm không gian|hành tinh thuộc địa|liên lạc lượng tử|thiết bị đầu cuối cá nhân)/ig);
+        const fantasyScore = countSignals(/(?:dị giới|thế giới ma pháp|học viện ma pháp|tu tiên giới|tiên giới|tiên hiệp|thần thuật|linh lực|pha lê truyền tin|linh phù truyền tin|phi kiếm truyền thư|vương quốc tinh linh|vương quốc thú nhân|hầm ngục|bí cảnh)/ig);
+        const ancientScore = countSignals(/(?:cổ đại|trung cổ|thời phong kiến|nhà Nguyễn|nhà Lê|nhà Trần|nhà Lý|trạm dịch|bồ câu đưa thư|sứ giả thời cổ|cung đình vương quốc|cung đình đế quốc)/ig);
+        const industrialScore = countSignals(/(?:thời Pháp thuộc|sở điện báo|máy điện báo|thời đại hơi nước|cảng thuộc địa|cuối thế kỷ 19|đầu thế kỷ 20)/ig);
+        const analogScore = countSignals(/(?:máy nhắn tin|điện thoại bàn|băng video|giữa và cuối thế kỷ 20)/ig);
+        if (fantasyCalendar) return { era:'Dị giới/thời đại kỳ ảo', technologyLevel:'fantasy', kind:'fantasy' };
+        if (modernScore >= 2 && modernScore >= Math.max(futureScore,fantasyScore,ancientScore,industrialScore,analogScore)) return { era:'Hiện đại', technologyLevel:'modern-digital', kind:'modern' };
+        if (futureScore >= 2 && futureScore > modernScore) return { era:'Tương lai', technologyLevel:'future-networked', kind:'future' };
+        if (fantasyScore >= 2 && fantasyScore > modernScore) return { era:'Dị giới/thời đại kỳ ảo', technologyLevel:'fantasy', kind:'fantasy' };
+        if (industrialScore >= 2 && industrialScore > modernScore) return { era:'Cận đại', technologyLevel:'industrial-telegraph', kind:'industrial' };
+        if (analogScore >= 2 && analogScore > modernScore) return { era:'Đầu thời hiện đại', technologyLevel:'analog', kind:'analog' };
+        if (ancientScore >= 2 && ancientScore > modernScore) return { era:'Cổ đại/tiền hiện đại', technologyLevel:'preindustrial', kind:'ancient' };
+        // Một chữ “WeChat/iPhone/livestream” chứng minh hiện tại vẫn là thời hiện đại tốt hơn một danh từ lịch sử lẻ loi; ngược lại, một danh từ lịch sử/kỳ ảo đơn lẻ thì để đường cơ sở của thẻ nhân vật hoặc worldTransit đã xác nhận phân xử.
+        if (modernScore >= 1 && Math.max(futureScore,fantasyScore,ancientScore,industrialScore,analogScore) <= 1) return { era:'Hiện đại', technologyLevel:'modern-digital', kind:'modern' };
         return { era:'', technologyLevel:'unknown', kind:'unknown' };
     }
 
     function inferBaseEraFromCharacterCard() {
-        // 创作者Ghi chú可能用“现代社会/手机”举例说明写法，不属于角色实际世界观。
+        // Ghi chú của người sáng tác có thể lấy “xã hội hiện đại/điện thoại” làm ví dụ minh họa cách viết, đó không phải thế giới quan thật của nhân vật.
         const raw=characterSettingText(9000,{includeCreatorNotes:false});
         const cardRaw=characterCoreSettingText(6000);
         const cardExplicit=[];
-        for(const m of cardRaw.matchAll(/(?:背景(?:设定)?|故事发生(?:于|在)?|剧情发生(?:于|在)?|当前(?:时代|世界|年代)|时代(?:背景|设定)?|世界(?:背景|设定)?)\s*[:：为是在于-]*\s*([^。！？\n]{0,80})/ig)) cardExplicit.push(m[1]||'');
+        for(const m of cardRaw.matchAll(/(?:bối cảnh(?: thiết định)?|câu chuyện diễn ra(?: tại| ở| vào)?|mạch truyện diễn ra(?: tại| ở| vào)?|(?:thời đại|thế giới|niên đại) hiện tại|(?:bối cảnh|thiết định) thời đại|(?:bối cảnh|thiết định) thế giới)\s*[:là ở vào-]*\s*([^.!?\n]{0,80})/ig)) cardExplicit.push(m[1]||'');
         let cardInfo=inferEraFromEvidence(cardExplicit.slice(-6).join('\n'));
         if(cardInfo.kind==='unknown') cardInfo=inferEraFromEvidence(cardRaw);
         if(cardInfo.kind!=='unknown') return cardInfo;
-        // 先只信明确“背景/时代/故事发生/当前世界”语句；普通历史年表不能抢占当前时代。
+        // Trước hết chỉ tin những câu ghi rõ “bối cảnh/thời đại/câu chuyện diễn ra/thế giới hiện tại”; một bảng niên đại lịch sử thông thường không được chiếm chỗ thời đại hiện tại.
         const explicit=[];
-        for(const m of raw.matchAll(/(?:背景(?:设定)?|故事发生(?:于|在)?|剧情发生(?:于|在)?|当前(?:时代|世界|年代)|时代(?:背景|设定)?|世界(?:背景|设定)?)\s*[:：为是在于-]*\s*([^。！？\n]{0,80})/ig)) explicit.push(m[1]||'');
+        for(const m of raw.matchAll(/(?:bối cảnh(?: thiết định)?|câu chuyện diễn ra(?: tại| ở| vào)?|mạch truyện diễn ra(?: tại| ở| vào)?|(?:thời đại|thế giới|niên đại) hiện tại|(?:bối cảnh|thiết định) thời đại|(?:bối cảnh|thiết định) thế giới)\s*[:là ở vào-]*\s*([^.!?\n]{0,80})/ig)) explicit.push(m[1]||'');
         const explicitText=explicit.slice(-6).join('\n');
         let info=inferEraFromEvidence(explicitText);
         if(info.kind!=='unknown')return info;
-        // 角色卡经常同时包含“古代题材/历史回忆”和现代Thân phận、设备设定。
-        // 只要卡面明确把故事落在现代社会，历史词汇只能算背景，不能把整张卡降成前现代。
-        const modernCardAnchor=(cardRaw.match(/(?:现代社会|当代社会|现代背景|当代背景|现代都市|现代校园|现代职场|智能手机|iPhone|Android|微信|支付宝|互联网|社交平台|短视频|外卖|网购|二维码)/ig)||[]).length;
-        const explicitNonModernCard=/(?:背景(?:设定)?|故事发生(?:于|在)?|剧情发生(?:于|在)?|当前(?:时代|世界|年代)|时代(?:背景|设定)?|世界(?:背景|设定)?)[^。！？\n]{0,80}(?:古代|中世纪|民国以前|清朝|明朝|宋朝|唐朝|王国|帝国|异世界|魔法|修仙)/i.test(cardRaw);
-        if(modernCardAnchor>=2 && !explicitNonModernCard) return {era:'现代',technologyLevel:'modern-digital',kind:'modern'};
-        // 没有明确背景句时，用技术/社会生态多数证据判定，不让一个孤立“1000年历史”压过整张现代卡。
-        const modern=(raw.match(/(?:微信|iPhone|Android|智能手机|手机|直播|粉丝|互联网|网络|社交平台|短视频|外卖|快递|电商|网购|支付宝|二维码|高铁|动车|地铁|电脑|电子邮件)/ig)||[]).length;
-        const ancient=(raw.match(/(?:古代|中世纪|王国|帝国|驿站|飞鸽|书信|信使|清朝|明朝|宋朝|唐朝)/ig)||[]).length;
-        const industrial=(raw.match(/(?:民国|电报局|电报机|蒸汽时代|殖民地港口)/ig)||[]).length;
-        const fantasy=(raw.match(/(?:异世界|魔法|修仙|仙侠|灵力|神术|传讯水晶|精灵|兽人|地下城)/ig)||[]).length;
+        // Thẻ nhân vật thường chứa đồng thời “đề tài cổ đại/hồi tưởng lịch sử” lẫn thân phận và thiết bị hiện đại.
+        // Chỉ cần mặt thẻ ghi rõ câu chuyện đặt trong xã hội hiện đại thì từ ngữ lịch sử chỉ là bối cảnh, không được hạ cả tấm thẻ xuống thời tiền hiện đại.
+        const modernCardAnchor=(cardRaw.match(/(?:xã hội hiện đại|xã hội đương đại|bối cảnh hiện đại|bối cảnh đương đại|đô thị hiện đại|học đường hiện đại|công sở hiện đại|điện thoại thông minh|iPhone|Android|WeChat|Alipay|Internet|mạng xã hội|video ngắn|giao đồ ăn|mua sắm online|mã QR)/ig)||[]).length;
+        const explicitNonModernCard=/(?:bối cảnh(?: thiết định)?|câu chuyện diễn ra(?: tại| ở| vào)?|mạch truyện diễn ra(?: tại| ở| vào)?|(?:thời đại|thế giới|niên đại) hiện tại|(?:bối cảnh|thiết định) thời đại|(?:bối cảnh|thiết định) thế giới)[^.!?\n]{0,80}(?:cổ đại|trung cổ|thời phong kiến|nhà Nguyễn|nhà Lê|nhà Trần|nhà Lý|vương quốc|đế quốc|dị giới|ma pháp|tu tiên)/i.test(cardRaw);
+        if(modernCardAnchor>=2 && !explicitNonModernCard) return {era:'Hiện đại',technologyLevel:'modern-digital',kind:'modern'};
+        // Khi không có câu bối cảnh rõ ràng thì phán đoán theo đa số bằng chứng về công nghệ/hệ sinh thái xã hội, không để một câu “1000 năm lịch sử” lẻ loi lấn át cả tấm thẻ hiện đại.
+        const modern=(raw.match(/(?:WeChat|iPhone|Android|điện thoại thông minh|điện thoại|livestream|người hâm mộ|Internet|mạng|mạng xã hội|video ngắn|giao đồ ăn|chuyển phát nhanh|thương mại điện tử|mua sắm online|Alipay|mã QR|tàu cao tốc|tàu điện|tàu điện ngầm|máy tính|email)/ig)||[]).length;
+        const ancient=(raw.match(/(?:cổ đại|trung cổ|vương quốc|đế quốc|trạm dịch|bồ câu đưa thư|thư từ|sứ giả|nhà Nguyễn|nhà Lê|nhà Trần|nhà Lý)/ig)||[]).length;
+        const industrial=(raw.match(/(?:thời Pháp thuộc|sở điện báo|máy điện báo|thời đại hơi nước|cảng thuộc địa)/ig)||[]).length;
+        const fantasy=(raw.match(/(?:dị giới|ma pháp|tu tiên|tiên hiệp|linh lực|thần thuật|pha lê truyền tin|tinh linh|thú nhân|hầm ngục)/ig)||[]).length;
         if(modern>=2 && modern>=Math.max(ancient,industrial,fantasy)*1.5)return {era:'现代',technologyLevel:'modern-digital',kind:'modern'};
-        if(fantasy>=2 && fantasy>modern)return {era:'异世界/奇幻时代',technologyLevel:'fantasy',kind:'fantasy'};
+        if(fantasy>=2 && fantasy>modern)return {era:'Dị giới/thời đại kỳ ảo',technologyLevel:'fantasy',kind:'fantasy'};
         if(industrial>=2 && industrial>modern)return {era:'近代',technologyLevel:'industrial-telegraph',kind:'industrial'};
         if(ancient>=2 && ancient>modern)return {era:'古代/前现代',technologyLevel:'preindustrial',kind:'ancient'};
         return inferEraFromEvidence(raw);
