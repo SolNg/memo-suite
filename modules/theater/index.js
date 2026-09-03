@@ -29,73 +29,73 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         '【NGUYÊN TẮC SÁNG TÁC】Luôn tuân theo chỉ thị sáng tác của User trong nhiệm vụ này và sáng tạo tự do trong phạm vi đó; tôn trọng thiết định nhân vật, chủ quyền của USER, ranh giới hiểu biết của từng nhân vật, nhân quả cốt truyện và tính liền mạch trước sau, đồng thời tuân thủ chính sách sử dụng hiện hành của dịch vụ mô hình.',
     ].join('\n');
     const COMPANION_FINAL_CONTRACT = [
-        '【幕后七条最终执行契约｜独立资料边界】',
-        '本请求只使用调用方明确提供的当前chính văn、有限记忆、已确认角色资料、【0-32 强读世界书】摘录和任务规则；禁止自行读取或请求酒馆预设、Persona或Prompt Manager编译结果。角色世界书只能使用调用方本轮明确提供的强读摘录。最终输出不是代写userchính văn，而是幕后七条JSON。',
-        '必须保留顶层键 setting、scene、promises、secrets、appearances、memory、story、phone、world，禁止省略后半段键或改成中文键名。',
-        '当前镜头存在角色时 appearances 至少给出1名角色的当前外观；现代智能手机且已有角色时 story.moments 与 story.diary 各至少1条低影响生活内容。',
-        '通讯可用且手机生态开启时 phone 至少产生1条符合人物动机的低影响通讯；存在镜头外NPC且世界自治开启时 world.events 至少推进要求数量的真实日常。',
-        'story.reactions是对已经存在的朋友圈动态做互动补丁；每个待处理momentId都必须原样回填，NPC必须先看见附件和chính văn，才可按人设决定点赞或留言。',
-        '纪念日只在已有或本轮明确出现Ngày依据时填写，禁止为了凑数伪造重大Ngày。只输出合法JSON对象。',
-        'promises只写明确成立且仍Chờ thực hiện或Đang diễn ra的Lời hẹn。动作摘录、人物反应、台词提示、<user_input>/共创者确认、写作任务和仅仅提到“答应/Lời hẹn”的叙述都不得写入promises。',
+        '【HỢP ĐỒNG THỰC THI CUỐI CỦA BẢY ĐIỀU HẬU TRƯỜNG｜RANH GIỚI TƯ LIỆU ĐỘC LẬP】',
+        'Yêu cầu này chỉ dùng những gì bên gọi cung cấp tường minh: chính văn hiện tại, phần ký ức hữu hạn, tư liệu nhân vật đã xác nhận, trích đoạn 【SÁCH THẾ GIỚI ĐỌC BẮT BUỘC 0-32】 và các quy tắc nhiệm vụ; cấm tự đọc hay yêu cầu preset, Persona hoặc kết quả biên dịch của Prompt Manager trong SillyTavern. Sách thế giới của nhân vật chỉ được dùng phần trích đọc bắt buộc mà bên gọi cung cấp tường minh ở lượt này. Kết quả cuối không phải là viết thay chính văn cho user, mà là JSON của Bảy điều hậu trường.',
+        'Bắt buộc giữ các khóa cấp cao nhất: setting, scene, promises, secrets, appearances, memory, story, phone, world; cấm bỏ bớt các khóa ở nửa sau hay đổi sang tên khóa tiếng Việt.',
+        'Khi trong ống kính hiện tại có nhân vật thì appearances phải nêu ngoại hình hiện tại của ít nhất 1 nhân vật; nếu bối cảnh có điện thoại thông minh hiện đại và đã có nhân vật thì story.moments và story.diary mỗi mục ít nhất 1 nội dung sinh hoạt ít tác động.',
+        'Khi có thể liên lạc và hệ sinh thái điện thoại đang bật thì phone phải sinh ít nhất 1 lượt liên lạc ít tác động, phù hợp động cơ nhân vật; khi có NPC ngoài ống kính và chế độ thế giới tự trị đang bật thì world.events phải đẩy tới đủ số lượng sinh hoạt thật được yêu cầu.',
+        'story.reactions là bản vá tương tác cho những bài Khoảnh khắc đã tồn tại; mỗi momentId đang chờ xử lý đều phải được điền lại nguyên vẹn, và NPC phải nhìn thấy tệp đính kèm cùng nội dung trước, rồi mới quyết định thả tim hay bình luận theo thiết định nhân vật.',
+        'Chỉ điền ngày kỷ niệm khi đã có sẵn hoặc lượt này xuất hiện căn cứ ngày tháng rõ ràng; cấm bịa ra ngày trọng đại cho đủ số. Chỉ xuất ra đối tượng JSON hợp lệ.',
+        'promises chỉ ghi những lời hẹn đã rõ ràng thành lập và còn chờ thực hiện hoặc đang diễn ra. Trích đoạn hành động, phản ứng nhân vật, gợi ý lời thoại, <user_input>/xác nhận của người đồng sáng tác, nhiệm vụ viết và những câu chỉ nhắc tới “đồng ý/hẹn” đều không được đưa vào promises.',
     ].join('\n');
     const COMPANION_REPAIR_FINAL_CONTRACT = [
-        '【幕后缺失栏目定向补写契约】',
-        '本次只补 appearances、story、phone、world 四个顶层键，不写chính văn，不重复setting/scene/promises/secrets/memory；story可能包含对既有朋友圈的reactions补丁。',
-        '严格使用英文键名和指定数组结构；必须满足任务列出的最低数量。纪念日没有依据可以为空，其余被点名的栏目不得再次返回空数组。',
-        '只输出一个合法JSON对象，不要Markdown、解释或对象外文字。',
+        '【HỢP ĐỒNG BÙ VIẾT CÓ ĐỊNH HƯỚNG CHO CÁC MỤC HẬU TRƯỜNG CÒN THIẾU】',
+        'Lần này chỉ bù bốn khóa cấp cao nhất là appearances, story, phone, world; không viết chính văn, không lặp lại setting/scene/promises/secrets/memory; story có thể chứa bản vá reactions cho các bài Khoảnh khắc đã có.',
+        'Dùng đúng tên khóa tiếng Anh và cấu trúc mảng đã quy định; phải đạt số lượng tối thiểu mà nhiệm vụ nêu ra. Ngày kỷ niệm không có căn cứ thì được để trống, còn các mục đã bị điểm tên thì không được trả về mảng rỗng lần nữa.',
+        'Chỉ xuất ra một đối tượng JSON hợp lệ, không dùng Markdown, không giải thích, không có chữ nào ngoài đối tượng.',
     ].join('\n');
     const MEMORY_IMPERSONATE_FINAL_CONTRACT = [
-        '【整理/总结最终执行契约｜仅处理本次提供的记忆资料】',
-        '本请求只处理调用方提供的目标AI回复、有限记忆资料和任务规则；最终输出是后台记忆资料，不是userchính văn，也不是assistant续写。',
-        '本任务只整理已经发生的虚构小说剧情，不把素材当作现实事件；禁止新增动作、改写既成事实或替{{user}}做决定。',
-        '即时整理的目标AI回复只要包含实质剧情，mainline必须且只能输出1条60至260字的剧情概括；不得返回空mainline，也不得拿旧记忆、Lời hẹn、人物Trạng thái或其他局部字段顶替主线。',
-        '必须逐项保留本轮已确认的承诺、日程、饮食、家务、购物、地点、穿着和金额等原子事实；不得为压缩篇幅把同一句中的后半段事实丢掉。',
-        '上一条user输入只是上下文；只有被本轮AI/角色回复明确确认或承接的事实才能落库，并且统一归属当前AITầng，禁止生成userTầng记忆。',
-        '严格服从本轮末尾的JSON或总结格式要求；不要输出Markdown代码围栏、解释、拒绝说明或对象外文字。',
+        '【HỢP ĐỒNG THỰC THI CUỐI CHO VIỆC SẮP XẾP/TỔNG KẾT｜chỉ xử lý phần tư liệu ký ức được cung cấp lần này】',
+        'Yêu cầu này chỉ xử lý câu trả lời AI mục tiêu, phần tư liệu ký ức hữu hạn và các quy tắc nhiệm vụ do bên gọi cung cấp; kết quả cuối là tư liệu ký ức hậu đài, không phải chính văn của user, cũng không phải phần viết tiếp của assistant.',
+        'Nhiệm vụ này chỉ sắp xếp lại những tình tiết tiểu thuyết hư cấu đã xảy ra, không coi chất liệu là sự kiện ngoài đời; cấm thêm hành động mới, cấm sửa sự thật đã rồi và cấm quyết định thay {{user}}.',
+        'Chỉ cần câu trả lời AI được sắp xếp tức thời có chứa tình tiết thực chất thì mainline bắt buộc và chỉ được xuất đúng 1 bản tóm tắt cốt truyện dài 60 đến 260 chữ; không được trả về mainline rỗng, cũng không được lấy ký ức cũ, lời hẹn, trạng thái nhân vật hay trường cục bộ nào khác thế chỗ cho tuyến chính.',
+        'Phải giữ lại từng sự thật nguyên tử đã xác nhận trong lượt này: lời hứa, lịch trình, ăn uống, việc nhà, mua sắm, địa điểm, trang phục và số tiền; không được vì rút gọn mà đánh rơi phần sự thật ở nửa sau của cùng một câu.',
+        'Lượt nhập user trước đó chỉ là ngữ cảnh; chỉ những sự thật được câu trả lời của AI/nhân vật ở lượt này xác nhận hoặc tiếp nối rõ ràng mới được lưu vào kho, và đều quy về tầng AI hiện tại; cấm sinh ký ức thuộc tầng của user.',
+        'Tuân thủ nghiêm yêu cầu về định dạng JSON hoặc bản tổng kết nêu ở cuối lượt này; không xuất khối mã Markdown, không giải thích, không văn bản từ chối và không có chữ nào ngoài đối tượng.',
     ].join('\n');
     const ARCHIVE_BINDING_META_KEY = 'vvv_theater_archive_binding_v1';
     const FAB_POSITION_KEY = `${MODULE}:fab-position:v1`;
     const CHAT_INSTANCE_META_KEY = 'vvvTheaterMemoryChatInstanceId';
-    // 灾备/索引使用独立且稳定的档案ID：聊天文件重命名、native chat id变化时，服务器快照仍能找回。
+    // Phần cứu hộ/chỉ mục dùng một ID hồ sơ riêng và ổn định: khi tệp chat bị đổi tên hoặc native chat id thay đổi, ảnh chụp trên máy chủ vẫn tìm lại được.
     const SAFETY_ARCHIVE_META_KEY = 'vvvTheaterMemorySafetyArchiveId';
     const chatRuntimeIds = new WeakMap();
 
     const TABLE_DEFS = {
-        mainline: { title: '主线剧情', columns: ['Ngày', 'Giờ bắt đầu', 'Giờ kết thúc', 'Tóm tắt sự kiện', 'Trạng thái', 'Tầng'] },
-        branches: { title: '支线追踪', columns: ['Trạng thái', '支线名', 'Giờ bắt đầu', 'Giờ kết thúc', '事件追踪', '关键NPC', 'Tầng'] },
-        states: { title: '角色Trạng thái', columns: ['Tên nhân vật', 'Trạng thái变化', '时间', '原因', 'Vị trí hiện tại', 'Tầng'] },
-        people: { title: '人物档案', columns: ['Họ tên', 'Tuổi', 'Thân phận', '地点', 'Tính cách', 'Ghi chú'] },
+        mainline: { title: 'Cốt truyện chính', columns: ['Ngày', 'Giờ bắt đầu', 'Giờ kết thúc', 'Tóm tắt sự kiện', 'Trạng thái', 'Tầng'] },
+        branches: { title: 'Theo dõi nhánh phụ', columns: ['Trạng thái', 'Tên nhánh phụ', 'Giờ bắt đầu', 'Giờ kết thúc', 'Theo dõi sự kiện', 'NPC then chốt', 'Tầng'] },
+        states: { title: 'Trạng thái nhân vật', columns: ['Tên nhân vật', 'Thay đổi trạng thái', 'Thời gian', 'Nguyên nhân', 'Vị trí hiện tại', 'Tầng'] },
+        people: { title: 'Hồ sơ nhân vật', columns: ['Họ tên', 'Tuổi', 'Thân phận', 'Địa điểm', 'Tính cách', 'Ghi chú'] },
         relations: { title: 'Quan hệ nhân vật', columns: ['Nhân vật A', 'Nhân vật B', 'Mô tả quan hệ', 'Thái độ tình cảm', 'Thời điểm cập nhật'] },
-        world: { title: '世界设定', columns: ['设定名', 'Loại', '详细说明', '影响范围'] },
-        items: { title: '物品追踪', columns: ['Tên vật phẩm', 'Mô tả vật phẩm', 'Vị trí hiện tại', 'Người sở hữu', 'Trạng thái', 'Mức quan trọng', 'Ghi chú'] },
+        world: { title: 'Thiết định thế giới', columns: ['Tên thiết định', 'Loại', 'Diễn giải chi tiết', 'Phạm vi ảnh hưởng'] },
+        items: { title: 'Theo dõi vật phẩm', columns: ['Tên vật phẩm', 'Mô tả vật phẩm', 'Vị trí hiện tại', 'Người sở hữu', 'Trạng thái', 'Mức quan trọng', 'Ghi chú'] },
         promises: { title: 'Lời hẹn', columns: ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái', 'Tầng'] },
-        summaries: { title: '记忆总结', columns: ['Loại', 'Trạng thái', 'Nội dung tổng kết', 'Tầng bao phủ', '模型', 'Thời điểm tạo', '锁定'] },
+        summaries: { title: 'Tổng kết ký ức', columns: ['Loại', 'Trạng thái', 'Nội dung tổng kết', 'Tầng bao phủ', 'Mô hình', 'Thời điểm tạo', 'Khóa'] },
     };
 
     const TABLE_ORDER = Object.keys(TABLE_DEFS);
     const TAB_DEFS = [
         ['overview', 'Tổng quan'],
-        ['tables', '剧情记忆'],
+        ['tables', 'Ký ức cốt truyện'],
         ['timeline', 'Dòng thời gian'],
-        ['characters', '人物'],
-        ['relations', '关系'],
-        ['secrets', 'Lời hẹn与秘密'],
-        ['summary', '总结中心'],
-        ['retrieval', '检索中心'],
-        ['phone', '通讯终端'],
-        ['worldlife', '彼间私文'],
-        ['appearance', '人物外观'],
-        ['chapters', '章节'],
-        ['diagnostics', '剧情体检'],
-        ['api', 'API与模型'],
-        ['settings', '设置'],
+        ['characters', 'Nhân vật'],
+        ['relations', 'Quan hệ'],
+        ['secrets', 'Lời hẹn & bí mật'],
+        ['summary', 'Trung tâm tổng kết'],
+        ['retrieval', 'Trung tâm truy xuất'],
+        ['phone', 'Thiết bị liên lạc'],
+        ['worldlife', 'Bỉ Gian Tư Văn'],
+        ['appearance', 'Ngoại hình nhân vật'],
+        ['chapters', 'Chương hồi'],
+        ['diagnostics', 'Khám sức khỏe cốt truyện'],
+        ['api', 'API & mô hình'],
+        ['settings', 'Cài đặt'],
     ];
 
     const stateRuntime = {
         state: null,
         currentTab: 'overview',
         currentTable: 'mainline',
-        // U1.7：保存/永久档案按聊天独立排队，禁止A聊天的延迟任务被B聊天覆盖或串写。
+        // U1.7: việc lưu/ghi hồ sơ vĩnh viễn được xếp hàng riêng theo từng cuộc trò chuyện; cấm tác vụ trễ của chat A bị chat B ghi đè hoặc ghi lẫn.
         saveTimers: new Map(),
         chatEpoch: 0,
         autoTimer: null,
@@ -130,7 +130,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         sourceCharacterRoster: [],
         sourceCharacterRosterUpdatedAt: 0,
         phoneCatalogPage: {taobao:1,jd:1,eleme:1,meituan:1},
-        phoneCatalogCategory: {taobao:'全部',jd:'全部',eleme:'全部',meituan:'全部'},
+        phoneCatalogCategory: {taobao:'Tất cả',jd:'Tất cả',eleme:'Tất cả',meituan:'Tất cả'},
         phoneCatalogSort: {eleme:'default',meituan:'default'},
         phoneFoodFilters: {
             eleme:{highRating:false,fastDelivery:false,lowDeliveryFee:false},
@@ -155,7 +155,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         phoneTavernSessionId: '',
         phoneMapDestination: '',
         phoneMapMode: 'drive',
-        phoneDianpingCategory: '美食',
+        phoneDianpingCategory: 'Ẩm thực',
         phoneGlobalSearch: '',
         socialBootstrapSaveTimer: null,
         worldCharacter: '',
@@ -173,13 +173,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         ecologyRepairRunning: false,
         companionTimer: null,
         companionQueuedFloor: -1,
-        // R9S1P41：AI整理 / 幕后七条失败后自动续试；按Tầng保存七条重试计时器，避免一个失败Tầng吃掉后续Tầng。
+        // R9S1P41: sau khi AI sắp xếp / Bảy điều hậu trường thất bại thì tự thử lại; bộ đếm thử lại của Bảy điều được lưu theo từng tầng, tránh việc một tầng lỗi nuốt luôn các tầng sau.
         extractRetryTimer: null,
         extractRetryAttempt: 0,
-        // 幕后七条晚到时，主记忆队列可能正被另一条请求占用；保留一个
-        // 按聊天作用域绑定的唤醒计时器，避免队列静默滞留。
+        // Khi Bảy điều hậu trường về muộn, hàng đợi ký ức chính có thể đang bị một yêu cầu khác chiếm; giữ lại một
+        // bộ đếm đánh thức gắn theo phạm vi cuộc trò chuyện, tránh để hàng đợi kẹt lại trong im lặng.
         assistantQueueDrainTimer: null,
-        // R21 fixed4：主记忆最终失败后做一次有界后台自愈，避免必须手点“重建本层主记忆”。
+        // R21 fixed4: sau khi ký ức chính thất bại hoàn toàn thì chạy một lần tự phục hồi nền có giới hạn, để người dùng khỏi phải bấm tay “dựng lại ký ức chính của tầng này”.
         coreMemoryRecoveryTimers: new Map(),
         coreMemoryRecoveryInFlight: new Set(),
         companionRetryTimers: new Map(),
@@ -226,27 +226,27 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         lastSafetySnapshotSignature: '',
         safetySnapshotLedger: new Map(),
         lastSafetyNoticeAt: 0,
-        // R9S1：聊天打开/历史消息渲染阶段绝不允许误触发AI任务。
+        // R9S1: giai đoạn mở cuộc trò chuyện/dựng lại tin nhắn lịch sử tuyệt đối không được kích hoạt nhầm tác vụ AI.
         generationActive: false,
         liveUserPending: false,
-        // fixed40：真实轮必须绑定到一个明确存在的 user Tầng。新存档/开场白初始化即使误发 normal GENERATION_STARTED，
-        // 也没有资格启动 0-32 自动整理。regenerate/swipe/continue 则重新绑定最近真实 user Tầng。
+        // fixed40: một lượt thật bắt buộc phải gắn với một tầng user có thật. Kể cả khi bản lưu mới/khởi tạo lời mở đầu lỡ phát ra GENERATION_STARTED dạng normal,
+        // nó vẫn không đủ tư cách khởi động phần tự sắp xếp của 0-32. Còn regenerate/swipe/continue thì gắn lại vào tầng user thật gần nhất.
         liveUserFloor: -1,
         liveTurnChatKey: '',
         liveGenerationType: '',
-        // fixed41：GENERATION_STARTED 可能早于 USER_MESSAGE_RENDERED。先记住前台生成已开始，等待真实 user Tầng落盘。
+        // fixed41: GENERATION_STARTED có thể đến trước USER_MESSAGE_RENDERED. Hãy ghi nhớ rằng lượt sinh ở tiền cảnh đã bắt đầu, rồi đợi tầng user thật được ghi xuống.
         foregroundAwaitingUser: false,
-        // U1.7.10：每次真实chính văn生成递增。旧轮若还在等“停止→发送”复位，下一轮开始后会立即失效。
+        // U1.7.10: tăng dần theo mỗi lần sinh chính văn thật. Nếu lượt cũ vẫn đang chờ đặt lại theo trình tự “dừng → gửi” thì nó sẽ hết hiệu lực ngay khi lượt mới bắt đầu.
         mainGenerationSerial: 0,
         baselineChatLength: 0,
         messageKeySnapshot: [],
         historyMutationFingerprint: '',
         historyMutationFingerprintAt: 0,
         lastHistoryReconciliation: null,
-        // P11稳定修复保留：SillyTavern 的后台静默生成也会发 GENERATION_STARTED/GENERATION_ENDED。
-        // 这些后台静默生成绝不能被当成真实剧情轮，否则其异步收尾会在下一轮真实生成中途把 live 标记清掉。
+        // Giữ lại bản vá ổn định của P11: phần sinh nội dung ngầm ở nền của SillyTavern cũng phát ra GENERATION_STARTED/GENERATION_ENDED.
+        // Những lượt sinh ngầm đó tuyệt đối không được coi là lượt cốt truyện thật, nếu không phần kết thúc bất đồng bộ của chúng sẽ xóa mất cờ live ngay giữa lượt sinh thật kế tiếp.
         backgroundGenerationActive: false,
-        // P13：生活细节补抓完全后台化，避免补抓API拖住真实轮 settled。
+        // P13: việc quét bù chi tiết đời thường được đưa hẳn xuống nền, tránh để API quét bù níu chân trạng thái settled của lượt thật.
         lifeRescueInFlight: new Set(),
         lifeRescueResumeRunning: false,
         lifeRescueResumeToken: null,
@@ -255,9 +255,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         portraitReferencePayloads: new Map(),
         portraitObservedImages: new Set(),
         portraitImageObserver: null,
-        // fixed32：首轮角色社会关系独立API建档只允许单任务运行；完成后缓存到当前聊天永久Trạng thái。
+        // fixed32: việc lập hồ sơ quan hệ xã hội của nhân vật ở lượt đầu qua API riêng chỉ được chạy một tác vụ duy nhất; xong thì lưu đệm vào trạng thái vĩnh viễn của cuộc trò chuyện hiện tại.
         sourceRosterAiPromise: null,
-        // fixed34：小手机实时聊天按联系人/本轮问题定向读取绑定世界书。只做本地索引缓存，不新增API消耗。
+        // fixed34: phần chat thời gian thực trên điện thoại đọc có định hướng sách thế giới đã gắn theo liên hệ/câu hỏi của lượt này. Chỉ lưu đệm chỉ mục cục bộ, không tốn thêm API.
         phoneWorldBookSnapshotCache: null,
         phoneWorldBookSnapshotPromise: null,
     };
@@ -299,8 +299,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const native = nativeChatId(ctx);
         if (native) return `native:${native}`;
 
-        // 旧版用 characterId + chat.length 当 key。两个新聊天只要同角色、同Tầng数就会撞 key，
-        // 从而把旧聊天的 localStorage / 检索索引带进新聊天。v0.8.0 改为真正的聊天实例 ID。
+        // Bản cũ dùng characterId + chat.length làm khóa. Hai cuộc trò chuyện mới chỉ cần cùng nhân vật và cùng số tầng là đụng khóa,
+        // khiến localStorage / chỉ mục truy xuất của chat cũ lọt sang chat mới. Từ v0.8.0 đổi sang dùng ID thực thể của cuộc trò chuyện.
         if (ctx.chatMetadata && typeof ctx.chatMetadata === 'object') {
             let id = String(ctx.chatMetadata[CHAT_INSTANCE_META_KEY] || '').trim();
             if (!id) {
@@ -336,7 +336,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const avatar = String(ctx?.characters?.[ctx?.characterId]?.avatar ?? ctx?.chatMetadata?.avatar ?? '').trim();
         const characterKey = characterId ? `character-id:${characterId}` : `character-name:${characterName}|avatar:${avatar}`;
         const chatKey = getChatKey(ctx);
-        const chatName = nativeChatId(ctx) || String(ctx?.chatMetadata?.chat_name ?? ctx?.chatMetadata?.file_name ?? '当前聊天');
+        const chatName = nativeChatId(ctx) || String(ctx?.chatMetadata?.chat_name ?? ctx?.chatMetadata?.file_name ?? 'Cuộc trò chuyện hiện tại');
         return { characterKey, characterId, characterName, avatar, chatKey, chatName, chatAnchor: currentChatAnchor(ctx) };
     }
 
@@ -376,7 +376,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             characterKey:binding.characterKey,
             boundAt:binding.boundAt || Date.now(),
         };
-        // 这里只触发酒馆自己的debounce；若聊天已切走，上面的scope校验会直接拒绝。
+        // Ở đây chỉ kích hoạt debounce của chính SillyTavern; nếu đã chuyển sang chat khác thì bước kiểm tra phạm vi ở trên sẽ từ chối thẳng.
         try { ctx.saveMetadataDebounced?.(); } catch {}
     }
 
@@ -391,7 +391,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if (data?.binding) rememberArchiveBindingForCurrentChat(scope, data.binding);
             return data;
         } catch (error) {
-            console.warn('[0-32永久档案] 绑定解析失败，继续使用聊天metadata灾备', error);
+            console.warn('[Hồ sơ vĩnh viễn 0-32] Phân tích liên kết thất bại, tiếp tục dùng metadata của cuộc trò chuyện làm phương án cứu hộ', error);
             return null;
         }
     }
@@ -416,11 +416,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const chunk=encoded.bytes.subarray(index*chunkBytes,Math.min(encoded.bytes.length,(index+1)*chunkBytes));
                 result=await serverFetch('/archives/state-chunk',{method:'POST',body:JSON.stringify({...common,uploadId,index,total,encoding:encoded.encoding,data:snapshotBytesToBase64(chunk)})});
             }
-            if(!result?.complete)throw new Error('永久档案分片写入未完成');
+            if(!result?.complete)throw new Error('Việc ghi từng phần của hồ sơ vĩnh viễn chưa hoàn tất');
             return result;
         } catch(error) {
-            console.warn('[0-32永久档案] 写入失败',error);
-            if(chatScopeIsCurrent(scope) && Date.now()-Number(stateRuntime.archiveSaveNoticeAt||0)>10000){stateRuntime.archiveSaveNoticeAt=Date.now();toast(`📁 Hồ sơ vĩnh viễn写入失败：${error.message}`,'warn');}
+            console.warn('[Hồ sơ vĩnh viễn 0-32] Ghi thất bại',error);
+            if(chatScopeIsCurrent(scope) && Date.now()-Number(stateRuntime.archiveSaveNoticeAt||0)>10000){stateRuntime.archiveSaveNoticeAt=Date.now();toast(`📁 Ghi hồ sơ vĩnh viễn thất bại: ${error.message}`,'warn');}
             return null;
         }
     }
@@ -455,16 +455,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const pending=stateRuntime.permanentArchiveSyncs.get(scope.chatKey);
         if(pending?.timer)clearTimeout(pending.timer);
         stateRuntime.permanentArchiveSyncs.delete(scope.chatKey);
-        // 导出/显式flush永远以“此刻”的不可变快照为准，而不是依赖旧debounce内容。
+        // Việc xuất dữ liệu/flush tường minh luôn lấy ảnh chụp bất biến của “ngay lúc này” làm chuẩn, chứ không dựa vào nội dung debounce cũ.
         return savePermanentArchiveSnapshot(stateRuntime.state?clone(stateRuntime.state):null,scope,reason);
     }
 
     async function exportCurrentCharacterArchiveBundle() {
         const scope=captureChatScope();
         const binding=(scope?.binding?.characterKey ? scope.binding : (await resolvePermanentArchiveForScope(scope,{create:true}))?.binding);
-        if(!binding?.characterKey)throw new Error('当前角色尚未建立永久档案');
+        if(!binding?.characterKey)throw new Error('Nhân vật hiện tại chưa có hồ sơ vĩnh viễn');
         await flushPermanentArchiveSync('before-character-cardvault-export');
-        if(!chatScopeIsCurrent(scope))throw new Error('导出期间已切换聊天，请在当前聊天重新点击导出');
+        if(!chatScopeIsCurrent(scope))throw new Error('Đã đổi cuộc trò chuyện trong lúc xuất dữ liệu, hãy bấm xuất lại trong cuộc trò chuyện hiện tại');
         const data=await serverFetch(`/archives/character/${encodeURIComponent(binding.characterKey)}/export`);
         if(data?.bundle&&typeof data.bundle==='object'){
             data.bundle.archivePolicy={mode:'per-character-per-chat',appendOnly:true,noAutomaticDeletion:true,version:2};
@@ -480,7 +480,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if(data?.reboundCurrentChat?.archiveId && chatScopeIsCurrent(scope)){
             stateRuntime.archiveBinding=null;
             stateRuntime.archiveBindingChatKey='';
-            // CardVault恢复是用户明确授权的导入动作：立即重新读取该聊天刚接回的永久档案，不等待下一次刷新。
+            // Khôi phục CardVault là thao tác nhập dữ liệu được người dùng ủy quyền rõ ràng: đọc lại ngay hồ sơ vĩnh viễn vừa nối lại cho cuộc trò chuyện đó, không đợi lần làm mới sau.
             await loadState({notifyMigration:false});
             if(chatScopeIsCurrent(scope))renderCurrentTab();
         }
@@ -513,7 +513,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 location: '',
                 weather: '',
                 mood: '',
-                pace: '日常',
+                pace: 'Thường nhật',
                 goal: '',
             },
             timeCalibration: {
@@ -526,11 +526,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             secrets: [],
             appearances: [],
             memoryAnchors: [],
-            // R15：只追加、可溯源的一次性小事件。它与长期偏好分开，不会把“吃过一次”误判为“永久喜欢”。
+            // R15: những sự kiện nhỏ một lần, chỉ nối thêm và truy được nguồn. Chúng tách khỏi sở thích dài hạn, nên “từng ăn một lần” không bị hiểu nhầm thành “thích mãi mãi”.
             episodeFacts: [],
-            // P13：长期生活认知。和事件锚点分开保存，避免把‘某次吃了什么’错误等价成永久偏好。
+            // P13: nhận thức đời sống dài hạn. Lưu tách khỏi các neo sự kiện, tránh đánh đồng “lần đó ăn gì” với sở thích lâu dài.
             lifeFacts: [],
-            // 被拒绝的低证据关系/Thân phận/物品写入保留在隔离区，便于追查而不污染活动事实。
+            // Những lượt ghi quan hệ/thân phận/vật phẩm bị từ chối vì thiếu bằng chứng được giữ ở khu cách ly, tiện truy vết mà không làm bẩn các sự thật đang dùng.
             factConflicts: [],
             memoryHealth: {
                 attempts: [], totalTurns: 0, coveredTurns: 0, failedTurns: 0, rescuedTurns: 0,
@@ -538,8 +538,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 lastAuditFloor: -1, lastFailureFloor: -1, lastSuccessFloor: -1,
             },
             npcRegistry: [],
-            // fixed32：角色卡/世界书人物名册。第一轮chính văn完成后用幕后七条独立API做一次实体建档；
-            // 世界书/角色卡内容指纹不变时后续直接复用，不再每轮烧API。
+            // fixed32: danh sách nhân vật từ thẻ nhân vật/sách thế giới. Sau khi chính văn lượt đầu xong thì dùng API riêng của Bảy điều hậu trường lập hồ sơ thực thể một lần;
+            // khi vân tay nội dung của sách thế giới/thẻ nhân vật không đổi thì các lượt sau dùng lại luôn, không đốt API mỗi lượt nữa.
             sourceRosterAi: {
                 schemaVersion: 1,
                 status: 'idle',
@@ -556,7 +556,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             takeover: { running:false, resumeWanted:false, userInitiated:false, consentAt:0, lastProcessedFloor:-1, targetFloor:-1, processedChunks:0, totalChunks:0, currentStart:-1, currentEnd:-1, phase:'', retryCount:0, nextRetryAt:'', startedAt:'', completedAt:'', lastError:'' },
             communicationProfile: {
                 worldKey: 'origin-modern',
-                worldType: '现代',
+                worldType: 'Hiện đại',
                 era: '',
                 location: '',
                 technologyLevel: 'modern-digital',
@@ -572,8 +572,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 updatedAt: '',
             },
             worldTransit: {
-                origin: { worldKey:'origin-modern', worldType:'现代', era:'', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' },
-                current: { worldKey:'origin-modern', worldType:'现代', era:'', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax', available:true, networkState:'online' },
+                origin: { worldKey:'origin-modern', worldType:'Hiện đại', era:'', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' },
+                current: { worldKey:'origin-modern', worldType:'Hiện đại', era:'', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax', available:true, networkState:'online' },
                 history: [],
             },
             worldMap: {
@@ -625,7 +625,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 walletTools: { transfers:[], redPackets:[], splitBills:[], subscriptions:[], creditBills:[], transferMigrationVersion:0 },
                 manualDeletionTombstones: [],
                 historyPolicy: { appendOnly:true, version:2, nextSeq:1 },
-                // fixed37：父母微信生活脉冲。按剧情Tầng稀疏触发，避免每轮轰炸；只保存调度Trạng thái，不伪造固定台词。
+                // fixed37: nhịp sinh hoạt của bố mẹ trên WeChat. Kích hoạt thưa theo tầng cốt truyện để khỏi dội bom mỗi lượt; chỉ lưu trạng thái điều phối, không bịa lời thoại cố định.
                 parentPulse: { enabled:true, lastFloor:-1, nextFloor:-1, lastContact:'', cursor:0, lastAt:0 },
                 finance: {
                     openingBalances: { alipay: 0, wechat: 0 },
@@ -638,7 +638,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     eleme: { stores: [], cart: [], orders: [] },
                 },
                 themeStore: { active: 'classic', installed: ['classic'] },
-                // 旧版本兼容字段：升级后只读迁移，不再作为 iPhone 主界面 App。
+                // Trường tương thích với bản cũ: sau khi nâng cấp chỉ đọc để di trú, không còn là App trên màn hình chính của iPhone.
                 messages: [], moments: [], notes: [], albums: [], diary: [], anniversaries: [],
             },
             storyExtras: { moments: [], diary: [], anniversaries: [] },
@@ -646,7 +646,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             chapters: [],
             diagnostics: [],
             diceHistory: [],
-            // S10：只有用户明确点击删除/Bỏ chọn时才产生墓碑；普通升级/同步绝无删除权限。
+            // S10: chỉ khi người dùng bấm xóa/dọn sạch rõ ràng mới sinh bia mộ; nâng cấp/đồng bộ thông thường tuyệt đối không có quyền xóa.
             manualDeletionTombstones: [],
             directorInstruction: '',
             progress: {
@@ -690,7 +690,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 lastCompanionFloor: -1,
                 lastCompanionSignature: '',
                 maxObservedFloor: -1,
-                // 已有长聊天但尚未建立阶段总结时，必须由用户明确选择旧档接管/手动总结，禁止自动从0层回填。
+                // Khi đã có cuộc trò chuyện dài nhưng chưa lập tổng kết giai đoạn, người dùng phải tự chọn tiếp quản hồ sơ cũ/tổng kết thủ công; cấm tự động điền bù từ tầng 0.
                 archiveTakeoverRequired: false,
                 archiveGuardNotified: false,
             },
@@ -701,7 +701,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             auditLog: [],
             settings: {
                 enabled: true,
-                // P13：先本地审计；若真漏记，补抓在 settled 之后后台执行，绝不阻塞chính văn收尾。
+                // P13: kiểm toán cục bộ trước; nếu đúng là bỏ sót thì việc quét bù chạy ở nền sau khi settled, tuyệt đối không chặn phần kết thúc của chính văn.
                 detailRescueEnabled: true,
                 detailRescueMaxCandidates: 16,
                 detailRescueTimeoutMs: 30000,
@@ -712,7 +712,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 aiMode: 'server',
                 autoExtract: true,
                 extractEvery: 1,
-                // R56：后台整理只走独立作用域API；失败后保存原文保底，不调用酒馆主API。
+                // R56: phần sắp xếp ở nền chỉ dùng API có phạm vi riêng; nếu thất bại thì lưu nguyên văn làm phương án tối thiểu, không gọi API chính của SillyTavern.
                 extractRetryMaxAttempts: 2,
                 autoSummary: true,
                 autoHideSummarized: true,
@@ -733,8 +733,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 retrievalMinScore: 0.18,
                 vectorWeight: 0.6,
                 lexicalWeight: 0.4,
-                // R9S1P14 / 0-32：VCP式联想记忆。不是复制VCP源码；
-                // 使用标签图谱 + 记忆引力 + 跨Loại共振，在服务器端二次重排。
+                // R9S1P14 / 0-32: ký ức liên tưởng kiểu VCP. Không phải sao chép mã nguồn VCP;
+                // dùng đồ thị nhãn + lực hút ký ức + cộng hưởng chéo loại, rồi xếp hạng lại lần hai ở phía máy chủ.
                 vcpMemoryEnabled: true,
                 vcpTagWeight: 0.18,
                 vcpGraphWeight: 0.12,
@@ -862,9 +862,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         for (const key of ['contacts', 'contactProfiles', 'wechat', 'wechatGroups', 'channelGroups', 'sms', 'messages', 'moments', 'notes', 'calls', 'albums', 'threads', 'groupThreads', 'groupProfiles', 'diary', 'anniversaries', 'pendingOutgoing', 'notifications', 'calendarEvents', 'financeEvents', 'activityEvents', 'knowledgeLedger', 'storyLedger', 'acquaintanceLedger', 'callReceipts', 'npcActivities', 'orderEvents', 'realtimeEvents', 'manualDeletionTombstones']) {
             if (!Array.isArray(merged.phone[key])) merged.phone[key] = [];
         }
-        // fixed39：手机与chính văn统一故事线；fixed38去Ghi chú逻辑继续保留。
-        // fixed38：微信联系人不再维护/展示“Ghi chú”。旧聊天里已经生成的Ghi chú在载入时直接清掉，
-        // 但保留 rosterRelation / rosterRole / identity 等结构化关系字段供父母脉冲、群组和实时回复判断使用。
+        // fixed39: điện thoại và chính văn dùng chung một tuyến truyện; logic bỏ ghi chú của fixed38 vẫn được giữ.
+        // fixed38: danh bạ WeChat không còn duy trì/hiển thị “ghi chú”. Những ghi chú đã sinh ra trong chat cũ sẽ bị xóa ngay khi nạp,
+        // nhưng vẫn giữ các trường quan hệ có cấu trúc như rosterRelation / rosterRole / identity để phục vụ nhịp bố mẹ, nhóm chat và việc phán đoán trả lời thời gian thực.
         for (const profile of merged.phone.contactProfiles) if (profile && typeof profile === 'object') delete profile.remark;
         for (const row of merged.sourceRosterAi.rows) if (row && typeof row === 'object') row.remark='';
         merged.phone.tavern = merged.phone.tavern && typeof merged.phone.tavern === 'object' ? merged.phone.tavern : clone(base.phone.tavern);
@@ -881,12 +881,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ? {enabled:true,lastFloor:-1,nextFloor:-1,lastContact:'',cursor:0,lastAt:0,...merged.phone.parentPulse}
             : {enabled:true,lastFloor:-1,nextFloor:-1,lastContact:'',cursor:0,lastAt:0};
         merged.takeover = merged.takeover && typeof merged.takeover === 'object' ? { running:false,resumeWanted:false,userInitiated:false,consentAt:0,lastProcessedFloor:-1,targetFloor:-1,processedChunks:0,totalChunks:0,currentStart:-1,currentEnd:-1,phase:'',retryCount:0,nextRetryAt:'',startedAt:'',completedAt:'',lastError:'', ...merged.takeover } : { running:false,resumeWanted:false,userInitiated:false,consentAt:0,lastProcessedFloor:-1,targetFloor:-1,processedChunks:0,totalChunks:0,currentStart:-1,currentEnd:-1,phase:'',retryCount:0,nextRetryAt:'',startedAt:'',completedAt:'',lastError:'' };
-        // R9S1：旧版本没有“用户明确授权”标记时，一律视为未授权。刷新/切卡不能凭历史resumeWanted自行开跑。
+        // R9S1: khi bản cũ không có cờ “người dùng ủy quyền rõ ràng” thì đều coi là chưa được ủy quyền. Làm mới trang/đổi thẻ không được tự chạy chỉ dựa vào resumeWanted trong lịch sử.
         if (input?.takeover?.userInitiated !== true) {
             merged.takeover.userInitiated = false;
             merged.takeover.resumeWanted = false;
         }
-        // 浏览器刷新/锁屏回来后不假装前端循环仍在跑；只有明确授权过的任务才允许后续自动续接。
+        // Sau khi làm mới trình duyệt/khóa màn hình rồi quay lại thì đừng giả vờ vòng lặp phía giao diện vẫn đang chạy; chỉ những tác vụ đã được ủy quyền rõ ràng mới được tự nối tiếp.
         merged.takeover.running = false;
         merged.storyExtras = merged.storyExtras && typeof merged.storyExtras === 'object' ? merged.storyExtras : { moments: [], diary: [], anniversaries: [] };
         for (const key of ['moments','diary','anniversaries']) if (!Array.isArray(merged.storyExtras[key])) merged.storyExtras[key] = [];
@@ -919,7 +919,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 availability:'active', source:'legacy-contact-migration', createdAt:Date.now(), updatedAt:Date.now(),
             })).filter(item=>item.name);
         }
-        // 把旧版 messages 尽量迁到微信；旧 moments/notes/anniversaries 迁到chính văn折叠资料。
+        // Cố gắng chuyển phần messages của bản cũ sang WeChat; moments/notes/anniversaries cũ thì chuyển vào phần tư liệu gập dưới chính văn.
         if (!merged.phone.wechat.length && merged.phone.messages.length) merged.phone.wechat = merged.phone.messages.map(item => ({ ...item, migratedFrom:'messages' }));
         if (!merged.storyExtras.moments.length && merged.phone.moments.length) merged.storyExtras.moments = merged.phone.moments.map(item => ({ ...item, migratedFrom:'phone-moments' }));
         if (!merged.storyExtras.diary.length && (merged.phone.diary.length || merged.phone.notes.length)) merged.storyExtras.diary = [...merged.phone.diary, ...merged.phone.notes].map(item => ({ ...item, migratedFrom:'phone-diary' }));
@@ -936,7 +936,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (input?.settings?.phoneAutoGenerate === undefined) merged.settings.phoneAutoGenerate = true;
         if (input?.settings?.phoneEcologyEnabled === undefined) merged.settings.phoneEcologyEnabled = true;
         if (input?.settings?.phoneInstitutionBootstrap === undefined) merged.settings.phoneInstitutionBootstrap = true;
-        // U1.7.2A2：旧聊天通常持久化了3次上限。只迁移一次到用户指定的8次，之后允许手动调整。
+        // U1.7.2A2: chat cũ thường lưu cứng mức trần 3 lần. Chỉ di trú một lần lên mức 8 mà người dùng chỉ định, sau đó cho phép chỉnh tay.
         if (input?.migration?.u172a2CompanionRetry8Applied !== true) {
             merged.settings.companionRetryMaxAttempts = 8;
             merged.migration.u172a2CompanionRetry8Applied = true;
@@ -951,16 +951,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (input?.settings?.phoneCallMaxEvents === undefined) merged.settings.phoneCallMaxEvents = 2;
         if (input?.settings?.npcCallVariety === undefined) merged.settings.npcCallVariety = true;
         if (input?.settings?.npcCallEscalationAfter === undefined || Number(input.settings.npcCallEscalationAfter) === 4) merged.settings.npcCallEscalationAfter = 3;
-        // 后台功能只使用独立作用域API，不读取酒馆预设/世界书，也不静默调用酒馆主API。
+        // Các tính năng nền chỉ dùng API có phạm vi riêng, không đọc preset/sách thế giới của SillyTavern và cũng không lặng lẽ gọi API chính của SillyTavern.
         merged.settings.aiMode = 'server';
-        // v0.9.3 默认按每一轮AI回复同步剧情记忆；旧默认值2自动提升为1。
+        // v0.9.3 mặc định đồng bộ ký ức cốt truyện theo từng lượt trả lời của AI; giá trị mặc định cũ là 2 sẽ tự nâng lên 1.
         if (input?.settings?.extractEvery === undefined || Number(input.settings.extractEvery) === 2) merged.settings.extractEvery = 1;
         if (input?.migration?.u1710R5ExtractBudgetApplied !== true) {
             if (input?.settings?.extractRetryMaxAttempts === undefined || Number(input.settings.extractRetryMaxAttempts) === 3) merged.settings.extractRetryMaxAttempts = 2;
             merged.migration.u1710R5ExtractBudgetApplied = true;
         }
         merged.settings.phoneInteractiveMode = 'realtime';
-        // R56：幕后七条也固定使用独立资料边界。
+        // R56: Bảy điều hậu trường cũng luôn dùng ranh giới tư liệu độc lập.
         merged.settings.companionGenerationMode = 'background-independent-scoped';
         delete merged.settings.companionUsePluginApi;
         if (input?.settings?.autoEcologyRepair === undefined || input?.settings?.companionGenerationMode === 'main-single') merged.settings.autoEcologyRepair = false;
@@ -988,7 +988,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (input?.settings?.detailRescueRetryBaseMs === undefined) merged.settings.detailRescueRetryBaseMs = 1200;
         if (input?.settings?.lifeFactStabilityEvidence === undefined) merged.settings.lifeFactStabilityEvidence = 3;
         if (input?.settings?.memoryHealthRecentLimit === undefined) merged.settings.memoryHealthRecentLimit = 120;
-        // NoDraw2：清理 P13 生图桥遗留设置；不触碰 SillyTavern 自带 Image Generation 扩展。
+        // NoDraw2: dọn phần cài đặt còn sót của cầu nối sinh ảnh P13; không đụng tới tiện ích Image Generation có sẵn của SillyTavern.
         delete merged.settings.imageGenerationButton;
         delete merged.settings.imageGenerationMode;
         if (input?.progress?.maxObservedFloor === undefined) merged.progress.maxObservedFloor = Math.max(-1, (context()?.chat?.length || 0) - 1);
@@ -1012,26 +1012,26 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (input?.progress?.completedEraCount === undefined) merged.progress.completedEraCount = 0;
         if (input?.progress?.archiveTakeoverRequired === undefined) {
             const chatLength = context()?.chat?.length || 0;
-            // 已经有至少2个阶段长度的历史却没有阶段总结，或曾经接管到一半后来停止/升级丢失授权：
-            // 都进入“旧档同意门”，普通实时剧情绝不能借自动总结偷偷继续扫历史。
-            merged.progress.archiveTakeoverRequired = false; // S3永久档案绑定后不再需要旧档一键接管门
+            // Đã có lịch sử dài ít nhất 2 giai đoạn mà chưa có tổng kết giai đoạn, hoặc từng tiếp quản dở dang rồi dừng/nâng cấp làm mất ủy quyền:
+            // tất cả đều đi vào “cổng đồng ý cho hồ sơ cũ”; mạch truyện thời gian thực thông thường tuyệt đối không được mượn cớ tự tổng kết để lén quét tiếp lịch sử.
+            merged.progress.archiveTakeoverRequired = false; // Sau khi gắn hồ sơ vĩnh viễn S3 thì không cần cổng tiếp quản hồ sơ cũ một chạm nữa
             merged.progress.archiveGuardNotified = false;
         }
         merged.progress.archiveTakeoverRequired = false;
         merged.progress.archiveGuardNotified = false;
         if (input?.settings?.removeDuplicateAssistantReplies === undefined) merged.settings.removeDuplicateAssistantReplies = true;
         if (input?.settings?.companionAlwaysShowShell === undefined) merged.settings.companionAlwaysShowShell = true;
-        // 历史聊天打开始终只读；旧版本遗留的开启值也必须Đóng。
+        // Mở cuộc trò chuyện lịch sử thì luôn ở chế độ chỉ đọc; những giá trị bật còn sót từ bản cũ cũng phải tắt đi.
         merged.settings.autoRepairHistoricalMemoryOnChatOpen = false;
         merged.tables.summaries = merged.tables.summaries.map(row => {
             if (!row || typeof row !== 'object') return row;
             return {
                 ...row,
-                'Loại': row['Loại'] || row['Loại bảng'] || '阶段总结',
+                'Loại': row['Loại'] || row['Loại bảng'] || 'Tổng kết giai đoạn',
                 'Trạng thái': row['Trạng thái'] || 'Đã hoàn thành',
-                '模型': row['模型'] || (row['Loại bảng'] ? '旧版导入' : ''),
-                '锁定': row['锁定'] || '否',
-                '隐藏Trạng thái': row['隐藏Trạng thái'] || (row._hiddenRange ? '已隐藏' : '未隐藏'),
+                'Mô hình': row['Mô hình'] || (row['Loại bảng'] ? 'Nhập từ bản cũ' : ''),
+                'Khóa': row['Khóa'] || 'Không',
+                'Trạng thái ẩn': row['Trạng thái ẩn'] || (row._hiddenRange ? 'Đã ẩn' : 'Chưa ẩn'),
                 _id: row._id || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
                 _history: Array.isArray(row._history) ? row._history : [],
             };
@@ -1041,8 +1041,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }
         merged.progress.summaryInterval = Math.max(5, Number(merged.progress.summaryInterval || merged.settings.summaryEvery || 20));
         compactCurrentStateCollections(merged);
-        // U1.6.2：旧档/恢复档可能已经有70、80层结构化记录，但旧progress仍停在0，导致Tổng quan“即时记忆0”并让P13误判整轮未提取。
-        // 这里只从真实已保存结构化记录反推“最高已见记忆Tầng”，不生成任何新记忆，也不改总结进度。
+        // U1.6.2: hồ sơ cũ/hồ sơ khôi phục có thể đã có 70-80 tầng bản ghi có cấu trúc nhưng progress cũ vẫn đứng ở 0, khiến trang tổng quan hiện “ký ức tức thời 0” và làm P13 tưởng cả lượt chưa trích xuất gì.
+        // Ở đây chỉ suy ngược ra “tầng ký ức cao nhất đã thấy” từ các bản ghi có cấu trúc đã lưu thật, không sinh ký ức mới và cũng không đổi tiến độ tổng kết.
         const floorCandidates=[];const pushFloor=value=>{const n=Number(value);if(Number.isFinite(n)&&n>=0)floorCandidates.push(n);};
         for(const key of ['mainline','branches','states','promises'])for(const row of merged.tables?.[key]||[]){pushFloor(row?._sourceFloor);pushFloor(row?.['Tầng']);}
         for(const row of merged.memoryAnchors||[])pushFloor(row?.floor);
@@ -5837,7 +5837,7 @@ ${scene.mood||''}`,12000);
         const p = normalizeCommunicationProfile(profile || inferCurrentWorldContext(), {skipTransit:true});
         if (!s.worldTransit.origin?.worldKey || s.worldTransit.origin.worldKey === 'origin-modern' && !s.worldTransit.history.length) {
             const identity = originSocialIdentityProfile();
-            if (identity.modern) s.worldTransit.origin = { worldKey:'origin-modern', worldType:'现代', era:'2026/原世界', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' };
+            if (identity.modern) s.worldTransit.origin = { worldKey:'origin-modern', worldType:'Hiện đại', era:'2026/原世界', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' };
             else s.worldTransit.origin = { worldKey:p.worldKey, worldType:p.worldType, era:p.era, location:p.location, technologyLevel:p.technologyLevel, communicationType:p.communicationType, deviceLabel:p.deviceLabel };
         }
         const previous=s.worldTransit.current||{};
