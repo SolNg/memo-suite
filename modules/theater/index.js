@@ -4903,8 +4903,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             try{
                 await ensureCompanionIndependentApiReady();
                 const {charName,userName}=sourceRosterActiveNames();
-                const systemPrompt=`你是“角色社会关系实体建档器”。你的唯一任务是从用户提供的角色卡与绑定世界书资料中提取【明确存在、拥有具体Họ tên的人物】并结构化。你不是小说作者，不续写剧情，不补人名，不根据常识创造人物。目录、章节名、规则、地点、机构、抽象概念、身体部位、动作、Trạng thái、职业类别都不是人物。`;
-                const prompt=`【角色社会关系首轮建档】\n主角色：${charName||'Chưa đặt tên'}\nuser：${userName||'{{user}}'}\n\n请逐条阅读下面的角色卡与绑定世界书。只提取资料中【明确写出具体Họ tên】的人。\n\n硬规则：\n1. 绝对禁止把“费用、毕业后、相似的脸、成长环境、NTR、录音混音、湖南省、工作流程”等目录/概念/地点/动作当人物。\n2. 不允许因为出现“父亲/朋友/同事”等关系词就自己编一个名字；原文没名字就不要返回。\n3. 同一个人只返回一次。\n4. relationToChar写此人与主角色的关系，如“父亲/母亲/妹妹/同事/朋友”；relationToUser只在资料明确写出与user的关系时填写。\n5. 不生成微信联系人Ghi chú。不要把“某人的朋友/合作方/父亲/母亲”等关系拼进联系人显示名；关系只写 relationToChar / relationToUser / identity / groupTags。\n6. phoneEligible：明确死亡、历史人物、完全无联系方式者可false；其余角色卡/世界书中的现实社交人物通常true。\n7. groupTags只能从 family/friends/work/class/course/dorm/club/guild/other 中选；只按资料明确关系标注。\n8. evidence只摘录很短的原文证据，不要整段复制。\n\n只输出JSON对象：\n{"persons":[{"name":"Họ tên","relationToChar":"","relationToUser":"","identity":"","phoneEligible":true,"groupTags":["family"],"sourceBook":"","sourceEntry":"","evidence":"原文短证据","confidence":0.99}]}\n\n【资料开始】\n${String(snapshot?.material||'').slice(0,140000)}\n【资料结束】`;
+                const systemPrompt=`Bạn là “bộ lập hồ sơ thực thể quan hệ xã hội của nhân vật”. Nhiệm vụ duy nhất của bạn là rút ra và cấu trúc hóa 【những người có thật và có tên cụ thể】 từ thẻ nhân vật và sách thế giới đã gắn mà người dùng cung cấp. Bạn không phải nhà văn: không viết tiếp cốt truyện, không bịa thêm tên, không dựa vào lẽ thường để tạo ra nhân vật. Mục lục, tên chương, quy tắc, địa điểm, tổ chức, khái niệm trừu tượng, bộ phận cơ thể, hành động, trạng thái và tên gọi nghề nghiệp đều không phải là nhân vật.`;
+                const prompt=`【LẬP HỒ SƠ QUAN HỆ XÃ HỘI CỦA NHÂN VẬT, LƯỢT ĐẦU】\nNhân vật chính: ${charName||'Chưa đặt tên'}\nuser: ${userName||'{{user}}'}\n\nHãy đọc từng mục thẻ nhân vật và sách thế giới đã gắn dưới đây. Chỉ rút ra những người mà tư liệu 【ghi rõ tên cụ thể】.\n\nQuy tắc cứng:\n1. Tuyệt đối không coi những thứ như “chi phí, sau khi tốt nghiệp, khuôn mặt giống, môi trường trưởng thành, NTR, thu âm hòa âm, tỉnh Hà Nam, quy trình làm việc” — tức mục lục/khái niệm/địa điểm/hành động — là nhân vật.\n2. Không được vì thấy các từ chỉ quan hệ như “bố/bạn bè/đồng nghiệp” mà tự đặt ra một cái tên; nguyên văn không có tên thì đừng trả về.\n3. Mỗi người chỉ trả về một lần.\n4. relationToChar ghi quan hệ của người đó với nhân vật chính, ví dụ “bố/mẹ/em gái/đồng nghiệp/bạn bè”; relationToUser chỉ điền khi tư liệu ghi rõ quan hệ với user.\n5. Không tạo ghi chú cho danh bạ WeChat. Đừng ghép các quan hệ như “bạn của ai đó/đối tác/bố/mẹ” vào tên hiển thị của liên hệ; quan hệ chỉ ghi vào relationToChar / relationToUser / identity / groupTags.\n6. phoneEligible: người đã chết rõ ràng, nhân vật lịch sử hoặc hoàn toàn không có cách liên lạc thì để false; các nhân vật xã hội đời thường khác trong thẻ/sách thế giới thường là true.\n7. groupTags chỉ được chọn trong family/friends/work/class/course/dorm/club/guild/other; chỉ gắn theo quan hệ mà tư liệu ghi rõ.\n8. evidence chỉ trích một đoạn nguyên văn rất ngắn, đừng chép cả đoạn.\n\nChỉ xuất ra đối tượng JSON:\n{"persons":[{"name":"họ tên","relationToChar":"","relationToUser":"","identity":"","phoneEligible":true,"groupTags":["family"],"sourceBook":"","sourceEntry":"","evidence":"bằng chứng ngắn từ nguyên văn","confidence":0.99}]}\n\n【BẮT ĐẦU TƯ LIỆU】\n${String(snapshot?.material||'').slice(0,140000)}\n【KẾT THÚC TƯ LIỆU】`;
                 const data=await callCompanionIndependentApi(prompt,{systemPrompt,jsonMode:true,responseLength:8000,generationType:'source-roster-bootstrap'});
                 const parsed=parseGeneratedJson(String(data?.text||'{}'));const rows=normalizeSourceRosterAiRows(parsed,{floor,generatedAt:Date.now()});
                 cache.status='complete';cache.rows=rows;cache.generatedAt=Date.now();cache.builtAtFloor=Number(floor);cache.model=compactText(data?.model||stateRuntime.serverConfig?.companion?.model||'',180);cache.provider=compactText(data?.provider||'companion-independent',120);cache.error='';
@@ -5079,9 +5079,9 @@ ${scene.goal||''}
 ${scene.mood||''}`,12000);
         const currentWork=/(?:đang|hiện tại|bây giờ|dạo này|gần đây|tối nay|hôm nay|tuần này|thường ngày)?[^.!?\n]{0,18}(?:đi làm|công việc|công tác|nhận đơn|chạy deadline|sửa bản thảo|đòi nợ|bên A|khách hàng|dự án|công ty|chốn công sở|studio|cửa hàng|trực ca|nghề tự do|họa sĩ minh họa|nhà thiết kế)/i.test(recent);
         const currentStudent=/(?:đang|hiện tại|bây giờ|vẫn còn|đang theo học|đang học|học tại)[^.!?\n]{0,24}(?:đại học|học viện|trường học|trung học phổ thông|trung học|học sinh|lên lớp|môn học|lớp học)|(?:hôm nay|tối nay|ngày mai|tuần này)[^.!?\n]{0,18}(?:lên lớp|thi|nộp bài)/i.test(recent);
-        const currentDorm=/(?:现在|目前|当前|仍|今晚|今天)?[^。！？\n]{0,18}(?:住在|住进|回到|入住)[^。！？\n]{0,12}(?:宿舍|寝室)|(?:当前|现在)[^。！？\n]{0,12}(?:室友|舍友)/i.test(recent);
-        const currentClub=/(?:现在|目前|当前|仍|正在)[^。！？\n]{0,18}(?:参加|加入|隶属|活动于)[^。！？\n]{0,16}(?:社团|学生会|协会|俱乐部)/i.test(recent);
-        const currentGuild=/(?:现在|目前|当前|仍|正在)[^。！？\n]{0,18}(?:加入|隶属|活动于|打)[^。！？\n]{0,16}(?:公会|战队|游戏群|固定队)/i.test(recent);
+        const currentDorm=/(?:bây giờ|hiện tại|lúc này|vẫn|tối nay|hôm nay)?[^.!?\n]{0,18}(?:ở tại|dọn vào|quay về|nhận phòng)[^.!?\n]{0,12}(?:ký túc xá|phòng ở)|(?:hiện tại|bây giờ)[^.!?\n]{0,12}(?:bạn cùng phòng|bạn ở ghép)/i.test(recent);
+        const currentClub=/(?:bây giờ|hiện tại|lúc này|vẫn|đang)[^.!?\n]{0,18}(?:tham gia|gia nhập|trực thuộc|sinh hoạt ở)[^.!?\n]{0,16}(?:câu lạc bộ|hội sinh viên|hiệp hội)/i.test(recent);
+        const currentGuild=/(?:bây giờ|hiện tại|lúc này|vẫn|đang)[^.!?\n]{0,18}(?:gia nhập|trực thuộc|sinh hoạt ở|chơi)[^.!?\n]{0,16}(?:công hội|đội tuyển|nhóm game|đội cố định)/i.test(recent);
         return {recent,currentWork,currentStudent,currentDorm,currentClub,currentGuild};
     }
 
@@ -5091,7 +5091,7 @@ ${scene.mood||''}`,12000);
         if(type==='dorm')return Boolean(stage.currentStudent&&stage.currentDorm);
         if(type==='club')return Boolean(stage.currentClub);
         if(type==='guild')return Boolean(stage.currentGuild);
-        // 工作/家人/朋友关系可以作为现实社交容器；学校/宿舍/社团/战队必须是“当前Thân phận”才允许自动出现。
+        // Quan hệ công việc/gia đình/bạn bè có thể làm nơi chứa các mối xã hội đời thường; còn trường học/ký túc xá/câu lạc bộ/đội tuyển thì phải là “thân phận hiện tại” mới được tự xuất hiện.
         if(type==='work')return Boolean(stage.currentWork||originSocialIdentityProfile().work);
         return ['family','friends'].includes(type);
     }
@@ -5120,13 +5120,13 @@ ${scene.mood||''}`,12000);
         const originKey=s.worldTransit?.origin?.worldKey||'origin-modern';
         const reachable=Boolean(currentWorldMatchesOrigin(current)&&current.available!==false);
         const defs=[
-            ['work','工作群','工作安排、项目、同事日常'],
-            ['friends','朋友群','约见、分享与朋友日常'],
-            ['family','家人群','家庭安排与亲友日常'],
-            ['class','班级群','课程、通知与同学日常'],
-            ['dorm','宿舍群','宿舍日常与室友安排'],
-            ['club','社团群','活动安排与成员日常'],
-            ['guild','公会/战队群','组队、活动与成员日常'],
+            ['work','Nhóm công việc','Lịch làm việc, dự án, sinh hoạt của đồng nghiệp'],
+            ['friends','Nhóm bạn bè','Hẹn gặp, chia sẻ và sinh hoạt thường ngày của bạn bè'],
+            ['family','Nhóm gia đình','Sắp xếp trong nhà và sinh hoạt của người thân'],
+            ['class','Nhóm lớp','Môn học, thông báo và sinh hoạt của bạn học'],
+            ['dorm','Nhóm ký túc xá','Sinh hoạt ký túc xá và sắp xếp với bạn cùng phòng'],
+            ['club','Nhóm câu lạc bộ','Lịch hoạt động và sinh hoạt của thành viên'],
+            ['guild','Nhóm công hội/đội tuyển','Lập đội, hoạt động và sinh hoạt của thành viên'],
         ];
         let touched=0;
         for(const [type,defaultName,topic] of defs){
@@ -5135,7 +5135,7 @@ ${scene.mood||''}`,12000);
             const existing=s.phone.groupProfiles.find(row=>row?.scope==='origin'&&row?.type===type)||s.phone.groupProfiles.find(row=>compactText(row?.groupName,120)===defaultName);
             if(!members.length&&!existing)continue;
             if(!existing&&members.length<2)continue;
-            const row=existing||{id:uid('group-profile-roster'),groupName:defaultName,type,members:[],topic,activityLevel:'medium',source:'角色卡/世界书人物池',scope:'origin',homeWorldKey:originKey,channelType:'wechat',availability:reachable?'active':'offline-origin',createdAt:Date.now(),updatedAt:Date.now(),_floor:Number(floor)};
+            const row=existing||{id:uid('group-profile-roster'),groupName:defaultName,type,members:[],topic,activityLevel:'medium',source:'Bể nhân vật từ thẻ/sách thế giới',scope:'origin',homeWorldKey:originKey,channelType:'wechat',availability:reachable?'active':'offline-origin',createdAt:Date.now(),updatedAt:Date.now(),_floor:Number(floor)};
             if(!existing)s.phone.groupProfiles.push(row);
             const next=[...new Set([...(row.members||[]),...members].map(x=>compactText(x,80)).filter(Boolean))].slice(0,50);
             if(next.join('\u0000')!==(row.members||[]).join('\u0000')){row.members=next;touched++;}
@@ -5157,9 +5157,9 @@ ${scene.mood||''}`,12000);
         const snapshot=await collectSourceRosterSnapshot({maxEntries});
         for(const item of snapshot.loaded||[]){
             const {book,entry,title,content}=item;
-            extractSourceRosterFromText(content,fallbackMap,{source:book.source||'世界书',book:book.name,entry:title,confidence:.9});
-            sourceRosterKeywordCandidates(entry,fallbackMap,{source:book.source||'世界书',book:book.name,entry:title,confidence:.9});
-            if(sourceRosterEntryLooksLikePerson(title,content)){const relation=sourceRosterSpecificRelation(`${title} ${content.slice(0,360)}`);addSourceRosterCandidate(fallbackMap,title,{source:book.source||'世界书',book:book.name,entry:title,role:sourceRosterRoleText(content),relation,remark:sourceRosterRemark(relation,content,{source:book.source||'世界书',book:book.name,entry:title}),confidence:.93,evidence:content.slice(0,360),evidenceKind:'entry-title'});}
+            extractSourceRosterFromText(content,fallbackMap,{source:book.source||'Sách thế giới',book:book.name,entry:title,confidence:.9});
+            sourceRosterKeywordCandidates(entry,fallbackMap,{source:book.source||'Sách thế giới',book:book.name,entry:title,confidence:.9});
+            if(sourceRosterEntryLooksLikePerson(title,content)){const relation=sourceRosterSpecificRelation(`${title} ${content.slice(0,360)}`);addSourceRosterCandidate(fallbackMap,title,{source:book.source||'Sách thế giới',book:book.name,entry:title,role:sourceRosterRoleText(content),relation,remark:sourceRosterRemark(relation,content,{source:book.source||'Sách thế giới',book:book.name,entry:title}),confidence:.93,evidence:content.slice(0,360),evidenceKind:'entry-title'});}
         }
         let aiRows=[];const matchingCache=stateRuntime.state?.sourceRosterAi;
         if(matchingCache?.status==='complete'&&matchingCache.fingerprint===snapshot.fingerprint&&Array.isArray(matchingCache.rows))aiRows=matchingCache.rows;
@@ -5174,21 +5174,21 @@ ${scene.mood||''}`,12000);
         const rows=[...finalMap.values()].filter(row=>row.confidence>=.84&&sourceRosterCandidateTrusted(row)).sort((a,b)=>b.confidence-a.confidence||a.name.localeCompare(b.name,'zh-CN')).slice(0,240);
         stateRuntime.sourceCharacterRoster=rows;stateRuntime.sourceCharacterRosterUpdatedAt=now;
         const floor=Math.max(-1,(context()?.chat?.length||0)-1);
-        for(const row of rows){registerNpcIdentity({name:row.name,source:row.source||'Thẻ nhân vật/sách thế giới',identity:row.role?`角色卡/世界书人物；关系标签:${row.role}`:'角色卡/世界书人物',floor},floor);}
+        for(const row of rows){registerNpcIdentity({name:row.name,source:row.source||'Thẻ nhân vật/sách thế giới',identity:row.role?`Nhân vật từ thẻ/sách thế giới; nhãn quan hệ: ${row.role}`:'Nhân vật từ thẻ/sách thế giới',floor},floor);}
         seedSourceRosterPhoneContacts(rows,floor);normalizePhoneSocialCanonicalNames();pruneLegacyProseRosterGarbage();pruneInvalidWorldBookRosterArtifacts();prunePhoneSocialGraphToTrustedRoster();
         return rows;
     }
 
     function sourceCharacterRosterBrief(limit=48) {
         const rows=(stateRuntime.sourceCharacterRoster||[]).slice(0,Math.max(1,Number(limit)||48));
-        if(!rows.length)return 'Chưa có可靠提取到的角色卡/世界书人物；本轮只使用已经在剧情/记忆中明确出现的人，不为填满手机而硬造新名字。';
-        return rows.map(row=>`- ${row.name}${row.relation?`｜关系:${row.relation}`:''}${row.role?`｜关系线索:${row.role}`:''}${row.book?`｜世界书:${row.book}`:''}${row.entry?`｜条目:${row.entry}`:''}`).join('\n');
+        if(!rows.length)return 'Chưa rút ra được nhân vật đáng tin nào từ thẻ nhân vật/sách thế giới; lượt này chỉ dùng những người đã xuất hiện rõ ràng trong cốt truyện/ký ức, không bịa tên mới cho đầy danh bạ.';
+        return rows.map(row=>`- ${row.name}${row.relation?`｜quan hệ: ${row.relation}`:''}${row.role?`｜manh mối quan hệ: ${row.role}`:''}${row.book?`｜sách thế giới: ${row.book}`:''}${row.entry?`｜mục: ${row.entry}`:''}`).join('\n');
     }
 
 
-    // fixed34：恢复老版“小手机吃结构化记忆”的主干，同时给实时手机补一条【联系人关联世界书事实】定向通道。
-    // 不把整本世界书塞进手机；只根据“当前联系人 + 用户刚发的话 + 最近手机历史”选出最相关的1-5条绑定世界书。
-    const PHONE_WB_QUERY_STOP = new Set(['今天','现在','这个','那个','这里','那里','怎么','什么','是不是','有没有','可以','还是','一下','一个','我们','你们','他们','她们','然后','就是','已经','没有','不会','知道','觉得','的话','时候','事情','回复','消息','微信','手机','刚刚','刚才']);
+    // fixed34: khôi phục khung “điện thoại đọc ký ức có cấu trúc” của bản cũ, đồng thời bổ sung cho điện thoại thời gian thực một kênh định hướng 【sự thật trong sách thế giới gắn với liên hệ】.
+    // Không nhồi cả cuốn sách thế giới vào điện thoại; chỉ chọn 1-5 mục liên quan nhất dựa trên “liên hệ hiện tại + câu người dùng vừa gửi + lịch sử điện thoại gần đây”.
+    const PHONE_WB_QUERY_STOP = new Set(['hôm nay','bây giờ','cái này','cái kia','ở đây','ở đó','thế nào','cái gì','có phải','có không','có thể','hay là','một chút','một cái','chúng tôi','các bạn','bọn họ','rồi thì','chính là','đã','không có','sẽ không','biết','cảm thấy','nếu vậy','lúc','chuyện','trả lời','tin nhắn','WeChat','điện thoại','vừa nãy','lúc nãy']);
     function phoneWorldBookQueryTokens(value='', limit=80) {
         const text=String(value||'').replace(/\s+/g,' ').trim();
         const out=[];const seen=new Set();
@@ -5213,12 +5213,12 @@ ${scene.mood||''}`,12000);
         const row=phoneWorldBookContactRow(contact),profile=phoneContactProfile(contact);
         if(!row&&!profile)return '';
         const fields=[
-            `联系人：${compactText(contact,100)}`,
-            row?.relation?`关系：${compactText(row.relation,100)}`:'',
-            row?.identity?`Thân phận：${compactText(row.identity,180)}`:'',
-            row?.book?`来源世界书：${compactText(row.book,120)}`:'',
-            row?.entry?`来源条目：${compactText(row.entry,160)}`:'',
-            profile?.rosterRole?`通讯录关系：${compactText(profile.rosterRole,180)}`:'',
+            `Liên hệ: ${compactText(contact,100)}`,
+            row?.relation?`Quan hệ: ${compactText(row.relation,100)}`:'',
+            row?.identity?`Thân phận: ${compactText(row.identity,180)}`:'',
+            row?.book?`Sách thế giới nguồn: ${compactText(row.book,120)}`:'',
+            row?.entry?`Mục nguồn: ${compactText(row.entry,160)}`:'',
+            profile?.rosterRole?`Quan hệ trong danh bạ: ${compactText(profile.rosterRole,180)}`:'',
         ].filter(Boolean);
         return fields.join('\n');
     }
@@ -5241,14 +5241,14 @@ ${scene.mood||''}`,12000);
         const content=String(item?.content||''),title=compactText(item?.title||'',180),book=compactText(item?.book?.name||'',160),keys=worldBookKeywords(item?.entry);
         const hay=`${title}\n${keys.join(' ')}\n${content}`.toLowerCase();let score=0;const reasons=[];
         const c=compactText(contact,100).toLowerCase(),char=compactText(charName,100).toLowerCase();
-        if(c&&hay.includes(c)){score+=220;reasons.push('联系人命中');}
+        if(c&&hay.includes(c)){score+=220;reasons.push('trúng liên hệ');}
         if(char&&hay.includes(char)){score+=18;}
-        if(rosterRow?.book&&worldBookNameKey(rosterRow.book)===worldBookNameKey(book)){score+=45;reasons.push('联系人来源世界书');}
-        if(rosterRow?.entry&&title&&compactText(rosterRow.entry,180)===title){score+=180;reasons.push('联系人来源条目');}
+        if(rosterRow?.book&&worldBookNameKey(rosterRow.book)===worldBookNameKey(book)){score+=45;reasons.push('sách thế giới nguồn của liên hệ');}
+        if(rosterRow?.entry&&title&&compactText(rosterRow.entry,180)===title){score+=180;reasons.push('mục nguồn của liên hệ');}
         const q=String(queryText||'').toLowerCase();
         for(const key of keys.slice(0,32)){
             const k=String(key||'').trim().toLowerCase();if(!k||k.length<2)continue;
-            if(q.includes(k)){score+=180;reasons.push(`关键字:${key}`);}
+            if(q.includes(k)){score+=180;reasons.push(`từ khóa: ${key}`);}
             else if(c&&k.includes(c)){score+=50;}
         }
         let tokenHits=0;
@@ -5258,7 +5258,7 @@ ${scene.mood||''}`,12000);
             if(tokenHits>=14)break;
         }
         if(tokenHits>=2)score+=Math.min(80,tokenHits*8);
-        if(/(?:固定事实|固定设定|固定排班|长期|每周|负责|任职|同事|店长|家人|父亲|母亲|工作|职业|Lời hẹn)/.test(content)&&score>=30)score+=18;
+        if(/(?:sự thật cố định|thiết định cố định|lịch trực cố định|dài hạn|mỗi tuần|phụ trách|công tác|đồng nghiệp|quản lý cửa hàng|người nhà|bố|mẹ|công việc|nghề nghiệp|lời hẹn)/i.test(content)&&score>=30)score+=18;
         return {score,reasons:[...new Set(reasons)].slice(0,5),tokenHits};
     }
     async function buildPhoneRelevantWorldBookFacts({mode='message',contact='',event={},history=[],maxEntries=5,maxChars=6500}={}) {
@@ -5279,19 +5279,19 @@ ${scene.mood||''}`,12000);
             const chosen=[];const seen=new Set();let used=0;
             for(const item of ranked){
                 if(chosen.length>=Math.max(1,Number(maxEntries)||5)||used>=maxChars)break;
-                const bookName=compactText(item?.book?.name||'',140),title=compactText(item?.title||'',180)||'Chưa đặt tên条目',key=`${worldBookNameKey(bookName)}|${title}`;if(seen.has(key))continue;seen.add(key);
+                const bookName=compactText(item?.book?.name||'',140),title=compactText(item?.title||'',180)||'Mục chưa đặt tên',key=`${worldBookNameKey(bookName)}|${title}`;if(seen.has(key))continue;seen.add(key);
                 const raw=String(item?.content||'').replace(/\r\n?/g,'\n').trim();if(!raw)continue;
                 const remain=Math.max(0,maxChars-used),body=raw.slice(0,Math.min(2600,remain));if(!body)break;
-                chosen.push(`【${compactText(item?.book?.source||'绑定世界书',60)}｜${bookName}｜${title}】\n${body}${raw.length>body.length?'\n…[本条为手机事实摘录，已截断]':''}`);
+                chosen.push(`【${compactText(item?.book?.source||'Sách thế giới đã gắn',60)}｜${bookName}｜${title}】\n${body}${raw.length>body.length?'\n…[mục này là trích đoạn sự thật cho điện thoại, đã bị cắt bớt]':''}`);
                 used+=body.length+bookName.length+title.length+40;
             }
             if(!chosen.length)return '';
             const profile=phoneWorldBookContactProfileText(contact);
-            return `${profile?`【当前联系人档案】\n${profile}\n\n`:''}【本轮手机定向世界书事实｜高优先级】\n${chosen.join('\n\n')}\n\n【使用规则】\n- 上述内容来自当前角色真正绑定的角色主世界书/附加世界书/聊天世界书，是本轮手机回答的高置信基础事实。\n- 若与普通旧摘要、手机历史或模型猜测冲突，优先遵守这里；只有更晚且明确发生的剧情事件才能覆盖旧设定。\n- “长期/固定事实”与“今天此刻的具体Trạng thái”必须区分：世界书只写固定排班但没写今天班次时，可以说有固定排班、今天需看实际安排，禁止反向声称“根本没有排班/不是这里的工作人员”。\n- 不知道的具体Ngày、班次、金额或结果就承认不知道，不为了顺着user问题而编造。`;
-        }catch(error){console.warn('[0-32·手机定向世界书] 本轮读取失败，继续使用老版结构化记忆主干',error);return '';}
+            return `${profile?`【HỒ SƠ LIÊN HỆ HIỆN TẠI】\n${profile}\n\n`:''}【SỰ THẬT TỪ SÁCH THẾ GIỚI DÀNH RIÊNG CHO ĐIỆN THOẠI LƯỢT NÀY｜ưu tiên cao】\n${chosen.join('\n\n')}\n\n【QUY TẮC SỬ DỤNG】\n- Nội dung trên lấy từ sách thế giới chính/bổ sung của nhân vật và sách thế giới của cuộc trò chuyện đang thực sự gắn với nhân vật hiện tại; đây là sự thật nền có độ tin cậy cao cho phần trả lời trên điện thoại ở lượt này.\n- Nếu mâu thuẫn với tóm tắt cũ thông thường, lịch sử điện thoại hay phỏng đoán của mô hình thì ưu tiên tuân theo phần này; chỉ những sự kiện cốt truyện xảy ra muộn hơn và rõ ràng mới được ghi đè thiết định cũ.\n- Phải phân biệt “sự thật dài hạn/cố định” với “trạng thái cụ thể của chính lúc này”: khi sách thế giới chỉ ghi lịch trực cố định mà không ghi ca hôm nay thì có thể nói là có lịch trực cố định, còn hôm nay phải xem lịch thực tế; cấm nói ngược lại rằng “chẳng có lịch trực nào / không phải nhân viên ở đây”.\n- Ngày tháng, ca trực, số tiền hay kết quả cụ thể mà không biết thì hãy thừa nhận là không biết, đừng bịa ra chỉ để chiều theo câu hỏi của user.`;
+        }catch(error){console.warn('[0-32 · Sách thế giới định hướng cho điện thoại] Lượt này đọc thất bại, tiếp tục dùng khung ký ức có cấu trúc của bản cũ',error);return '';}
     }
 
-    function systemNoteForGeneration(chat, content, name='0-32系统') {
+    function systemNoteForGeneration(chat, content, name='Hệ thống 0-32') {
         const sample=[...(Array.isArray(chat)?chat:[])].reverse().find(Boolean)||{};
         const openAiShape=Object.prototype.hasOwnProperty.call(sample,'role')||Object.prototype.hasOwnProperty.call(sample,'content');
         return openAiShape?{role:'system',content}:{name,is_user:false,is_system:true,mes:content,send_date:Date.now()};
@@ -5331,14 +5331,14 @@ ${scene.mood||''}`,12000);
     async function collectStoryRelayContext(options = {}) {
         const ctx = context() || {};
         const s = stateRuntime.state || defaultState();
-        // 接力只读取这里显式组织的有限剧情资料，不编译酒馆预设、世界书或 Persona。
+        // Phần tiếp sức chỉ đọc phần tư liệu cốt truyện hữu hạn được tổ chức tường minh ở đây, không biên dịch preset, sách thế giới hay Persona của SillyTavern.
         const activeCharacter = activeCharacterObject() || {};
         const activeCard = activeCharacter.data || activeCharacter;
         const writingContext = {
             source: 'vvv-relay-scoped',
             generationType: 'relay-scoped',
             characterName: compactText(activeCard?.name || activeCharacter?.name || ctx?.name2 || '', 160),
-            presetAndWorldInfo: '未读取；仅使用本对象内显式提供的有限剧情资料。',
+            presetAndWorldInfo: 'Chưa đọc; chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong đối tượng này.',
         };
         const entry = latestAssistantAfterLatestUser();
         const sidecar = clone(entry?.message?.extra?.vvvTheaterCompanion || {});
@@ -5347,9 +5347,9 @@ ${scene.mood||''}`,12000);
         const relayQuery = compactText(String(options?.relayQuery || ''), 7000);
         const relayAnchorFloor = Number(options?.anchorFloor ?? entry?.index ?? -1);
         const relayContinuityFloors = Math.max(4, Math.min(8, Number(options?.continuityFloors || 6)));
-        const relayExplicitHistory = /回忆|回想|想起|记得|当时|以前|过去|曾经|旧事|回顾|第\s*\d+\s*层/.test(relayQuery);
-        // 剧情接力不能沿用“上一条 user”单独检索的旧命中，否则最新 AI chính văn已经完成的动作可能被旧意图拉回去。
-        // 这里只为接力临时计算一次本地检索，不修改 stateRuntime.retrievalHits，避免影响主记忆链路。
+        const relayExplicitHistory = /hồi tưởng|nhớ lại|chợt nhớ|còn nhớ|lúc đó|trước đây|quá khứ|từng|chuyện cũ|hồi cố|tầng\s*\d+/i.test(relayQuery);
+        // Phần tiếp sức cốt truyện không được dùng lại kết quả truy xuất cũ chỉ dựa trên “tin nhắn user trước đó”, nếu không những hành động đã hoàn tất trong chính văn AI mới nhất có thể bị ý định cũ kéo ngược lại.
+        // Ở đây chỉ tính tạm một lần truy xuất cục bộ cho phần tiếp sức, không sửa stateRuntime.retrievalHits để khỏi ảnh hưởng tới luồng ký ức chính.
         let relayRetrievalHits = clone((stateRuntime.retrievalHits || []).slice(0, retrievalTopK));
         if (relayQuery && s.settings?.retrievalEnabled) {
             try {
@@ -5374,9 +5374,9 @@ ${scene.mood||''}`,12000);
                 relayRetrievalHits = clone(localSearch(relayQuery).slice(0, retrievalTopK));
             }
         }
-        // P24 Dòng thời gian隔离：接力不是“历史问答”。
-        // 离当前锚点超过连续窗口的旧叙事原文/Dòng thời gian/章节，不允许以raw text进入接力上下文，
-        // 否则模型会把0~1层开场当成更鲜明的续写模板。用户明确要求回忆时才放开。
+        // Cách ly dòng thời gian P24: tiếp sức không phải là “hỏi đáp về lịch sử”.
+        // Nguyên văn tự sự, dòng thời gian hay chương hồi cũ nằm ngoài cửa sổ liền mạch tính từ mốc neo hiện tại thì không được vào ngữ cảnh tiếp sức dưới dạng văn bản thô,
+        // nếu không mô hình sẽ lấy phần mở màn ở tầng 0-1 làm khuôn mẫu viết tiếp rõ nét hơn. Chỉ nới lỏng khi người dùng yêu cầu hồi tưởng rõ ràng.
         if (!relayExplicitHistory && Number.isFinite(relayAnchorFloor) && relayAnchorFloor >= 0) {
             const structuredFactTypes = new Set(['relation','relations','promise','promises','secret','life-fact','npc-identity','people']);
             relayRetrievalHits = relayRetrievalHits.filter(hit => {
@@ -5388,21 +5388,21 @@ ${scene.mood||''}`,12000);
             }).map(hit => ({
                 ...hit,
                 historicalReference: true,
-                usage: '历史事实只读；不得作为当前动作/地点/事件续写模板',
+                usage: 'Sự thật lịch sử chỉ để đọc; không được dùng làm khuôn mẫu viết tiếp cho hành động/địa điểm/sự kiện hiện tại',
             }));
         }
 
         let recentSummaries = [];
         try {
             recentSummaries = [
-                ...completedSummaryRows('时代总结').slice(-1),
-                ...completedSummaryRows('大总结').slice(-3),
-                ...completedSummaryRows('阶段总结').slice(-6),
+                ...completedSummaryRows('Tổng kết thời đại').slice(-1),
+                ...completedSummaryRows('Đại tổng kết').slice(-3),
+                ...completedSummaryRows('Tổng kết giai đoạn').slice(-6),
             ].map(row => ({
                 type: row['Loại'] || row['Loại bảng'] || '',
                 range: row['Tầng bao phủ'] || '',
                 summary: compactText(row['Nội dung tổng kết'] || '', 3200),
-                usage: '历史摘要只读；若与最新6层冲突则忽略，禁止复播摘要中的动作链',
+                usage: 'Tóm tắt lịch sử chỉ để đọc; nếu mâu thuẫn với 6 tầng mới nhất thì bỏ qua, cấm diễn lại chuỗi hành động trong bản tóm tắt',
             })).filter(item => item.summary);
         } catch {}
         return {
@@ -5429,7 +5429,7 @@ ${scene.mood||''}`,12000);
                     anchorFloor: relayAnchorFloor,
                     continuityFloors: relayContinuityFloors,
                     explicitHistory: relayExplicitHistory,
-                    note: 'P24：旧叙事型命中默认隔离；仅当前窗口或结构化事实进入接力。',
+                    note: 'P24: các kết quả truy xuất dạng tự sự cũ mặc định bị cách ly; chỉ cửa sổ hiện tại hoặc sự thật có cấu trúc mới được vào phần tiếp sức.',
                 },
                 recentSummaries,
                 npcWorld: {
@@ -5475,7 +5475,7 @@ ${scene.mood||''}`,12000);
         const roots = [
             { name:card.name, description:card.description, personality:card.personality, scenario:card.scenario, ...(includeCreatorNotes ? {creator_notes:card.creator_notes} : {}) },
         ].filter(Boolean);
-        return roots.map(item => snapshotText(item, 3600)).filter(Boolean).join('\n--- 角色卡基础设定片段 ---\n').slice(0, limit);
+        return roots.map(item => snapshotText(item, 3600)).filter(Boolean).join('\n--- Mảnh thiết định nền của thẻ nhân vật ---\n').slice(0, limit);
     }
 
     function characterCoreSettingText(limit = 6000) {
@@ -5486,10 +5486,10 @@ ${scene.mood||''}`,12000);
 
     function originSocialIdentityProfile() {
         const raw = originIdentityEvidenceText(9000);
-        const student = /(大学生|本科生|研究生|高中生|初中生|中学生|小学生|在校|学生|school|student|campus|class|course|학교|학생)/i.test(raw);
-        const fantasy = /(魔法|奇幻|中世纪|古代|修仙|仙侠|异世界|精灵|兽人|骑士团|炼金|神术)/i.test(raw);
-        const university = /(大学|本科|研究生|大一|大二|大三|大四|university|college|undergraduate|graduate|대학)/i.test(raw) || (!fantasy && /学院/.test(raw));
-        const dorm = /(宿舍|寝室|室友|舍友|住校|寄宿|dorm|roommate|기숙사)/i.test(raw);
+        const student = /(sinh viên|sinh viên đại học|học viên cao học|học sinh cấp ba|học sinh cấp hai|học sinh trung học|học sinh tiểu học|đang đi học|học sinh|school|student|campus|class|course|학교|학생)/i.test(raw);
+        const fantasy = /(ma pháp|kỳ ảo|trung cổ|cổ đại|tu tiên|tiên hiệp|dị giới|tinh linh|thú nhân|đoàn kỵ sĩ|luyện kim|thần thuật)/i.test(raw);
+        const university = /(đại học|hệ chính quy|cao học|năm nhất|năm hai|năm ba|năm tư|university|college|undergraduate|graduate|대학)/i.test(raw) || (!fantasy && /học viện/i.test(raw));
+        const dorm = /(ký túc xá|phòng ở|bạn cùng phòng|bạn ở ghép|ở nội trú|nội trú|dorm|roommate|기숙사)/i.test(raw);
         const club = /(社团|学生会|俱乐部|club|student union|동아리)/i.test(raw);
         const work = /(公司|职场|同事|部门|项目组|上班|office|company|coworker|department|project team)/i.test(raw);
         const family = /(家庭|家人|父母|妈妈|母亲|爸爸|父亲|兄弟|姐妹|亲戚|family|parents|siblings|relative)/i.test(raw);
