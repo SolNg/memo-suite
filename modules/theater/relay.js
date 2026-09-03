@@ -1118,7 +1118,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                 </div>
                 <footer class="vvv-relay-command-footer">
                     <div class="vvv-relay-footer-copy">
-                        <div class="vvv-relay-selection-summary" data-relay-selection-summary>未选择方向时，将按“自然推进”生成</div>
+                        <div class="vvv-relay-selection-summary" data-relay-selection-summary>Không chọn hướng nào thì sẽ sinh theo “Tiến triển tự nhiên”</div>
                         <div class="vvv-relay-inline-error" data-relay-inline-error role="alert" hidden></div>
                     </div>
                     <div class="vvv-relay-generation-actions">
@@ -1639,8 +1639,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!sources.length) return [];
 
         // Chỉ chặn những trường hợp “phát lại rõ ràng”, tránh chặn nhầm chỉ vì cùng một cảnh lặp lại tên người/địa điểm/vật phẩm.
-        // 整稿 + 24字以上长句段都检查，能抓住“先复述上一轮，再补一句新动作”的情况。
-        const segments=[text, ...(text.match(/[^。！？!?\n]{24,}[。！？!?]?/g)||[])];
+        // Soát cả bản đầy đủ lẫn từng đoạn câu dài trên 24 ký tự, để bắt được kiểu “kể lại lượt trước rồi mới thêm một câu hành động mới”.
+        const segments=[text, ...(text.match(/[^.!?\n]{24,}[.!?]?/g)||[])];
         let best=null;
         for(const source of sources){
             for(const segment of segments){
@@ -1650,7 +1650,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             }
         }
         if(best && ((best.common>=24 && best.score>=0.40) || (best.common>=14 && best.score>=0.58))){
-            return [`检测到最近一拍剧情复播：当前user接力与${best.label}高度重合（${Math.round(best.score*100)}%）；接力必须写“下一步”，不能把刚发生的内容换句话再演一次`];
+            return [`Phát hiện phát lại nhịp truyện vừa rồi: bản tiếp sức của user trùng lặp rất cao với ${best.label} (${Math.round(best.score*100)}%); tiếp sức bắt buộc phải viết “bước kế tiếp”, không được diễn lại chuyện vừa xảy ra bằng cách đổi câu chữ`];
         }
         return [];
     }
@@ -1662,9 +1662,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const cutoff=Math.max(0, Number(entry.index)-continuityFloorCount());
         if (cutoff <= 0) return [];
 
-        // 同时检查整稿和每个较长句段。这样“旧剧情复播了一段 + 后面补了当前安全句”
-        // 不会因为安全句把整篇相似度稀释掉。
-        const segments=[text, ...(text.match(/[^。！？!?\n]{18,}[。！？!?]?/g)||[])];
+        // Soát đồng thời bản đầy đủ và từng đoạn câu dài. Nhờ vậy kiểu “phát lại một đoạn cũ rồi thêm một câu an toàn ở sau”
+        // sẽ không bị câu an toàn đó pha loãng độ tương đồng của cả bài.
+        const segments=[text, ...(text.match(/[^.!?\n]{18,}[.!?]?/g)||[])];
         let best=null;
         for(let i=0;i<cutoff;i+=1){
             const message=chat[i];
@@ -1677,7 +1677,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             }
         }
         if(best && ((best.common>=18 && best.score>=0.32) || (best.common>=10 && best.score>=0.46))){
-            return [`检测到旧剧情复播：当前接力与历史第${best.floor}层高度重合（${Math.round(best.score*100)}%），但该层不属于最近${continuityFloorCount()}层当前连续性窗口`];
+            return [`Phát hiện phát lại tình tiết cũ: bản tiếp sức trùng lặp rất cao với tầng ${best.floor} trong lịch sử (${Math.round(best.score*100)}%), nhưng tầng đó không nằm trong cửa sổ liền mạch ${continuityFloorCount()} tầng gần nhất`];
         }
         return [];
     }
@@ -1685,7 +1685,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     function detectDraftIssues(draft, { entry, custom = '', allowJump = false, environment = null } = {}) {
         const text = String(draft || '').trim();
         const issues = [];
-        if (!text) return ['输出为空'];
+        if (!text) return ['Kết quả xuất ra rỗng'];
         issues.push(...detectFigurativeLanguageIssues(text,custom));
         issues.push(...immediatePlotReplayIssues(text, entry, custom));
         issues.push(...oldPlotReplayIssues(text, entry, custom));
@@ -1694,33 +1694,33 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!explicitRepeatIntent(custom)) {
             for (const signal of signals) {
                 const start = new RegExp(signal.start, 'i');
-                if (start.test(text)) issues.push(`剧情Trạng thái倒退：${signal.label}，却又重新发起同一动作`);
+                if (start.test(text)) issues.push(`Trạng thái cốt truyện đi lùi: ${signal.label}, vậy mà lại khởi động cùng hành động đó một lần nữa`);
             }
         }
-        // user 接力只能写 user。char/NPC只能作为宾语或既成事实引用，不能成为任何“新动作/回应”的主语。
+        // Tiếp sức của user chỉ được viết về user. char/NPC chỉ có thể xuất hiện với vai trò tân ngữ hoặc sự thật đã rồi, không được làm chủ ngữ của bất kỳ “hành động/phản hồi mới” nào.
         issues.push(...detectNpcAgencyIssues(text, npcSubjectCandidates(environment || {}, entry)));
         if (!allowJump) {
-            const hardTimeJumps = text.match(/过了一会儿|没过多久|片刻后|几分钟后|十分钟后|半小时后|一小时后|几小时后|第二天|翌日|后来|最终|(?:洗|吃|做|结束)完(?:后)?/g) || [];
-            if (hardTimeJumps.length >= 1) issues.push('普通接力出现时间/阶段跳转；应停在当前场景等待char/NPC下一轮反应');
+            const hardTimeJumps = text.match(/một lát sau|chẳng bao lâu sau|lát sau|vài phút sau|mười phút sau|nửa tiếng sau|một tiếng sau|vài tiếng sau|hôm sau|ngày hôm sau|về sau|cuối cùng|sau khi (?:tắm|ăn|làm|kết thúc) xong/gi) || [];
+            if (hardTimeJumps.length >= 1) issues.push('Bản tiếp sức thông thường lại nhảy thời gian/giai đoạn; phải dừng ở cảnh hiện tại và chờ phản ứng của char/NPC ở lượt sau');
         }
         return [...new Set(issues)];
     }
 
     function normalizeRelayEchoText(value) {
-        return String(value||'').toLowerCase().replace(/[\s，。！？；、,.!?;:“”"'‘’（）()【】\[\]—…<>《》]/g,'');
+        return String(value||'').toLowerCase().replace(/[\s,.!?;:“”"'‘’()\[\]【】—…<>«»]/g,'');
     }
 
     function draftPreservesCustomExpression(draft, custom) {
         const rawDraft=String(draft||''),rawCustom=String(custom||'').trim();
         if(rawCustom&&rawDraft.includes(rawCustom)){
             const index=rawDraft.indexOf(rawCustom),prefix=rawDraft.slice(Math.max(0,index-16),index);
-            if(!/(?:不要|别|不准|禁止|不用|无需|不再|不去|不想|拒绝|Hủy)(?:再|去|做|进行|继续)?\s*$/i.test(prefix))return true;
+            if(!/(?:đừng|chớ|không được|cấm|không cần|khỏi cần|không còn|không đi|không muốn|từ chối|hủy)\s*(?:lại|đi|làm|tiến hành|tiếp tục)?\s*$/i.test(prefix))return true;
         }
         const a=normalizeRelayEchoText(rawDraft), b=normalizeRelayEchoText(rawCustom);
         if(!b || b.length<4 || !a)return false;
         if(a===b)return true;
-        // 接力稿允许在用户原话前后补充动作；只要规范化后的完整原话仍连续存在，
-        // 就应视为保留，不能因为稿件整体更长而被长度比例误杀。
+        // Bản tiếp sức được phép thêm hành động trước và sau lời gốc của người dùng; miễn là toàn bộ lời gốc sau khi chuẩn hóa vẫn còn liền mạch
+        // thì phải coi là đã giữ lại, không được vì bản viết dài hơn mà bị tỷ lệ độ dài chặn nhầm.
         if(b.length>=8&&a.includes(b))return true;
         const ratio=a.length/Math.max(1,b.length);
         if(ratio>=0.72 && ratio<=1.38 && (a.includes(b)||b.includes(a)))return true;
@@ -1745,8 +1745,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
         return Math.max(1,Math.min(6,Number(runtime.settings?.relayContinuationMax||3)));
     }
     function compactSafeDraft(raw) {
-        // U1.4：默认不再硬截800字。0=不主动截断；需要时由用户设置字符上限。
-        // 只有模型原始返回值走包装词净化；预览框里的用户编辑不能再被当成模型包装处理。
+        // U1.4: mặc định không còn cắt cứng ở 800 chữ. 0 = không tự cắt; khi cần thì người dùng tự đặt giới hạn ký tự.
+        // Chỉ kết quả gốc do mô hình trả về mới đi qua bước lọc từ bao bọc; phần người dùng tự sửa trong ô xem trước không còn bị xử lý như phần bao bọc của mô hình.
         return limitCompleteSentence(raw, relayMaxChars(), { cleanModelOutput:true });
     }
 
@@ -1764,7 +1764,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                     };
                 }
             } catch (error) {
-                console.warn('[Tiếp sức cốt truyện bằng AI] 读取R9主Trạng thái桥失败，降级到基础上下文', error);
+                console.warn('[Tiếp sức cốt truyện bằng AI] Đọc cầu nối trạng thái chính R9 thất bại, hạ xuống dùng ngữ cảnh cơ bản', error);
             }
         }
         return {
@@ -1773,7 +1773,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                 source: 'vvv-relay-scoped-fallback',
                 generationType: 'relay-scoped',
                 characterName: String(fallbackCharacterSnapshot()?.name || ctx()?.name2 || '').slice(0,160),
-                presetAndWorldInfo: '未读取；只使用接力请求中显式提供的有限剧情资料。',
+                presetAndWorldInfo: 'Chưa đọc; chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong yêu cầu tiếp sức.',
             },
             r9s1p1: {},
             latestCompanion: entry?.message?.extra?.vvvTheaterCompanion || {},
@@ -1782,17 +1782,17 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function stagnationHint(chat) {
         const recent = chat.slice(-24).map(item => item.text).join('\n');
-        const changes = (recent.match(/离开|到达|决定|发现|确认|开始|结束|冲突|答应|拒绝|Lời hẹn|任务/g) || []).length;
+        const changes = (recent.match(/rời đi|tới nơi|quyết định|phát hiện|xác nhận|bắt đầu|kết thúc|xung đột|đồng ý|từ chối|lời hẹn|nhiệm vụ/gi) || []).length;
         return {
-            stage: recent.length < 2000 ? '开场/短场景' : changes < 3 ? '稳定互动阶段' : '推进阶段',
+            stage: recent.length < 2000 ? 'Mở màn / cảnh ngắn' : changes < 3 ? 'Giai đoạn tương tác ổn định' : 'Giai đoạn đẩy tới',
             possiblyStagnant: recent.length > 5000 && changes < 3,
-            note: '只用于给下一小步提供参考，不得强塞事件。',
+            note: 'Chỉ dùng làm tham chiếu cho bước nhỏ kế tiếp, không được nhồi sự kiện vào.',
         };
     }
 
     function continuityRules(allowJump) {
-        if (allowJump) return '用户已明确选择时间推进/旅行/重大变化或自定义跳转：只允许完成这一次明确跳转；最多跨一个必要场景，必须写清因果衔接，不一口气跳过多个剧情节点，不顺手额外制造第二个重大转折。';
-        return '连续剧情锁（最高优先级）：只推进当前场景的下一个小节拍。保持当前时间、地点、参与人物、关系阶段与情绪惯性；先接住最新AIchính văn结尾已经发生的事实。禁止无缘无故跨时间/地点/人物；禁止突然关系跃迁或翻脸；禁止凭空制造重大事件、新设定或关键NPC；禁止把“准备/提议/走向/想要做”直接写成“已经完成”。允许 user 在同一时间/地点内写一组连贯动作、感受与对白，但必须在需要 char/NPC 反应的位置停下；绝不替 char/NPC 回答、决定、同意、说话、靠近、拥抱、亲吻或做任何新动作。';
+        if (allowJump) return 'Người dùng đã chọn rõ ràng đẩy thời gian / du lịch / biến động lớn hoặc một bước nhảy tùy chỉnh: chỉ được thực hiện đúng bước nhảy đó; tối đa vượt qua một cảnh cần thiết, phải viết rõ mạch nhân quả nối tiếp, không nhảy qua nhiều nút cốt truyện một lượt, không tiện tay tạo thêm khúc ngoặt lớn thứ hai.';
+        return 'Khóa liền mạch cốt truyện (ưu tiên cao nhất): chỉ đẩy tới nhịp nhỏ kế tiếp của cảnh hiện tại. Giữ nguyên thời gian, địa điểm, nhân vật đang có mặt, giai đoạn quan hệ và quán tính cảm xúc; trước hết phải tiếp nhận những sự thật đã xảy ra ở đoạn cuối chính văn AI mới nhất. Cấm nhảy thời gian/địa điểm/nhân vật một cách vô cớ; cấm đột ngột nhảy vọt quan hệ hoặc trở mặt; cấm bịa ra sự kiện lớn, thiết định mới hay NPC then chốt; cấm viết “chuẩn bị / đề nghị / đang đi tới / muốn làm” thành “đã hoàn tất”. Cho phép user viết một chuỗi hành động, cảm nhận và lời thoại liền mạch trong cùng thời gian/địa điểm, nhưng bắt buộc dừng lại ở chỗ cần char/NPC phản ứng; tuyệt đối không trả lời, quyết định, đồng ý, nói năng, tiến lại, ôm, hôn hay làm bất kỳ hành động mới nào thay cho char/NPC.';
     }
 
     function normalizeRelayCustomInput(value = '') {
@@ -1803,7 +1803,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                 expand: Boolean(value.expand),
             };
         }
-        // 兼容旧调用：历史上一个字符串代表“补充想法/自定义方向”，仍交给AI生成。
+        // Tương thích với lời gọi cũ: trước đây một chuỗi đơn lẻ nghĩa là “ý bổ sung / hướng tùy chỉnh”, vẫn đưa cho AI sinh nội dung.
         return { userText:'', notes:String(value || '').trim(), expand:true };
     }
 
@@ -1815,7 +1815,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const count=Math.max(1,relayTextCharCount(value));
         const min=Math.max(count+24,Math.round(count*1.35));
         const max=Math.min(700,Math.max(min+48,Math.round(count*2.15)));
-        return `原文约${count}字；扩写后建议约${min}-${max}字。不是硬凑字数，但必须比原文明显更完整。`;
+        return `Bản gốc khoảng ${count} chữ; sau khi mở rộng nên vào khoảng ${min}-${max} chữ. Không phải viết cho đủ số chữ, nhưng bắt buộc phải đầy đặn hơn bản gốc một cách rõ rệt.`;
     }
 
     function relayCustomContract(input = '') {
@@ -1823,16 +1823,16 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const chunks=[];
         if(custom.userText){
             chunks.push(custom.expand
-                ? `user原文（自然扩写模式；必须真正重写并扩充，核心行动、顺序、对象和说话意图全部保留；${relayExpansionLengthInstruction(custom.userText)}）：${custom.userText}`
-                : `user原文（轻度规整模式；只整理语序、标点、动作与对白边界，不新增剧情）：${custom.userText}`);
+                ? `Nguyên văn của user (chế độ mở rộng tự nhiên; bắt buộc viết lại và mở rộng thật sự, giữ nguyên toàn bộ hành động cốt lõi, trình tự, đối tượng và ý định lời nói; ${relayExpansionLengthInstruction(custom.userText)}): ${custom.userText}`
+                : `Nguyên văn của user (chế độ chỉnh câu nhẹ; chỉ sắp lại trật tự từ, dấu câu, ranh giới hành động và lời thoại, không thêm tình tiết): ${custom.userText}`);
         }
-        if(custom.notes)chunks.push(`补充想法（与user原文一起发送给AI；用于语气、方向与细节约束，不要求逐字写入）：${custom.notes}`);
+        if(custom.notes)chunks.push(`Ý bổ sung (gửi cho AI cùng nguyên văn của user; dùng để ràng buộc giọng điệu, hướng đi và chi tiết, không bắt buộc viết vào từng chữ): ${custom.notes}`);
         return chunks.join('\n');
     }
 
     function relayCustomVerificationTarget(input = '') {
         const custom=normalizeRelayCustomInput(input);
-        // 有明确user原文时，以原文为硬核；补充想法只做软指导，避免校验器把Ghi chú误当成必须逐字出现的台词。
+        // Khi đã có nguyên văn rõ ràng của user thì lấy nguyên văn làm lõi cứng; ý bổ sung chỉ là hướng dẫn mềm, tránh để bộ kiểm tra hiểu nhầm ghi chú thành lời thoại bắt buộc xuất hiện nguyên văn.
         return custom.userText || custom.notes;
     }
 
@@ -1842,105 +1842,105 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const custom=normalizeRelayCustomInput(customInput);
         const customContract=relayCustomContract(custom);
         const verificationTarget=relayCustomVerificationTarget(custom);
-        if(runtime.selected.has('custom')&&!custom.userText&&!custom.notes)throw new Error('已选择“自定义”，请填写user文字或补充想法');
+        if(runtime.selected.has('custom')&&!custom.userText&&!custom.notes)throw new Error('Đã chọn “Tùy chỉnh”, hãy điền phần chữ của user hoặc ý bổ sung');
         const chosen = [...runtime.selected].map(id => DIRECTIONS.find(item => item[0] === id)?.[1]).filter(Boolean);
-        if (customContract) chosen.push(`自定义：${customContract.slice(0, 900)}`);
-        if (!chosen.length) chosen.push('自然推进');
+        if (customContract) chosen.push(`Tùy chỉnh: ${customContract.slice(0, 900)}`);
+        if (!chosen.length) chosen.push('Tiến triển tự nhiên');
         if (runtime.settings?.fateEnabled && (runtime.selected.has('random') || runtime.settings?.fateAutoEnabled)) {
             const card = runtime.currentFateCard || (runtime.selected.has('random') ? drawFateCard({ manual:true }) : maybeAutoFate(entry));
-            if (card) chosen.push(`命运卡【${FATE_CATEGORY_LABELS[card.category] || card.category}】：${card.text}`);
+            if (card) chosen.push(`Thẻ định mệnh 【${FATE_CATEGORY_LABELS[card.category] || card.category}】: ${card.text}`);
         }
-        // P21：重写/中止恢复时，上下文只截到“稳定AI锚点”为止。
-        // 被中止的半截AI、以及它前面的待替换user消息都不能再污染新的接力稿。
+        // P21: khi viết lại hoặc khôi phục sau khi bị ngắt, ngữ cảnh chỉ cắt tới “mốc neo AI ổn định”.
+        // Phần AI dở dang do bị ngắt và tin nhắn user chờ thay thế đứng trước nó đều không được làm nhiễu bản tiếp sức mới.
         const chat = transcript(continuityFloorCount(), entry.index, { excludeOpening:true });
-        const jump = chosen.some(item => item.includes('时间推进') || item.includes('旅行/跨城') || item.includes('重大变化')) || /第二天|几小时后|旅行|出差|跨城|重大变化|跳到|直接到/.test(`${custom.userText} ${custom.notes}`);
+        const jump = chosen.some(item => item.includes('Đẩy thời gian') || item.includes('Du lịch/liên thành') || item.includes('Biến động lớn')) || /hôm sau|vài tiếng sau|du lịch|công tác|sang thành phố khác|biến động lớn|nhảy tới|đi thẳng tới/i.test(`${custom.userText} ${custom.notes}`);
         const currentTurn = currentTurnSnapshot(entry);
         const relayQuery = buildRelayQuery(currentTurn, chosen);
         const promptAnchor=anchorFromEntry(entry);
         const environment = await relayEnvironment(entry, relayQuery);
-        if(!relayAnchorIsCurrent(promptAnchor))throw new Error('构建接力上下文期间聊天或最新AITầng已变化，本次结果已丢弃');
+        if(!relayAnchorIsCurrent(promptAnchor))throw new Error('Trong lúc dựng ngữ cảnh tiếp sức, cuộc trò chuyện hoặc tầng AI mới nhất đã thay đổi; kết quả lần này bị hủy bỏ');
         runtime.lastEnvironment = environment;
         environment.currentReality = currentTurn;
         environment.currentRealityHardFacts = currentTurn.hardFacts || [];
         environment.timelinePriority = [
-            '1. currentRealityHardFacts = 代码判定的Đã hoàn thành事实，最高优先级。',
-            '2. 最新AIchính văn结尾（currentReality.currentRealityTail）= 当前现实真值。',
-            '3. 最新AIchính văn + 上一条user = 当前回合事实。',
-            '4. R9当前scene/人物Trạng thái。',
-            '5. 最近原文窗口。',
-            '6. R9总结/检索命中仅作历史参考；冲突时必须忽略旧资料。',
-            '7. 本次请求明确提供的有限剧情资料与规则。',
+            '1. currentRealityHardFacts = những sự thật đã hoàn tất do mã nguồn xác định, ưu tiên cao nhất.',
+            '2. Đoạn cuối chính văn AI mới nhất (currentReality.currentRealityTail) = giá trị thật của hiện thực hiện tại.',
+            '3. Chính văn AI mới nhất + tin nhắn user trước đó = sự thật của lượt hiện tại.',
+            '4. Cảnh (scene) và trạng thái nhân vật hiện tại của R9.',
+            '5. Cửa sổ nguyên văn gần nhất.',
+            '6. Các bản tổng kết/kết quả truy xuất của R9 chỉ là tham chiếu lịch sử; khi mâu thuẫn thì bắt buộc bỏ qua tư liệu cũ.',
+            '7. Phần tư liệu cốt truyện hữu hạn và các quy tắc được cung cấp tường minh trong yêu cầu này.',
         ];
         environment.recentChat = chat;
-        environment.recentChatPolicy = { floors: continuityFloorCount(), requestedMemoryWindow: normalizedRecentFloorCount(), note: 'P24连续性隔离：真正用于续写现在的原文固定只携带最近6层，且剧情超过6层后彻底排除开场消息。更早内容只能作为历史事实经R9结构化记忆/检索进入，不得作为当前动作模板。' };
-        environment.director = directorAppliesToRelay() ? { enabled:true, ...stagnationHint(chat) } : { enabled:false, note:'0-32剧情导演未作用于Tiếp sức cốt truyện bằng AI' };
+        environment.recentChatPolicy = { floors: continuityFloorCount(), requestedMemoryWindow: normalizedRecentFloorCount(), note: 'Cách ly liền mạch P24: phần nguyên văn thật sự dùng để viết tiếp hiện tại luôn chỉ mang theo 6 tầng gần nhất, và khi mạch truyện vượt quá 6 tầng thì loại hẳn tin nhắn mở màn. Nội dung cũ hơn chỉ được đi vào với tư cách sự thật lịch sử thông qua ký ức có cấu trúc/truy xuất của R9, không được dùng làm khuôn mẫu cho hành động hiện tại.' };
+        environment.director = directorAppliesToRelay() ? { enabled:true, ...stagnationHint(chat) } : { enabled:false, note:'Đạo diễn cốt truyện 0-32 không tác động lên Tiếp sức cốt truyện bằng AI' };
         environment.controlLayer = controlLayerSnapshot(entry);
-        return `你只替 user 写下一条可以直接发送的动作/对白，不继续写 assistant/角色chính văn，不替对方角色做决定。
-方向：${chosen.join(' + ')}
+        return `Bạn chỉ viết thay cho user một lượt hành động/lời thoại có thể gửi đi ngay, không viết tiếp chính văn của assistant/nhân vật, không quyết định thay nhân vật đối diện.
+Hướng: ${chosen.join(' + ')}
 
-【用户自定义行动契约｜本轮最高优先级】
-${customContract ? `${custom.userText ? `- user需要发送的原文：${custom.userText.slice(0,12000)}\n- AI扩写：${custom.expand ? `开启。必须真正重写并扩充，而不是原样复述或只加标点。${relayExpansionLengthInstruction(custom.userText)} 保留原有行动顺序、人物对象和说话意图，在不替char/NPC新增回应的前提下补充user侧动作衔接、语气、姿势、停顿和必要的即时感官细节。` : 'Đóng。仍必须调用AI做轻度规整：只调整语序、标点、动作/对白边界和明显口语病句，不主动添加新动作、新台词、新剧情或新结果。'}` : '- 未提供固定user原文；根据补充想法生成一条新的user输入。'}
-${custom.notes ? `- 补充想法：${custom.notes.slice(0,1200)}\n- 上方user原文与补充想法必须在同一次生成中一起读取。补充想法用于语气、方向或细节约束；若与user原文冲突，以user原文为准。` : '- 无额外补充想法。'}
-- 必须落实同一个核心行动、目的地、对象与意图；可以补充合理过程，但禁止换成别的行动。
-- 用户原文里的括号/圆括号内容若描述“随后、然后、接着、他/我做了……”之类动作，默认视为舞台动作/写作指令，不是角色要念出口的台词；必须把它改写成正常叙事动作，并让括号前后的对白各归其位，绝不能把括号动作连同说明直接念出来。
-- 如果原文是“user把/扶/抱/拉/带char到某个位置”“让char坐到自己腿上”这类由user主动造成的身体位置变化，可以把char写成user动作的宾语，例如“你扶住她的腰，把她往自己腿上带”；这不等于替char自主行动。禁止额外补写char主动配合、点头、回应、亲吻或其他自主反应。
-- 若user原文本身就是想说出的台词、提问或感受表达，应保留其核心表达和意思；扩写模式允许自然换句式、加引号和断句，不要求逐字照抄。
-${custom.userText&&custom.expand?`【自然扩写质量要求｜必须执行】
-- 不能把原文直接原样返回；不能只加逗号、句号或把括号换成一句连接词。
-- 先把原文拆成“动作 → 台词 → 动作 → 台词”的自然顺序，再补少量user侧动作细节，使整段像玩家认真写出来的消息，而不是说明书。
-- 原文已有对白保持口语感，不要擅自改成文绉绉、油腻、霸总或黄文腔。
-- 不复述上一轮assistantchính văn，不替user解释动机，不写char的心理或回应。
+【HỢP ĐỒNG HÀNH ĐỘNG TÙY CHỈNH CỦA NGƯỜI DÙNG｜ƯU TIÊN CAO NHẤT LƯỢT NÀY】
+${customContract ? `${custom.userText ? `- Nguyên văn user cần gửi đi: ${custom.userText.slice(0,12000)}\n- AI mở rộng: ${custom.expand ? `Bật. Bắt buộc viết lại và mở rộng thật sự, không phải chép lại nguyên văn hay chỉ thêm dấu câu. ${relayExpansionLengthInstruction(custom.userText)} Giữ nguyên trình tự hành động, đối tượng nhân vật và ý định lời nói vốn có; với điều kiện không thêm phản hồi thay cho char/NPC, hãy bổ sung phần nối tiếp hành động của user, giọng điệu, tư thế, khoảng ngừng và những chi tiết cảm giác tức thời cần thiết.` : 'Tắt. Vẫn phải gọi AI để chỉnh câu ở mức nhẹ: chỉ sửa trật tự từ, dấu câu, ranh giới hành động/lời thoại và các câu nói sai rõ rệt; không tự thêm hành động mới, lời thoại mới, tình tiết mới hay kết quả mới.'}` : '- Không có nguyên văn cố định của user; hãy dựa vào ý bổ sung để sinh một lượt nhập liệu mới cho user.'}
+${custom.notes ? `- Ý bổ sung: ${custom.notes.slice(0,1200)}\n- Nguyên văn của user ở trên và ý bổ sung phải được đọc cùng nhau trong một lần sinh. Ý bổ sung dùng để ràng buộc giọng điệu, hướng đi hoặc chi tiết; nếu mâu thuẫn với nguyên văn của user thì lấy nguyên văn của user làm chuẩn.` : '- Không có ý bổ sung nào thêm.'}
+- Bắt buộc thực hiện đúng cùng một hành động cốt lõi, cùng điểm đến, cùng đối tượng và cùng ý định; được bổ sung quá trình hợp lý, nhưng cấm đổi sang một hành động khác.
+- Nếu phần trong ngoặc đơn ở nguyên văn của người dùng mô tả các hành động kiểu “sau đó, rồi thì, tiếp đó, anh ấy/tôi đã làm…”, mặc định coi đó là chỉ dẫn sân khấu/chỉ thị viết, không phải lời nhân vật phải nói ra; bắt buộc viết lại thành hành động tự sự bình thường và đặt lời thoại trước sau dấu ngoặc về đúng chỗ, tuyệt đối không đọc thẳng cả phần hành động lẫn lời chú giải trong ngoặc thành thoại.
+- Nếu nguyên văn thuộc kiểu thay đổi vị trí cơ thể do user chủ động gây ra, như “user đỡ/ôm/kéo/dắt char tới một vị trí nào đó”, “để char ngồi lên đùi mình”, thì được viết char ở vai trò tân ngữ của hành động user, ví dụ “bạn đỡ lấy eo cô ấy, kéo cô ấy về phía đùi mình”; như vậy không phải là hành động tự chủ thay cho char. Cấm viết thêm cảnh char chủ động phối hợp, gật đầu, đáp lại, hôn hay bất kỳ phản ứng tự chủ nào khác.
+- Nếu bản thân nguyên văn của user chính là lời thoại, câu hỏi hoặc cách bày tỏ cảm nhận mà họ muốn nói ra, phải giữ lại cách diễn đạt cốt lõi và ý nghĩa của nó; chế độ mở rộng cho phép đổi kiểu câu, thêm dấu ngoặc kép và ngắt câu một cách tự nhiên, không bắt buộc chép nguyên từng chữ.
+${custom.userText&&custom.expand?`【YÊU CẦU CHẤT LƯỢNG KHI MỞ RỘNG TỰ NHIÊN｜BẮT BUỘC THỰC HIỆN】
+- Không được trả lại nguyên văn y như cũ; không được chỉ thêm dấu phẩy, dấu chấm hay đổi dấu ngoặc thành một từ nối.
+- Trước hết hãy tách nguyên văn theo trình tự tự nhiên “hành động → lời thoại → hành động → lời thoại”, rồi bổ sung một ít chi tiết hành động phía user, sao cho cả đoạn giống một tin nhắn người chơi viết nghiêm túc chứ không phải bản hướng dẫn sử dụng.
+- Giữ chất khẩu ngữ cho những lời thoại đã có trong nguyên văn, đừng tự ý đổi thành văn vẻ sáo rỗng, sến súa, giọng “tổng tài” hay giọng truyện người lớn rẻ tiền.
+- Không kể lại chính văn của assistant ở lượt trước, không giải thích động cơ thay user, không viết tâm lý hay phản hồi của char.
 - ${relayExpansionLengthInstruction(custom.userText)}
-- 参考转换：原文“我走到她旁边说，等一下（随后我坐下把她带到腿上）这样舒服点吗” → 可写成“我走到她椅子旁，先低声让她等一下，随后在椅子上坐下，伸手扶住她的腰，把人往自己腿上带了带：‘这样舒服点吗？’”这种结构；只学习整理方式，不照抄例句。` : ''}
-${verificationTarget && !custom.userText && customExpressionRequirements(verificationTarget).length?`- 必须逐句保留的台词/提问：\n${customExpressionRequirements(verificationTarget).map(item=>`  · ${item}`).join('\n')}`:''}
-${custom.userText && !custom.expand ? `【轻度规整模式｜硬限制】\n- 这不是自由续写。只允许整理上方 user 原文：修正语序、断句、标点、代词指向、对白与动作边界。\n- 可以把括号里的动作说明改写成正常叙事动作，但不能把括号说明念成台词。\n- 不得主动新增原文没有的新动作、新对白、新决定、新情节、新结果；原则上长度不超过原文约1.35倍。\n- 补充想法只能帮助确定语气/整理方式，不能借此把轻度规整升级成大段扩写。` : ''}
-- 必须保持原指令中“谁对谁做什么”的施事者和对象。若指令要求 NPC 做事，只能写成 user 请求、示意或等待该 NPC 去做，不得把它偷换成 user 自己做出另一个决定。
-- “几个、多少、选哪个、要不要”等开放问题必须保持未决，停在等待对应人物回答的位置；禁止自行补出数量、选项、同意或拒绝。
-- 若其他方向、命运卡、导演建议、旧记忆与这条自定义指令冲突，一律忽略冲突项并服从本行动契约。` : '- 本轮没有自定义行动契约，按所选方向自然推进。'}
+- Ví dụ chuyển đổi để tham khảo: nguyên văn “tôi đi tới bên cạnh cô ấy nói, đợi chút (sau đó tôi ngồi xuống và kéo cô ấy lên đùi) thế này dễ chịu hơn không” → có thể viết thành “tôi đi tới bên ghế cô ấy, khẽ bảo cô ấy đợi một chút, rồi ngồi xuống ghế, đưa tay đỡ lấy eo cô ấy, kéo người cô ấy về phía đùi mình: ‘Thế này dễ chịu hơn không?’”; chỉ học cách sắp xếp, không chép lại câu ví dụ.` : ''}
+${verificationTarget && !custom.userText && customExpressionRequirements(verificationTarget).length?`- Lời thoại/câu hỏi bắt buộc giữ lại từng câu:\n${customExpressionRequirements(verificationTarget).map(item=>`  · ${item}`).join('\n')}`:''}
+${custom.userText && !custom.expand ? `【CHẾ ĐỘ CHỈNH CÂU NHẸ｜GIỚI HẠN CỨNG】\n- Đây không phải viết tiếp tự do. Chỉ được sắp xếp lại nguyên văn của user ở trên: sửa trật tự từ, cách ngắt câu, dấu câu, cách trỏ của đại từ, ranh giới giữa lời thoại và hành động.\n- Được viết lại phần chú giải hành động trong ngoặc thành hành động tự sự bình thường, nhưng không được đọc phần chú giải đó thành lời thoại.\n- Không được tự thêm hành động mới, lời thoại mới, quyết định mới, tình tiết mới hay kết quả mới mà nguyên văn không có; về nguyên tắc độ dài không vượt quá khoảng 1,35 lần nguyên văn.\n- Ý bổ sung chỉ giúp xác định giọng điệu/cách sắp xếp, không được mượn cớ đó để biến việc chỉnh câu nhẹ thành một đoạn mở rộng dài.` : ''}
+- Bắt buộc giữ đúng chủ thể và đối tượng của “ai làm gì với ai” trong chỉ thị gốc. Nếu chỉ thị yêu cầu NPC làm gì đó thì chỉ được viết thành user đề nghị, ra hiệu hoặc chờ NPC đó làm, không được đánh tráo thành user tự đưa ra một quyết định khác.
+- Những câu hỏi mở như “mấy cái, bao nhiêu, chọn cái nào, có nên không” bắt buộc phải để ngỏ, dừng lại ở chỗ chờ nhân vật tương ứng trả lời; cấm tự điền ra số lượng, phương án, lời đồng ý hay từ chối.
+- Nếu các hướng khác, thẻ định mệnh, gợi ý của Đạo diễn hay ký ức cũ mâu thuẫn với chỉ thị tùy chỉnh này thì bỏ qua toàn bộ phần mâu thuẫn và tuân theo hợp đồng hành động này.` : '- Lượt này không có hợp đồng hành động tùy chỉnh, hãy tiến triển tự nhiên theo hướng đã chọn.'}
 
-【本轮写作视角｜硬要求】
+【NGÔI KỂ CỦA LƯỢT NÀY｜YÊU CẦU CỨNG】
 - ${relayPerspectiveInstruction()}
-- 视角只改变 user 的叙述人称，不改变当前事实、Quan hệ nhân vật、USER主体边界、NPC权限或剧情方向。
+- Ngôi kể chỉ đổi nhân xưng trong lời kể của user, không đổi sự thật hiện tại, quan hệ nhân vật, ranh giới chủ thể USER, quyền hạn của NPC hay hướng đi của mạch truyện.
 ${continuityRules(jump)}
 
-【当前现实硬事实｜代码判定，高于检索/总结/旧scene】
-${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`).join('\n') : '- 未识别到额外硬事实；仍以最新AIchính văn结尾为准。'}
+【SỰ THẬT CỨNG CỦA HIỆN THỰC HIỆN TẠI｜do mã nguồn xác định, cao hơn truy xuất/tổng kết/scene cũ】
+${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`).join('\n') : '- Không nhận diện thêm sự thật cứng nào; vẫn lấy đoạn cuối chính văn AI mới nhất làm chuẩn.'}
 
-【Dòng thời gian真值规则｜高于所有旧记忆】
-- 最新AIchính văn的结尾就是“现在”。它已经写明完成的动作，视为已经完成，绝不能重新发起，除非用户自定义明确要求“再来一次/重新做”。若上一条user明确从A移动到B，B是当前地点，A立即降级为历史地点。
-- 【P24开场隔离】0层/1层/角色开场白只属于历史起点。只要当前锚点已经超过6层，严禁复刻、改写、重新执行开场白中的动作链、地点链、物品链或对白链；即使历史检索再次命中，也只能当过去事实。
-- 如果你发现某段旧资料与当前场景都很具体，必须选择“最新6层原文 + 最新AI结尾”，绝不能因为旧资料更长、更生动就回到旧剧情。
-- 如果 R9 scene、总结、retrievalHits 或旧聊天与最新AIchính văn发生冲突，一律以最新AIchính văn为准。
-- 先确认 user 当前身体位置、正在做什么、刚刚完成了什么，再写下一步。禁止剧情倒退。
-- ${custom.userText ? (custom.expand ? `本轮是自然扩写模式：${relayExpansionLengthInstruction(custom.userText)} 不要硬凑300-800字，也不要把短句灌水成大段小说。` : '本轮是轻度规整模式：不要为了凑字数扩写，尽量贴近原文长度，只让语句更顺、更清楚。') : '建议写成约300-800中文字符的完整 user 段落；允许 user 在当前同一场景里有连续的小动作、真实感受与对白。U1.4默认不做800字符硬截断；若用户设置了接力字符上限，则必须服从该上限。'}
-- 不写跨时间/跨地点的流水账，不提前把需要 char/NPC 回应之后才可能发生的未来结果写完。
+【QUY TẮC GIÁ TRỊ THẬT CỦA DÒNG THỜI GIAN｜cao hơn mọi ký ức cũ】
+- Đoạn cuối của chính văn AI mới nhất chính là “bây giờ”. Những hành động nó đã ghi rõ là hoàn tất thì coi như đã xong, tuyệt đối không được khởi động lại, trừ khi phần tùy chỉnh của người dùng yêu cầu rõ “làm lại một lần nữa”. Nếu tin nhắn user trước đó nói rõ là đã di chuyển từ A sang B thì B là địa điểm hiện tại, A lập tức hạ xuống thành địa điểm quá khứ.
+- 【CÁCH LY MỞ MÀN P24】Tầng 0/tầng 1 và lời mở đầu của nhân vật chỉ là điểm khởi đầu lịch sử. Một khi mốc neo hiện tại đã vượt quá 6 tầng thì nghiêm cấm sao chép, viết lại hay thực hiện lại chuỗi hành động, chuỗi địa điểm, chuỗi vật phẩm hoặc chuỗi lời thoại trong lời mở đầu; kể cả khi truy xuất lịch sử lại trúng vào đó thì cũng chỉ được coi là sự thật quá khứ.
+- Nếu bạn thấy một đoạn tư liệu cũ và cảnh hiện tại đều rất cụ thể, bắt buộc chọn “nguyên văn 6 tầng gần nhất + đoạn cuối AI mới nhất”, tuyệt đối không được vì tư liệu cũ dài hơn, sinh động hơn mà quay về tình tiết cũ.
+- Nếu scene của R9, các bản tổng kết, retrievalHits hay đoạn chat cũ mâu thuẫn với chính văn AI mới nhất thì luôn lấy chính văn AI mới nhất làm chuẩn.
+- Trước hết hãy xác định vị trí cơ thể hiện tại của user, họ đang làm gì, vừa hoàn tất việc gì, rồi mới viết bước kế tiếp. Cấm để mạch truyện đi lùi.
+- ${custom.userText ? (custom.expand ? `Lượt này là chế độ mở rộng tự nhiên: ${relayExpansionLengthInstruction(custom.userText)} Đừng gò cho đủ 300-800 chữ, cũng đừng bơm một câu ngắn thành cả đoạn tiểu thuyết.` : 'Lượt này là chế độ chỉnh câu nhẹ: đừng mở rộng để cho đủ chữ, hãy bám sát độ dài nguyên văn, chỉ làm câu văn trôi chảy và rõ ràng hơn.') : 'Nên viết thành một đoạn user hoàn chỉnh khoảng 300-800 chữ; user được phép có chuỗi hành động nhỏ liền mạch, cảm nhận chân thật và lời thoại trong cùng một cảnh hiện tại. U1.4 mặc định không cắt cứng ở 800 ký tự; nếu người dùng có đặt giới hạn ký tự cho phần tiếp sức thì bắt buộc tuân theo giới hạn đó.'}
+- Không viết kiểu liệt kê dàn trải xuyên thời gian/địa điểm, không viết trước những kết quả tương lai chỉ có thể xảy ra sau khi char/NPC đáp lời.
 
-【主体边界语义硬锁｜绝对不能违反】
-- 整段只允许 user 产生新的主动动作、新对白、新决定和新感受。
-- 允许客观观察 char/NPC 已经存在的静态Trạng thái，例如“她的头发还湿着”“她身上还裹着浴巾”“她的衣服仍然潮湿”；静态观察不算替NPC行动。
-- char/NPC 不得在这条 user 消息里产生任何自主的新动作、表情变化、语言、回应、同意、拒绝、靠近、躲闪、点头、摇头或主动身体反应。用户原文明确要求的“user把/扶/抱/拉/带char到某位置”可以写成user主动动作，char只能作为宾语，不能顺手补写char主动配合。
-- 不论使用全名、代词还是昵称都一样：例如角色“藤原梦”写成“梦走了过来/梦说/她要求/她伸手”仍然属于越权，必须停在user动作或对白处。
-- 禁止写“她笑了/她点头/她靠过来/她没有躲/她抱住我/她说……/他转身/对方回应……”等新行为。
-- 如果一句话需要描述 char/NPC 接下来会做什么，就在 user 动作或对白结束处停笔。
+【KHÓA CỨNG NGỮ NGHĨA VỀ RANH GIỚI CHỦ THỂ｜TUYỆT ĐỐI KHÔNG ĐƯỢC VI PHẠM】
+- Trong cả đoạn, chỉ user mới được sinh ra hành động chủ động mới, lời thoại mới, quyết định mới và cảm nhận mới.
+- Được phép quan sát khách quan trạng thái tĩnh sẵn có của char/NPC, ví dụ “tóc cô ấy vẫn còn ướt”, “người cô ấy vẫn quấn khăn tắm”, “quần áo cô ấy vẫn còn ẩm”; quan sát tĩnh không tính là hành động thay cho NPC.
+- Trong tin nhắn user này, char/NPC không được sinh ra bất kỳ hành động tự chủ mới, thay đổi biểu cảm, lời nói, phản hồi, sự đồng ý, từ chối, tiến lại, né tránh, gật đầu, lắc đầu hay phản ứng cơ thể chủ động nào. Những gì nguyên văn của người dùng yêu cầu rõ ràng như “user đỡ/ôm/kéo/dắt char tới một vị trí nào đó” thì được viết thành hành động chủ động của user, char chỉ đóng vai trò tân ngữ, không được tiện tay viết thêm cảnh char chủ động phối hợp.
+- Dùng tên đầy đủ, đại từ hay biệt danh đều như nhau: ví dụ nhân vật “Fujiwara Mộng” mà viết thành “Mộng bước tới / Mộng nói / cô ấy yêu cầu / cô ấy đưa tay” thì vẫn là vượt quyền, bắt buộc dừng lại ở hành động hoặc lời thoại của user.
+- Cấm viết những hành vi mới kiểu “cô ấy cười / cô ấy gật đầu / cô ấy ngả vào / cô ấy không né / cô ấy ôm lấy tôi / cô ấy nói… / anh ấy quay người / đối phương đáp lại…”.
+- Nếu một câu buộc phải mô tả char/NPC sắp làm gì thì hãy dừng bút ngay khi hành động hoặc lời thoại của user kết thúc.
 
-【绝对直叙规则｜与剧情Trạng thái锁同级】
-- 用户自定义中明确要求说出的原话、提问和比较性自我表达不受文风禁词限制；以下规则只限制AI自行新增的修辞。
-- 拒绝比喻式写法：禁止明喻、暗喻、类比、拟人、象征、夸张和文学化意象。
-- 禁止出现“像、像是、好像、仿佛、如同、犹如、宛如、宛若、好似、仿若、恍若、恰似、有如、一样、似的、……般”等比较/比喻结构。
-- 禁止“空气凝固、情绪翻涌、目光灼烧、声音砸下、夜色拥抱、心里炸开”等隐喻或拟人句。
-- 只写可直接观察或确认的事实：user 的具体动作、姿势、位置、触碰、实际感受和直接对白。描写必须朴素、准确、无修辞。
-只输出可直接作为 user 消息发送的chính văn，不输出分析、标题、选项、解释、JSON、XML标签或代码块。只使用本次请求明确提供的有限剧情资料，不推测未提供的设定。
+【QUY TẮC KỂ THẲNG TUYỆT ĐỐI｜ngang cấp với khóa trạng thái cốt truyện】
+- Những lời gốc, câu hỏi và cách tự bày tỏ có tính so sánh mà phần tùy chỉnh của người dùng yêu cầu nói ra thì không bị ràng buộc bởi danh sách từ cấm về văn phong; các quy tắc dưới đây chỉ giới hạn phần tu từ do AI tự thêm vào.
+- Từ chối lối viết ví von: cấm so sánh trực tiếp, ẩn dụ, loại suy, nhân hóa, tượng trưng, phóng đại và hình ảnh văn vẻ.
+- Cấm dùng các cấu trúc so sánh/ví von như “như, như thể, giống như, tựa như, tựa hồ, y như, hệt như, chẳng khác nào, dường như, tưởng chừng như, như vậy, y hệt”.
+- Cấm những câu ẩn dụ hay nhân hóa kiểu “không khí đông cứng, cảm xúc trào dâng, ánh mắt thiêu đốt, âm thanh ập xuống, màn đêm ôm lấy, trong lòng nổ tung”.
+- Chỉ viết những sự thật quan sát hoặc xác nhận được trực tiếp: hành động cụ thể, tư thế, vị trí, sự tiếp xúc, cảm nhận thực tế và lời thoại trực tiếp của user. Phần miêu tả phải mộc mạc, chính xác, không tu từ.
+Chỉ xuất ra phần chính văn có thể gửi đi ngay dưới dạng tin nhắn của user, không xuất phân tích, tiêu đề, danh sách lựa chọn, giải thích, JSON, thẻ XML hay khối mã. Chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong yêu cầu này, không suy đoán những thiết định chưa được cung cấp.
 
-【0-32规则账本｜高优先级】
-${(() => { const r=environment.controlLayer?.ledger||{}; const lines=[...(r.long||[]).map(x=>`长期：${x}`),...(r.chapter||[]).map(x=>`本章：${x}`),...(r.timed||[]).map(x=>`临时（剩${x.remaining}层）：${x.text}`)]; return lines.length?lines.map(x=>`- ${x}`).join('\n'):'- 无额外规则'; })()}
+【SỔ CÁI QUY TẮC 0-32｜ưu tiên cao】
+${(() => { const r=environment.controlLayer?.ledger||{}; const lines=[...(r.long||[]).map(x=>`Dài hạn: ${x}`),...(r.chapter||[]).map(x=>`Chương này: ${x}`),...(r.timed||[]).map(x=>`Tạm thời (còn ${x.remaining} tầng): ${x.text}`)]; return lines.length?lines.map(x=>`- ${x}`).join('\n'):'- Không có quy tắc bổ sung'; })()}
 
-【0-32命运卡｜软约束】
-${environment.controlLayer?.fateCard ? `- ${environment.controlLayer.fateCard.categoryLabel}：${environment.controlLayer.fateCard.text}\n- 命运卡只提供“可能发生什么”的种子；若与最新chính văn、角色人设、规则账本或连续剧情锁冲突，必须降级或忽略。` : '- 本轮无命运卡。'}
+【THẺ ĐỊNH MỆNH 0-32｜ràng buộc mềm】
+${environment.controlLayer?.fateCard ? `- ${environment.controlLayer.fateCard.categoryLabel}: ${environment.controlLayer.fateCard.text}\n- Thẻ định mệnh chỉ gieo mầm cho “điều gì có thể xảy ra”; nếu mâu thuẫn với chính văn mới nhất, thiết định nhân vật, sổ cái quy tắc hay khóa liền mạch cốt truyện thì bắt buộc hạ cấp hoặc bỏ qua.` : '- Lượt này không có thẻ định mệnh.'}
 
-【当前酒馆剧情环境】
+【MÔI TRƯỜNG CỐT TRUYỆN HIỆN TẠI CỦA SILLYTAVERN】
 ${JSON.stringify(environment)}
 
-【最后提醒】先看 currentReality.currentRealityTail。它代表此刻真实Trạng thái；它是“起跑线”，不是让你改写的素材。user接力第一句就必须发生在它之后，不能总结、复述或换句话重演刚刚的AIchính văn。`;
+【NHẮC CUỐI】Hãy xem currentReality.currentRealityTail trước. Nó là trạng thái thật của lúc này; nó là “vạch xuất phát”, không phải chất liệu để bạn viết lại. Câu đầu tiên của phần tiếp sức cho user bắt buộc phải xảy ra sau nó, không được tóm tắt, kể lại hay đổi câu chữ để diễn lại chính văn AI vừa rồi.`;
     }
 
     function strip(raw) {
@@ -1949,7 +1949,7 @@ ${JSON.stringify(environment)}
             .replace(/<analysis>[\s\S]*?<\/analysis>/gi, '')
             .replace(/^\s*```(?:text|markdown|md|json)?\s*/i, '')
             .replace(/\s*```\s*$/i, '')
-            .replace(/^\s*(?:assistant|user|用户|chính văn|输出|回答)\s*[:：]\s*/i, '')
+            .replace(/^\s*(?:assistant|user|người dùng|chính văn|kết quả|trả lời)\s*[:]\s*/i, '')
             .trim();
         if ((value.startsWith('“') && value.endsWith('”')) || (value.startsWith('\"') && value.endsWith('\"'))) value = value.slice(1, -1).trim();
         return value;
@@ -1958,24 +1958,24 @@ ${JSON.stringify(environment)}
     function cleanRelayModelOutput(raw) {
         let value = strip(raw).replace(/\r\n?/g, '\n').trim();
         if (!value) return '';
-        // 部分模型会在chính văn外再包一层礼貌话术/标题；这些不是 user 消息chính văn。
+        // Một số mô hình còn bọc thêm lời khách sáo/tiêu đề bên ngoài chính văn; những thứ đó không phải nội dung tin nhắn của user.
         for (let pass=0; pass<3; pass+=1) {
             const cleaned=value
-                .replace(/^\s*(?:【\s*)?(?:chính văn|输出|回答|assistant|user|用户)(?:\s*】)?\s*[:：]\s*/i, '')
-                .replace(/^\s*(?:以下(?:是|为)|下面(?:是|为))[，,。！!：:\s]*/i, '')
-                // “好的，我推开门”可能是真实对白；只有它后面明确接包装词时才剥离。
-                .replace(/^\s*(?:好的|好吧|当然|明白了|可以)[，,。！!：:\s]+(?=(?:【\s*)?(?:chính văn|输出|回答|以下|下面))/i, '')
+                .replace(/^\s*(?:【\s*)?(?:chính văn|kết quả|trả lời|assistant|user|người dùng)(?:\s*】)?\s*[:]\s*/i, '')
+                .replace(/^\s*(?:dưới đây (?:là|chính là)|sau đây (?:là|chính là))[,.!:\s]*/i, '')
+                // “Được, tôi đẩy cửa ra” có thể là lời thoại thật; chỉ bóc bỏ khi ngay sau nó là một từ bao bọc rõ ràng.
+                .replace(/^\s*(?:được rồi|được thôi|dĩ nhiên|đã hiểu|vâng|ok)[,.!:\s]+(?=(?:【\s*)?(?:chính văn|kết quả|trả lời|dưới đây|sau đây))/i, '')
                 .trim();
             if (cleaned===value) break;
             value=cleaned;
         }
-        // 只处理独立一行的元说明，避免误伤chính văn中的正常对白。
+        // Chỉ xử lý những dòng chú thích đứng riêng, tránh làm hỏng lời thoại bình thường trong chính văn.
         const lines = value.split('\n').map(line => line.trim()).filter(Boolean);
-        while (lines.length && /^(?:好的|明白了|当然可以|以下(?:是|为)|下面(?:是|为)|chính văn如下)[，,。！!：:\s]*$/i.test(lines[0])) lines.shift();
-        while (lines.length && /^(?:注|说明|Ghi chú|解释|附言|以上(?:就是|内容)|希望这|如果你还需要|需要我继续)[：:，,\s]/i.test(lines.at(-1))) lines.pop();
+        while (lines.length && /^(?:được rồi|đã hiểu|dĩ nhiên rồi|dưới đây (?:là|chính là)|sau đây (?:là|chính là)|chính văn như sau)[,.!:\s]*$/i.test(lines[0])) lines.shift();
+        while (lines.length && /^(?:lưu ý|chú thích|ghi chú|giải thích|tái bút|trên đây (?:là|chính là)|hy vọng|nếu bạn còn cần|bạn có muốn tôi viết tiếp)[:,\s]/i.test(lines.at(-1))) lines.pop();
         value = lines.join('\n').trim();
-        // 常见的完成尾标记来自预设模板，不属于可发送的剧情chính văn。
-        value = value.replace(/(?:^|\n)\s*(?:（完）|\(完\)|\[完\]|完毕|以上内容)[。！!。]?\s*$/i, '').trim();
+        // Những dấu kết thúc quen thuộc đến từ khuôn mẫu preset, không thuộc phần chính văn có thể gửi đi.
+        value = value.replace(/(?:^|\n)\s*(?:\(hết\)|\[hết\]|hết|kết thúc|nội dung trên)[.!]?\s*$/i, '').trim();
         return value;
     }
 
@@ -1993,14 +1993,14 @@ ${JSON.stringify(environment)}
     }
 
     const RELAY_SYSTEM_PROMPT = `${FALLEN_WRITER_CONTEXT}
-【AI接力任务】你是互动剧情 user 输入代写器。用户本轮明确输入的自定义行动是最高优先级事实：必须执行同一个核心行动、目的地、对象与意图，只能补充过程，绝不能偷换成另一件事。若用户提供“user需要发送的话”并开启AI扩写，你必须真正改写并自然扩充：不能原样返回、不能只加标点、不能把短句机械拉长；应整理动作与对白顺序，把括号舞台动作写成自然叙事，并补充少量只属于user的动作衔接、语气、姿势、停顿或即时感官细节。若ĐóngAI扩写，则只做轻度规整。若用户自定义本身是想说出的台词、提问或感受表达，应保留核心意思和口语感，扩写时允许自然换句式而非逐字锁死。严格遵守连续剧情锁、USER主体语义硬锁与绝对直叙规则。只允许user产生新的主动动作、对白、决定和感受；允许客观描述char/NPC已经存在的静态Trạng thái。用户明确写出的“把/扶/抱/拉/带char到某位置”可作为user主动动作执行，char只能作为宾语；除此之外不得替char/NPC新增自主动作、表情变化、说话、回应、要求、邀请、同意、拒绝或主动身体反应。角色全名、代词、昵称都按同一主体识别；绝不能把user下一步写成包含char/NPC完整回应的一整轮场景。禁止AI自行新增任何比喻、类比、拟人、象征、夸张或文学化意象。长度服从本轮动态要求，不为凑字数灌水。只输出userchính văn。`;
+【NHIỆM VỤ TIẾP SỨC AI】Bạn là người viết thay phần nhập liệu của user trong mạch truyện tương tác. Hành động tùy chỉnh mà người dùng nhập rõ ràng ở lượt này là sự thật có ưu tiên cao nhất: bắt buộc thực hiện đúng cùng một hành động cốt lõi, cùng điểm đến, cùng đối tượng và cùng ý định, chỉ được bổ sung quá trình, tuyệt đối không được đánh tráo sang việc khác. Nếu người dùng có cung cấp “lời user cần gửi đi” và bật AI mở rộng, bạn bắt buộc phải viết lại và mở rộng thật sự một cách tự nhiên: không trả lại nguyên văn, không chỉ thêm dấu câu, không kéo dài một câu ngắn một cách máy móc; hãy sắp lại trình tự hành động và lời thoại, chuyển chỉ dẫn sân khấu trong ngoặc thành tự sự tự nhiên, và bổ sung một chút phần nối tiếp hành động, giọng điệu, tư thế, khoảng ngừng hoặc chi tiết cảm giác tức thời chỉ thuộc về user. Nếu tắt AI mở rộng thì chỉ chỉnh câu ở mức nhẹ. Nếu phần tùy chỉnh của người dùng vốn đã là lời thoại, câu hỏi hay cách bày tỏ cảm nhận mà họ muốn nói ra, hãy giữ ý chính và chất khẩu ngữ; khi mở rộng được phép đổi kiểu câu tự nhiên chứ không khóa cứng từng chữ. Tuân thủ nghiêm khóa liền mạch cốt truyện, khóa cứng ngữ nghĩa về chủ thể USER và quy tắc kể thẳng tuyệt đối. Chỉ user mới được sinh ra hành động chủ động, lời thoại, quyết định và cảm nhận mới; được phép mô tả khách quan trạng thái tĩnh sẵn có của char/NPC. Những gì người dùng viết rõ như “đỡ/ôm/kéo/dắt char tới một vị trí nào đó” thì được thực hiện như hành động chủ động của user, char chỉ đóng vai trò tân ngữ; ngoài ra không được thêm cho char/NPC hành động tự chủ, thay đổi biểu cảm, lời nói, phản hồi, yêu cầu, lời mời, sự đồng ý, từ chối hay phản ứng cơ thể chủ động nào. Tên đầy đủ, đại từ và biệt danh của nhân vật đều được nhận diện là cùng một chủ thể; tuyệt đối không được viết bước kế tiếp của user thành cả một lượt cảnh có đầy đủ phản hồi của char/NPC. Cấm AI tự thêm bất kỳ phép ví von, so sánh, nhân hóa, tượng trưng, phóng đại hay hình ảnh văn vẻ nào. Độ dài tuân theo yêu cầu động của lượt này, không viết lan man cho đủ chữ. Chỉ xuất ra chính văn của user.`;
 
     function configuredSourceMode() {
         return 'independent';
     }
 
     function configuredSourceLabel() {
-        return 'AI接力独立API · 有限剧情资料';
+        return 'API riêng của Tiếp sức AI · tư liệu cốt truyện hữu hạn';
     }
 
     function isProviderPolicyRefusalText(value) {
@@ -2008,7 +2008,7 @@ ${JSON.stringify(environment)}
     }
 
     function providerPolicyRefusalError(value) {
-        const error=new Error(String(value||'供应商政策拒绝').slice(0,1000));
+        const error=new Error(String(value||'Nhà cung cấp từ chối theo chính sách').slice(0,1000));
         error.name='ProviderPolicyRefusalError';error.code='provider-policy-refusal';error.policyRefusal=true;
         return error;
     }
@@ -2021,46 +2021,46 @@ ${JSON.stringify(environment)}
     }
 
     const RELAY_POLICY_RECOVERY_SYSTEM_PROMPT = [
-        '你是一个中文文本编辑器，只处理本次请求明确给出的 user 文本。',
-        '你的任务是整理或自然扩写 user 自己的动作、对白和提问；不得补写对方角色/NPC 的新回应、心理、表情、动作或结论。',
-        '不要读取或假设任何未在本次请求中提供的旧聊天、世界书、RAG、手机、总结或其他背景。',
-        '保留原文核心意思、人物对象、动作顺序和开放问题；括号里的动作说明可以改成自然叙事。',
-        '只输出可以直接发送的 user chính văn，不要解释、标题、标签或分析。',
-        '遵守当前模型服务的使用政策。',
+        'Bạn là một trình biên tập văn bản tiếng Việt, chỉ xử lý phần văn bản của user được đưa ra tường minh trong yêu cầu này.',
+        'Nhiệm vụ của bạn là sắp xếp lại hoặc mở rộng tự nhiên chính hành động, lời thoại và câu hỏi của user; không được viết thêm phản hồi, tâm lý, biểu cảm, hành động hay kết luận mới của nhân vật đối diện/NPC.',
+        'Đừng đọc hay phỏng đoán bất kỳ đoạn chat cũ, sách thế giới, RAG, điện thoại, bản tổng kết hay bối cảnh nào không được cung cấp trong yêu cầu này.',
+        'Giữ nguyên ý chính, đối tượng nhân vật, trình tự hành động và các câu hỏi để ngỏ của nguyên văn; phần chú giải hành động trong ngoặc có thể chuyển thành tự sự tự nhiên.',
+        'Chỉ xuất ra chính văn của user có thể gửi đi ngay, không giải thích, không tiêu đề, không nhãn, không phân tích.',
+        'Tuân thủ chính sách sử dụng hiện hành của dịch vụ mô hình.',
     ].join('\n');
 
     function buildPolicyRecoveryPrompt(input = '') {
         const custom=normalizeRelayCustomInput(input);
         const source=String(custom.userText||'').trim();
         const notes=String(custom.notes||'').trim();
-        if(!source&&!notes)throw new Error('最小上下文恢复缺少可编辑的 user 文本或补充想法');
+        if(!source&&!notes)throw new Error('Bước khôi phục ngữ cảnh tối thiểu thiếu văn bản user hoặc ý bổ sung để biên tập');
         const mode=source
             ? (custom.expand
-                ? `自然扩写：必须真正改写，不得原样返回；${relayExpansionLengthInstruction(source)} 只补 user 侧必要的动作衔接、语气、停顿和即时感受，不新增对方回应。`
-                : '轻度规整：只整理语序、标点、动作与对白边界，不新增剧情、动作、台词或结果。')
-            : '根据补充想法生成一条简洁的 user 输入；只写 user，不写对方角色的回应。';
-        return `【AI接力最小必要上下文恢复】
-本次只处理下面明确提供的文字，不携带旧剧情、世界书、RAG、手机、总结或其他历史上下文。
+                ? `Mở rộng tự nhiên: bắt buộc viết lại thật sự, không được trả lại nguyên văn; ${relayExpansionLengthInstruction(source)} Chỉ bổ sung phần nối tiếp hành động, giọng điệu, khoảng ngừng và cảm nhận tức thời cần thiết phía user, không thêm phản hồi của nhân vật đối diện.`
+                : 'Chỉnh câu nhẹ: chỉ sắp lại trật tự từ, dấu câu, ranh giới hành động và lời thoại; không thêm tình tiết, hành động, lời thoại hay kết quả mới.')
+            : 'Dựa vào ý bổ sung để sinh một lượt nhập liệu ngắn gọn cho user; chỉ viết về user, không viết phản hồi của nhân vật đối diện.';
+        return `【KHÔI PHỤC NGỮ CẢNH TỐI THIỂU CHO TIẾP SỨC AI】
+Lần này chỉ xử lý phần chữ được cung cấp tường minh dưới đây, không mang theo tình tiết cũ, sách thế giới, RAG, điện thoại, bản tổng kết hay bất kỳ ngữ cảnh lịch sử nào.
 
-【写作视角】
+【NGÔI KỂ】
 ${relayPerspectiveInstruction()}
 
-【处理模式】
+【CHẾ ĐỘ XỬ LÝ】
 ${mode}
 
-【user原文】
-${source||'（未提供）'}
+【NGUYÊN VĂN CỦA USER】
+${source||'(không được cung cấp)'}
 
-【补充想法】
-${notes||'无'}
+【Ý BỔ SUNG】
+${notes||'không có'}
 
-【硬要求】
-1. 保留原文核心行动、对象、先后顺序、提问和说话意图。
-2. 原文中的开放问题保持开放，不替对方回答。
-3. 括号动作改成正常叙事，不把括号说明念成台词。
-4. 只允许 user 产生新的主动动作、对白、决定和感受；不得新增 char/NPC 的主动回应。
-5. 不引用、不补写任何未在本请求中出现的背景事实。
-6. 只输出可直接发送的 user chính văn。`;
+【YÊU CẦU CỨNG】
+1. Giữ nguyên hành động cốt lõi, đối tượng, trình tự trước sau, câu hỏi và ý định lời nói của nguyên văn.
+2. Những câu hỏi để ngỏ trong nguyên văn phải giữ nguyên trạng thái để ngỏ, không trả lời thay đối phương.
+3. Chuyển hành động trong ngoặc thành tự sự bình thường, không đọc phần chú giải trong ngoặc thành lời thoại.
+4. Chỉ user mới được sinh ra hành động chủ động, lời thoại, quyết định và cảm nhận mới; không thêm phản hồi chủ động của char/NPC.
+5. Không trích dẫn, không viết thêm bất kỳ sự thật bối cảnh nào không xuất hiện trong yêu cầu này.
+6. Chỉ xuất ra chính văn của user có thể gửi đi ngay.`;
     }
 
     async function independent(prompt, { systemPrompt = RELAY_SYSTEM_PROMPT, jsonMode = false, responseLength = null, signal = null } = {}) {
@@ -2085,32 +2085,32 @@ ${notes||'无'}
             });
         } catch (error) {
             if (error?.policyRefusal === true || String(error?.name||'') === 'ProviderPolicyRefusalError' || String(error?.code||'') === 'provider-policy-refusal' || isProviderPolicyRefusalText(error?.message)) {
-                runtime.lastGenerationSource='relay-independent-api';runtime.lastGenerationSourceLabel='AI接力独立API · 供应商政策拒绝';
-                const wrapped=providerPolicyRefusalError(error?.message||'供应商政策拒绝');
+                runtime.lastGenerationSource='relay-independent-api';runtime.lastGenerationSourceLabel='API riêng của Tiếp sức AI · nhà cung cấp từ chối theo chính sách';
+                const wrapped=providerPolicyRefusalError(error?.message||'Nhà cung cấp từ chối theo chính sách');
                 wrapped.cause=error;
                 throw wrapped;
             }
             throw error;
         }
         if(isProviderPolicyRefusalText(data?.text)){
-            runtime.lastGenerationSource='relay-independent-api';runtime.lastGenerationSourceLabel='AI接力独立API · 供应商政策拒绝';
+            runtime.lastGenerationSource='relay-independent-api';runtime.lastGenerationSourceLabel='API riêng của Tiếp sức AI · nhà cung cấp từ chối theo chính sách';
             throw providerPolicyRefusalError(data.text);
         }
         runtime.lastPipelineDebug = data?.promptPipeline || body.promptPipeline;
         runtime.lastProviderFinishReason=String(data?.finishReason||'');
         runtime.lastGenerationSource='relay-independent-api';
-        runtime.lastGenerationSourceLabel='AI接力独立API · 有限剧情资料';
+        runtime.lastGenerationSourceLabel='API riêng của Tiếp sức AI · tư liệu cốt truyện hữu hạn';
         return data.text;
     }
 
     async function generateWithConfiguredApi(prompt, options = {}) {
         const owner = String(options.owner || 'Tiếp sức cốt truyện bằng AI');
-        if(!runtime.configuredSourceReady)throw new Error('AI接力写作源尚未加载完成');
-        if(runtime.activeGeneration){const error=new Error(`${runtime.activeGenerationOwner||'上一条AI接力请求'}仍在后台收尾；为防重复调用，请等它真正结束后再试`);error.name='RelayGenerationInFlightError';throw error;}
+        if(!runtime.configuredSourceReady)throw new Error('Nguồn viết của Tiếp sức AI chưa nạp xong');
+        if(runtime.activeGeneration){const error=new Error(`${runtime.activeGenerationOwner||'Yêu cầu Tiếp sức AI trước đó'} vẫn đang chạy nốt ở nền; để tránh gọi trùng, hãy đợi nó kết thúc hẳn rồi thử lại`);error.name='RelayGenerationInFlightError';throw error;}
         const controller=new AbortController();
         const task=Promise.resolve().then(async()=>{
             const raw=await independent(prompt,{...options,signal:controller.signal});
-            if(!String(raw||'').trim()){const error=new Error('Tiếp sức cốt truyện bằng AI独立API返回空内容');error.name='RelayEmptyResponseError';throw error;}
+            if(!String(raw||'').trim()){const error=new Error('API riêng của Tiếp sức cốt truyện bằng AI trả về nội dung rỗng');error.name='RelayEmptyResponseError';throw error;}
             return raw;
         });
         runtime.activeGeneration=task;
@@ -2139,7 +2139,7 @@ ${notes||'无'}
                 Promise.resolve(promise),
                 new Promise((_,reject)=>{timer=setTimeout(()=>{
                     try{onTimeout?.();}catch(_error){}
-                    const e=new Error(`Tiếp sức cốt truyện bằng AI独立API超时（${Math.round(timeoutMs/1000)}秒）；本次不会自动换源`);
+                    const e=new Error(`API riêng của Tiếp sức cốt truyện bằng AI quá hạn (${Math.round(timeoutMs/1000)} giây); lần này sẽ không tự đổi nguồn`);
                     e.name='RelayTimeoutError';e.code='relay-chain-timeout';e.permanentForCycle=true;reject(e);
                 },timeoutMs);}),
             ]);
@@ -2159,7 +2159,7 @@ ${notes||'无'}
         if (name === 'RelayTimeoutError' || name === 'RelayGenerationInFlightError') return false;
         if (name === 'RelayEmptyResponseError') return true;
         const message = String(error?.message || error || '').toLowerCase();
-        return /fetch failed|failed to fetch|network ?error|networkerror|load failed|timed? ?out|timeout|空内容|空响应|econn|socket|connection reset|temporar(?:y|ily) unavailable|service unavailable|bad gateway|gateway timeout|http\s*(?:408|409|425|429|5\d\d)\b|\b(?:408|409|425|429|5\d\d)\b/.test(message);
+        return /fetch failed|failed to fetch|network ?error|networkerror|load failed|timed? ?out|timeout|nội dung rỗng|phản hồi rỗng|econn|socket|connection reset|temporar(?:y|ily) unavailable|service unavailable|bad gateway|gateway timeout|http\s*(?:408|409|425|429|5\d\d)\b|\b(?:408|409|425|429|5\d\d)\b/.test(message);
     }
 
     function relayRetryDelay(attempt) {
@@ -2173,23 +2173,23 @@ ${notes||'无'}
         runtime.retryNoticeShown=false;
         for(let attempt=1;attempt<=maxAttempts;attempt+=1){
             try {
-                setBusy(true, attempt===1?'正在使用接力独立API生成…':`网络波动，自动重试 ${attempt}/${maxAttempts}…`);
+                setBusy(true, attempt===1?'Đang sinh nội dung bằng API riêng của phần tiếp sức…':`Mạng chập chờn, tự động thử lại ${attempt}/${maxAttempts}…`);
                 const chainTimeoutMs=Math.min(3600000,timeoutMs*2+15000);
                 const raw=await withRelayTimeout(generateRaw(prompt),chainTimeoutMs,()=>runtime.activeGenerationAbort?.());
                 if(!String(raw||'').trim()){
-                    const e=new Error('Tiếp sức cốt truyện bằng AI返回空内容');e.name='RelayEmptyResponseError';throw e;
+                    const e=new Error('Tiếp sức cốt truyện bằng AI trả về nội dung rỗng');e.name='RelayEmptyResponseError';throw e;
                 }
                 return raw;
             } catch(error) {
                 lastError=error;
                 if(!isTransientRelayRequestError(error))throw error;
                 if(attempt>=maxAttempts)break;
-                if(!runtime.retryNoticeShown){runtime.retryNoticeShown=true;toast('网络或接口短暂波动，0-32 正在自动重试；不用再点第二次。','warning');}
-                console.warn(`[Tiếp sức cốt truyện bằng AI] 请求失败，自动重试 ${attempt}/${maxAttempts}`,error);
+                if(!runtime.retryNoticeShown){runtime.retryNoticeShown=true;toast('Mạng hoặc giao diện chập chờn trong chốc lát, 0-32 đang tự thử lại; bạn không cần bấm thêm lần nữa.','warning');}
+                console.warn(`[Tiếp sức cốt truyện bằng AI] Yêu cầu thất bại, tự động thử lại ${attempt}/${maxAttempts}`,error);
                 await sleep(relayRetryDelay(attempt));
             }
         }
-        const finalError=new Error(`Tiếp sức cốt truyện bằng AI连续自动重试仍失败：${String(lastError?.message||lastError||'Chưa rõ错误')}`);
+        const finalError=new Error(`Tiếp sức cốt truyện bằng AI vẫn thất bại sau nhiều lần tự thử lại: ${String(lastError?.message||lastError||'lỗi không rõ')}`);
         finalError.cause=lastError;
         throw finalError;
     }
@@ -2219,27 +2219,27 @@ ${notes||'无'}
                 safetySettingsModified:false,
             };
             runtime.lastGenerationSource='relay-policy-context-recovery';
-            runtime.lastGenerationSourceLabel='AI接力独立API · 最小必要上下文恢复';
-            setBusy(true,'完整上下文被供应商拒绝，正在用最小必要上下文自动重试…');
+            runtime.lastGenerationSourceLabel='API riêng của Tiếp sức AI · khôi phục ngữ cảnh tối thiểu';
+            setBusy(true,'Ngữ cảnh đầy đủ bị nhà cung cấp từ chối, đang tự thử lại với ngữ cảnh tối thiểu…');
             if(!runtime.policyRecoveryNoticeShown){
                 runtime.policyRecoveryNoticeShown=true;
-                toast('完整剧情上下文被供应商安全策略拒绝；已自动移除无关历史、世界书和RAG，只用你本轮文字重试。不会修改安全设置。','warning');
+                toast('Ngữ cảnh cốt truyện đầy đủ bị chính sách an toàn của nhà cung cấp từ chối; đã tự loại bỏ lịch sử không liên quan, sách thế giới và RAG, chỉ dùng phần chữ của bạn ở lượt này để thử lại. Cài đặt an toàn không bị thay đổi.','warning');
             }
             const safePrompt=buildPolicyRecoveryPrompt(request);
             try {
                 const raw=await withRelayTimeout(
-                    generateWithConfiguredApi(safePrompt,{ owner:'Tiếp sức cốt truyện bằng AI · 最小上下文恢复', systemPrompt:RELAY_POLICY_RECOVERY_SYSTEM_PROMPT }),
+                    generateWithConfiguredApi(safePrompt,{ owner:'Tiếp sức cốt truyện bằng AI · khôi phục ngữ cảnh tối thiểu', systemPrompt:RELAY_POLICY_RECOVERY_SYSTEM_PROMPT }),
                     Math.min(3600000,timeoutMs*2+15000),
                     ()=>runtime.activeGenerationAbort?.(),
                 );
                 if(!String(raw||'').trim()){
-                    const empty=new Error('Tiếp sức cốt truyện bằng AI最小上下文恢复返回空内容');empty.name='RelayEmptyResponseError';throw empty;
+                    const empty=new Error('Bước khôi phục ngữ cảnh tối thiểu của Tiếp sức cốt truyện bằng AI trả về nội dung rỗng');empty.name='RelayEmptyResponseError';throw empty;
                 }
                 try{ensureCurrent?.();}catch(anchorError){throw anchorError;}
                 return raw;
             } catch (recoveryError) {
                 if(isProviderPolicyRefusalError(recoveryError)){
-                    const finalError=providerPolicyRefusalError(`供应商仍拒绝当前文字。插件已经自动尝试“最小必要上下文”恢复，但不会修改或绕过安全设置。\n${String(recoveryError?.message||'').slice(0,600)}`);
+                    const finalError=providerPolicyRefusalError(`Nhà cung cấp vẫn từ chối phần chữ hiện tại. Tiện ích đã tự thử khôi phục bằng “ngữ cảnh tối thiểu cần thiết”, nhưng sẽ không sửa hay lách qua cài đặt an toàn.\n${String(recoveryError?.message||'').slice(0,600)}`);
                     finalError.cause=recoveryError;
                     throw finalError;
                 }
@@ -2257,7 +2257,7 @@ ${notes||'无'}
         const pairs=[['“','”'],['「','」'],['『','』'],['（','）'],['(',')'],['【','】'],['[',']'],['《','》']];
         if(pairs.some(([open,close])=>(value.split(open).length-1)>(value.split(close).length-1)))return true;
         if(/[，,:：；;、（(\[【《“「『—-]$/.test(value))return true;
-        if(/(?:而|但|然后|接着|并且|因为|所以|准备|正要|刚要|试图|想要|打算|说道|问道|回答道)$/.test(value))return true;
+        if(/(?:và|nhưng|rồi|tiếp đó|đồng thời|vì|nên|chuẩn bị|sắp|vừa định|định|thử|muốn|nói rằng|hỏi rằng|đáp rằng)$/i.test(value))return true;
         return false;
     }
 
@@ -2267,7 +2267,7 @@ ${notes||'无'}
     }
 
     function mergeRelayContinuation(base,addition) {
-        const left=String(base||'').trimEnd(),right=cleanRelayModelOutput(addition).replace(/^\s*(?:续写|继续|接上文)\s*[:：]\s*/i,'').trimStart();
+        const left=String(base||'').trimEnd(),right=cleanRelayModelOutput(addition).replace(/^\s*(?:viết tiếp|tiếp tục|nối tiếp phần trên)\s*[:]\s*/i,'').trimStart();
         if(!right||/^<VVV_COMPLETE>$/i.test(right))return left;
         const max=Math.min(320,left.length,right.length);let overlap=0;
         for(let size=max;size>=4;size-=1)if(left.slice(-size)===right.slice(0,size)){overlap=size;break;}
@@ -2275,18 +2275,18 @@ ${notes||'无'}
     }
 
     function buildRelayContinuationPrompt(partial,custom='') {
-        return `【AI接力防截断续写】\n上一段 user chính văn可能被输出 Token 上限截断。只从截断处继续，补完尚未结束的句子并用一个完整自然的 user 动作或对白收束；不要重写、概括或重复已有文字，不得新增 char/NPC 的动作、对白或回应。若已有文字其实完整，只输出 <VVV_COMPLETE>。只输出需要追加的chính văn。\n\n【已有chính văn末尾】\n${String(partial||'').slice(-8000)}${String(custom||'').trim()?`\n\n【原接力方向，仅用于保持目标】\n${String(custom).trim().slice(0,500)}`:''}`;
+        return `【VIẾT TIẾP CHỐNG CẮT CỤT CHO TIẾP SỨC AI】\nĐoạn chính văn của user phía trước có thể đã bị cắt do chạm giới hạn token đầu ra. Chỉ viết tiếp từ đúng chỗ bị cắt, hoàn thành câu còn dang dở và khép lại bằng một hành động hoặc lời thoại trọn vẹn, tự nhiên của user; đừng viết lại, đừng tóm tắt, đừng lặp lại phần chữ đã có, và không được thêm hành động, lời thoại hay phản hồi của char/NPC. Nếu phần chữ đã có thực ra đã trọn vẹn thì chỉ xuất ra <VVV_COMPLETE>. Chỉ xuất ra phần chính văn cần nối thêm.\n\n【ĐOẠN CUỐI CỦA CHÍNH VĂN ĐÃ CÓ】\n${String(partial||'').slice(-8000)}${String(custom||'').trim()?`\n\n【HƯỚNG TIẾP SỨC BAN ĐẦU, chỉ để giữ đúng mục tiêu】\n${String(custom).trim().slice(0,500)}`:''}`;
     }
 
     async function completeTruncatedRelayText(initial,{custom='',ensureCurrent=()=>{}}={}) {
         let text=String(initial||'').trim(),finishReason=runtime.lastProviderFinishReason,count=0;
         while(relayNeedsContinuation(text,finishReason)&&count<relayContinuationLimit()){
-            count+=1;setBusy(true,`检测到接力被截断，正在自动续写 ${count}/${relayContinuationLimit()}…`);
+            count+=1;setBusy(true,`Phát hiện phần tiếp sức bị cắt cụt, đang tự viết tiếp ${count}/${relayContinuationLimit()}…`);
             const addition=await generateRawWithSilentRetry(buildRelayContinuationPrompt(text,custom));ensureCurrent();
             if(/^\s*<VVV_COMPLETE>\s*$/i.test(String(addition||''))){finishReason='';break;}
-            const merged=mergeRelayContinuation(text,addition);if(merged===text)throw new Error('AI接力防截断续写没有返回新的chính văn，已停止以避免重复消耗API');text=merged;finishReason=runtime.lastProviderFinishReason;
+            const merged=mergeRelayContinuation(text,addition);if(merged===text)throw new Error('Bước viết tiếp chống cắt cụt của Tiếp sức AI không trả về chính văn mới, đã dừng lại để khỏi tiêu tốn API vô ích');text=merged;finishReason=runtime.lastProviderFinishReason;
         }
-        if(relayNeedsContinuation(text,finishReason))throw new Error(`AI接力连续续写 ${relayContinuationLimit()} 次后仍被模型截断；未完整草稿已拦截，请提高“最大输出 Token”后重试`);
+        if(relayNeedsContinuation(text,finishReason))throw new Error(`Sau ${relayContinuationLimit()} lần viết tiếp liên tiếp, Tiếp sức AI vẫn bị mô hình cắt cụt; bản nháp chưa trọn vẹn đã bị chặn lại, hãy tăng “Token đầu ra tối đa” rồi thử lại`);
         runtime.lastContinuationCount+=count;return text;
     }
 
@@ -2305,8 +2305,8 @@ ${notes||'无'}
         const direction=String(custom||'').trim();
         const text=String(draft||'').trim();
         if(!direction||!text)return [];
-        // fixed20：只要 user 自己提供了原文，就不再用第二个 LLM 当“裁判”。
-        // 旧裁判会把正常扩写误判成偏离，连续纠偏后又回退原文，造成“等很久却一字没改”。
+        // fixed20: chỉ cần user đã tự cung cấp nguyên văn thì không dùng một LLM thứ hai làm “trọng tài” nữa.
+        // Bộ trọng tài cũ hay chấm nhầm phần mở rộng bình thường là lệch hướng, sửa đi sửa lại rồi quay về nguyên văn, gây ra cảnh “chờ rất lâu mà chẳng đổi chữ nào”.
         if(normalized.userText&&!normalized.expand)return customDirectionLightPolishIssues(text,direction);
         if(normalized.userText&&normalized.expand)return customDirectionExpansionIssues(text,direction);
         return verifyCustomDirection({custom:direction,draft:text,entry});
@@ -2318,24 +2318,24 @@ ${notes||'无'}
         const local=customDirectionLocalIssues(text,direction);
         if(!direction||!text)return local;
         if(local.length)return local;
-        // 高相似在这里是“原话得到保留”的正向证据，不再反向当作复述错误。
+        // Độ tương đồng cao ở đây là bằng chứng thuận cho việc “lời gốc được giữ lại”, không còn bị hiểu ngược thành lỗi kể lại.
         if(draftPreservesCustomExpression(text,direction))return [];
-        const prompt=`只做行动一致性判定，不续写剧情。比较“用户指定方向”和“生成稿”：生成稿可以扩写步骤和对白，但必须实际保持同一个核心行动、施事者、对象、目的地和意图；若把A换成B，必须判false。例如“去吃饭”被写成“去睡觉”就是false。若原方向是“某人询问另一个人几个/多少/选哪个”，生成稿必须保留提问者、被问者和未决Trạng thái；擅自替任何人补出数量或答案必须判false。若用户指定方向本身是想说出的台词、提问或感受，生成稿原样保留或近义保留属于follows=true，绝不能因为“复述了用户文字”判false。用户原文里的括号若是在描述随后/然后发生的动作，它是舞台动作指令，不是台词；生成稿应把它落实成叙事动作，而不是把括号内容念出来。\n\n【用户指定方向】\n${direction.slice(0,500)}\n\n【生成稿】\n${text.slice(0,6000)}\n\n【最新chính văn结尾，仅用于消歧】\n${tailText(entry?.text||'',1200)}\n\n只输出JSON：{"follows":true或false,"coreAction":"用户要求的核心行动","conflict":"偏离点；无则空字符串"}`;
+        const prompt=`Chỉ phán định tính nhất quán của hành động, không viết tiếp cốt truyện. So sánh “hướng người dùng chỉ định” với “bản sinh ra”: bản sinh ra được phép mở rộng các bước và lời thoại, nhưng thực tế phải giữ đúng cùng một hành động cốt lõi, cùng chủ thể, cùng đối tượng, cùng điểm đến và cùng ý định; nếu đổi A thành B thì bắt buộc phán false. Ví dụ “đi ăn cơm” bị viết thành “đi ngủ” là false. Nếu hướng ban đầu là “một người hỏi người khác mấy cái/bao nhiêu/chọn cái nào” thì bản sinh ra phải giữ nguyên người hỏi, người được hỏi và trạng thái còn bỏ ngỏ; tự ý điền số lượng hay câu trả lời thay bất kỳ ai đều phải phán false. Nếu bản thân hướng người dùng chỉ định đã là lời thoại, câu hỏi hay cảm nhận muốn nói ra, thì bản sinh ra giữ nguyên văn hoặc giữ gần nghĩa đều là follows=true, tuyệt đối không được vì “có kể lại lời người dùng” mà phán false. Nếu dấu ngoặc trong nguyên văn của người dùng đang mô tả hành động xảy ra sau đó thì đó là chỉ dẫn sân khấu, không phải lời thoại; bản sinh ra phải biến nó thành hành động tự sự chứ không đọc nội dung trong ngoặc ra thành thoại.\n\n【HƯỚNG NGƯỜI DÙNG CHỈ ĐỊNH】\n${direction.slice(0,500)}\n\n【BẢN SINH RA】\n${text.slice(0,6000)}\n\n【ĐOẠN CUỐI CHÍNH VĂN MỚI NHẤT, chỉ dùng để khử nhập nhằng】\n${tailText(entry?.text||'',1200)}\n\nChỉ xuất ra JSON: {"follows":true hoặc false,"coreAction":"hành động cốt lõi người dùng yêu cầu","conflict":"điểm lệch; không có thì để chuỗi rỗng"}`;
         let lastFailure='';
         for(let attempt=1;attempt<=2;attempt+=1){
             try{
-                setBusy(true,`正在核对自定义行动一致性${attempt>1?'（重试）':''}…`);
-                const raw=await withRelayTimeout(generateWithConfiguredApi(prompt,{owner:'AI接力行动一致性校验',systemPrompt:'你是严格的行动一致性判定器，只输出JSON。不得因为文笔通顺就放过行动偷换；用户原话被准确保留必须判为遵守。',jsonMode:true,responseLength:260}),relayRequestTimeoutMs(),()=>runtime.activeGenerationAbort?.());
+                setBusy(true,`Đang đối chiếu tính nhất quán của hành động tùy chỉnh${attempt>1?' (thử lại)':''}…`);
+                const raw=await withRelayTimeout(generateWithConfiguredApi(prompt,{owner:'Kiểm tra tính nhất quán hành động của Tiếp sức AI',systemPrompt:'Bạn là bộ phán định nghiêm ngặt về tính nhất quán của hành động, chỉ xuất ra JSON. Không được vì câu văn trôi chảy mà bỏ qua việc đánh tráo hành động; nếu lời gốc của người dùng được giữ lại chính xác thì phải phán là tuân thủ.',jsonMode:true,responseLength:260}),relayRequestTimeoutMs(),()=>runtime.activeGenerationAbort?.());
                 const verdict=parseCustomDirectionVerdict(raw);
-                if(!verdict){lastFailure='校验器没有返回合法JSON';continue;}
-                if(verdict.follows===false)return [...new Set([...local,`自定义方向发生语义偏离：${verdict.conflict||`没有执行“${verdict.coreAction||direction.slice(0,80)}”`}`])];
+                if(!verdict){lastFailure='Bộ kiểm tra không trả về JSON hợp lệ';continue;}
+                if(verdict.follows===false)return [...new Set([...local,`Hướng tùy chỉnh bị lệch về mặt ngữ nghĩa: ${verdict.conflict||`chưa thực hiện “${verdict.coreAction||direction.slice(0,80)}”`}`])];
                 return local;
             }catch(error){
-                lastFailure=String(error?.message||error||'校验接口不可用').slice(0,180);
-                console.warn(`[Tiếp sức cốt truyện bằng AI] 行动一致性短校验第${attempt}次失败`,error);
+                lastFailure=String(error?.message||error||'Không dùng được giao diện kiểm tra').slice(0,180);
+                console.warn(`[Tiếp sức cốt truyện bằng AI] Lần kiểm tra nhanh tính nhất quán hành động thứ ${attempt} thất bại`,error);
             }
         }
-        return [...new Set([...local,`自定义方向校验失败：${lastFailure||'无法确认生成稿是否遵守指定行动'}；为避免行动被偷换，本次不会放行`])];
+        return [...new Set([...local,`Kiểm tra hướng tùy chỉnh thất bại: ${lastFailure||'không xác nhận được bản sinh ra có tuân theo hành động đã chỉ định hay không'}; để tránh bị đánh tráo hành động, lần này sẽ không cho qua`])];
     }
 
     async function generateDraft(customInput = '') {
@@ -2347,20 +2347,20 @@ ${notes||'无'}
     async function generateDraftUnlocked(customInput = '') {
         const customRequest=normalizeRelayCustomInput(customInput);
         const custom=relayCustomVerificationTarget(customRequest);
-        if(runtime.selected.has('custom')&&!customRequest.userText&&!customRequest.notes)throw new Error('已选择“自定义”，请填写user文字或补充想法');
-        if (runtime.busy||runtime.activeGeneration) throw new Error(`${runtime.activeGenerationOwner||'上一条AI接力请求'}仍在处理，请等按钮恢复后再试`);
+        if(runtime.selected.has('custom')&&!customRequest.userText&&!customRequest.notes)throw new Error('Đã chọn “Tùy chỉnh”, hãy điền phần chữ của user hoặc ý bổ sung');
+        if (runtime.busy||runtime.activeGeneration) throw new Error(`${runtime.activeGenerationOwner||'Yêu cầu Tiếp sức AI trước đó'} vẫn đang được xử lý, hãy đợi nút hoạt động trở lại rồi thử lại`);
         if (await isGenerating()) throw new Error('Chính văn của lượt trước vẫn đang được sinh, hãy đợi xong rồi mới tiếp sức');
         runtime.busy = true;
         runtime.policyRecoveryNoticeShown=false;
-        setBusy(true,'正在使用接力独立API生成…');
+        setBusy(true,'Đang sinh nội dung bằng API riêng của phần tiếp sức…');
         try {
             const entry = commandEntry();
             if (!entry) throw new Error('Hiện chưa có chính văn AI nào để tiếp sức');
             const operationAnchor=anchorFromEntry(entry);
-            const ensureCurrent=()=>{if(!relayAnchorIsCurrent(operationAnchor))throw new Error('AI接力生成期间聊天或最新AITầng已变化，本次草稿已安全丢弃');};
+            const ensureCurrent=()=>{if(!relayAnchorIsCurrent(operationAnchor))throw new Error('Trong lúc Tiếp sức AI sinh nội dung, cuộc trò chuyện hoặc tầng AI mới nhất đã thay đổi; bản nháp lần này đã được hủy an toàn');};
 
-            // fixed9：无论是否开启“AI扩写”，user原文与补充想法都在同一次请求中交给AI。
-            // Đóng扩写 = 轻度语句规整；开启扩写 = 在核心行动不变的前提下自然扩写。
+            // fixed9: dù có bật “AI mở rộng” hay không, nguyên văn của user và ý bổ sung đều được đưa cho AI trong cùng một yêu cầu.
+            // Tắt mở rộng = chỉnh câu ở mức nhẹ; bật mở rộng = mở rộng tự nhiên với điều kiện hành động cốt lõi không đổi.
             runtime.lastPipelineDebug={
                 source:customRequest.userText?(customRequest.expand?'vvv-relay-user-text-expand':'vvv-relay-user-text-polish'):'vvv-relay-notes-generate',
                 generationType:'relay-custom',
@@ -2378,35 +2378,35 @@ ${notes||'无'}
             ensureCurrent();
             let draft = compactSafeDraft(raw);
             const chosenLabels = selectedDirectionLabels();
-            const allowJump = chosenLabels.some(item => /时间推进|旅行\/跨城|重大变化/.test(item)) || /第二天|几小时后|旅行|出差|跨城|重大变化|跳到|直接到/.test(`${customRequest.userText} ${customRequest.notes}`);
+            const allowJump = chosenLabels.some(item => /Đẩy thời gian|Du lịch\/liên thành|Biến động lớn/i.test(item)) || /hôm sau|vài tiếng sau|du lịch|công tác|sang thành phố khác|biến động lớn|nhảy tới|đi thẳng tới/i.test(`${customRequest.userText} ${customRequest.notes}`);
             let advisoryIssues = detectDraftIssues(draft, { entry, custom, allowJump, environment: runtime.lastEnvironment });
-            // fixed33：Hủy AI接力的“自定义行动后置硬校验/自动纠偏/拦截”范围。
-            // 原因：这层会把“揽进怀里/贴上嘴唇”等正常近义扩写误判为没有执行
-            // “拥抱/亲吻”，导致已经生成成功的稿件又被二次裁判拦掉。
-            // 现在 user原文与补充想法只在生成 Prompt 中作为最高优先级约束；生成完成后
-            // 不再调用 verifyRelayCustomDraft，不再因核心动作关键词、括号动作或近义表达
-            // 自动重写，也不会抛出“自定义行动不合格”阻止发送。
-            // 仍保留：空稿防护、截断续写、主客体/时间跳转/修辞等本地启发式提示；
-            // 这些提示沿用 R19 的非阻断模式，只告警，不删稿、不重试、不拦截。
+            // fixed33: bỏ phạm vi “kiểm tra cứng hậu kỳ / tự sửa lệch / chặn” cho hành động tùy chỉnh của Tiếp sức AI.
+            // Lý do: lớp này hay chấm nhầm những cách diễn đạt gần nghĩa bình thường như “kéo vào lòng / áp môi lên” là chưa thực hiện
+            // “ôm/hôn”, khiến bản đã sinh thành công lại bị vòng trọng tài thứ hai chặn lại.
+            // Giờ nguyên văn của user và ý bổ sung chỉ đóng vai trò ràng buộc ưu tiên cao nhất trong prompt sinh nội dung; sau khi sinh xong
+            // sẽ không gọi verifyRelayCustomDraft nữa, không còn tự viết lại vì từ khóa hành động cốt lõi, hành động trong ngoặc hay cách diễn đạt
+            // gần nghĩa, cũng không ném ra lỗi “hành động tùy chỉnh không đạt” để chặn việc gửi.
+            // Vẫn giữ: bảo vệ chống bản rỗng, viết tiếp khi bị cắt cụt, và các gợi ý heuristic cục bộ về chủ thể/tân ngữ, nhảy thời gian, tu từ;
+            // các gợi ý này theo chế độ không chặn của R19: chỉ cảnh báo, không xóa bản viết, không thử lại, không chặn.
             runtime.lastActionGateDisabled=true;
-            if(!draft.trim())throw new Error('AI接力返回了空稿，已停止发送');
+            if(!draft.trim())throw new Error('Tiếp sức AI trả về bản rỗng, đã dừng việc gửi');
 
-            // R19：恢复旧版的顺畅体验。复播相似度、NPC句法、时间跳转和修辞
-            // 都是启发式检测，存在语境歧义，只提示而不再删稿或卡死发送。
-            // fixed33：用户明确行动不再经过后置硬校验；以生成 Prompt 约束为准，避免近义表达误伤。
+            // R19: khôi phục trải nghiệm mượt mà của bản cũ. Độ tương đồng phát lại, cú pháp NPC, nhảy thời gian và tu từ
+            // Tất cả đều là kiểm tra heuristic, có thể nhập nhằng theo ngữ cảnh, nên chỉ nhắc chứ không xóa bản viết hay chặn cứng việc gửi.
+            // fixed33: hành động người dùng nêu rõ không còn đi qua bước kiểm tra cứng ở phía sau; lấy ràng buộc trong prompt sinh nội dung làm chuẩn, tránh làm hại cách diễn đạt gần nghĩa.
             advisoryIssues=[...new Set(advisoryIssues)];
             runtime.lastAdvisoryIssues=advisoryIssues;
             if(advisoryIssues.length){
-                console.warn('[Tiếp sức cốt truyện bằng AI] 本地启发式提示（R19非阻断）',advisoryIssues);
-                toast(`接力已生成；本地规则有 ${advisoryIssues.length} 条提示，已按旧版模式放行。`,'warning');
+                console.warn('[Tiếp sức cốt truyện bằng AI] Gợi ý heuristic cục bộ (R19, không chặn)',advisoryIssues);
+                toast(`Đã sinh xong bản tiếp sức; quy tắc cục bộ có ${advisoryIssues.length} gợi ý, đã cho qua theo chế độ bản cũ.`,'warning');
             }
             ensureCurrent();
             runtime.draft = limitCompleteSentence(draft, relayMaxChars());
             runtime.draftAnchor={...operationAnchor};
             runtime.previewCustom={...customRequest};
-            if (!runtime.draft) throw new Error('模型没有生成可用chính văn');
-            toast(customRequest.userText ? (customRequest.expand ? '✒ AI已按原意完成自然扩写，不会原文直发。' : '✒ user文字已规整，并合并补充想法完成接力。') : '✒ Tiếp sức cốt truyện bằng AI完成（独立API）。', 'success');
-            if(runtime.lastContinuationCount)toast(`防截断已自动续写并拼接 ${runtime.lastContinuationCount} 段。`,'success');
+            if (!runtime.draft) throw new Error('Mô hình không sinh ra chính văn dùng được');
+            toast(customRequest.userText ? (customRequest.expand ? '✒ AI đã mở rộng tự nhiên đúng ý ban đầu, sẽ không gửi thẳng nguyên văn.' : '✒ Đã chỉnh lại phần chữ của user và gộp ý bổ sung để hoàn tất phần tiếp sức.') : '✒ Tiếp sức cốt truyện bằng AI đã hoàn tất (API riêng).', 'success');
+            if(runtime.lastContinuationCount)toast(`Bộ chống cắt cụt đã tự viết tiếp và ghép thêm ${runtime.lastContinuationCount} đoạn.`,'success');
             if (runtime.settings.directAfterGenerate) await send(runtime.draft,operationAnchor);
             else openPreview(runtime.draft, customRequest, operationAnchor);
         } finally {
@@ -2415,7 +2415,7 @@ ${notes||'无'}
         }
     }
 
-    function setBusy(value, label='正在生成…') {
+    function setBusy(value, label='Đang sinh nội dung…') {
         const active=Boolean(runtime.activeGeneration);
         const effective=Boolean(value)||active;
         document.querySelectorAll('.vvv-relay-bar button,#vvv-relay-command button').forEach(node => {
@@ -2423,10 +2423,10 @@ ${notes||'无'}
         });
         const generate = document.querySelector('#vvv-relay-command [data-relay-panel-generate]');
         if(effective){
-            const busyLabel=active&&!value?`${runtime.activeGenerationOwner||'上一条请求'}正在后台收尾…`:(label||'正在生成…');
+            const busyLabel=active&&!value?`${runtime.activeGenerationOwner||'Yêu cầu trước đó'} đang chạy nốt ở nền…`:(label||'Đang sinh nội dung…');
             if(generate)generate.innerHTML=`<span>${esc(busyLabel)}</span><i class="vvv-relay-spinner">◌</i>`;
         }else{
-            if(generate)generate.innerHTML=`<span>${runtime.lastError?'重新生成':'生成我的下一句话'}</span><i>→</i>`;
+            if(generate)generate.innerHTML=`<span>${runtime.lastError?'Sinh lại':'Sinh câu tiếp theo của tôi'}</span><i>→</i>`;
         }
         document.body.classList.toggle('vvv-relay-busy', effective);
     }
@@ -2439,10 +2439,10 @@ ${notes||'无'}
 
     function showError(error) {
         runtime.busy = false;
-        const message=String(error?.message || error || 'Tiếp sức cốt truyện bằng AI失败，请检查APITrạng thái');
+        const message=String(error?.message || error || 'Tiếp sức cốt truyện bằng AI thất bại, hãy kiểm tra trạng thái API');
         setRelayInlineError(message);
         setBusy(false);
-        console.error('[Tiếp sức cốt truyện bằng AI] 本轮最终失败', error);
+        console.error('[Tiếp sức cốt truyện bằng AI] Lượt này thất bại hoàn toàn', error);
         toast(message, 'error');
     }
 
@@ -2456,11 +2456,11 @@ ${notes||'无'}
         if (!root) {
             root = document.createElement('div');
             root.id = 'vvv-relay-preview';
-            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section role="dialog"><header><b>AI替你写的下一条 user 输入</b><button type="button" data-close>×</button></header><textarea maxlength="20000"></textarea><small>可编辑 · 建议300-800字 · U1.4默认不主动截断（设置为0）；默认不会自动发送</small><footer><button type="button" data-regen>换一个/重新生成</button><button type="button" data-fill>填入输入框</button><button type="button" data-send>直接发送</button><button type="button" data-cancel>Hủy</button></footer></section>`;
+            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section role="dialog"><header><b>Lượt nhập user kế tiếp do AI viết thay bạn</b><button type="button" data-close>×</button></header><textarea maxlength="20000"></textarea><small>Có thể sửa · nên viết 300-800 chữ · U1.4 mặc định không tự cắt (đặt là 0); mặc định không tự gửi</small><footer><button type="button" data-regen>Đổi bản khác / sinh lại</button><button type="button" data-fill>Điền vào ô nhập</button><button type="button" data-send>Gửi luôn</button><button type="button" data-cancel>Hủy</button></footer></section>`;
             document.body.appendChild(root);
             root.querySelector('[data-close]').onclick = () => closePreview(root);
             root.querySelector('[data-cancel]').onclick = () => closePreview(root);
-            // 事件处理器不再捕获“第一次打开预览”的custom，避免复用DOM后一直拿旧方向。
+            // Bộ xử lý sự kiện không còn giữ lại custom của “lần mở xem trước đầu tiên”, tránh việc dùng lại DOM rồi cứ lấy mãi hướng cũ.
             root.querySelector('[data-regen]').onclick = () => { const direction=runtime.previewCustom; closePreview(root); generateDraft(direction).catch(showError); };
             root.querySelector('[data-fill]').onclick = () => { try{fill(root.querySelector('textarea').value,runtime.draftAnchor);}catch(error){showError(error);} };
             root.querySelector('[data-send]').onclick = () => send(root.querySelector('textarea').value,runtime.draftAnchor).catch(showError);
@@ -2470,26 +2470,26 @@ ${notes||'无'}
     }
 
     function fill(value, expectedAnchor = runtime.draftAnchor) {
-        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('生成草稿后聊天或最新AITầng已变化，请在当前剧情重新生成接力');
+        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('Sau khi sinh bản nháp, cuộc trò chuyện hoặc tầng AI mới nhất đã thay đổi; hãy sinh lại phần tiếp sức theo mạch truyện hiện tại');
         const input = document.querySelector('#send_textarea');
         if (!input) throw new Error('Không tìm thấy ô nhập liệu của SillyTavern');
         input.value = limitCompleteSentence(value);
         runtime.settings.pendingFateCard = null; saveSettings();
         input.dispatchEvent(new Event('input', { bubbles: true }));
         closePreview();
-        toast('已填入输入框，你可以继续修改。', 'success');
+        toast('Đã điền vào ô nhập, bạn có thể sửa tiếp.', 'success');
     }
 
     async function send(value, expectedAnchor = runtime.draftAnchor) {
         const message = limitCompleteSentence(value);
-        if (!message) throw new Error('预览内容为空');
-        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('生成草稿后聊天或最新AITầng已变化，已阻止把旧草稿发送到新剧情');
+        if (!message) throw new Error('Nội dung xem trước đang rỗng');
+        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('Sau khi sinh bản nháp, cuộc trò chuyện hoặc tầng AI mới nhất đã thay đổi; đã chặn việc gửi bản nháp cũ vào mạch truyện mới');
         const input = document.querySelector('#send_textarea');
         if (!input) throw new Error('Không tìm thấy ô nhập liệu của SillyTavern');
         const mod = await import('/script.js');
-        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('准备发送期间聊天或最新AITầng已变化，Đã hủy发送');
+        if(expectedAnchor&&!relayAnchorIsCurrent(expectedAnchor))throw new Error('Trong lúc chuẩn bị gửi, cuộc trò chuyện hoặc tầng AI mới nhất đã thay đổi; đã hủy việc gửi');
         const generating = typeof mod.isGenerating === 'function' ? mod.isGenerating() : Boolean(mod.isGenerating);
-        if (generating) throw new Error('上一轮仍在生成');
+        if (generating) throw new Error('Lượt trước vẫn đang được sinh');
         if (typeof mod.sendTextareaMessage !== 'function') throw new Error('Phiên bản SillyTavern hiện tại không hỗ trợ đường gửi tin thông thường');
         input.value = message;
         runtime.settings.pendingFateCard = null; saveSettings();
@@ -2498,16 +2498,16 @@ ${notes||'无'}
         closeCommandPanel();
         removeBars();
         runtime.selected.clear();
-        // fixed13：程序化调用 sendTextareaMessage 在部分 ST/主题组合中会比 0-09 的 PromptManager
-        // 挂载更快，造成“手打有思维链、AI接力发送后的 char chính văn没思维链”。
-        // 发送前先让 0-09 预武装下一次主回复；之后仍走酒馆原生 sendTextareaMessage，绝不另起第二次生成。
+        // fixed13: khi gọi sendTextareaMessage bằng mã, ở một số tổ hợp ST/chủ đề nó chạy trước PromptManager của 0-09 và
+        // gắn vào nhanh hơn, gây ra cảnh “gõ tay thì có chuỗi suy luận, còn chính văn char sau khi Tiếp sức AI gửi thì không có”.
+        // Trước khi gửi hãy để 0-09 chuẩn bị sẵn cho lượt trả lời chính kế tiếp; sau đó vẫn dùng sendTextareaMessage gốc của SillyTavern, tuyệt đối không khởi động lần sinh thứ hai.
         try{
             await globalThis.VVVUnifiedCreative?.prepareRelayReply?.({text:message,source:'relay'});
         }catch(error){
-            console.warn('[Tiếp sức cốt truyện bằng AI] 主回复创作预设预武装失败，将继续走原生发送并由 generate_interceptor 兜底',error);
+            console.warn('[Tiếp sức cốt truyện bằng AI] Không chuẩn bị sẵn được preset sáng tác cho lượt trả lời chính; vẫn dùng đường gửi gốc và để generate_interceptor lo phần còn lại',error);
         }
         await mod.sendTextareaMessage();
-        toast('已按酒馆正常路径发送；下一轮主AI已按手动发送同样方式挂载思维链与当前预设。', 'success');
+        toast('Đã gửi theo đường thông thường của SillyTavern; lượt AI chính kế tiếp đã gắn chuỗi suy luận và preset hiện tại y như khi bạn gửi tay.', 'success');
     }
 
     function settingsModal() { return document.getElementById('vvv-relay-settings-modal'); }
@@ -2534,8 +2534,8 @@ ${notes||'无'}
         const raw = String(root.querySelector('[data-api-headers]')?.value || '').trim();
         if (raw) {
             try { extraHeaders = JSON.parse(raw); }
-            catch { throw new Error('额外请求头必须是合法JSON'); }
-            if (!extraHeaders || typeof extraHeaders !== 'object' || Array.isArray(extraHeaders)) throw new Error('额外请求头必须是JSON对象');
+            catch { throw new Error('Header bổ sung phải là JSON hợp lệ'); }
+            if (!extraHeaders || typeof extraHeaders !== 'object' || Array.isArray(extraHeaders)) throw new Error('Header bổ sung phải là một đối tượng JSON');
         }
         return {
             useMemoryApi: false,
@@ -2571,17 +2571,17 @@ ${notes||'无'}
         const picker = root.querySelector('[data-model-results]');
         const modelInput = root.querySelector('[data-api-model]');
         try {
-            if (status) status.textContent = '正在保存当前接口并获取模型列表…';
+            if (status) status.textContent = 'Đang lưu giao diện hiện tại và lấy danh sách mô hình…';
             await saveRelayServerConfig(root);
             const data = await serverJson('/relay/models');
             const models = [...new Set((Array.isArray(data?.models) ? data.models : []).map(v => String(v || '').trim()).filter(Boolean))]
                 .sort((a,b) => a.localeCompare(b, undefined, { numeric:true, sensitivity:'base' }));
-            if (!models.length) throw new Error('接口没有返回可用模型；你仍然可以在模型框里手动填写模型名');
+            if (!models.length) throw new Error('Giao diện không trả về mô hình nào dùng được; bạn vẫn có thể tự điền tên mô hình vào ô mô hình');
             if (picker) {
                 picker.replaceChildren();
                 const first = document.createElement('option');
                 first.value = '';
-                first.textContent = `已获取 ${models.length} 个模型，点击选择…`;
+                first.textContent = `Đã lấy được ${models.length} mô hình, bấm để chọn…`;
                 picker.appendChild(first);
                 for (const name of models) {
                     const option = document.createElement('option');
@@ -2592,7 +2592,7 @@ ${notes||'无'}
                 picker.hidden = false;
                 picker.value = models.includes(String(modelInput?.value || '').trim()) ? String(modelInput.value).trim() : '';
             }
-            if (status) status.textContent = `✅ 已获取 ${models.length} 个模型；可从下拉框选择，也可继续手填。`;
+            if (status) status.textContent = `✅ Đã lấy được ${models.length} mô hình; có thể chọn từ danh sách xổ xuống hoặc tiếp tục tự điền.`;
         } catch (error) {
             if (picker) picker.hidden = true;
             if (status) status.textContent = `⚠️ ${String(error?.message || error)}`;
@@ -2625,60 +2625,60 @@ ${notes||'无'}
         if (!root) {
             root = document.createElement('div');
             root.id = 'vvv-relay-settings-modal';
-            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section><header><b>0-32 · Tiếp sức cốt truyện bằng AI设置</b><button type="button" data-close>×</button></header>
-                <label><input type="checkbox" data-enabled>启用发送键旁“0-32接力”常驻按钮（推荐）</label>
-                <label>写作来源<select data-mode disabled><option value="independent" selected>独立API · 有限剧情资料</option></select></label>
-                <label><input type="checkbox" data-direct>生成后直接发送（默认Đóng）</label>
-                <label>近期原文范围<select data-recent-floors><option value="8">最近8层</option><option value="12">最近12层</option><option value="16">最近16层（推荐）</option><option value="24">最近24层</option><option value="32">最近32层</option></select></label>
-                <label>失败自动尝试次数<input type="number" min="1" max="6" step="1" data-retry-attempts></label>
-                <label>复述指令修复尝试次数<input type="number" min="1" max="6" step="1" data-repair-attempts></label>
-                <label>接力最大字符<input type="number" min="0" max="20000" step="100" data-max-chars><small>0=不主动截断；1000/2000/4000/8000都可。</small></label>
-                <label><input type="checkbox" data-anti-truncation>启用防截断自动续写（推荐）</label>
-                <label>最多自动续写段数<input type="number" min="1" max="6" step="1" data-continuation-max><small>检测到模型因 Token 上限截断或句子未闭合时，继续调用同一个接力 API 并去重拼接。</small></label>
+            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section><header><b>0-32 · Cài đặt Tiếp sức cốt truyện bằng AI</b><button type="button" data-close>×</button></header>
+                <label><input type="checkbox" data-enabled>Bật nút “Tiếp sức 0-32” thường trực cạnh nút gửi (khuyên dùng)</label>
+                <label>Nguồn viết<select data-mode disabled><option value="independent" selected>API riêng · tư liệu cốt truyện hữu hạn</option></select></label>
+                <label><input type="checkbox" data-direct>Gửi ngay sau khi sinh nội dung (mặc định tắt)</label>
+                <label>Phạm vi nguyên văn gần đây<select data-recent-floors><option value="8">8 tầng gần nhất</option><option value="12">12 tầng gần nhất</option><option value="16">16 tầng gần nhất (khuyên dùng)</option><option value="24">24 tầng gần nhất</option><option value="32">32 tầng gần nhất</option></select></label>
+                <label>Số lần tự thử lại khi thất bại<input type="number" min="1" max="6" step="1" data-retry-attempts></label>
+                <label>Số lần sửa khi bị lặp lại chỉ thị<input type="number" min="1" max="6" step="1" data-repair-attempts></label>
+                <label>Số ký tự tối đa cho phần tiếp sức<input type="number" min="0" max="20000" step="100" data-max-chars><small>0 = không tự cắt; có thể đặt 1000/2000/4000/8000.</small></label>
+                <label><input type="checkbox" data-anti-truncation>Bật tự viết tiếp để chống bị cắt cụt (khuyên dùng)</label>
+                <label>Số đoạn tự viết tiếp tối đa<input type="number" min="1" max="6" step="1" data-continuation-max><small>Khi phát hiện mô hình bị cắt do chạm giới hạn token hoặc câu chưa khép, sẽ gọi tiếp cùng một API tiếp sức rồi ghép lại và loại phần trùng.</small></label>
                 <div class="vvv-relay-api-box vvv-relay-control-settings">
-                    <h3>✒️ 0-32 控制层</h3>
-                    <label><input type="checkbox" data-director-enabled>启用剧情导演（本地导演提示，不额外调用API）</label>
+                    <h3>✒️ Lớp điều khiển 0-32</h3>
+                    <label><input type="checkbox" data-director-enabled>Bật Đạo diễn cốt truyện (gợi ý đạo diễn cục bộ, không gọi thêm API)</label>
                     <div class="vvv-relay-director-scope">
-                        <span>剧情导演作用范围：</span>
-                        <label><input type="checkbox" data-director-main>酒馆主AI正常回复（推荐）</label>
-                        <label><input type="checkbox" data-director-relay>0-32 Tiếp sức cốt truyện bằng AI</label>
-                        <small>两项都勾选=两边都用。主AI导演允许{{char}}/NPC正常行动与回应，但不替user行动；接力导演仍只写user。</small>
+                        <span>Phạm vi tác động của Đạo diễn cốt truyện:</span>
+                        <label><input type="checkbox" data-director-main>Câu trả lời thường của AI chính trong SillyTavern (khuyên dùng)</label>
+                        <label><input type="checkbox" data-director-relay>Tiếp sức cốt truyện bằng AI của 0-32</label>
+                        <small>Tích cả hai = dùng cho cả hai phía. Đạo diễn cho AI chính cho phép {{char}}/NPC hành động và đáp lời bình thường, nhưng không hành động thay user; Đạo diễn cho phần tiếp sức vẫn chỉ viết về user.</small>
                     </div>
-                    <label><input type="checkbox" data-fate-enabled>启用命运卡池</label>
-                    <label><input type="checkbox" data-fate-auto>自动按间隔提供命运卡种子</label>
-                    <label><span>自动抽卡间隔</span><select data-fate-interval><option value="4">4轮</option><option value="6">6轮</option><option value="8">8轮（推荐）</option><option value="10">10轮</option><option value="12">12轮</option><option value="16">16轮</option><option value="20">20轮</option></select></label>
-                    <div class="vvv-relay-fate-cats"><span>启用卡池：</span>${Object.entries(FATE_CATEGORY_LABELS).filter(([key])=>key!=='custom').map(([key,label])=>`<label><input type="checkbox" data-fate-cat="${key}">${label}</label>`).join('')}</div>
-                    <label class="vvv-relay-wide"><span>自定义命运卡（每行：分类英文|卡牌内容；也可只写内容）</span><textarea data-custom-fate placeholder="例如：emotion|某个过去的重要Lời hẹn以很轻的方式再次被提起"></textarea></label>
+                    <label><input type="checkbox" data-fate-enabled>Bật bể thẻ định mệnh</label>
+                    <label><input type="checkbox" data-fate-auto>Tự động gieo thẻ định mệnh theo chu kỳ</label>
+                    <label><span>Chu kỳ rút thẻ tự động</span><select data-fate-interval><option value="4">4 lượt</option><option value="6">6 lượt</option><option value="8">8 lượt (khuyên dùng)</option><option value="10">10 lượt</option><option value="12">12 lượt</option><option value="16">16 lượt</option><option value="20">20 lượt</option></select></label>
+                    <div class="vvv-relay-fate-cats"><span>Bật các bể thẻ:</span>${Object.entries(FATE_CATEGORY_LABELS).filter(([key])=>key!=='custom').map(([key,label])=>`<label><input type="checkbox" data-fate-cat="${key}">${label}</label>`).join('')}</div>
+                    <label class="vvv-relay-wide"><span>Thẻ định mệnh tùy chỉnh (mỗi dòng: mã phân loại tiếng Anh | nội dung thẻ; cũng có thể chỉ ghi nội dung)</span><textarea data-custom-fate placeholder="Ví dụ: emotion|một lời hẹn quan trọng trong quá khứ được nhắc lại rất nhẹ nhàng"></textarea></label>
                 </div>
                 <div class="vvv-relay-api-box vvv-relay-ledger-settings">
-                    <h3>📖 0-32 规则账本</h3>
-                    <label class="vvv-relay-wide"><span>长期规则（每行一条，持续有效）</span><textarea data-ledger-long placeholder="例如：不要替user原谅任何人"></textarea></label>
-                    <label class="vvv-relay-wide"><span>当前章节规则（每行一条，手动Bỏ chọn）</span><textarea data-ledger-chapter placeholder="例如：这一章不允许突然表白，也不要跳时间"></textarea></label>
-                    <label class="vvv-relay-wide"><span>临时规则（每行：规则 | 剩余层数）</span><textarea data-ledger-timed placeholder="例如：腿伤不能跑 | 10"></textarea></label>
-                    <small>规则账本不仅用于Tiếp sức cốt truyện bằng AI，也会由0-32记忆中枢注入普通主剧情；临时规则过期后自动清理。</small>
+                    <h3>📖 Sổ cái quy tắc 0-32</h3>
+                    <label class="vvv-relay-wide"><span>Quy tắc dài hạn (mỗi dòng một quy tắc, luôn có hiệu lực)</span><textarea data-ledger-long placeholder="Ví dụ: đừng tha thứ cho ai thay user"></textarea></label>
+                    <label class="vvv-relay-wide"><span>Quy tắc của chương hiện tại (mỗi dòng một quy tắc, tự xóa bằng tay)</span><textarea data-ledger-chapter placeholder="Ví dụ: chương này không được đột ngột tỏ tình, cũng đừng nhảy thời gian"></textarea></label>
+                    <label class="vvv-relay-wide"><span>Quy tắc tạm thời (mỗi dòng: quy tắc | số tầng còn lại)</span><textarea data-ledger-timed placeholder="Ví dụ: chân bị thương không chạy được | 10"></textarea></label>
+                    <small>Sổ cái quy tắc không chỉ dùng cho Tiếp sức cốt truyện bằng AI; Trung tâm Ký ức 0-32 cũng chèn nó vào mạch truyện chính thông thường. Quy tắc tạm thời sẽ tự được dọn khi hết hạn.</small>
                 </div>
                 <div class="vvv-relay-api-box vvv-relay-singleapi-settings">
-                    <h3>🛡 独立来源边界</h3>
-                    <p><b>固定启用：</b>只调用接力独立API；失败时按“失败自动尝试次数”重试同一独立来源，不调用酒馆主API。</p>
-                    <small>供应商明确政策拒绝会直接停止，不用自动换源绕过。</small>
+                    <h3>🛡 Ranh giới của nguồn độc lập</h3>
+                    <p><b>Luôn bật:</b> chỉ gọi API riêng của phần tiếp sức; khi thất bại thì thử lại chính nguồn độc lập đó theo “Số lần tự thử lại khi thất bại”, không gọi API chính của SillyTavern.</p>
+                    <small>Nếu nhà cung cấp từ chối rõ ràng theo chính sách thì dừng luôn, không tự đổi nguồn để lách.</small>
                 </div>
                 <div class="vvv-relay-api-box" data-independent-box>
-                    <p><b>AI接力专用 API：</b>这套 Base URL、密钥和模型只服务 AI 接力，不复用整理/总结 API，也不与幕后七条共用。请求只携带本模块整理出的近期剧情、结构化记忆和明确规则。</p>
+                    <p><b>API dành riêng cho Tiếp sức AI:</b> bộ Base URL, khóa và mô hình này chỉ phục vụ Tiếp sức AI, không dùng lại API sắp xếp/tổng kết và cũng không dùng chung với Bảy điều hậu trường. Yêu cầu chỉ mang theo phần cốt truyện gần đây, ký ức có cấu trúc và các quy tắc rõ ràng do chính mô-đun này chuẩn bị.</p>
                     <div data-relay-api-fields>
-                        <label><span>接口Loại</span><select data-api-provider><option value="openai-compatible">OpenAI兼容</option><option value="anthropic">Anthropic</option><option value="gemini">Gemini</option></select></label>
-                        <label><span>Base URL</span><input type="text" data-api-base autocomplete="off" placeholder="例如：https://example.com/v1"></label>
-                        <label><span>API Key</span><input type="password" data-api-key autocomplete="off" placeholder="留空保留服务器已保存密钥"></label>
-                        <label class="vvv-relay-model-field"><span>模型</span><div class="vvv-relay-model-row"><input type="text" data-api-model autocomplete="off" placeholder="可手填，或点击右侧获取模型"><button type="button" data-fetch-models>获取模型</button></div><select data-model-results hidden><option value="">选择已获取的模型…</option></select><small data-model-status></small></label>
+                        <label><span>Loại giao diện</span><select data-api-provider><option value="openai-compatible">Tương thích OpenAI</option><option value="anthropic">Anthropic</option><option value="gemini">Gemini</option></select></label>
+                        <label><span>Base URL</span><input type="text" data-api-base autocomplete="off" placeholder="Ví dụ: https://example.com/v1"></label>
+                        <label><span>API Key</span><input type="password" data-api-key autocomplete="off" placeholder="Để trống để giữ khóa đã lưu trên máy chủ"></label>
+                        <label class="vvv-relay-model-field"><span>Mô hình</span><div class="vvv-relay-model-row"><input type="text" data-api-model autocomplete="off" placeholder="Có thể tự điền, hoặc bấm nút bên phải để lấy danh sách mô hình"><button type="button" data-fetch-models>Lấy mô hình</button></div><select data-model-results hidden><option value="">Chọn mô hình đã lấy được…</option></select><small data-model-status></small></label>
                         <label><span>Temperature</span><input type="number" min="0" max="2" step="0.05" data-api-temp></label>
-                        <label><span>最大输出 Token</span><input type="number" min="128" max="8000" data-api-max></label>
-                        <label><span>超时秒数</span><input type="number" min="10" max="1800" data-api-timeout></label>
-                        <label class="vvv-relay-wide"><span>额外请求头 JSON</span><textarea data-api-headers spellcheck="false" placeholder="{}"></textarea></label>
-                        <div class="vvv-relay-api-actions vvv-relay-wide"><button type="button" data-fetch-models-secondary>↻ 获取模型列表</button><button type="button" data-test-api>✓ 测试完整链路</button></div>
+                        <label><span>Token đầu ra tối đa</span><input type="number" min="128" max="8000" data-api-max></label>
+                        <label><span>Thời gian chờ (giây)</span><input type="number" min="10" max="1800" data-api-timeout></label>
+                        <label class="vvv-relay-wide"><span>Header bổ sung dạng JSON</span><textarea data-api-headers spellcheck="false" placeholder="{}"></textarea></label>
+                        <div class="vvv-relay-api-actions vvv-relay-wide"><button type="button" data-fetch-models-secondary>↻ Lấy danh sách mô hình</button><button type="button" data-test-api>✓ Kiểm tra toàn tuyến</button></div>
                     </div>
                 </div>
-                <p>AI接力不读取酒馆预设、世界书、Persona或Prompt Manager；独立API失败时不会切换到酒馆主API。</p>
-                <small data-config-status>正在读取本账号接力API配置…</small>
-                <footer><button type="button" data-save>保存</button></footer></section>`;
+                <p>Tiếp sức AI không đọc preset, sách thế giới, Persona hay Prompt Manager của SillyTavern; khi API riêng thất bại cũng không chuyển sang API chính của SillyTavern.</p>
+                <small data-config-status>Đang đọc cấu hình API tiếp sức của tài khoản này…</small>
+                <footer><button type="button" data-save>Lưu</button></footer></section>`;
             document.body.appendChild(root);
             root.querySelector('[data-close]').onclick = () => root.remove();
             root.querySelector('[data-fetch-models]')?.addEventListener('click', () => fetchRelayModels(root));
@@ -2690,10 +2690,10 @@ ${notes||'无'}
             root.querySelector('[data-test-api]').onclick = async () => {
                 const status = root.querySelector('[data-config-status]');
                 try {
-                    status.textContent = '正在保存并测试…';
+                    status.textContent = 'Đang lưu và kiểm tra…';
                     await saveRelayServerConfig(root);
-                    const result = await generateWithConfiguredApi('这是AI接力完整链路测试。只回复一句简短的user测试文本。', { owner:'AI接力设置测试', systemPrompt:'这是Kiểm tra kết nối，不写真实剧情。', responseLength:256, deadlineAt:Date.now()+180000 });
-                    status.textContent = `✅ ${runtime.lastGenerationSourceLabel||configuredSourceLabel()}：${String(result || '连接成功').slice(0, 120)}`;
+                    const result = await generateWithConfiguredApi('Đây là bài kiểm tra toàn tuyến của Tiếp sức AI. Chỉ trả lời một câu văn bản thử ngắn gọn của user.', { owner:'Kiểm tra cài đặt Tiếp sức AI', systemPrompt:'Đây là bài kiểm tra kết nối, không viết cốt truyện thật.', responseLength:256, deadlineAt:Date.now()+180000 });
+                    status.textContent = `✅ ${runtime.lastGenerationSourceLabel||configuredSourceLabel()}：${String(result || 'Kết nối thành công').slice(0, 120)}`;
                 } catch (error) {
                     status.textContent = `❌ ${String(error?.message || error)}`;
                 }
@@ -2727,7 +2727,7 @@ ${notes||'无'}
                     closeSettingsModal(root);
                     if (runtime.settings.enabled) restoreBar({ settled: true });
                     else removeBars();
-                    toast('接力设置已保存。', 'success');
+                    toast('Đã lưu cài đặt tiếp sức.', 'success');
                 } catch (error) {
                     status.textContent = `❌ ${String(error?.message || error)}`;
                 }
@@ -2765,9 +2765,9 @@ ${notes||'无'}
             root.querySelector('[data-api-max]').value = Number(relay.maxTokens || 1600);
             root.querySelector('[data-api-timeout]').value = Number(relay.timeoutSeconds || 180);
             root.querySelector('[data-api-headers]').value = JSON.stringify(relay.extraHeaders || {}, null, 2);
-            status.textContent = relay.apiKeyConfigured ? '🔐 接力独立API密钥已保存；失败时仅重试同一独立来源。' : '接力独立API未保存密钥；请先配置Base URL、模型和密钥。';
+            status.textContent = relay.apiKeyConfigured ? '🔐 Đã lưu khóa API riêng của phần tiếp sức; khi thất bại chỉ thử lại chính nguồn độc lập đó.' : 'API riêng của phần tiếp sức chưa lưu khóa; hãy cấu hình Base URL, mô hình và khóa trước.';
         } catch (error) {
-            status.textContent = `⚠️ 无法读取服务器接力配置：${String(error?.message || error)}`;
+            status.textContent = `⚠️ Không đọc được cấu hình tiếp sức trên máy chủ: ${String(error?.message || error)}`;
         }
         syncApiVisibility(root);
         bindSettingsViewport(root);
@@ -2780,7 +2780,7 @@ ${notes||'无'}
         const box = document.createElement('div');
         box.id = 'vvv-relay-settings-entry';
         box.className = 'inline-drawer';
-        box.innerHTML = `<div class="inline-drawer-toggle inline-drawer-header"><b>✦ Tiếp sức cốt truyện bằng AI</b></div><div class="inline-drawer-content"><p>U1.7.15：AI接力继续使用单独API；小手机实时API也保持独立，不会混用总结或幕后七条连接。</p><button type="button">打开接力设置</button><small>版本 ${VERSION}</small></div>`;
+        box.innerHTML = `<div class="inline-drawer-toggle inline-drawer-header"><b>✦ Tiếp sức cốt truyện bằng AI</b></div><div class="inline-drawer-content"><p>U1.7.15: Tiếp sức AI vẫn dùng API riêng; API thời gian thực của điện thoại cũng giữ độc lập, không dùng lẫn kết nối của phần tổng kết hay Bảy điều hậu trường.</p><button type="button">Mở cài đặt tiếp sức</button><small>Phiên bản ${VERSION}</small></div>`;
         box.querySelector('button').onclick = () => openSettings().catch(showError);
         host.appendChild(box);
     }
@@ -2803,7 +2803,7 @@ ${notes||'无'}
         runtime.selected.clear();
         setDockBusy(false);
         restoreBar({ settled: true, entryOverride: settledEntry });
-        // 某些主题/滑动Tầng会在 settled 后继续替换最后一层 DOM，多次轻量确认只补 UI，不调用 API。
+        // Một số chủ đề/tầng vuốt vẫn thay DOM của tầng cuối sau khi đã settled; vài lần xác nhận nhẹ chỉ bù lại UI, không gọi API.
         setTimeout(() => scheduleBarRestore(0), 180);
         setTimeout(() => scheduleBarRestore(0), 650);
         setTimeout(() => scheduleBarRestore(0), 1500);
@@ -2824,16 +2824,16 @@ ${notes||'无'}
     }
 
     function clearForRealGenerationStart() {
-        // 静默生成/其他插件的后台 generation 不能把已经 settled 的接力条误删。
-        // 只有当前聊天最后一条真实消息确实是 user 时，才视为新一轮chính văn开始。
+        // Việc sinh nội dung ngầm hoặc generation nền của tiện ích khác không được xóa nhầm thanh tiếp sức đã settled.
+        // Chỉ khi tin nhắn thật cuối cùng của cuộc trò chuyện hiện tại đúng là của user thì mới coi là bắt đầu một lượt chính văn mới.
         const chat = ctx()?.chat;
         if (!Array.isArray(chat)) return;
         for (let i = chat.length - 1; i >= 0; i -= 1) {
             const message = chat[i];
             if (!message || message.is_system || !textOf(message)) continue;
             if (message.is_user) {
-                // P22：新一轮生成必须以“这个user之前最近的完整AI”为基点。
-                // lastSettledAnchor 只能兜底，绝不能抢过当前聊天拓扑。
+                // P22: lượt sinh nội dung mới bắt buộc lấy “câu trả lời AI hoàn chỉnh gần nhất trước tin user này” làm điểm gốc.
+                // lastSettledAnchor chỉ là phương án dự phòng, tuyệt đối không được lấn quyền cấu trúc chat hiện tại.
                 const anchorEntry = latestSafeAssistant({ beforeIndex:i }) || assistantBeforeLatestUser() || anchoredEntry();
                 runtime.stopRecoveryAnchor = null;
                 if (anchorEntry) runtime.generationStartAnchor = anchorFromEntry(anchorEntry);
@@ -2852,7 +2852,7 @@ ${notes||'无'}
         const stoppedBase = runtime.generationStartAnchor ? { ...runtime.generationStartAnchor } : null;
         markStoppedPartials(stoppedBase);
         runtime.stopRecoveryAnchor = stoppedBase;
-        // 关键：STOP处理完立刻清掉generationStartAnchor，防止它以后永久把接力拉回旧Tầng。
+        // Mấu chốt: xử lý STOP xong phải xóa ngay generationStartAnchor, tránh việc về sau nó kéo phần tiếp sức về tầng cũ mãi mãi.
         runtime.generationStartAnchor = null;
         runtime.busy = false;
         runtime.selected.clear();
@@ -2866,7 +2866,7 @@ ${notes||'无'}
             if (!entry || !runtime.settings?.enabled) return;
             runtime.currentSignature = signature(entry);
             runtime.barDesired = true;
-            // 恢复时重新记一次宽松锚点；chính văn清理/尾包剥离导致文本hash变化也不会再把入口弄丢。
+            // Khi khôi phục thì ghi lại một mốc neo nới lỏng; việc dọn chính văn hay bóc phần bao ở cuối làm đổi hash văn bản cũng không còn làm mất lối vào.
             runtime.lastSettledAnchor = anchorFromEntry(entry);
             restoreBar({ settled:false, entryOverride:entry, force:true });
             if (reveal) {
@@ -2882,14 +2882,14 @@ ${notes||'无'}
     }
 
     function restoreAfterGenerationEndedIfEmpty() {
-        // 官方不同版本/主题的“停止”事件顺序可能不同。
-        // 如果 ENDED 之后最后一条真实消息仍是 user，说明没有完整AIchính văn落地，按中止处理。
+        // Thứ tự sự kiện “dừng” có thể khác nhau giữa các phiên bản/chủ đề chính thức.
+        // Nếu sau ENDED mà tin nhắn thật cuối cùng vẫn là của user thì nghĩa là chưa có chính văn AI hoàn chỉnh nào rơi xuống, xử lý như bị ngắt.
         setTimeout(() => {
             const last = latestRealMessage();
             if (last?.message?.is_user && runtime.generationStartAnchor) {
                 restoreAfterGenerationStopped({ source:'ended-empty' });
             } else {
-                // 正常完成即便 VVV_TURN_SETTLED 因主题/时序漏发，也必须释放旧生成锚点。
+                // Ngay cả khi VVV_TURN_SETTLED bị bỏ sót do chủ đề/thứ tự thời gian, một lượt hoàn tất bình thường vẫn phải giải phóng mốc neo sinh nội dung cũ.
                 runtime.generationStartAnchor = null;
                 runtime.stopRecoveryAnchor = null;
                 setDockBusy(false);
@@ -2906,7 +2906,7 @@ ${notes||'无'}
         if (!ctx()) return;
         loadSettings();
         try { await refreshRelayServerConfig(); }
-        catch (error) { console.warn('[Tiếp sức cốt truyện bằng AI] 独立API配置暂未读取成功，实际生成时会再次由服务端校验', error); }
+        catch (error) { console.warn('[Tiếp sức cốt truyện bằng AI] Chưa đọc được cấu hình API riêng; khi sinh nội dung thật máy chủ sẽ kiểm tra lại', error); }
         runtime.configuredSourceReady = true;
         ensureEntry();
         globalThis.addEventListener('VVV_TURN_SETTLED', onSettled);
@@ -2915,10 +2915,10 @@ ${notes||'无'}
         const types = c?.eventTypes || c?.event_types || globalThis.event_types || {};
         const bus=globalThis.VVVUnifiedCore?.events;
         const on=(name,handler)=>{if(bus?.on)return bus.on(name,handler);const actual=types?.[name]||name;source?.on?.(actual,handler);return()=>{};};
-        // U1.4：原生事件统一交给0-00 EventBus；本模块不再向SillyTavern重复注册。
+        // U1.4: các sự kiện gốc được giao hết cho EventBus của 0-00; mô-đun này không đăng ký trùng với SillyTavern nữa.
         on('USER_MESSAGE_RENDERED', clearForNewUserTurn);
         on('GENERATION_STARTED', clearForRealGenerationStart);
-        // R9S1P17：三重保险——STOPPED事件 + ENDED空结果 + isGenerating watchdog。
+        // R9S1P17: ba lớp bảo hiểm — sự kiện STOPPED + ENDED trả về rỗng + watchdog isGenerating.
         on('GENERATION_STOPPED', restoreAfterGenerationStopped);
         on('GENERATION_ENDED', restoreAfterGenerationEndedIfEmpty);
         on('CHAT_CHANGED', () => {
@@ -2950,7 +2950,7 @@ ${notes||'无'}
             }, 700);
         });
         installBarObserver();
-        // 刷新/重新打开只恢复最新AIchính văn底部UI，不请求模型。
+        // Tải lại/mở lại chỉ khôi phục phần UI dưới chân chính văn AI mới nhất, không gọi mô hình.
         setTimeout(() => {
             const entry = latestAssistant();
             runtime.currentSignature = signature(entry);
@@ -2966,7 +2966,7 @@ ${notes||'无'}
     globalThis.VVVUnifiedRelay = Object.assign(globalThis.VVVUnifiedRelay || {}, {
         version: VERSION,
         openCommand: () => openCommandPanel(),
-        // 剧情地图只暴露一个自定义出发方向，不打开常规方向/命运卡选项面板。
+        // Bản đồ cốt truyện chỉ mở ra một hướng xuất phát tùy chỉnh, không mở bảng chọn hướng thường hay thẻ định mệnh.
         generateTravel: (custom = '') => {
             runtime.selected.clear();
             runtime.selected.add('custom');
