@@ -7400,7 +7400,7 @@ ${scene.mood||''}`,12000);
 
     function singleFloorExtractionPrompt(floor) {
         const target=Math.max(0,Number(floor||0));
-        // U1.6.2：整轮缺失时也只允许重建“目标AITầng”；前一条user仅作语义上下文，彻底Hủy旧版 ±1 三层混抽。
+        // U1.6.2: kể cả khi cả lượt bị thiếu thì cũng chỉ được dựng lại đúng “tầng AI mục tiêu”; tin nhắn user trước đó chỉ là ngữ cảnh ngữ nghĩa, bỏ hẳn kiểu rút lẫn ba tầng ±1 của bản cũ.
         return extractionPromptV16(target);
     }
 
@@ -7413,7 +7413,7 @@ ${scene.mood||''}`,12000);
         const needsFull=live?.status==='memory-missing'||(!live&&Number(operationState.progress?.lastExtractedMessage??-1)<target);
 
         if(!needsFull&&missing.length){
-            // 普通生活细节遗漏：只把当前仍缺的候选送去保底提取，不再重抽整层结构化记忆。
+            // Chi tiết đời sống bị sót thông thường: chỉ gửi những ứng viên còn thiếu đi trích xuất dự phòng, không rút lại toàn bộ ký ức có cấu trúc của cả tầng.
             if(prior)recordMemoryHealthAttempt({...prior,status:'pending-rescue',rescueAttempted:true,rescueSource:'manual',manualRepairAt:nowText()});
             const rescue=await rescueLifeDetailCandidates(missing,{source:'manual'});
             if(!stillCurrent())return {mode:'detail',floor:target,success:false,missing:missing.length,stale:true};
@@ -7431,18 +7431,18 @@ ${scene.mood||''}`,12000);
             return {mode:'noop',floor:target,success:true,missing:0};
         }
 
-        if(!independentApiReady())throw new Error('整轮结构化记忆重建需要先配置独立整理/总结API');
-        const entry=assistantEntryAtFloor(target);if(!entry)throw new Error(`第 ${target} 层不是可重建的AI回复`);
+        if(!independentApiReady())throw new Error('Việc dựng lại toàn bộ ký ức có cấu trúc của cả lượt cần cấu hình API sắp xếp/tổng kết riêng trước');
+        const entry=assistantEntryAtFloor(target);if(!entry)throw new Error(`Tầng ${target} không phải một câu trả lời AI có thể dựng lại`);
         const result=await runFeature('extract',singleFloorExtractionPrompt(target),{kind:'extract',floor:target,sourceMessageSignature:entry.signature,assistantOnce:true,repairKind:'manual-floor-full',repairFloor:target,dedupeKey:extractTaskDedupeKey(target,entry.signature)},{jsonMode:true,timeoutMs:95000});
         if(!stillCurrent())return {mode:'full',floor:target,success:false,missing:0,stale:true};
-        if(result.record){const ok=await applyCompletedJob(result.record,result.task);if(!stillCurrent())return {mode:'full',floor:target,success:false,missing:0,stale:true};if(!ok&&result.record.status!=='completed')throw new Error(result.record.error||'重提取结果未应用');}else mergeExtraction(parseExtractionResult(result.text),target);
+        if(result.record){const ok=await applyCompletedJob(result.record,result.task);if(!stillCurrent())return {mode:'full',floor:target,success:false,missing:0,stale:true};if(!ok&&result.record.status!=='completed')throw new Error(result.record.error||'Kết quả trích xuất lại chưa được áp dụng');}else mergeExtraction(parseExtractionResult(result.text),target);
         if(!stillCurrent())return {mode:'full',floor:target,success:false,missing:0,stale:true};
         const repairedAttempt=memoryHealthAttemptForFloor(target)||prior;
         if(repairedAttempt?.forceFullRepair)recordMemoryHealthAttempt({...repairedAttempt,forceFullRepair:false,fallbackResolvedAt:nowText(),status:'ok-no-detail',extractedThrough:true,error:'',rescueError:''});
         reconcileMemoryHealthForFloors([target]);
         await saveState({immediate:true,refresh:false,reason:`p13-full-reextract-floor-${target}`});
         if(!stillCurrent())return {mode:'full',floor:target,success:false,missing:0,stale:true};
-        const memoryHealthAttempt=await auditLatestTurnMemoryHealth(target,entry.signature).catch(error=>{console.warn('[vvv记忆中枢] 重建后P13复检失败',error);return null;});
+        const memoryHealthAttempt=await auditLatestTurnMemoryHealth(target,entry.signature).catch(error=>{console.warn('[Trung tâm Ký ức vvv] Kiểm tra lại P13 sau khi dựng lại thất bại',error);return null;});
         if(memoryHealthAttempt)scheduleLifeDetailRescueAfterSettled(memoryHealthAttempt);
         stateRuntime.memoryPipelineNotice='';
         scheduleReindex();const after=liveMemoryHealthAttempt(memoryHealthAttempt||memoryHealthAttemptForFloor(target));
@@ -7458,7 +7458,7 @@ ${scene.mood||''}`,12000);
         try{
             for(let i=0;i<rows.length;i+=1){
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)break;
-                const row=rows[i];setBusy(true,`P13 一键修复 ${i+1}/${rows.length} · 第 ${row.floor} 层…`);
+                const row=rows[i];setBusy(true,`Sửa một chạm P13 ${i+1}/${rows.length} · tầng ${row.floor}…`);
                 try{
                     const repaired=await reExtractMemoryFloor(row.floor);
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)break;
@@ -7499,7 +7499,7 @@ ${scene.mood||''}`,12000);
                 id:`sidecar-memory-gap:${getChatKey()}:${floor}:${entry.signature}`,
                 chatIdentity:getChatKey(),floor,signature:entry.signature,
                 status:'memory-missing',candidateCount:0,coveredCount:0,
-                missingAfter:[{floor,evidenceFloor:floor,category:'structure',speaker:'',text:'幕后七条已生成，但本层主记忆尚未整理'}],
+                missingAfter:[{floor,evidenceFloor:floor,category:'structure',speaker:'',text:'Bảy điều hậu trường đã sinh xong, nhưng ký ức chính của tầng này chưa được sắp xếp'}],
                 extractedThrough:false,forceFullRepair:true,_synthetic:true,
                 time:payload.generatedAt||nowText(),
             });
@@ -7529,7 +7529,7 @@ ${scene.mood||''}`,12000);
         const recent=[...active.slice(-20).map(liveMemoryHealthAttempt).filter(Boolean),...sidecarGaps]
             .sort((a,b)=>Number(a.floor)-Number(b.floor)).slice(-20);
         const ok=recent.filter(item=>['covered','rescued','ok-no-detail'].includes(item.status)).length;
-        // “生活细节覆盖”改为当前窗口内候选去重后实时核验；手动修复不会再因为删attempt/重复attempt导致分母乱跳。
+        // “Độ phủ chi tiết đời sống” chuyển sang kiểm tra thời gian thực sau khi khử trùng ứng viên trong cửa sổ hiện tại; việc sửa tay không còn làm mẫu số nhảy loạn vì xóa attempt hay attempt trùng.
         const candidateMap=new Map();
         for(const attempt of active){for(const item of healthCandidatesFromAttempt(attempt)){candidateMap.set(`${item.floor}|${item.category}|${compactText(item.text,520)}`,item);}}
         const candidates=[...candidateMap.values()];const covered=candidates.filter(lifeDetailCandidateCovered).length;
@@ -7544,11 +7544,11 @@ ${scene.mood||''}`,12000);
 
     function memoryPipelineAvailability() {
         const settings=stateRuntime.state?.settings||{};
-        if(settings.enabled===false)return {code:'disabled',note:'记忆中枢已Đóng；本轮不会自动整理。可在设置中开启后再重建。'};
-        if(settings.autoExtract===false)return {code:'manual-only',note:'即时记忆已Đóng；请点击“AI整理”或下方“重建本层”手动运行。'};
-        if(!independentApiReady())return {code:'api-missing',note:'独立整理/总结API未配置；幕后七条仍可单独生成，但主记忆不会写入。'};
+        if(settings.enabled===false)return {code:'disabled',note:'Trung tâm Ký ức đang tắt; lượt này sẽ không tự sắp xếp. Hãy bật lại trong phần cài đặt rồi dựng lại.'};
+        if(settings.autoExtract===false)return {code:'manual-only',note:'Ký ức tức thời đang tắt; hãy bấm “AI sắp xếp” hoặc “Dựng lại tầng này” ở dưới để chạy tay.'};
+        if(!independentApiReady())return {code:'api-missing',note:'API sắp xếp/tổng kết riêng chưa được cấu hình; Bảy điều hậu trường vẫn sinh riêng được, nhưng ký ức chính sẽ không được ghi.'};
         if(stateRuntime.memoryPipelineNotice)return {code:'notice',note:stateRuntime.memoryPipelineNotice};
-        return {code:'ready',note:'自动整理已开启；每条AI回复只写入一次主记忆。'};
+        return {code:'ready',note:'Tự động sắp xếp đang bật; mỗi câu trả lời của AI chỉ ghi ký ức chính đúng một lần.'};
     }
 
     function upsertAppearanceSnapshot(item, payloadId = '', floor = -1) {
@@ -7597,13 +7597,13 @@ ${scene.mood||''}`,12000);
             const thread = (phone.groupThreads || []).find(item => compactText(item?.groupName,120) === groupName && (!homeWorldKey || compactText(item?.homeWorldKey,120)===homeWorldKey)) || (phone.groupThreads||[]).find(item=>compactText(item?.groupName,120)===groupName);
             const last = thread?.messages?.at(-1);
             const members = [...new Set([...(meta.members || []), ...(thread?.members || [])].map(x=>compactText(x,80)).filter(Boolean))].slice(0,12);
-            rows.push(`- ${groupName}${meta.type?`｜Loại:${meta.type}`:''}${meta.scope?`｜范围:${meta.scope}`:''}${meta.channelType?`｜载体:${meta.channelType}`:''}${meta.availability?`｜Trạng thái:${meta.availability}`:''}${meta.activityLevel?`｜活跃:${meta.activityLevel}`:''}${members.length?`｜成员:${members.join('、')}`:''}${meta.topic?`｜长期话题:${meta.topic}`:''}${last?.content?`｜最近历史:${last.sender||'群成员'}：${compactText(last.content,160)}`:''}`);
+            rows.push(`- ${groupName}${meta.type?`｜loại: ${meta.type}`:''}${meta.scope?`｜phạm vi: ${meta.scope}`:''}${meta.channelType?`｜kênh: ${meta.channelType}`:''}${meta.availability?`｜trạng thái: ${meta.availability}`:''}${meta.activityLevel?`｜mức hoạt động: ${meta.activityLevel}`:''}${members.length?`｜thành viên: ${members.join(', ')}`:''}${meta.topic?`｜chủ đề dài hạn: ${meta.topic}`:''}${last?.content?`｜lịch sử gần nhất: ${last.sender||'thành viên nhóm'}: ${compactText(last.content,160)}`:''}`);
         };
         profiles.forEach(p => add(p?.groupName, p || {}));
         (phone.groupThreads || []).forEach(t => add(t?.groupName, t || {}));
         (phone.wechatGroups || []).slice(-40).forEach(m => add(m?.groupName, {members:m?.members||[]}));
         (phone.channelGroups || []).slice(-40).forEach(m => add(m?.groupName, {members:m?.members||[],type:m?.channelType||'channel'}));
-        return rows.slice(0, limit).join('\n') || 'Chưa có已建立群聊；若角色卡/世界书明确存在班级、课程、宿舍、社团、工作、家族、朋友等稳定群体，可在本轮保守建立对应群聊。';
+        return rows.slice(0, limit).join('\n') || 'Chưa có nhóm chat nào được lập; nếu thẻ nhân vật/sách thế giới ghi rõ có các nhóm ổn định như lớp, môn học, ký túc xá, câu lạc bộ, công việc, dòng họ, bạn bè thì lượt này có thể lập nhóm tương ứng một cách dè dặt.';
     }
 
     function phoneActivityDebt() {
@@ -7628,7 +7628,7 @@ ${scene.mood||''}`,12000);
         for (const item of phone.channelGroups || []) if (item?.mentionsUser) add(item);
         for (const item of phone.sms || []) {
             const category=String(item?.category||'');
-            if (!/service|system|code|ad|pickup|logistics|food|ride|bank|payment|travel|hotel|order|carrier|subscription|medical|government|campus|spam|scam|验证码|广告|通知|快递|物流|取件|外卖|骑手|打车|银行|支付|票务|酒店|运营商|订阅|医疗|政务|校园|垃圾|诈骗/i.test(category)) add(item);
+            if (!/service|system|code|ad|pickup|logistics|food|ride|bank|payment|travel|hotel|order|carrier|subscription|medical|government|campus|spam|scam|mã xác minh|quảng cáo|thông báo|chuyển phát nhanh|vận chuyển|lấy hàng|giao đồ ăn|tài xế|đặt xe|ngân hàng|thanh toán|vé|khách sạn|nhà mạng|đăng ký|y tế|hành chính|trường học|rác|lừa đảo/i.test(category)) add(item);
         }
         const latestFloor = rows.length ? Math.max(...rows) : -1;
         const silentFloors = latestFloor >= 0 ? Math.max(0,currentFloor-latestFloor) : Math.max(0,currentFloor);
@@ -7660,12 +7660,12 @@ ${scene.mood||''}`,12000);
         return names.map(name=>({name,last:Number(lastByName.get(name)??-1),isMain:name===charName}))
             .sort((a,b)=>a.last-b.last || Number(a.isMain)-Number(b.isMain))
             .slice(0,limit)
-            .map(row=>`${row.name}(上次镜头外更新:${row.last>=0?`第${row.last}层`:'从未'})`).join('、') || 'Chưa có可轮转NPC';
+            .map(row=>`${row.name} (lần cập nhật ngoài ống kính gần nhất: ${row.last>=0?`tầng ${row.last}`:'chưa từng'})`).join(', ') || 'Chưa có NPC nào để luân phiên';
     }
 
     function phoneEcologyDirective() {
         const settings = stateRuntime.state?.settings || {};
-        if (!settings.phoneEcologyEnabled) return '通讯生态增强已Đóng：保留基础通讯逻辑。';
+        if (!settings.phoneEcologyEnabled) return 'Phần tăng cường hệ sinh thái liên lạc đang tắt: chỉ giữ logic liên lạc cơ bản.';
         ensureInstitutionalGroupProfiles((context()?.chat?.length || 1) - 1);
         const groupActivity = Math.max(0, Math.min(1, Number(settings.phoneGroupActivity ?? 0.95)));
         const serviceNoise = Math.max(0, Math.min(1, Number(settings.phoneServiceNoise ?? 0.74)));
@@ -7674,28 +7674,28 @@ ${scene.mood||''}`,12000);
         const social = institutionalSocialProfile();
         const current = normalizeCommunicationProfile(stateRuntime.state?.communicationProfile || inferCurrentWorldContext());
         const origin = stateRuntime.state?.worldTransit?.origin || {};
-        const currentMedium = current.communicationType === 'smartphone' ? '微信/短信/电话' : communicationMessageLabel(current);
-        const studentHint = social.origin.student ? `原世界Thân phận=学生${social.origin.university?'（大学/学院）':''}` : social.origin.work ? '原世界Thân phận=职场' : '原世界Thân phận=一般社会关系';
-        const reachHint = current.originReachable ? '原世界关系当前可达' : '原世界关系当前离线但永久保留';
+        const currentMedium = current.communicationType === 'smartphone' ? 'WeChat/SMS/điện thoại' : communicationMessageLabel(current);
+        const studentHint = social.origin.student ? `Thân phận ở thế giới gốc = học sinh${social.origin.university?' (đại học/học viện)':''}` : social.origin.work ? 'Thân phận ở thế giới gốc = người đi làm' : 'Thân phận ở thế giới gốc = quan hệ xã hội thông thường';
+        const reachHint = current.originReachable ? 'Quan hệ ở thế giới gốc hiện liên lạc được' : 'Quan hệ ở thế giới gốc hiện ngoại tuyến nhưng vẫn được giữ vĩnh viễn';
         const silentHint = debt.due
-            ? `通讯已静默约${debt.silentFloors}层（阈值${debt.threshold}）；只要当前世界存在可用渠道，本轮必须至少发生1个低影响通讯事件。`
-            : `最近通讯静默约${debt.silentFloors}层（阈值${debt.threshold}），按人物动机自然波动。`;
-        return `通讯/手机生态增强开启：群聊活跃度=${groupActivity.toFixed(2)}，现代服务噪声=${serviceNoise.toFixed(2)}。
-【时空Trạng thái】原世界=${origin.worldType||'Chưa rõ'} ${origin.era||''}；当前=${current.worldType||'Chưa rõ'} ${current.era||''} ${current.location||''}；当前载体=${current.deviceLabel||currentMedium}；${reachHint}；${studentHint}。
-- 【绝对分层】插件已记录的原世界Thân phận只描述“原本是谁/来自哪里/原有社会关系”，不能覆盖当前剧情的时代与世界。当前scene+最近剧情才决定“现在在哪里、用什么通讯”。现代大学生穿越到1900香港时，原班级群仍存在但离线；当前只能用1900香港合理的书信/电报/座机等。现代大学生进入异世界时，原微信关系离线；若当地有传讯水晶/信使/书信则改用当地渠道。
-- 【回归恢复】穿越不会删除联系人、班级群、课程群、朋友群。回到原世界且网络恢复后，原群自动重新active，并可合理积累离线期间之后真正能收到的新消息；绝不能把“离线期间在另一个世界”伪造成已经实时收到微信。
-- 【当地机构必须有剧情依据】仅仅因为user原本是学生，不能一到1900香港或异世界就凭空生成“当地班级群”。只有chính văn明确入学、转学、任职、入住宿舍、加入组织后，才建立当前世界对应的本地群/频道。
-- 【多人通讯随时代换壳】smartphone世界使用phone.wechatGroups；非智能手机时代/世界的多人讨论使用phone.channelGroups，并写channelType=telegram/letter/messenger/radio/magic/terminal/landline等真实载体。不要把魔法频道、电报簿、书信往来伪装成微信群。
-- 【原世界离线群】groupProfiles中scope=origin且availability=offline-origin时，只保存关系和旧历史，本轮禁止往wechat/wechatGroups伪造新消息；除非setting.originReachable=true且剧情明确存在跨世界网络。
-- 【群聊像活人】当前active群/频道会在user没打开UI时继续有NPC↔NPC讨论。课程通知、作业、点名、换地点、约饭、吐槽、工作安排、家庭闲聊、组织活动等都可自然发生；大多数消息不需要@user。若chính văn只过几秒可安静，明显时间推进/换场景/活动临近/连续静默后通常产生1-6条合理消息。
-- 【低影响背景NPC】稳定机构缺少成员时允许生成同学/班委/助教/同事/组织成员等低影响NPC，首次出现同步登记memory.people，之后持续复用；不得凭空捏造与user的亲密旧史、重大秘密或共同犯罪史。
-- 【直接触达】距离上一次NPC直接找user约${directDebt.silentFloors}层（阈值${directDebt.threshold}）。达到阈值且当前存在合理可达渠道时，本轮至少安排1次自然直接触达：私聊、来电、群/频道明确@user、信使点名找user等均可；不能永远只有主角色找user。
-- 【通讯方式不要单调】急事、强情绪、即时确认、人物习惯适合实时通讯时可来电/无线电/魔法实时传讯；普通闲聊用异步消息。若当前载体不支持实时通话，不得硬生成calls。
-- 【现代服务噪声只在现代可达时出现】快递、外卖、银行、验证码、运营商、网约车、票务、校园系统、广告/垃圾短信等只在当前现代数字社会且相关服务合理存在时生成；1900/古代/异世界不得因为原Thân phận来自现代继续刷现代验证码和快递短信。
-- 【附近NPC优先现实接触】同地点NPC可直接说话/敲门/加入谈话，不必为了“活跃手机”硬绕一圈通讯；远处NPC更适合使用当前时代的通讯渠道。
-- 【USER主权】任何通讯都不能替user回复、接听、同意、拒绝或作决定。等待接听用waiting/ringing+requiresAnswer=true，选择从下一轮chính văn继续。
+            ? `Việc liên lạc đã im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}); chỉ cần thế giới hiện tại còn kênh dùng được thì lượt này bắt buộc phải xảy ra ít nhất 1 sự kiện liên lạc ít tác động.`
+            : `Gần đây việc liên lạc im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}), cứ dao động tự nhiên theo động cơ nhân vật.`;
+        return `Tăng cường hệ sinh thái liên lạc/điện thoại đang bật: độ sôi nổi nhóm chat = ${groupActivity.toFixed(2)}, mức nhiễu dịch vụ hiện đại = ${serviceNoise.toFixed(2)}.
+【TRẠNG THÁI KHÔNG-THỜI GIAN】Thế giới gốc = ${origin.worldType||'chưa rõ'} ${origin.era||''}; hiện tại = ${current.worldType||'chưa rõ'} ${current.era||''} ${current.location||''}; phương tiện hiện tại = ${current.deviceLabel||currentMedium}; ${reachHint}; ${studentHint}.
+- 【PHÂN TẦNG TUYỆT ĐỐI】Thân phận ở thế giới gốc mà tiện ích đã ghi chỉ mô tả “vốn là ai / đến từ đâu / có sẵn những quan hệ xã hội nào”, không được ghi đè thời đại và thế giới của mạch truyện hiện tại. Chính scene hiện tại cộng với các tình tiết gần đây mới quyết định “bây giờ đang ở đâu, liên lạc bằng gì”. Khi một sinh viên hiện đại xuyên về Hồng Kông năm 1900 thì nhóm lớp cũ vẫn tồn tại nhưng ngoại tuyến; lúc đó chỉ được dùng thư từ/điện báo/điện thoại bàn hợp lý với Hồng Kông 1900. Khi một sinh viên hiện đại lạc vào dị giới thì các quan hệ WeChat cũ chuyển sang ngoại tuyến; nếu nơi đó có pha lê truyền tin/sứ giả/thư từ thì đổi sang dùng kênh bản địa.
+- 【KHÔI PHỤC KHI TRỞ VỀ】Xuyên không không xóa danh bạ, nhóm lớp, nhóm môn học hay nhóm bạn bè. Sau khi quay về thế giới gốc và mạng khôi phục, các nhóm cũ tự động active trở lại và có thể tích lũy hợp lý những tin nhắn mới thực sự nhận được sau quãng ngoại tuyến; tuyệt đối không được ngụy tạo rằng “trong lúc ở thế giới khác” vẫn nhận WeChat theo thời gian thực.
+- 【TỔ CHỨC BẢN ĐỊA PHẢI CÓ CĂN CỨ TRONG TRUYỆN】Không được chỉ vì user vốn là học sinh mà vừa tới Hồng Kông 1900 hay dị giới đã tự dựng ra “nhóm lớp bản địa”. Chỉ sau khi chính văn ghi rõ việc nhập học, chuyển trường, nhận việc, dọn vào ký túc xá hay gia nhập tổ chức thì mới lập nhóm/kênh bản địa tương ứng ở thế giới hiện tại.
+- 【LIÊN LẠC NHIỀU NGƯỜI ĐỔI VỎ THEO THỜI ĐẠI】Thế giới có smartphone thì dùng phone.wechatGroups; ở thời đại/thế giới không có điện thoại thông minh thì các cuộc thảo luận nhiều người dùng phone.channelGroups và ghi channelType = telegram/letter/messenger/radio/magic/terminal/landline theo đúng phương tiện thật. Đừng ngụy trang kênh ma pháp, sổ điện báo hay thư từ thành nhóm WeChat.
+- 【NHÓM NGOẠI TUYẾN Ở THẾ GIỚI GỐC】Khi một mục trong groupProfiles có scope=origin và availability=offline-origin thì chỉ giữ quan hệ và lịch sử cũ; lượt này cấm ngụy tạo tin nhắn mới vào wechat/wechatGroups, trừ khi setting.originReachable=true và mạch truyện nói rõ có mạng xuyên thế giới.
+- 【NHÓM CHAT NHƯ NGƯỜI THẬT】Các nhóm/kênh đang active vẫn có NPC nói chuyện với NPC ngay cả khi user không mở giao diện. Thông báo môn học, bài tập, điểm danh, đổi địa điểm, rủ ăn, cà khịa, sắp xếp công việc, chuyện phiếm gia đình, hoạt động của tổ chức… đều có thể xảy ra tự nhiên; phần lớn tin nhắn không cần @user. Nếu chính văn chỉ trôi qua vài giây thì có thể im ắng; còn khi thời gian đẩy tới rõ rệt, đổi cảnh, gần tới giờ hoạt động hoặc sau một quãng im lặng dài thì thường sinh ra 1-6 tin nhắn hợp lý.
+- 【NPC NỀN ÍT TÁC ĐỘNG】Khi một tổ chức ổn định thiếu thành viên thì được phép sinh các NPC ít tác động như bạn học/ban cán sự/trợ giảng/đồng nghiệp/thành viên tổ chức; lần đầu xuất hiện phải đăng ký đồng thời vào memory.people rồi dùng lại về sau; cấm bịa ra quá khứ thân mật, bí mật lớn hay tiền án chung với user.
+- 【TIẾP CẬN TRỰC TIẾP】Đã khoảng ${directDebt.silentFloors} tầng kể từ lần cuối một NPC trực tiếp tìm user (ngưỡng ${directDebt.threshold}). Khi chạm ngưỡng và hiện có kênh liên lạc hợp lý thì lượt này phải bố trí ít nhất 1 lần tiếp cận trực tiếp tự nhiên: nhắn riêng, gọi đến, @user rõ ràng trong nhóm/kênh, sứ giả gọi đích danh user… đều được; không thể mãi mãi chỉ có nhân vật chính tìm user.
+- 【ĐỪNG ĐƠN ĐIỆU VỀ CÁCH LIÊN LẠC】Khi có việc gấp, cảm xúc mạnh, cần xác nhận ngay hoặc thói quen nhân vật hợp với liên lạc thời gian thực thì dùng cuộc gọi/vô tuyến/truyền tin ma pháp tức thời; chuyện phiếm thường thì dùng tin nhắn bất đồng bộ. Nếu phương tiện hiện tại không hỗ trợ gọi thời gian thực thì không được ép sinh calls.
+- 【NHIỄU DỊCH VỤ HIỆN ĐẠI CHỈ XUẤT HIỆN KHI THỜI HIỆN ĐẠI CÒN VỚI TỚI ĐƯỢC】Chuyển phát nhanh, giao đồ ăn, ngân hàng, mã xác minh, nhà mạng, xe công nghệ, vé, hệ thống trường học, tin quảng cáo/rác… chỉ được sinh khi bối cảnh hiện tại là xã hội số hiện đại và dịch vụ đó tồn tại hợp lý; ở năm 1900/thời cổ đại/dị giới thì không được vì thân phận gốc là người hiện đại mà vẫn nhận mã xác minh và SMS giao hàng.
+- 【NPC Ở GẦN THÌ ƯU TIÊN TIẾP XÚC NGOÀI ĐỜI】NPC cùng địa điểm có thể nói chuyện/gõ cửa/tham gia trò chuyện trực tiếp, không cần vòng qua liên lạc chỉ để “làm điện thoại sôi động”; NPC ở xa mới hợp với kênh liên lạc của thời đại hiện tại.
+- 【CHỦ QUYỀN CỦA USER】Không cuộc liên lạc nào được trả lời, bắt máy, đồng ý, từ chối hay quyết định thay user. Trạng thái chờ bắt máy dùng waiting/ringing + requiresAnswer=true, còn lựa chọn thì để chính văn lượt sau tiếp tục.
 - ${silentHint}
-【已有群/频道】
+【NHÓM/KÊNH ĐÃ CÓ】
 ${phoneExistingGroupBrief()}`;
     }
 
@@ -7711,7 +7711,7 @@ ${phoneExistingGroupBrief()}`;
         for (const item of phone.wechat || []) add('text', item, item.author || item.contact, {service:false});
         for (const item of phone.wechatGroups || []) add('text', item, item.sender || item.groupName, {service:false});
         for (const item of phone.channelGroups || []) add('text', item, item.sender || item.groupName, {service:false});
-        for (const item of phone.sms || []) add('text', item, item.author || item.contact, {service:/service|system|code|ad|pickup|logistics|food|ride|bank|payment|travel|hotel|order|carrier|subscription|medical|government|campus|spam|scam|验证码|广告|通知|快递|物流|取件|外卖|骑手|打车|银行|支付|票务|酒店|运营商|订阅|医疗|政务|校园|垃圾|诈骗/i.test(String(item?.category || ''))});
+        for (const item of phone.sms || []) add('text', item, item.author || item.contact, {service:/service|system|code|ad|pickup|logistics|food|ride|bank|payment|travel|hotel|order|carrier|subscription|medical|government|campus|spam|scam|mã xác minh|quảng cáo|thông báo|chuyển phát nhanh|vận chuyển|lấy hàng|giao đồ ăn|tài xế|đặt xe|ngân hàng|thanh付|票务|酒店|运营商|订阅|医疗|政务|校园|垃圾|诈骗/i.test(String(item?.category || ''))});
         for (const item of phone.calls || []) add('call', item, item.author || item.contact, {service:false});
         return rows.filter(row => row.who && row.who !== userName && row.who !== '{{user}}')
             .sort((a,b) => (a.floor-b.floor) || (a.createdAt-b.createdAt) || (a.order-b.order)).slice(-limit);
@@ -7719,7 +7719,7 @@ ${phoneExistingGroupBrief()}`;
 
     function npcCallVarietyDirective() {
         const settings = stateRuntime.state?.settings || {};
-        if (!settings.npcCallVariety) return '电话自然度增强已Đóng：仍按人物动机自由选择媒介。';
+        if (!settings.npcCallVariety) return 'Phần tăng tính tự nhiên cho cuộc gọi đang tắt: vẫn để nhân vật tự chọn phương tiện theo động cơ.';
         const threshold = Math.max(2, Math.min(12, Number(settings.npcCallEscalationAfter || 3)));
         const rows = recentCommunicationEvents(Math.max(18, threshold * 4));
         let textStreak = 0;
@@ -7729,29 +7729,29 @@ ${phoneExistingGroupBrief()}`;
             if (row.type === 'text' && !row.service) textStreak += 1;
         }
         if (textStreak >= threshold) {
-            return `已连续出现${textStreak}次NPC文字联系而没有来电。若本轮确实有“某个有名字/可识别NPC主动联系user”的合理动机，且当前通讯载体支持实时通话，优先把其中1次改成自然来电（ringing/waiting + requiresAnswer=true），不要再把所有主动联系都写成微信/短信。没有合理即时沟通动机时不要硬打电话。`;
+            return `Đã ${textStreak} lần liên tiếp NPC liên lạc bằng chữ mà không có cuộc gọi nào. Nếu lượt này thật sự có động cơ hợp lý cho việc “một NPC có tên/nhận diện được chủ động liên hệ user” và phương tiện liên lạc hiện tại hỗ trợ gọi thời gian thực, hãy ưu tiên đổi một trong số đó thành một cuộc gọi tự nhiên (ringing/waiting + requiresAnswer=true), đừng viết mọi lần chủ động liên hệ thành WeChat/SMS nữa. Khi không có động cơ trao đổi tức thời hợp lý thì đừng ép gọi điện.`;
         }
-        return `最近NPC文字联系连续${textStreak}次（阈值${threshold}次）。电话不是每轮强制；急事、强情绪、亲密想听声音、需要即时确认或人物习惯适合时自然使用来电。`;
+        return `Gần đây NPC đã liên lạc bằng chữ ${textStreak} lần liên tiếp (ngưỡng ${threshold} lần). Cuộc gọi không bắt buộc mỗi lượt; hãy dùng cuộc gọi một cách tự nhiên khi có việc gấp, cảm xúc mạnh, muốn nghe giọng người thân, cần xác nhận ngay hoặc thói quen nhân vật phù hợp.`;
     }
 
     function npcWorldAutonomyDirective() {
         const settings = stateRuntime.state?.settings || {};
-        if (!settings.npcWorldAutonomy) return 'NPC大世界自治增强已Đóng：只按当前chính văn必要范围推进，不额外制造镜头外变化。';
+        if (!settings.npcWorldAutonomy) return 'Phần tăng cường thế giới NPC tự trị đang tắt: chỉ đẩy tới trong phạm vi chính văn cần, không tạo thêm thay đổi ngoài ống kính.';
         const spontaneity = Math.max(0, Math.min(1, Number(settings.npcWorldSpontaneity ?? 0.82)));
-        const band = spontaneity >= 0.8 ? '高' : spontaneity >= 0.5 ? '中高' : spontaneity >= 0.25 ? '中低' : '低';
+        const band = spontaneity >= 0.8 ? 'cao' : spontaneity >= 0.5 ? 'khá cao' : spontaneity >= 0.25 ? 'khá thấp' : 'thấp';
         const debt = worldActivityDebt();
-        const pulse = debt.due ? `镜头外世界已静默约${debt.silentFloors}层（阈值${debt.threshold}），本轮至少推进${debt.minEvents}个不同NPC的低风险真实生活Trạng thái；优先轮转长期没更新的人，禁止再次整轮空白。` : `镜头外世界静默约${debt.silentFloors}层（阈值${debt.threshold}），可正常波动。`;
-        return `NPC大世界自治增强开启，自发度=${spontaneity.toFixed(2)}（${band}）。
-- 【世界心跳】${pulse}
-- 【优先轮转】${dormantNpcBrief(16)}。
-- 自发度只控制“世界在镜头外自行发生小变化”的概率与密度，不代表强行制造大事件、犯罪或戏剧冲突。
-- 每个已存在NPC都保留自己的长期目标、日程、社交关系和上轮Trạng thái；下一轮优先延续已有因果，再决定是否发生新变化，禁止每轮人格/职业/关系重置。
-- NPC之间可以互相认识、聊天、合作、争执、恋爱、疏远、借钱、工作、搬家、旅行、加入或离开组织；这些关系允许完全不经过user。
-- 世界事件可以在user不在场时发生，并在之后通过见面、传闻、通讯、环境变化或人物Trạng thái体现后果；不要让user拥有全知视角。
-- 新NPC只有在地点、职业、组织、社交或剧情确实需要时才生成；稳定机构（班级、课程、宿舍、社团、公司、项目组）本身就意味着存在其他成员，因此允许生成低影响背景NPC来让社交生态成立。一旦生成就登记并持续存在，不要当一次性路人工具。
-- NPC是否联系user必须由人物动机、距离、时间与通讯条件决定；不要为了“活跃”让所有NPC每轮都联系user，也不要永远没人主动联系。
-- 同地点NPC优先通过现实行为影响场景；远处NPC才优先用微信/群聊/短信/电话/书信等。
-- 严格保持空间、时间、知情边界和资源约束；镜头外事件不能凭空让NPC知道未获知的秘密。`;
+        const pulse = debt.due ? `Thế giới ngoài ống kính đã im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}); lượt này phải đẩy tới trạng thái sinh hoạt thật, rủi ro thấp của ít nhất ${debt.minEvents} NPC khác nhau; ưu tiên luân phiên những người lâu chưa cập nhật, cấm để cả lượt trống trơn lần nữa.` : `Thế giới ngoài ống kính im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}), có thể dao động bình thường.`;
+        return `Tăng cường thế giới NPC tự trị đang bật, mức tự phát = ${spontaneity.toFixed(2)} (${band}).
+- 【NHỊP ĐẬP CỦA THẾ GIỚI】${pulse}
+- 【ƯU TIÊN LUÂN PHIÊN】${dormantNpcBrief(16)}.
+- Mức tự phát chỉ điều chỉnh xác suất và mật độ của việc “thế giới tự có thay đổi nhỏ ngoài ống kính”, không có nghĩa là phải tạo ra sự kiện lớn, tội ác hay xung đột kịch tính.
+- Mỗi NPC đã tồn tại đều giữ mục tiêu dài hạn, lịch trình, quan hệ xã hội và trạng thái ở lượt trước của mình; lượt sau ưu tiên nối tiếp nhân quả đã có rồi mới quyết định có thay đổi mới hay không, cấm reset tính cách/nghề nghiệp/quan hệ mỗi lượt.
+- Các NPC có thể quen nhau, trò chuyện, hợp tác, cãi vã, yêu đương, xa cách, vay tiền, làm việc, chuyển nhà, đi xa, gia nhập hay rời tổ chức; những quan hệ đó hoàn toàn có thể không đi qua user.
+- Sự kiện của thế giới có thể xảy ra khi user vắng mặt, rồi hậu quả mới lộ ra qua các lần gặp mặt, lời đồn, liên lạc, thay đổi môi trường hoặc trạng thái nhân vật; đừng để user có góc nhìn toàn tri.
+- NPC mới chỉ được sinh khi địa điểm, nghề nghiệp, tổ chức, quan hệ xã hội hoặc mạch truyện thật sự cần; bản thân một tổ chức ổn định (lớp, môn học, ký túc xá, câu lạc bộ, công ty, nhóm dự án) đã hàm ý là có những thành viên khác, nên được phép sinh NPC nền ít tác động để hệ sinh thái xã hội đứng vững. Đã sinh ra thì phải đăng ký và tồn tại lâu dài, đừng coi họ là đạo cụ dùng một lần.
+- Việc một NPC có liên hệ user hay không phải do động cơ nhân vật, khoảng cách, thời gian và điều kiện liên lạc quyết định; đừng vì muốn “sôi động” mà cho mọi NPC liên hệ user mỗi lượt, cũng đừng để mãi mãi không ai chủ động liên hệ.
+- NPC cùng địa điểm thì ưu tiên tác động vào cảnh bằng hành vi ngoài đời; NPC ở xa mới ưu tiên dùng WeChat/nhóm chat/SMS/điện thoại/thư từ.
+- Giữ nghiêm các ràng buộc về không gian, thời gian, ranh giới ai được biết và tài nguyên; sự kiện ngoài ống kính không được tự dưng cho NPC biết một bí mật mà họ chưa hề hay.`;
     }
 
     function pendingManualMomentRows() {
@@ -7762,17 +7762,17 @@ ${phoneExistingGroupBrief()}`;
 
     function momentSocialFeedBrief(limit = 18) {
         const rows = (stateRuntime.state?.storyExtras?.moments || []).filter(memoryRecordUsable).slice(-Math.max(1, Number(limit || 18)));
-        if (!rows.length) return 'Chưa có朋友圈动态。';
+        if (!rows.length) return 'Chưa có bài Khoảnh khắc nào.';
         const userName = compactText(context()?.name1 || '{{user}}', 80) || '{{user}}';
         const knownAudience = allKnownNpcNames().filter(name => npcNameKey(name) !== npcNameKey(userName)).slice(0, 40);
         const feed = rows.map(item => {
             const attachments = phoneAttachmentSummary(item?.attachments);
             const likes = (item?.likes || []).map(name => compactText(name,80)).filter(Boolean);
-            const comments = (item?.comments || []).map(comment => `${compactText(comment?.author,80)}：${compactText(comment?.content,300)}`).filter(Boolean);
+            const comments = (item?.comments || []).map(comment => `${compactText(comment?.author,80)}: ${compactText(comment?.content,300)}`).filter(Boolean);
             const seenBy = (item?.seenBy || []).map(name => compactText(name,80)).filter(Boolean);
-            return `- momentId=${item.id}｜${item.author || 'Chưa rõ'}｜${item.time || ''}｜chính văn:${item.content || '[无文字]'}${attachments ? `｜附件:${attachments}` : ''}｜可见范围:${item.visibility || 'friends'}｜已读:${seenBy.join('、') || '无'}｜点赞:${likes.join('、') || '无'}｜评论:${comments.join('; ') || '无'}｜互动Trạng thái:${item.reactionStatus || (item.manual ? 'pending' : 'normal')}`;
+            return `- momentId=${item.id}｜${item.author || 'chưa rõ'}｜${item.time || ''}｜nội dung: ${item.content || '[không có chữ]'}${attachments ? `｜đính kèm: ${attachments}` : ''}｜phạm vi hiển thị: ${item.visibility || 'friends'}｜đã xem: ${seenBy.join(', ') || 'không có'}｜thả tim: ${likes.join(', ') || 'không có'}｜bình luận: ${comments.join('; ') || 'không có'}｜trạng thái tương tác: ${item.reactionStatus || (item.manual ? 'pending' : 'normal')}`;
         });
-        return `【可能看到这些动态的已认识NPC】${knownAudience.join('、') || 'Chưa có'}\n${feed.join('\n')}`;
+        return `【CÁC NPC ĐÃ QUEN CÓ THỂ THẤY NHỮNG BÀI ĐĂNG NÀY】${knownAudience.join(', ') || 'chưa có'}\n${feed.join('\n')}`;
     }
 
     function cleanAppearanceSnapshot(list, floor) {
