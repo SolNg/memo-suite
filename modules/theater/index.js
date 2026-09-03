@@ -6132,17 +6132,17 @@ ${scene.mood||''}`,12000);
         const keys=['worldKey','worldType','era','technologyLevel','communicationType','deviceLabel','available','networkState'];
         let changed=keys.some(k=>String(current?.[k]??'')!==String(normalized?.[k]??''));
         if(calibration&&current.reason!==nextReason)changed=true;
-        // 旧scene.time若被错误七条写成1000/1900之类，Trạng thái机纠正时代后也要去掉不兼容年份；不凭空猜一个新年份。
+        // Nếu scene.time cũ đã bị một lượt Bảy điều sai ghi thành 1000/1900, thì sau khi máy trạng thái sửa lại thời đại cũng phải bỏ luôn năm không tương thích; không tự đoán ra một năm mới.
         const scene=s.scene||{};const sceneYear=strictGregorianYear(scene.time);
         const compatible=(year,level)=>!Number.isFinite(year)||level==='unknown'||(level==='future-networked'&&year>=2100)||(level==='modern-digital'&&year>=2000&&year<2100)||(level==='analog'&&year>=1950&&year<2000)||(level==='industrial-telegraph'&&year>=1850&&year<1950)||(level==='preindustrial'&&year<1850);
         if(Number.isFinite(sceneYear)&&!compatible(sceneYear,normalized.technologyLevel)&&!narrativeSupportsYear(sceneYear)){
-            scene.time=compactText(String(scene.time||'').replace(/(?:公元|西元)?\s*(?:1[0-9]\d{2}|20\d{2}|21\d{2})\s*年\s*/i,''),180);
+            scene.time=compactText(String(scene.time||'').replace(/\s*năm\s*(?:1[0-9]\d{2}|20\d{2}|21\d{2})\s*/i,' '),180);
             changed=true;
         }
         if(!changed)return false;
         s.communicationProfile={...current,...normalized,reason:nextReason,updatedAt:nowText()};
         updateWorldTransit(s.communicationProfile,floor>=0?floor:Math.max(-1,(context()?.chat?.length||0)-1));
-        logAudit('时空通讯自愈',`${current.worldType||'Chưa rõ'} ${current.era||''}/${current.communicationType||''} → ${normalized.worldType||'Chưa rõ'} ${normalized.era||''}/${normalized.communicationType||''}`);
+        logAudit('Tự phục hồi không-thời gian và liên lạc',`${current.worldType||'chưa rõ'} ${current.era||''}/${current.communicationType||''} → ${normalized.worldType||'chưa rõ'} ${normalized.era||''}/${normalized.communicationType||''}`);
         return true;
     }
 
@@ -6156,10 +6156,10 @@ ${scene.mood||''}`,12000);
 
     function communicationMessageLabel(profile = stateRuntime.state?.communicationProfile) {
         const labels = {
-            smartphone:'消息', mobile:'短信', sms:'短信', pager:'传呼', landline:'电话留言',
-            telegram:'电报', letter:'信件', messenger:'信使往来', radio:'无线电', magic:'魔法通讯', terminal:'通讯', none:'无通讯',
+            smartphone:'Tin nhắn', mobile:'SMS', sms:'SMS', pager:'Nhắn tin nhanh', landline:'Lời nhắn thoại',
+            telegram:'Điện báo', letter:'Thư từ', messenger:'Sứ giả qua lại', radio:'Vô tuyến', magic:'Liên lạc ma pháp', terminal:'Liên lạc', none:'Không liên lạc',
         };
-        return labels[profile?.communicationType] || '往来';
+        return labels[profile?.communicationType] || 'Trao đổi';
     }
 
     function communicationIcon(profile = stateRuntime.state?.communicationProfile) {
@@ -6177,11 +6177,11 @@ ${scene.mood||''}`,12000);
     }
 
 
-    // P29：幕后七条API只能“汇报幕后”，不能自行改写当前现实。
-    // 时间/地点/世界/时代是高权限Trạng thái，必须由最新chính văn中的明确证据授权。
+    // P29: API của Bảy điều hậu trường chỉ được “báo cáo phần hậu trường”, không được tự viết lại hiện thực hiện tại.
+    // Thời gian/địa điểm/thế giới/thời đại là trạng thái quyền cao, phải được bằng chứng rõ ràng trong chính văn mới nhất cho phép.
     function strictGregorianYear(value) {
         const text=String(value||'');
-        const marked=[...text.matchAll(/(?:公元|西元)?\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*年/ig)];
+        const marked=[...text.matchAll(/năm\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\b/ig)];
         const iso=[...text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))[-\/.](?:0?[1-9]|1[0-2])(?:[-\/.](?:0?[1-9]|[12]\d|3[01]))?/ig)];
         const hits=[...marked,...iso].sort((a,b)=>(b.index??-1)-(a.index??-1));
         return hits.length ? Number(hits[0][1]) : NaN;
@@ -6200,12 +6200,12 @@ ${scene.mood||''}`,12000);
 
     function calibratedEraInfo(state = stateRuntime.state) {
         const value=activeTimeCalibration(state)?.value;
-        return value?inferEraFromEvidence(`当前时间：${value}`):{era:'',technologyLevel:'unknown',kind:'unknown'};
+        return value?inferEraFromEvidence(`Thời gian hiện tại: ${value}`):{era:'',technologyLevel:'unknown',kind:'unknown'};
     }
 
     function authorizedTimeEvidence(limit=8) {
         const calibration=activeTimeCalibration();
-        return [currentRealityTranscript(limit),calibration?`【用户手动时间校准】${calibration.value}`:''].filter(Boolean).join('\n');
+        return [currentRealityTranscript(limit),calibration?`【NGƯỜI DÙNG HIỆU CHỈNH THỜI GIAN THỦ CÔNG】${calibration.value}`:''].filter(Boolean).join('\n');
     }
 
     function releaseTimeCalibrationIfSceneAdvanced(nextTime) {
@@ -6213,23 +6213,23 @@ ${scene.mood||''}`,12000);
         const value=compactText(nextTime,180);
         if(calibration.mode!=='manual'||!calibration.value||!value||value===calibration.value)return false;
         stateRuntime.state.timeCalibration={...calibration,mode:'auto',value:'',previousSceneTime:calibration.value};
-        logAudit('时间校准自动交接',`chính văn已明确推进时间：${calibration.value} → ${value}`);
+        logAudit('Bàn giao hiệu chỉnh thời gian tự động',`Chính văn đã đẩy thời gian một cách rõ ràng: ${calibration.value} → ${value}`);
         return true;
     }
 
     async function applyTimeCalibration(value) {
         const s=stateRuntime.state;
         const next=compactText(value,180);
-        if(!s||!next)throw new Error('请输入要校准的剧情时间');
+        if(!s||!next)throw new Error('Hãy nhập thời gian cốt truyện cần hiệu chỉnh');
         const previous=effectiveStoryTime(s);
         const floor=Math.max(-1,(context()?.chat?.length||0)-1);
         s.timeCalibration={mode:'manual',value:next,previousSceneTime:previous===next?'':previous,appliedAtFloor:floor,appliedAt:nowText()};
         s.scene ||= clone(defaultState().scene);
         s.scene.time=next;
         const inferred=inferCurrentWorldContext();
-        s.communicationProfile={...normalizeCommunicationProfile(inferred,{skipTransit:true}),reason:'用户手动时间校准',updatedAt:nowText()};
+        s.communicationProfile={...normalizeCommunicationProfile(inferred,{skipTransit:true}),reason:'Người dùng hiệu chỉnh thời gian thủ công',updatedAt:nowText()};
         updateWorldTransit(s.communicationProfile,floor);
-        logAudit('用户手动时间校准',`${previous||'Chưa ghi nhận'} → ${next}`);
+        logAudit('Người dùng hiệu chỉnh thời gian thủ công',`${previous||'Chưa ghi nhận'} → ${next}`);
         await saveState({immediate:true,refresh:true,reason:'manual-time-calibration',forceSnapshot:true});
         renderTabs();decorateAllCompanionOutputs();
         return next;
@@ -6241,9 +6241,9 @@ ${scene.mood||''}`,12000);
         if(calibration.mode==='manual'&&compactText(s.scene?.time,180)===calibration.value)s.scene.time=calibration.previousSceneTime;
         s.timeCalibration={mode:'auto',value:'',previousSceneTime:'',appliedAtFloor:-1,appliedAt:''};
         const inferred=inferCurrentWorldContext();
-        s.communicationProfile={...normalizeCommunicationProfile(inferred,{skipTransit:true}),reason:'已恢复自动时间识别',updatedAt:nowText()};
+        s.communicationProfile={...normalizeCommunicationProfile(inferred,{skipTransit:true}),reason:'Đã khôi phục nhận diện thời gian tự động',updatedAt:nowText()};
         updateWorldTransit(s.communicationProfile,Math.max(-1,(context()?.chat?.length||0)-1));
-        logAudit('时间校准',`已恢复自动识别${s.scene.time?`，当前场景时间：${s.scene.time}`:''}`);
+        logAudit('Hiệu chỉnh thời gian',`Đã khôi phục nhận diện tự động${s.scene.time?`, thời gian cảnh hiện tại: ${s.scene.time}`:''}`);
         await saveState({immediate:true,refresh:true,reason:'clear-time-calibration',forceSnapshot:true});
         renderTabs();decorateAllCompanionOutputs();
     }
@@ -6251,18 +6251,18 @@ ${scene.mood||''}`,12000);
     function currentRealityTranscript(limit=6) {
         const chat=context()?.chat||[];
         const start=Math.max(0,chat.length-Math.max(1,Number(limit)||6));
-        return chat.slice(start).map((m,i)=>`【${start+i}层｜${messageSpeaker(m)}】${messageText(m)}`).join('\n').slice(0,18000);
+        return chat.slice(start).map((m,i)=>`【Tầng ${start+i}｜${messageSpeaker(m)}】${messageText(m)}`).join('\n').slice(0,18000);
     }
 
     function trustedCurrentYearFromNarrative() {
         const chat=context()?.chat||[];
         const start=Math.max(0,chat.length-6);
-        const historicalRef=/(?:回忆|想起|记得|曾经|过去|当年|此前|从前|往事|旧事|历史上|资料里|书中|照片里)[^。！？\n]{0,28}$/i;
-        const transition=/(?:回到|来到|进入|抵达|穿越(?:到|进)?|传送(?:到|进)?|醒来(?:时|后)?|现在(?:是|到了)?|如今(?:是|到了)?|当前(?:是|到了)?|时间(?:是|来到)?|Ngày(?:是|来到)?)/i;
+        const historicalRef=/(?:hồi tưởng|nhớ lại|còn nhớ|từng|quá khứ|hồi đó|trước đó|ngày trước|chuyện xưa|chuyện cũ|trong lịch sử|trong tư liệu|trong sách|trong ảnh)[^.!?\n]{0,28}$/i;
+        const transition=/(?:quay về|tới|bước vào|tới nơi|xuyên (?:tới|về|vào)|dịch chuyển (?:tới|vào)|tỉnh dậy|bây giờ (?:là|đã tới)?|ngày nay (?:là|đã tới)?|hiện tại (?:là|đã tới)?|thời gian (?:là|đã tới)?|ngày tháng (?:là|đã tới)?)/i;
         for(let i=chat.length-1;i>=start;i--){
             const text=messageText(chat[i]);
             const candidates=[];
-            for(const m of text.matchAll(/(?:公元|西元)?\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*年(?:\s*\d{1,2}\s*月(?:\s*\d{1,2}\s*[日号])?)?/ig)) candidates.push(m);
+            for(const m of text.matchAll(/(?:ngày\s*\d{1,2}\s*[\/-]\s*\d{1,2}\s*[\/-]\s*)?năm\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\b/ig)) candidates.push(m);
             for(const m of text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))[-\/.](?:0?[1-9]|1[0-2])(?:[-\/.](?:0?[1-9]|[12]\d|3[01]))?/ig)) candidates.push(m);
             candidates.sort((a,b)=>(b.index??-1)-(a.index??-1));
             for(const m of candidates){
@@ -6270,9 +6270,9 @@ ${scene.mood||''}`,12000);
                 const prefix=text.slice(Math.max(0,at-36),at);
                 if(historicalRef.test(prefix)) continue;
                 const whole=m[0]||'';
-                const fullDate=/\d{4}\s*年\s*\d{1,2}\s*月|\d{4}[-\/.]\d{1,2}/.test(whole);
+                const fullDate=/\d{1,2}\s*[\/-]\s*\d{1,2}\s*[\/-]\s*\d{4}|\d{4}[-\/.]\d{1,2}/.test(whole);
                 const nearby=text.slice(Math.max(0,at-32),Math.min(text.length,at+64));
-                // 完整Ngày、Trạng thái栏式Ngày、明确“现在/穿越/抵达”语句，才视作当前时间证据。
+                // Chỉ ngày đầy đủ, ngày kiểu thanh trạng thái, hoặc câu nói rõ “bây giờ/xuyên/tới nơi” mới được coi là bằng chứng về thời gian hiện tại.
                 if(fullDate || transition.test(nearby)) return Number(m[1]);
             }
         }
@@ -6283,40 +6283,46 @@ ${scene.mood||''}`,12000);
         if(!Number.isFinite(Number(year))) return false;
         const y=String(Math.trunc(Number(year)));
         const text=authorizedTimeEvidence(6);
-        const rx=new RegExp(`(?:回到|来到|进入|抵达|穿越(?:到|进)?|传送(?:到|进)?|醒来(?:时|后)?|现在(?:是|到了)?|如今(?:是|到了)?|当前(?:是|到了)?|时间(?:是|来到)?|Ngày(?:是|来到)?)[^。！？\\n]{0,48}(?:公元|西元)?\\s*${y}\\s*年|(?:公元|西元)?\\s*${y}\\s*年\\s*\\d{1,2}\\s*月|\\b${y}[-\\/.](?:0?[1-9]|1[0-2])`,'i');
+        const rx=new RegExp(`(?:quay về|tới|bước vào|tới nơi|xuyên (?:tới|về|vào)|dịch chuyển (?:tới|vào)|tỉnh dậy|bây giờ (?:là|đã tới)?|ngày nay (?:là|đã tới)?|hiện tại (?:là|đã tới)?|thời gian (?:là|đã tới)?|ngày tháng (?:là|đã tới)?)[^.!?\\n]{0,48}năm\\s*${y}\\b|\\d{1,2}\\s*[\\/-]\\s*\\d{1,2}\\s*[\\/-]\\s*${y}\\b`,'i');
         return rx.test(text) || trustedCurrentYearFromNarrative()===Number(year);
     }
 
-    function chineseCalendarNumber(value) {
+    // Vietnamese calendar dates are written with digits ("ngày 12 tháng 5"),
+    // so the spelled-out helpers only need to cover the rare word forms.
+    const VIETNAMESE_CALENDAR_DIGITS=['','một','hai','ba','bốn','năm','sáu','bảy','tám','chín'];
+    function vietnameseCalendarNumber(value) {
         const number=Math.trunc(Number(value));
         if(!Number.isFinite(number)||number<1||number>31)return '';
-        const digit=['','一','二','三','四','五','六','七','八','九'];
-        if(number<10)return digit[number];
-        if(number===10)return '十';
-        if(number<20)return `十${digit[number-10]}`;
+        if(number<10)return VIETNAMESE_CALENDAR_DIGITS[number];
+        if(number===10)return 'mười';
+        if(number<20)return `mười ${VIETNAMESE_CALENDAR_DIGITS[number-10]}`;
         const tens=Math.floor(number/10),ones=number%10;
-        return `${digit[tens]}十${ones?digit[ones]:''}`;
+        return `${VIETNAMESE_CALENDAR_DIGITS[tens]} mươi${ones?` ${VIETNAMESE_CALENDAR_DIGITS[ones]}`:''}`.trim();
     }
 
-    function parseChineseCalendarNumber(value) {
-        const text=String(value||'').trim();
-        const digit={一:1,二:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9};
-        if(Object.hasOwn(digit,text))return digit[text];
-        if(text==='十')return 10;
-        if(!text.includes('十'))return NaN;
-        const [left,right]=text.split('十');
-        return (left?digit[left]:1)*10+(right?digit[right]:0);
+    function parseVietnameseCalendarNumber(value) {
+        const text=String(value||'').trim().toLowerCase();
+        if(!text)return NaN;
+        const index=VIETNAMESE_CALENDAR_DIGITS.indexOf(text);
+        if(index>0)return index;
+        if(text==='mười')return 10;
+        const words=text.split(/\s+/);
+        if(words[0]==='mười')return 10+(VIETNAMESE_CALENDAR_DIGITS.indexOf(words[1]||'')>0?VIETNAMESE_CALENDAR_DIGITS.indexOf(words[1]):0);
+        const tensIndex=VIETNAMESE_CALENDAR_DIGITS.indexOf(words[0]||'');
+        if(tensIndex<1||words[1]!=='mươi')return NaN;
+        const onesIndex=VIETNAMESE_CALENDAR_DIGITS.indexOf(words[2]||'');
+        return tensIndex*10+(onesIndex>0?onesIndex:0);
     }
 
     function sceneDateFacts(value) {
         const text=String(value||'');
         const facts=[];
-        for(const match of text.matchAll(/(\d{1,2})\s*月\s*(\d{1,2})\s*[日号]/g)){
-            const month=Number(match[1]),day=Number(match[2]);
+        for(const match of text.matchAll(/(?:ngày\s*)?(\d{1,2})\s*(?:\/|-|tháng)\s*(\d{1,2})\b/gi)){
+            const day=Number(match[1]),month=Number(match[2]);
             if(month>=1&&month<=12&&day>=1&&day<=31)facts.push({month,day});
         }
-        for(const match of text.matchAll(/([一二三四五六七八九十]{1,3})\s*月\s*([一二三四五六七八九十]{1,3})\s*[日号]/g)){
-            const month=parseChineseCalendarNumber(match[1]),day=parseChineseCalendarNumber(match[2]);
+        for(const match of text.matchAll(/ngày\s+([a-zà-ỹ]+(?:\s+[a-zà-ỹ]+){0,2})\s+tháng\s+([a-zà-ỹ]+(?:\s+[a-zà-ỹ]+){0,2})/gi)){
+            const day=parseVietnameseCalendarNumber(match[1]),month=parseVietnameseCalendarNumber(match[2]);
             if(month>=1&&month<=12&&day>=1&&day<=31)facts.push({month,day});
         }
         return facts.filter((fact,index,list)=>list.findIndex(item=>item.month===fact.month&&item.day===fact.day)===index);
@@ -6325,13 +6331,13 @@ ${scene.mood||''}`,12000);
     function sceneClockMinuteValues(value) {
         const text=String(value||'');
         const values=[];
-        const rx=/([01]?\d|2[0-3])\s*(?::|：|点|时)\s*([0-5]?\d)?\s*(?:分)?/g;
+        const rx=/([01]?\d|2[0-3])\s*(?::|gi[ờo]|h(?![A-Za-zÀ-ỹ]))\s*([0-5]?\d)?\s*(?:phút)?/gi;
         for(const match of text.matchAll(rx)){
             let hour=Number(match[1]);
             const minute=Number(match[2]||0);
             const prefix=text.slice(Math.max(0,(match.index||0)-4),match.index||0);
-            if(/(?:下午|傍晚|晚上|夜里|夜间)/.test(prefix)&&hour<12)hour+=12;
-            if(/(?:凌晨|午夜)/.test(prefix)&&hour===12)hour=0;
+            if(/(?:chiều|xế chiều|tối|đêm|ban đêm)\s*$/i.test(prefix)&&hour<12)hour+=12;
+            if(/(?:rạng sáng|nửa đêm)\s*$/i.test(prefix)&&hour===12)hour=0;
             values.push(hour*60+minute);
         }
         return [...new Set(values)];
@@ -6340,8 +6346,8 @@ ${scene.mood||''}`,12000);
     function narrativeHasSceneMonth(month, text=currentRealityTranscript(8)) {
         const number=Math.trunc(Number(month));
         if(number<1||number>12)return false;
-        const chinese=chineseCalendarNumber(number);
-        return new RegExp(`(?:0?${number}|${chinese})\\s*月`).test(String(text||''));
+        const spelled=vietnameseCalendarNumber(number);
+        return new RegExp(`tháng\\s*(?:0?${number}\\b|${spelled})`,'i').test(String(text||''));
     }
 
     function narrativeHasSceneDate(month, day, text=currentRealityTranscript(8)) {
@@ -6360,16 +6366,16 @@ ${scene.mood||''}`,12000);
         let text=compactText(value,180);
         if(!text)return '';
         const transcript=authorizedTimeEvidence(8);
-        text=text.replace(/(\d{1,2})\s*月\s*(\d{1,2})\s*[日号]/g,(whole,month,day)=>{
+        text=text.replace(/(?:ngày\s*)?(\d{1,2})\s*(?:\/|-|tháng)\s*(\d{1,2})\b/gi,(whole,day,month)=>{
             if(narrativeHasSceneDate(Number(month),Number(day),transcript))return whole;
-            return narrativeHasSceneMonth(Number(month),transcript)?`${Number(month)}月`:'';
+            return narrativeHasSceneMonth(Number(month),transcript)?`tháng ${Number(month)}`:'';
         });
-        text=text.replace(/([一二三四五六七八九十]{1,3})\s*月\s*([一二三四五六七八九十]{1,3})\s*[日号]/g,(whole,monthText,dayText)=>{
-            const month=parseChineseCalendarNumber(monthText),day=parseChineseCalendarNumber(dayText);
+        text=text.replace(/ngày\s+([a-zà-ỹ]+(?:\s+[a-zà-ỹ]+){0,2})\s+tháng\s+([a-zà-ỹ]+(?:\s+[a-zà-ỹ]+){0,2})/gi,(whole,dayText,monthText)=>{
+            const month=parseVietnameseCalendarNumber(monthText),day=parseVietnameseCalendarNumber(dayText);
             if(narrativeHasSceneDate(month,day,transcript))return whole;
-            return narrativeHasSceneMonth(month,transcript)?`${chineseCalendarNumber(month)}月`:'';
+            return narrativeHasSceneMonth(month,transcript)?`tháng ${vietnameseCalendarNumber(month)}`:'';
         });
-        text=text.replace(/(?:上午|中午|下午|傍晚|晚上|夜里|夜间|凌晨|午夜)?\s*([01]?\d|2[0-3])\s*(?::|：|点|时)\s*([0-5]?\d)?\s*(?:分)?/g,whole=>{
+        text=text.replace(/(?:buổi sáng|buổi trưa|buổi chiều|xế chiều|buổi tối|đêm|ban đêm|rạng sáng|nửa đêm)?\s*([01]?\d|2[0-3])\s*(?::|gi[ờo]|h(?![A-Za-zÀ-ỹ]))\s*([0-5]?\d)?\s*(?:phút)?/gi,whole=>{
             const minutes=sceneClockMinuteValues(whole)[0];
             return Number.isFinite(minutes)&&sceneClockMinuteValues(transcript).includes(minutes)?whole:'';
         });
@@ -6380,7 +6386,7 @@ ${scene.mood||''}`,12000);
         const raw=compactText(value,120);
         if(!raw)return '';
         if(!sceneDateFacts(raw).length&&!sceneClockMinuteValues(raw).length)return raw;
-        return pruneUnsupportedSceneTimePrecision(raw)||'刚刚';
+        return pruneUnsupportedSceneTimePrecision(raw)||'vừa nãy';
     }
 
     function displayGeneratedEventTime(item, fallbackFloor=-1) {
@@ -6396,17 +6402,17 @@ ${scene.mood||''}`,12000);
         const text=compactText(value,180);
         if(!text || !Number.isFinite(Number(year))) return text;
         const y=String(Math.trunc(Number(year)));
-        if(/(?:公元|西元)?\s*(?:1[0-9]\d{2}|20\d{2}|21\d{2})\s*年/i.test(text)) return text.replace(/((?:公元|西元)?\s*)(?:1[0-9]\d{2}|20\d{2}|21\d{2})(\s*年)/i,`$1${y}$2`);
+        if(/năm\s*(?:1[0-9]\d{2}|20\d{2}|21\d{2})\b/i.test(text)) return text.replace(/(năm\s*)(?:1[0-9]\d{2}|20\d{2}|21\d{2})/i,`$1${y}`);
         if(/\b(?:1[0-9]\d{2}|20\d{2}|21\d{2})(?=[-\/.](?:0?[1-9]|1[0-2]))/i.test(text)) return text.replace(/\b(?:1[0-9]\d{2}|20\d{2}|21\d{2})(?=[-\/.](?:0?[1-9]|1[0-2]))/i,y);
-        return `${y}年${text}`;
+        return `năm ${y} ${text}`;
     }
 
     function locationEvidenceScore(candidate, text) {
-        const c=compactText(candidate,160).replace(/[·•・\s]/g,'');
+        const c=compactText(candidate,160).replace(/[·•・]/g,'').trim();
         if(!c) return 0;
-        const t=String(text||'').replace(/[·•・\s]/g,'');
+        const t=String(text||'').replace(/[·•・]/g,'');
         if(t.includes(c)) return 3;
-        const pieces=c.split(/(?:省|市|区|县|镇|乡|村|路|街|巷|楼|层|室|厅|房|馆|院|校|宿舍|公寓|酒店|旅馆|车站|机场|港口|码头|城|国)/).filter(x=>x.length>=2);
+        const pieces=c.split(/\b(?:tỉnh|thành phố|quận|huyện|thị trấn|xã|thôn|đường|phố|hẻm|tòa nhà|tầng|phòng|sảnh|nhà|quán|viện|trường|ký túc xá|chung cư|khách sạn|nhà nghỉ|bến xe|sân bay|cảng|bến tàu|thành|quốc gia)\b/i).map(x=>x.trim()).filter(x=>x.length>=2);
         const hits=pieces.filter(x=>t.includes(x)).length;
         return hits>=2?2:hits===1?1:0;
     }
@@ -6416,7 +6422,7 @@ ${scene.mood||''}`,12000);
         const score=locationEvidenceScore(candidate,text);
         if(score>=2) return true;
         if(score<1) return false;
-        return /(?:来到|进入|走进|走到|到达|抵达|返回|回到|离开[^。！？\n]{0,28}(?:来到|进入|到达)|位于|身处|目前在|现在在|当前在|坐在|站在|躺在)[^。！？\n]{0,80}/i.test(text);
+        return /(?:tới|bước vào|đi vào|đi tới|đến nơi|tới nơi|trở về|quay về|rời khỏi[^.!?\n]{0,28}(?:tới|bước vào|đến nơi)|nằm ở|đang ở|hiện ở|bây giờ ở|lúc này ở|ngồi ở|đứng ở|nằm ở)[^.!?\n]{0,80}/i.test(text);
     }
 
     function sanitizeCompanionReality(rawSetting={}, rawScene={}) {
@@ -6426,7 +6432,7 @@ ${scene.mood||''}`,12000);
 
         if(candidate.time&&!narrativeSupportsSceneTime(candidate.time)){
             const pruned=pruneUnsupportedSceneTimePrecision(candidate.time);
-            audit.push(`拒绝幕后七条补造精确时间：${candidate.time}${pruned?`→${pruned}`:'→留空'}`);
+            audit.push(`Từ chối để Bảy điều hậu trường bịa ra thời gian chính xác: ${candidate.time}${pruned?` → ${pruned}`:' → để trống'}`);
             candidate.time=pruned;
         }
 
@@ -6434,9 +6440,9 @@ ${scene.mood||''}`,12000);
         let currentYear=strictGregorianYear(current.time);
         const candidateYear=strictGregorianYear(candidate.time);
 
-        // 自愈：若最新chính văn明确给出当前年份，而旧scene已被历史错误污染，先把scene拉回chính văn年份。
+        // Tự phục hồi: nếu chính văn mới nhất ghi rõ năm hiện tại mà scene cũ đã bị lỗi lịch sử làm bẩn thì kéo scene về đúng năm trong chính văn trước.
         if(Number.isFinite(narrativeYear) && Number.isFinite(currentYear) && narrativeYear!==currentYear){
-            audit.push(`自愈当前年份：${currentYear}→${narrativeYear}`);
+            audit.push(`Tự phục hồi năm hiện tại: ${currentYear} → ${narrativeYear}`);
             current.time=replaceSceneYear(current.time,narrativeYear);
             currentYear=narrativeYear;
         }
@@ -6444,25 +6450,25 @@ ${scene.mood||''}`,12000);
         if(candidate.time){
             const bareFour=/^\s*(?:1[0-9]\d{2}|20\d{2}|21\d{2})\s*$/.test(candidate.time);
             if(bareFour){
-                audit.push(`拒绝幕后七条裸四位时间：${candidate.time}`);
+                audit.push(`Từ chối con số bốn chữ số trơ trọi do Bảy điều hậu trường đưa ra: ${candidate.time}`);
                 candidate.time='';
             } else if(Number.isFinite(candidateYear)){
                 const baseline=Number.isFinite(narrativeYear)?narrativeYear:currentYear;
                 if(Number.isFinite(baseline) && candidateYear!==baseline && !narrativeSupportsYear(candidateYear)){
-                    audit.push(`拒绝幕后七条改写年份：${baseline}→${candidateYear}`);
+                    audit.push(`Từ chối để Bảy điều hậu trường sửa năm: ${baseline} → ${candidateYear}`);
                     candidate.time='';
                 } else if(!Number.isFinite(baseline) && !narrativeSupportsYear(candidateYear)){
-                    audit.push(`拒绝无chính văn证据年份：${candidateYear}`);
+                    audit.push(`Từ chối năm không có bằng chứng trong chính văn: ${candidateYear}`);
                     candidate.time='';
                 }
             }
         }
 
         if(candidate.location && current.location && candidate.location!==current.location && !narrativeSupportsLocation(candidate.location)){
-            audit.push(`拒绝幕后七条改写地点：${current.location}→${candidate.location}`);
+            audit.push(`Từ chối để Bảy điều hậu trường sửa địa điểm: ${current.location} → ${candidate.location}`);
             candidate.location='';
         } else if(candidate.location && !current.location && !narrativeSupportsLocation(candidate.location)){
-            audit.push(`拒绝无chính văn证据地点：${candidate.location}`);
+            audit.push(`Từ chối địa điểm không có bằng chứng trong chính văn: ${candidate.location}`);
             candidate.location='';
         }
 
@@ -6470,8 +6476,8 @@ ${scene.mood||''}`,12000);
         for(const key of ['time','location','weather','mood','pace','goal']) if(candidate[key]) scene[key]=candidate[key];
         releaseTimeCalibrationIfSceneAdvanced(scene.time);
 
-        // U1.7.2：整个“现实层”都由本地Trạng thái机锁死。幕后模型只生成内容，不能再决定时代、世界、通讯Loại、设备或在线Trạng thái。
-        // 这一步专门封死“现代卡被七条JSON反写成1000年/书信往来”的污染路径。
+        // U1.7.2: toàn bộ “lớp hiện thực” bị máy trạng thái cục bộ khóa chặt. Mô hình hậu trường chỉ sinh nội dung, không còn được quyết định thời đại, thế giới, loại liên lạc, thiết bị hay trạng thái trực tuyến.
+        // Bước này bịt hẳn con đường ô nhiễm kiểu “thẻ hiện đại bị JSON của Bảy điều ghi ngược thành năm 1000/thư từ qua lại”.
         const inferred=inferCurrentWorldContext();
         const calibration=activeTimeCalibration();
         const setting=normalizeCommunicationProfile({
@@ -6484,7 +6490,7 @@ ${scene.mood||''}`,12000);
             deviceLabel:inferred.deviceLabel,
             available:inferred.available,
             networkState:inferred.networkState,
-            reason:calibration?'用户手动时间校准':canonicalCommunicationReason({available:inferred.available,communicationType:inferred.communicationType,technologyLevel:inferred.technologyLevel,inferred}),
+            reason:calibration?'Người dùng hiệu chỉnh thời gian thủ công':canonicalCommunicationReason({available:inferred.available,communicationType:inferred.communicationType,technologyLevel:inferred.technologyLevel,inferred}),
         },{skipTransit:true});
         setting.worldKey=inferred.worldKey;
         setting.worldType=inferred.worldType;
@@ -6533,7 +6539,7 @@ ${scene.mood||''}`,12000);
     }
 
     function npcNameKey(value) {
-        return compactText(value, 160).toLowerCase().replace(/[\s·•・_\-—–,，.。'"“”‘’（）()\[\]【】]/g, '');
+        return compactText(value, 160).toLowerCase().replace(/[\s·•・_\-—–,.'"“”‘’()\[\]【】]/g, '');
     }
 
     function npcRegistryEntry(value) {
