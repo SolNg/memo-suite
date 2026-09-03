@@ -6,5041 +6,5041 @@
     {
       "id": "builtin-emoji-1f600",
       "fileName": "builtin-emoji-1f600.png",
-      "name": "开心 001",
-      "category": "情绪",
+      "name": "Vui vẻ 001",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "grinning face",
         "U+1F600"
       ],
-      "description": "内置透明图片表情：GRINNING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GRINNING FACE",
       "unicode": "U+1F600"
     },
     {
       "id": "builtin-emoji-1f601",
       "fileName": "builtin-emoji-1f601.png",
-      "name": "开心 002",
-      "category": "情绪",
+      "name": "Vui vẻ 002",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "grinning face with smiling eyes",
         "U+1F601"
       ],
-      "description": "内置透明图片表情：GRINNING FACE WITH SMILING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GRINNING FACE WITH SMILING EYES",
       "unicode": "U+1F601"
     },
     {
       "id": "builtin-emoji-1f602",
       "fileName": "builtin-emoji-1f602.png",
-      "name": "开心 003",
-      "category": "情绪",
+      "name": "Vui vẻ 003",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "face with tears of joy",
         "U+1F602"
       ],
-      "description": "内置透明图片表情：FACE WITH TEARS OF JOY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH TEARS OF JOY",
       "unicode": "U+1F602"
     },
     {
       "id": "builtin-emoji-1f603",
       "fileName": "builtin-emoji-1f603.png",
-      "name": "表情 004",
-      "category": "情绪",
+      "name": "Biểu cảm 004",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with open mouth",
         "U+1F603"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH OPEN MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH OPEN MOUTH",
       "unicode": "U+1F603"
     },
     {
       "id": "builtin-emoji-1f604",
       "fileName": "builtin-emoji-1f604.png",
-      "name": "表情 005",
-      "category": "情绪",
+      "name": "Biểu cảm 005",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with open mouth and smiling eyes",
         "U+1F604"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH OPEN MOUTH AND SMILING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH OPEN MOUTH AND SMILING EYES",
       "unicode": "U+1F604"
     },
     {
       "id": "builtin-emoji-1f605",
       "fileName": "builtin-emoji-1f605.png",
-      "name": "表情 006",
-      "category": "情绪",
+      "name": "Biểu cảm 006",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with open mouth and cold sweat",
         "U+1F605"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH OPEN MOUTH AND COLD SWEAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH OPEN MOUTH AND COLD SWEAT",
       "unicode": "U+1F605"
     },
     {
       "id": "builtin-emoji-1f606",
       "fileName": "builtin-emoji-1f606.png",
-      "name": "表情 007",
-      "category": "情绪",
+      "name": "Biểu cảm 007",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with open mouth and tightly closed eyes",
         "U+1F606"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES",
       "unicode": "U+1F606"
     },
     {
       "id": "builtin-emoji-1f607",
       "fileName": "builtin-emoji-1f607.png",
-      "name": "表情 008",
-      "category": "情绪",
+      "name": "Biểu cảm 008",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with halo",
         "U+1F607"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH HALO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH HALO",
       "unicode": "U+1F607"
     },
     {
       "id": "builtin-emoji-1f608",
       "fileName": "builtin-emoji-1f608.png",
-      "name": "表情 009",
-      "category": "情绪",
+      "name": "Biểu cảm 009",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with horns",
         "U+1F608"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH HORNS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH HORNS",
       "unicode": "U+1F608"
     },
     {
       "id": "builtin-emoji-1f609",
       "fileName": "builtin-emoji-1f609.png",
-      "name": "开心 010",
-      "category": "情绪",
+      "name": "Vui vẻ 010",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "winking face",
         "U+1F609"
       ],
-      "description": "内置透明图片表情：WINKING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WINKING FACE",
       "unicode": "U+1F609"
     },
     {
       "id": "builtin-emoji-1f60a",
       "fileName": "builtin-emoji-1f60a.png",
-      "name": "表情 011",
-      "category": "情绪",
+      "name": "Biểu cảm 011",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with smiling eyes",
         "U+1F60A"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH SMILING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH SMILING EYES",
       "unicode": "U+1F60A"
     },
     {
       "id": "builtin-emoji-1f60b",
       "fileName": "builtin-emoji-1f60b.png",
-      "name": "表情 012",
-      "category": "情绪",
+      "name": "Biểu cảm 012",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face savouring delicious food",
         "U+1F60B"
       ],
-      "description": "内置透明图片表情：FACE SAVOURING DELICIOUS FOOD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE SAVOURING DELICIOUS FOOD",
       "unicode": "U+1F60B"
     },
     {
       "id": "builtin-emoji-1f60c",
       "fileName": "builtin-emoji-1f60c.png",
-      "name": "表情 013",
-      "category": "情绪",
+      "name": "Biểu cảm 013",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "relieved face",
         "U+1F60C"
       ],
-      "description": "内置透明图片表情：RELIEVED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RELIEVED FACE",
       "unicode": "U+1F60C"
     },
     {
       "id": "builtin-emoji-1f60d",
       "fileName": "builtin-emoji-1f60d.png",
-      "name": "喜欢 014",
-      "category": "情绪",
+      "name": "Thích 014",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "smiling face with heart shaped eyes",
         "U+1F60D"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH HEART-SHAPED EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH HEART-SHAPED EYES",
       "unicode": "U+1F60D"
     },
     {
       "id": "builtin-emoji-1f60e",
       "fileName": "builtin-emoji-1f60e.png",
-      "name": "表情 015",
-      "category": "情绪",
+      "name": "Biểu cảm 015",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with sunglasses",
         "U+1F60E"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH SUNGLASSES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH SUNGLASSES",
       "unicode": "U+1F60E"
     },
     {
       "id": "builtin-emoji-1f60f",
       "fileName": "builtin-emoji-1f60f.png",
-      "name": "表情 016",
-      "category": "情绪",
+      "name": "Biểu cảm 016",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smirking face",
         "U+1F60F"
       ],
-      "description": "内置透明图片表情：SMIRKING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMIRKING FACE",
       "unicode": "U+1F60F"
     },
     {
       "id": "builtin-emoji-1f610",
       "fileName": "builtin-emoji-1f610.png",
-      "name": "表情 017",
-      "category": "情绪",
+      "name": "Biểu cảm 017",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "neutral face",
         "U+1F610"
       ],
-      "description": "内置透明图片表情：NEUTRAL FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: NEUTRAL FACE",
       "unicode": "U+1F610"
     },
     {
       "id": "builtin-emoji-1f611",
       "fileName": "builtin-emoji-1f611.png",
-      "name": "表情 018",
-      "category": "情绪",
+      "name": "Biểu cảm 018",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "expressionless face",
         "U+1F611"
       ],
-      "description": "内置透明图片表情：EXPRESSIONLESS FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EXPRESSIONLESS FACE",
       "unicode": "U+1F611"
     },
     {
       "id": "builtin-emoji-1f612",
       "fileName": "builtin-emoji-1f612.png",
-      "name": "表情 019",
-      "category": "情绪",
+      "name": "Biểu cảm 019",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "unamused face",
         "U+1F612"
       ],
-      "description": "内置透明图片表情：UNAMUSED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: UNAMUSED FACE",
       "unicode": "U+1F612"
     },
     {
       "id": "builtin-emoji-1f613",
       "fileName": "builtin-emoji-1f613.png",
-      "name": "表情 020",
-      "category": "情绪",
+      "name": "Biểu cảm 020",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with cold sweat",
         "U+1F613"
       ],
-      "description": "内置透明图片表情：FACE WITH COLD SWEAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH COLD SWEAT",
       "unicode": "U+1F613"
     },
     {
       "id": "builtin-emoji-1f614",
       "fileName": "builtin-emoji-1f614.png",
-      "name": "表情 021",
-      "category": "情绪",
+      "name": "Biểu cảm 021",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "pensive face",
         "U+1F614"
       ],
-      "description": "内置透明图片表情：PENSIVE FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PENSIVE FACE",
       "unicode": "U+1F614"
     },
     {
       "id": "builtin-emoji-1f615",
       "fileName": "builtin-emoji-1f615.png",
-      "name": "表情 022",
-      "category": "情绪",
+      "name": "Biểu cảm 022",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "confused face",
         "U+1F615"
       ],
-      "description": "内置透明图片表情：CONFUSED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CONFUSED FACE",
       "unicode": "U+1F615"
     },
     {
       "id": "builtin-emoji-1f616",
       "fileName": "builtin-emoji-1f616.png",
-      "name": "表情 023",
-      "category": "情绪",
+      "name": "Biểu cảm 023",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "confounded face",
         "U+1F616"
       ],
-      "description": "内置透明图片表情：CONFOUNDED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CONFOUNDED FACE",
       "unicode": "U+1F616"
     },
     {
       "id": "builtin-emoji-1f617",
       "fileName": "builtin-emoji-1f617.png",
-      "name": "喜欢 024",
-      "category": "情绪",
+      "name": "Thích 024",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "kissing face",
         "U+1F617"
       ],
-      "description": "内置透明图片表情：KISSING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KISSING FACE",
       "unicode": "U+1F617"
     },
     {
       "id": "builtin-emoji-1f618",
       "fileName": "builtin-emoji-1f618.png",
-      "name": "喜欢 025",
-      "category": "情绪",
+      "name": "Thích 025",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "face throwing a kiss",
         "U+1F618"
       ],
-      "description": "内置透明图片表情：FACE THROWING A KISS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE THROWING A KISS",
       "unicode": "U+1F618"
     },
     {
       "id": "builtin-emoji-1f619",
       "fileName": "builtin-emoji-1f619.png",
-      "name": "喜欢 026",
-      "category": "情绪",
+      "name": "Thích 026",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "kissing face with smiling eyes",
         "U+1F619"
       ],
-      "description": "内置透明图片表情：KISSING FACE WITH SMILING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KISSING FACE WITH SMILING EYES",
       "unicode": "U+1F619"
     },
     {
       "id": "builtin-emoji-1f61a",
       "fileName": "builtin-emoji-1f61a.png",
-      "name": "喜欢 027",
-      "category": "情绪",
+      "name": "Thích 027",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "kissing face with closed eyes",
         "U+1F61A"
       ],
-      "description": "内置透明图片表情：KISSING FACE WITH CLOSED EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KISSING FACE WITH CLOSED EYES",
       "unicode": "U+1F61A"
     },
     {
       "id": "builtin-emoji-1f61b",
       "fileName": "builtin-emoji-1f61b.png",
-      "name": "表情 028",
-      "category": "情绪",
+      "name": "Biểu cảm 028",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with stuck out tongue",
         "U+1F61B"
       ],
-      "description": "内置透明图片表情：FACE WITH STUCK-OUT TONGUE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH STUCK-OUT TONGUE",
       "unicode": "U+1F61B"
     },
     {
       "id": "builtin-emoji-1f61c",
       "fileName": "builtin-emoji-1f61c.png",
-      "name": "开心 029",
-      "category": "情绪",
+      "name": "Vui vẻ 029",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "face with stuck out tongue and winking eye",
         "U+1F61C"
       ],
-      "description": "内置透明图片表情：FACE WITH STUCK-OUT TONGUE AND WINKING EYE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH STUCK-OUT TONGUE AND WINKING EYE",
       "unicode": "U+1F61C"
     },
     {
       "id": "builtin-emoji-1f61d",
       "fileName": "builtin-emoji-1f61d.png",
-      "name": "表情 030",
-      "category": "情绪",
+      "name": "Biểu cảm 030",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with stuck out tongue and tightly closed eyes",
         "U+1F61D"
       ],
-      "description": "内置透明图片表情：FACE WITH STUCK-OUT TONGUE AND TIGHTLY-CLOSED EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH STUCK-OUT TONGUE AND TIGHTLY-CLOSED EYES",
       "unicode": "U+1F61D"
     },
     {
       "id": "builtin-emoji-1f61e",
       "fileName": "builtin-emoji-1f61e.png",
-      "name": "表情 031",
-      "category": "情绪",
+      "name": "Biểu cảm 031",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "disappointed face",
         "U+1F61E"
       ],
-      "description": "内置透明图片表情：DISAPPOINTED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DISAPPOINTED FACE",
       "unicode": "U+1F61E"
     },
     {
       "id": "builtin-emoji-1f61f",
       "fileName": "builtin-emoji-1f61f.png",
-      "name": "难过 032",
-      "category": "情绪",
+      "name": "Buồn 032",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "worried face",
         "U+1F61F"
       ],
-      "description": "内置透明图片表情：WORRIED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WORRIED FACE",
       "unicode": "U+1F61F"
     },
     {
       "id": "builtin-emoji-1f620",
       "fileName": "builtin-emoji-1f620.png",
-      "name": "生气 033",
-      "category": "情绪",
+      "name": "Giận dữ 033",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "生气",
+        "Cảm xúc",
+        "Giận dữ",
         "angry face",
         "U+1F620"
       ],
-      "description": "内置透明图片表情：ANGRY FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ANGRY FACE",
       "unicode": "U+1F620"
     },
     {
       "id": "builtin-emoji-1f621",
       "fileName": "builtin-emoji-1f621.png",
-      "name": "表情 034",
-      "category": "情绪",
+      "name": "Biểu cảm 034",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "pouting face",
         "U+1F621"
       ],
-      "description": "内置透明图片表情：POUTING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: POUTING FACE",
       "unicode": "U+1F621"
     },
     {
       "id": "builtin-emoji-1f622",
       "fileName": "builtin-emoji-1f622.png",
-      "name": "难过 035",
-      "category": "情绪",
+      "name": "Buồn 035",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "crying face",
         "U+1F622"
       ],
-      "description": "内置透明图片表情：CRYING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CRYING FACE",
       "unicode": "U+1F622"
     },
     {
       "id": "builtin-emoji-1f623",
       "fileName": "builtin-emoji-1f623.png",
-      "name": "表情 036",
-      "category": "情绪",
+      "name": "Biểu cảm 036",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "persevering face",
         "U+1F623"
       ],
-      "description": "内置透明图片表情：PERSEVERING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSEVERING FACE",
       "unicode": "U+1F623"
     },
     {
       "id": "builtin-emoji-1f624",
       "fileName": "builtin-emoji-1f624.png",
-      "name": "表情 037",
-      "category": "情绪",
+      "name": "Biểu cảm 037",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with look of triumph",
         "U+1F624"
       ],
-      "description": "内置透明图片表情：FACE WITH LOOK OF TRIUMPH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH LOOK OF TRIUMPH",
       "unicode": "U+1F624"
     },
     {
       "id": "builtin-emoji-1f625",
       "fileName": "builtin-emoji-1f625.png",
-      "name": "表情 038",
-      "category": "情绪",
+      "name": "Biểu cảm 038",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "disappointed but relieved face",
         "U+1F625"
       ],
-      "description": "内置透明图片表情：DISAPPOINTED BUT RELIEVED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DISAPPOINTED BUT RELIEVED FACE",
       "unicode": "U+1F625"
     },
     {
       "id": "builtin-emoji-1f626",
       "fileName": "builtin-emoji-1f626.png",
-      "name": "难过 039",
-      "category": "情绪",
+      "name": "Buồn 039",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "frowning face with open mouth",
         "U+1F626"
       ],
-      "description": "内置透明图片表情：FROWNING FACE WITH OPEN MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FROWNING FACE WITH OPEN MOUTH",
       "unicode": "U+1F626"
     },
     {
       "id": "builtin-emoji-1f627",
       "fileName": "builtin-emoji-1f627.png",
-      "name": "难过 040",
-      "category": "情绪",
+      "name": "Buồn 040",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "anguished face",
         "U+1F627"
       ],
-      "description": "内置透明图片表情：ANGUISHED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ANGUISHED FACE",
       "unicode": "U+1F627"
     },
     {
       "id": "builtin-emoji-1f628",
       "fileName": "builtin-emoji-1f628.png",
-      "name": "难过 041",
-      "category": "情绪",
+      "name": "Buồn 041",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "fearful face",
         "U+1F628"
       ],
-      "description": "内置透明图片表情：FEARFUL FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FEARFUL FACE",
       "unicode": "U+1F628"
     },
     {
       "id": "builtin-emoji-1f629",
       "fileName": "builtin-emoji-1f629.png",
-      "name": "表情 042",
-      "category": "情绪",
+      "name": "Biểu cảm 042",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "weary face",
         "U+1F629"
       ],
-      "description": "内置透明图片表情：WEARY FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WEARY FACE",
       "unicode": "U+1F629"
     },
     {
       "id": "builtin-emoji-1f62a",
       "fileName": "builtin-emoji-1f62a.png",
-      "name": "表情 043",
-      "category": "情绪",
+      "name": "Biểu cảm 043",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "sleepy face",
         "U+1F62A"
       ],
-      "description": "内置透明图片表情：SLEEPY FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SLEEPY FACE",
       "unicode": "U+1F62A"
     },
     {
       "id": "builtin-emoji-1f62b",
       "fileName": "builtin-emoji-1f62b.png",
-      "name": "表情 044",
-      "category": "情绪",
+      "name": "Biểu cảm 044",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "tired face",
         "U+1F62B"
       ],
-      "description": "内置透明图片表情：TIRED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TIRED FACE",
       "unicode": "U+1F62B"
     },
     {
       "id": "builtin-emoji-1f62c",
       "fileName": "builtin-emoji-1f62c.png",
-      "name": "表情 045",
-      "category": "情绪",
+      "name": "Biểu cảm 045",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "grimacing face",
         "U+1F62C"
       ],
-      "description": "内置透明图片表情：GRIMACING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GRIMACING FACE",
       "unicode": "U+1F62C"
     },
     {
       "id": "builtin-emoji-1f62d",
       "fileName": "builtin-emoji-1f62d.png",
-      "name": "难过 046",
-      "category": "情绪",
+      "name": "Buồn 046",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "loudly crying face",
         "U+1F62D"
       ],
-      "description": "内置透明图片表情：LOUDLY CRYING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LOUDLY CRYING FACE",
       "unicode": "U+1F62D"
     },
     {
       "id": "builtin-emoji-1f62e",
       "fileName": "builtin-emoji-1f62e.png",
-      "name": "表情 047",
-      "category": "情绪",
+      "name": "Biểu cảm 047",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with open mouth",
         "U+1F62E"
       ],
-      "description": "内置透明图片表情：FACE WITH OPEN MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH OPEN MOUTH",
       "unicode": "U+1F62E"
     },
     {
       "id": "builtin-emoji-1f62f",
       "fileName": "builtin-emoji-1f62f.png",
-      "name": "表情 048",
-      "category": "情绪",
+      "name": "Biểu cảm 048",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "hushed face",
         "U+1F62F"
       ],
-      "description": "内置透明图片表情：HUSHED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HUSHED FACE",
       "unicode": "U+1F62F"
     },
     {
       "id": "builtin-emoji-1f630",
       "fileName": "builtin-emoji-1f630.png",
-      "name": "表情 049",
-      "category": "情绪",
+      "name": "Biểu cảm 049",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with open mouth and cold sweat",
         "U+1F630"
       ],
-      "description": "内置透明图片表情：FACE WITH OPEN MOUTH AND COLD SWEAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH OPEN MOUTH AND COLD SWEAT",
       "unicode": "U+1F630"
     },
     {
       "id": "builtin-emoji-1f631",
       "fileName": "builtin-emoji-1f631.png",
-      "name": "难过 050",
-      "category": "情绪",
+      "name": "Buồn 050",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "face screaming in fear",
         "U+1F631"
       ],
-      "description": "内置透明图片表情：FACE SCREAMING IN FEAR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE SCREAMING IN FEAR",
       "unicode": "U+1F631"
     },
     {
       "id": "builtin-emoji-1f632",
       "fileName": "builtin-emoji-1f632.png",
-      "name": "表情 051",
-      "category": "情绪",
+      "name": "Biểu cảm 051",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "astonished face",
         "U+1F632"
       ],
-      "description": "内置透明图片表情：ASTONISHED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ASTONISHED FACE",
       "unicode": "U+1F632"
     },
     {
       "id": "builtin-emoji-1f633",
       "fileName": "builtin-emoji-1f633.png",
-      "name": "表情 052",
-      "category": "情绪",
+      "name": "Biểu cảm 052",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "flushed face",
         "U+1F633"
       ],
-      "description": "内置透明图片表情：FLUSHED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FLUSHED FACE",
       "unicode": "U+1F633"
     },
     {
       "id": "builtin-emoji-1f634",
       "fileName": "builtin-emoji-1f634.png",
-      "name": "表情 053",
-      "category": "情绪",
+      "name": "Biểu cảm 053",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "sleeping face",
         "U+1F634"
       ],
-      "description": "内置透明图片表情：SLEEPING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SLEEPING FACE",
       "unicode": "U+1F634"
     },
     {
       "id": "builtin-emoji-1f635",
       "fileName": "builtin-emoji-1f635.png",
-      "name": "表情 054",
-      "category": "情绪",
+      "name": "Biểu cảm 054",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "dizzy face",
         "U+1F635"
       ],
-      "description": "内置透明图片表情：DIZZY FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DIZZY FACE",
       "unicode": "U+1F635"
     },
     {
       "id": "builtin-emoji-1f636",
       "fileName": "builtin-emoji-1f636.png",
-      "name": "表情 055",
-      "category": "情绪",
+      "name": "Biểu cảm 055",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face without mouth",
         "U+1F636"
       ],
-      "description": "内置透明图片表情：FACE WITHOUT MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITHOUT MOUTH",
       "unicode": "U+1F636"
     },
     {
       "id": "builtin-emoji-1f637",
       "fileName": "builtin-emoji-1f637.png",
-      "name": "表情 056",
-      "category": "情绪",
+      "name": "Biểu cảm 056",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with medical mask",
         "U+1F637"
       ],
-      "description": "内置透明图片表情：FACE WITH MEDICAL MASK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH MEDICAL MASK",
       "unicode": "U+1F637"
     },
     {
       "id": "builtin-emoji-1f638",
       "fileName": "builtin-emoji-1f638.png",
-      "name": "开心 057",
-      "category": "情绪",
+      "name": "Vui vẻ 057",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "grinning cat face with smiling eyes",
         "U+1F638"
       ],
-      "description": "内置透明图片表情：GRINNING CAT FACE WITH SMILING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GRINNING CAT FACE WITH SMILING EYES",
       "unicode": "U+1F638"
     },
     {
       "id": "builtin-emoji-1f639",
       "fileName": "builtin-emoji-1f639.png",
-      "name": "开心 058",
-      "category": "情绪",
+      "name": "Vui vẻ 058",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "cat face with tears of joy",
         "U+1F639"
       ],
-      "description": "内置透明图片表情：CAT FACE WITH TEARS OF JOY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CAT FACE WITH TEARS OF JOY",
       "unicode": "U+1F639"
     },
     {
       "id": "builtin-emoji-1f63a",
       "fileName": "builtin-emoji-1f63a.png",
-      "name": "表情 059",
-      "category": "情绪",
+      "name": "Biểu cảm 059",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling cat face with open mouth",
         "U+1F63A"
       ],
-      "description": "内置透明图片表情：SMILING CAT FACE WITH OPEN MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING CAT FACE WITH OPEN MOUTH",
       "unicode": "U+1F63A"
     },
     {
       "id": "builtin-emoji-1f63b",
       "fileName": "builtin-emoji-1f63b.png",
-      "name": "喜欢 060",
-      "category": "情绪",
+      "name": "Thích 060",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "smiling cat face with heart shaped eyes",
         "U+1F63B"
       ],
-      "description": "内置透明图片表情：SMILING CAT FACE WITH HEART-SHAPED EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING CAT FACE WITH HEART-SHAPED EYES",
       "unicode": "U+1F63B"
     },
     {
       "id": "builtin-emoji-1f63c",
       "fileName": "builtin-emoji-1f63c.png",
-      "name": "开心 061",
-      "category": "情绪",
+      "name": "Vui vẻ 061",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "cat face with wry smile",
         "U+1F63C"
       ],
-      "description": "内置透明图片表情：CAT FACE WITH WRY SMILE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CAT FACE WITH WRY SMILE",
       "unicode": "U+1F63C"
     },
     {
       "id": "builtin-emoji-1f63d",
       "fileName": "builtin-emoji-1f63d.png",
-      "name": "喜欢 062",
-      "category": "情绪",
+      "name": "Thích 062",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "kissing cat face with closed eyes",
         "U+1F63D"
       ],
-      "description": "内置透明图片表情：KISSING CAT FACE WITH CLOSED EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KISSING CAT FACE WITH CLOSED EYES",
       "unicode": "U+1F63D"
     },
     {
       "id": "builtin-emoji-1f63e",
       "fileName": "builtin-emoji-1f63e.png",
-      "name": "表情 063",
-      "category": "情绪",
+      "name": "Biểu cảm 063",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "pouting cat face",
         "U+1F63E"
       ],
-      "description": "内置透明图片表情：POUTING CAT FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: POUTING CAT FACE",
       "unicode": "U+1F63E"
     },
     {
       "id": "builtin-emoji-1f63f",
       "fileName": "builtin-emoji-1f63f.png",
-      "name": "难过 064",
-      "category": "情绪",
+      "name": "Buồn 064",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "crying cat face",
         "U+1F63F"
       ],
-      "description": "内置透明图片表情：CRYING CAT FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CRYING CAT FACE",
       "unicode": "U+1F63F"
     },
     {
       "id": "builtin-emoji-1f640",
       "fileName": "builtin-emoji-1f640.png",
-      "name": "表情 065",
-      "category": "情绪",
+      "name": "Biểu cảm 065",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "weary cat face",
         "U+1F640"
       ],
-      "description": "内置透明图片表情：WEARY CAT FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WEARY CAT FACE",
       "unicode": "U+1F640"
     },
     {
       "id": "builtin-emoji-1f641",
       "fileName": "builtin-emoji-1f641.png",
-      "name": "难过 066",
-      "category": "情绪",
+      "name": "Buồn 066",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "slightly frowning face",
         "U+1F641"
       ],
-      "description": "内置透明图片表情：SLIGHTLY FROWNING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SLIGHTLY FROWNING FACE",
       "unicode": "U+1F641"
     },
     {
       "id": "builtin-emoji-1f642",
       "fileName": "builtin-emoji-1f642.png",
-      "name": "表情 067",
-      "category": "情绪",
+      "name": "Biểu cảm 067",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "slightly smiling face",
         "U+1F642"
       ],
-      "description": "内置透明图片表情：SLIGHTLY SMILING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SLIGHTLY SMILING FACE",
       "unicode": "U+1F642"
     },
     {
       "id": "builtin-emoji-1f643",
       "fileName": "builtin-emoji-1f643.png",
-      "name": "表情 068",
-      "category": "情绪",
+      "name": "Biểu cảm 068",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "upside down face",
         "U+1F643"
       ],
-      "description": "内置透明图片表情：UPSIDE-DOWN FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: UPSIDE-DOWN FACE",
       "unicode": "U+1F643"
     },
     {
       "id": "builtin-emoji-1f644",
       "fileName": "builtin-emoji-1f644.png",
-      "name": "表情 069",
-      "category": "情绪",
+      "name": "Biểu cảm 069",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with rolling eyes",
         "U+1F644"
       ],
-      "description": "内置透明图片表情：FACE WITH ROLLING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH ROLLING EYES",
       "unicode": "U+1F644"
     },
     {
       "id": "builtin-emoji-1f645",
       "fileName": "builtin-emoji-1f645.png",
-      "name": "表情 070",
-      "category": "情绪",
+      "name": "Biểu cảm 070",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with no good gesture",
         "U+1F645"
       ],
-      "description": "内置透明图片表情：FACE WITH NO GOOD GESTURE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH NO GOOD GESTURE",
       "unicode": "U+1F645"
     },
     {
       "id": "builtin-emoji-1f646",
       "fileName": "builtin-emoji-1f646.png",
-      "name": "表情 071",
-      "category": "情绪",
+      "name": "Biểu cảm 071",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with ok gesture",
         "U+1F646"
       ],
-      "description": "内置透明图片表情：FACE WITH OK GESTURE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH OK GESTURE",
       "unicode": "U+1F646"
     },
     {
       "id": "builtin-emoji-1f647",
       "fileName": "builtin-emoji-1f647.png",
-      "name": "表情 072",
-      "category": "情绪",
+      "name": "Biểu cảm 072",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "person bowing deeply",
         "U+1F647"
       ],
-      "description": "内置透明图片表情：PERSON BOWING DEEPLY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON BOWING DEEPLY",
       "unicode": "U+1F647"
     },
     {
       "id": "builtin-emoji-1f648",
       "fileName": "builtin-emoji-1f648.png",
-      "name": "表情 073",
-      "category": "情绪",
+      "name": "Biểu cảm 073",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "see no evil monkey",
         "U+1F648"
       ],
-      "description": "内置透明图片表情：SEE-NO-EVIL MONKEY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SEE-NO-EVIL MONKEY",
       "unicode": "U+1F648"
     },
     {
       "id": "builtin-emoji-1f649",
       "fileName": "builtin-emoji-1f649.png",
-      "name": "表情 074",
-      "category": "情绪",
+      "name": "Biểu cảm 074",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "hear no evil monkey",
         "U+1F649"
       ],
-      "description": "内置透明图片表情：HEAR-NO-EVIL MONKEY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HEAR-NO-EVIL MONKEY",
       "unicode": "U+1F649"
     },
     {
       "id": "builtin-emoji-1f64a",
       "fileName": "builtin-emoji-1f64a.png",
-      "name": "表情 075",
-      "category": "情绪",
+      "name": "Biểu cảm 075",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "speak no evil monkey",
         "U+1F64A"
       ],
-      "description": "内置透明图片表情：SPEAK-NO-EVIL MONKEY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SPEAK-NO-EVIL MONKEY",
       "unicode": "U+1F64A"
     },
     {
       "id": "builtin-emoji-1f64b",
       "fileName": "builtin-emoji-1f64b.png",
-      "name": "表情 076",
-      "category": "情绪",
+      "name": "Biểu cảm 076",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "happy person raising one hand",
         "U+1F64B"
       ],
-      "description": "内置透明图片表情：HAPPY PERSON RAISING ONE HAND",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HAPPY PERSON RAISING ONE HAND",
       "unicode": "U+1F64B"
     },
     {
       "id": "builtin-emoji-1f64c",
       "fileName": "builtin-emoji-1f64c.png",
-      "name": "表情 077",
-      "category": "情绪",
+      "name": "Biểu cảm 077",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "person raising both hands in celebration",
         "U+1F64C"
       ],
-      "description": "内置透明图片表情：PERSON RAISING BOTH HANDS IN CELEBRATION",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON RAISING BOTH HANDS IN CELEBRATION",
       "unicode": "U+1F64C"
     },
     {
       "id": "builtin-emoji-1f64d",
       "fileName": "builtin-emoji-1f64d.png",
-      "name": "难过 078",
-      "category": "情绪",
+      "name": "Buồn 078",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "难过",
+        "Cảm xúc",
+        "Buồn",
         "person frowning",
         "U+1F64D"
       ],
-      "description": "内置透明图片表情：PERSON FROWNING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON FROWNING",
       "unicode": "U+1F64D"
     },
     {
       "id": "builtin-emoji-1f64e",
       "fileName": "builtin-emoji-1f64e.png",
-      "name": "表情 079",
-      "category": "情绪",
+      "name": "Biểu cảm 079",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "person with pouting face",
         "U+1F64E"
       ],
-      "description": "内置透明图片表情：PERSON WITH POUTING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON WITH POUTING FACE",
       "unicode": "U+1F64E"
     },
     {
       "id": "builtin-emoji-1f64f",
       "fileName": "builtin-emoji-1f64f.png",
-      "name": "表情 080",
-      "category": "情绪",
+      "name": "Biểu cảm 080",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "person with folded hands",
         "U+1F64F"
       ],
-      "description": "内置透明图片表情：PERSON WITH FOLDED HANDS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON WITH FOLDED HANDS",
       "unicode": "U+1F64F"
     },
     {
       "id": "builtin-emoji-1f900",
       "fileName": "builtin-emoji-1f900.png",
-      "name": "日常 081",
-      "category": "日常",
+      "name": "Thường nhật 081",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "circled cross formee with four dots",
         "U+1F900"
       ],
-      "description": "内置透明图片表情：CIRCLED CROSS FORMEE WITH FOUR DOTS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CIRCLED CROSS FORMEE WITH FOUR DOTS",
       "unicode": "U+1F900"
     },
     {
       "id": "builtin-emoji-1f90c",
       "fileName": "builtin-emoji-1f90c.png",
-      "name": "手势 082",
-      "category": "手势",
+      "name": "Cử chỉ 082",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "pinched fingers",
         "U+1F90C"
       ],
-      "description": "内置透明图片表情：PINCHED FINGERS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PINCHED FINGERS",
       "unicode": "U+1F90C"
     },
     {
       "id": "builtin-emoji-1f90d",
       "fileName": "builtin-emoji-1f90d.png",
-      "name": "喜欢 083",
-      "category": "爱意",
+      "name": "Thích 083",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "white heart",
         "U+1F90D"
       ],
-      "description": "内置透明图片表情：WHITE HEART",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WHITE HEART",
       "unicode": "U+1F90D"
     },
     {
       "id": "builtin-emoji-1f90e",
       "fileName": "builtin-emoji-1f90e.png",
-      "name": "喜欢 084",
-      "category": "爱意",
+      "name": "Thích 084",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "brown heart",
         "U+1F90E"
       ],
-      "description": "内置透明图片表情：BROWN HEART",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BROWN HEART",
       "unicode": "U+1F90E"
     },
     {
       "id": "builtin-emoji-1f90f",
       "fileName": "builtin-emoji-1f90f.png",
-      "name": "手势 085",
-      "category": "手势",
+      "name": "Cử chỉ 085",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "pinching hand",
         "U+1F90F"
       ],
-      "description": "内置透明图片表情：PINCHING HAND",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PINCHING HAND",
       "unicode": "U+1F90F"
     },
     {
       "id": "builtin-emoji-1f910",
       "fileName": "builtin-emoji-1f910.png",
-      "name": "表情 086",
-      "category": "情绪",
+      "name": "Biểu cảm 086",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "zipper mouth face",
         "U+1F910"
       ],
-      "description": "内置透明图片表情：ZIPPER-MOUTH FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ZIPPER-MOUTH FACE",
       "unicode": "U+1F910"
     },
     {
       "id": "builtin-emoji-1f911",
       "fileName": "builtin-emoji-1f911.png",
-      "name": "表情 087",
-      "category": "情绪",
+      "name": "Biểu cảm 087",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "money mouth face",
         "U+1F911"
       ],
-      "description": "内置透明图片表情：MONEY-MOUTH FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MONEY-MOUTH FACE",
       "unicode": "U+1F911"
     },
     {
       "id": "builtin-emoji-1f912",
       "fileName": "builtin-emoji-1f912.png",
-      "name": "表情 088",
-      "category": "情绪",
+      "name": "Biểu cảm 088",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with thermometer",
         "U+1F912"
       ],
-      "description": "内置透明图片表情：FACE WITH THERMOMETER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH THERMOMETER",
       "unicode": "U+1F912"
     },
     {
       "id": "builtin-emoji-1f913",
       "fileName": "builtin-emoji-1f913.png",
-      "name": "表情 089",
-      "category": "情绪",
+      "name": "Biểu cảm 089",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "nerd face",
         "U+1F913"
       ],
-      "description": "内置透明图片表情：NERD FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: NERD FACE",
       "unicode": "U+1F913"
     },
     {
       "id": "builtin-emoji-1f914",
       "fileName": "builtin-emoji-1f914.png",
-      "name": "表情 090",
-      "category": "情绪",
+      "name": "Biểu cảm 090",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "thinking face",
         "U+1F914"
       ],
-      "description": "内置透明图片表情：THINKING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: THINKING FACE",
       "unicode": "U+1F914"
     },
     {
       "id": "builtin-emoji-1f915",
       "fileName": "builtin-emoji-1f915.png",
-      "name": "表情 091",
-      "category": "情绪",
+      "name": "Biểu cảm 091",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with head bandage",
         "U+1F915"
       ],
-      "description": "内置透明图片表情：FACE WITH HEAD-BANDAGE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH HEAD-BANDAGE",
       "unicode": "U+1F915"
     },
     {
       "id": "builtin-emoji-1f916",
       "fileName": "builtin-emoji-1f916.png",
-      "name": "表情 092",
-      "category": "情绪",
+      "name": "Biểu cảm 092",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "robot face",
         "U+1F916"
       ],
-      "description": "内置透明图片表情：ROBOT FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ROBOT FACE",
       "unicode": "U+1F916"
     },
     {
       "id": "builtin-emoji-1f917",
       "fileName": "builtin-emoji-1f917.png",
-      "name": "表情 093",
-      "category": "情绪",
+      "name": "Biểu cảm 093",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "hugging face",
         "U+1F917"
       ],
-      "description": "内置透明图片表情：HUGGING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HUGGING FACE",
       "unicode": "U+1F917"
     },
     {
       "id": "builtin-emoji-1f918",
       "fileName": "builtin-emoji-1f918.png",
-      "name": "日常 094",
-      "category": "日常",
+      "name": "Thường nhật 094",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "sign of the horns",
         "U+1F918"
       ],
-      "description": "内置透明图片表情：SIGN OF THE HORNS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SIGN OF THE HORNS",
       "unicode": "U+1F918"
     },
     {
       "id": "builtin-emoji-1f919",
       "fileName": "builtin-emoji-1f919.png",
-      "name": "手势 095",
-      "category": "手势",
+      "name": "Cử chỉ 095",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "call me hand",
         "U+1F919"
       ],
-      "description": "内置透明图片表情：CALL ME HAND",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CALL ME HAND",
       "unicode": "U+1F919"
     },
     {
       "id": "builtin-emoji-1f91a",
       "fileName": "builtin-emoji-1f91a.png",
-      "name": "手势 096",
-      "category": "手势",
+      "name": "Cử chỉ 096",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "raised back of hand",
         "U+1F91A"
       ],
-      "description": "内置透明图片表情：RAISED BACK OF HAND",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RAISED BACK OF HAND",
       "unicode": "U+1F91A"
     },
     {
       "id": "builtin-emoji-1f91b",
       "fileName": "builtin-emoji-1f91b.png",
-      "name": "手势 097",
-      "category": "手势",
+      "name": "Cử chỉ 097",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "left facing fist",
         "U+1F91B"
       ],
-      "description": "内置透明图片表情：LEFT-FACING FIST",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LEFT-FACING FIST",
       "unicode": "U+1F91B"
     },
     {
       "id": "builtin-emoji-1f91c",
       "fileName": "builtin-emoji-1f91c.png",
-      "name": "手势 098",
-      "category": "手势",
+      "name": "Cử chỉ 098",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "right facing fist",
         "U+1F91C"
       ],
-      "description": "内置透明图片表情：RIGHT-FACING FIST",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RIGHT-FACING FIST",
       "unicode": "U+1F91C"
     },
     {
       "id": "builtin-emoji-1f91d",
       "fileName": "builtin-emoji-1f91d.png",
-      "name": "手势 099",
-      "category": "手势",
+      "name": "Cử chỉ 099",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "handshake",
         "U+1F91D"
       ],
-      "description": "内置透明图片表情：HANDSHAKE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HANDSHAKE",
       "unicode": "U+1F91D"
     },
     {
       "id": "builtin-emoji-1f91e",
       "fileName": "builtin-emoji-1f91e.png",
-      "name": "手势 100",
-      "category": "手势",
+      "name": "Cử chỉ 100",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "hand with index and middle fingers crossed",
         "U+1F91E"
       ],
-      "description": "内置透明图片表情：HAND WITH INDEX AND MIDDLE FINGERS CROSSED",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HAND WITH INDEX AND MIDDLE FINGERS CROSSED",
       "unicode": "U+1F91E"
     },
     {
       "id": "builtin-emoji-1f91f",
       "fileName": "builtin-emoji-1f91f.png",
-      "name": "手势 101",
-      "category": "手势",
+      "name": "Cử chỉ 101",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "i love you hand sign",
         "U+1F91F"
       ],
-      "description": "内置透明图片表情：I LOVE YOU HAND SIGN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: I LOVE YOU HAND SIGN",
       "unicode": "U+1F91F"
     },
     {
       "id": "builtin-emoji-1f920",
       "fileName": "builtin-emoji-1f920.png",
-      "name": "表情 102",
-      "category": "情绪",
+      "name": "Biểu cảm 102",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with cowboy hat",
         "U+1F920"
       ],
-      "description": "内置透明图片表情：FACE WITH COWBOY HAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH COWBOY HAT",
       "unicode": "U+1F920"
     },
     {
       "id": "builtin-emoji-1f921",
       "fileName": "builtin-emoji-1f921.png",
-      "name": "表情 103",
-      "category": "情绪",
+      "name": "Biểu cảm 103",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "clown face",
         "U+1F921"
       ],
-      "description": "内置透明图片表情：CLOWN FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CLOWN FACE",
       "unicode": "U+1F921"
     },
     {
       "id": "builtin-emoji-1f922",
       "fileName": "builtin-emoji-1f922.png",
-      "name": "表情 104",
-      "category": "情绪",
+      "name": "Biểu cảm 104",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "nauseated face",
         "U+1F922"
       ],
-      "description": "内置透明图片表情：NAUSEATED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: NAUSEATED FACE",
       "unicode": "U+1F922"
     },
     {
       "id": "builtin-emoji-1f923",
       "fileName": "builtin-emoji-1f923.png",
-      "name": "日常 105",
-      "category": "日常",
+      "name": "Thường nhật 105",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "rolling on the floor laughing",
         "U+1F923"
       ],
-      "description": "内置透明图片表情：ROLLING ON THE FLOOR LAUGHING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ROLLING ON THE FLOOR LAUGHING",
       "unicode": "U+1F923"
     },
     {
       "id": "builtin-emoji-1f924",
       "fileName": "builtin-emoji-1f924.png",
-      "name": "表情 106",
-      "category": "情绪",
+      "name": "Biểu cảm 106",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "drooling face",
         "U+1F924"
       ],
-      "description": "内置透明图片表情：DROOLING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DROOLING FACE",
       "unicode": "U+1F924"
     },
     {
       "id": "builtin-emoji-1f925",
       "fileName": "builtin-emoji-1f925.png",
-      "name": "表情 107",
-      "category": "情绪",
+      "name": "Biểu cảm 107",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "lying face",
         "U+1F925"
       ],
-      "description": "内置透明图片表情：LYING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LYING FACE",
       "unicode": "U+1F925"
     },
     {
       "id": "builtin-emoji-1f926",
       "fileName": "builtin-emoji-1f926.png",
-      "name": "表情 108",
-      "category": "情绪",
+      "name": "Biểu cảm 108",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face palm",
         "U+1F926"
       ],
-      "description": "内置透明图片表情：FACE PALM",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE PALM",
       "unicode": "U+1F926"
     },
     {
       "id": "builtin-emoji-1f927",
       "fileName": "builtin-emoji-1f927.png",
-      "name": "表情 109",
-      "category": "情绪",
+      "name": "Biểu cảm 109",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "sneezing face",
         "U+1F927"
       ],
-      "description": "内置透明图片表情：SNEEZING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SNEEZING FACE",
       "unicode": "U+1F927"
     },
     {
       "id": "builtin-emoji-1f928",
       "fileName": "builtin-emoji-1f928.png",
-      "name": "表情 110",
-      "category": "情绪",
+      "name": "Biểu cảm 110",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with one eyebrow raised",
         "U+1F928"
       ],
-      "description": "内置透明图片表情：FACE WITH ONE EYEBROW RAISED",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH ONE EYEBROW RAISED",
       "unicode": "U+1F928"
     },
     {
       "id": "builtin-emoji-1f929",
       "fileName": "builtin-emoji-1f929.png",
-      "name": "开心 111",
-      "category": "情绪",
+      "name": "Vui vẻ 111",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "grinning face with star eyes",
         "U+1F929"
       ],
-      "description": "内置透明图片表情：GRINNING FACE WITH STAR EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GRINNING FACE WITH STAR EYES",
       "unicode": "U+1F929"
     },
     {
       "id": "builtin-emoji-1f92a",
       "fileName": "builtin-emoji-1f92a.png",
-      "name": "开心 112",
-      "category": "情绪",
+      "name": "Vui vẻ 112",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "开心",
+        "Cảm xúc",
+        "Vui vẻ",
         "grinning face with one large and one small eye",
         "U+1F92A"
       ],
-      "description": "内置透明图片表情：GRINNING FACE WITH ONE LARGE AND ONE SMALL EYE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GRINNING FACE WITH ONE LARGE AND ONE SMALL EYE",
       "unicode": "U+1F92A"
     },
     {
       "id": "builtin-emoji-1f92b",
       "fileName": "builtin-emoji-1f92b.png",
-      "name": "表情 113",
-      "category": "情绪",
+      "name": "Biểu cảm 113",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with finger covering closed lips",
         "U+1F92B"
       ],
-      "description": "内置透明图片表情：FACE WITH FINGER COVERING CLOSED LIPS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH FINGER COVERING CLOSED LIPS",
       "unicode": "U+1F92B"
     },
     {
       "id": "builtin-emoji-1f92c",
       "fileName": "builtin-emoji-1f92c.png",
-      "name": "表情 114",
-      "category": "情绪",
+      "name": "Biểu cảm 114",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "serious face with symbols covering mouth",
         "U+1F92C"
       ],
-      "description": "内置透明图片表情：SERIOUS FACE WITH SYMBOLS COVERING MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SERIOUS FACE WITH SYMBOLS COVERING MOUTH",
       "unicode": "U+1F92C"
     },
     {
       "id": "builtin-emoji-1f92d",
       "fileName": "builtin-emoji-1f92d.png",
-      "name": "表情 115",
-      "category": "情绪",
+      "name": "Biểu cảm 115",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with smiling eyes and hand covering mouth",
         "U+1F92D"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH SMILING EYES AND HAND COVERING MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH SMILING EYES AND HAND COVERING MOUTH",
       "unicode": "U+1F92D"
     },
     {
       "id": "builtin-emoji-1f92e",
       "fileName": "builtin-emoji-1f92e.png",
-      "name": "表情 116",
-      "category": "情绪",
+      "name": "Biểu cảm 116",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with open mouth vomiting",
         "U+1F92E"
       ],
-      "description": "内置透明图片表情：FACE WITH OPEN MOUTH VOMITING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH OPEN MOUTH VOMITING",
       "unicode": "U+1F92E"
     },
     {
       "id": "builtin-emoji-1f92f",
       "fileName": "builtin-emoji-1f92f.png",
-      "name": "表情 117",
-      "category": "情绪",
+      "name": "Biểu cảm 117",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "shocked face with exploding head",
         "U+1F92F"
       ],
-      "description": "内置透明图片表情：SHOCKED FACE WITH EXPLODING HEAD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SHOCKED FACE WITH EXPLODING HEAD",
       "unicode": "U+1F92F"
     },
     {
       "id": "builtin-emoji-1f930",
       "fileName": "builtin-emoji-1f930.png",
-      "name": "日常 118",
-      "category": "日常",
+      "name": "Thường nhật 118",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "pregnant woman",
         "U+1F930"
       ],
-      "description": "内置透明图片表情：PREGNANT WOMAN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PREGNANT WOMAN",
       "unicode": "U+1F930"
     },
     {
       "id": "builtin-emoji-1f931",
       "fileName": "builtin-emoji-1f931.png",
-      "name": "日常 119",
-      "category": "日常",
+      "name": "Thường nhật 119",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "breast feeding",
         "U+1F931"
       ],
-      "description": "内置透明图片表情：BREAST-FEEDING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BREAST-FEEDING",
       "unicode": "U+1F931"
     },
     {
       "id": "builtin-emoji-1f932",
       "fileName": "builtin-emoji-1f932.png",
-      "name": "日常 120",
-      "category": "日常",
+      "name": "Thường nhật 120",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "palms up together",
         "U+1F932"
       ],
-      "description": "内置透明图片表情：PALMS UP TOGETHER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PALMS UP TOGETHER",
       "unicode": "U+1F932"
     },
     {
       "id": "builtin-emoji-1f933",
       "fileName": "builtin-emoji-1f933.png",
-      "name": "日常 121",
-      "category": "日常",
+      "name": "Thường nhật 121",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "selfie",
         "U+1F933"
       ],
-      "description": "内置透明图片表情：SELFIE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SELFIE",
       "unicode": "U+1F933"
     },
     {
       "id": "builtin-emoji-1f934",
       "fileName": "builtin-emoji-1f934.png",
-      "name": "日常 122",
-      "category": "日常",
+      "name": "Thường nhật 122",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "prince",
         "U+1F934"
       ],
-      "description": "内置透明图片表情：PRINCE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PRINCE",
       "unicode": "U+1F934"
     },
     {
       "id": "builtin-emoji-1f935",
       "fileName": "builtin-emoji-1f935.png",
-      "name": "日常 123",
-      "category": "日常",
+      "name": "Thường nhật 123",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "man in tuxedo",
         "U+1F935"
       ],
-      "description": "内置透明图片表情：MAN IN TUXEDO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MAN IN TUXEDO",
       "unicode": "U+1F935"
     },
     {
       "id": "builtin-emoji-1f936",
       "fileName": "builtin-emoji-1f936.png",
-      "name": "日常 124",
-      "category": "日常",
+      "name": "Thường nhật 124",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mother christmas",
         "U+1F936"
       ],
-      "description": "内置透明图片表情：MOTHER CHRISTMAS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MOTHER CHRISTMAS",
       "unicode": "U+1F936"
     },
     {
       "id": "builtin-emoji-1f937",
       "fileName": "builtin-emoji-1f937.png",
-      "name": "日常 125",
-      "category": "日常",
+      "name": "Thường nhật 125",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "shrug",
         "U+1F937"
       ],
-      "description": "内置透明图片表情：SHRUG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SHRUG",
       "unicode": "U+1F937"
     },
     {
       "id": "builtin-emoji-1f938",
       "fileName": "builtin-emoji-1f938.png",
-      "name": "日常 126",
-      "category": "日常",
+      "name": "Thường nhật 126",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "person doing cartwheel",
         "U+1F938"
       ],
-      "description": "内置透明图片表情：PERSON DOING CARTWHEEL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON DOING CARTWHEEL",
       "unicode": "U+1F938"
     },
     {
       "id": "builtin-emoji-1f939",
       "fileName": "builtin-emoji-1f939.png",
-      "name": "日常 127",
-      "category": "日常",
+      "name": "Thường nhật 127",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "juggling",
         "U+1F939"
       ],
-      "description": "内置透明图片表情：JUGGLING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: JUGGLING",
       "unicode": "U+1F939"
     },
     {
       "id": "builtin-emoji-1f93a",
       "fileName": "builtin-emoji-1f93a.png",
-      "name": "日常 128",
-      "category": "日常",
+      "name": "Thường nhật 128",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "fencer",
         "U+1F93A"
       ],
-      "description": "内置透明图片表情：FENCER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FENCER",
       "unicode": "U+1F93A"
     },
     {
       "id": "builtin-emoji-1f93c",
       "fileName": "builtin-emoji-1f93c.png",
-      "name": "日常 129",
-      "category": "日常",
+      "name": "Thường nhật 129",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "wrestlers",
         "U+1F93C"
       ],
-      "description": "内置透明图片表情：WRESTLERS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WRESTLERS",
       "unicode": "U+1F93C"
     },
     {
       "id": "builtin-emoji-1f93d",
       "fileName": "builtin-emoji-1f93d.png",
-      "name": "日常 130",
-      "category": "日常",
+      "name": "Thường nhật 130",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "water polo",
         "U+1F93D"
       ],
-      "description": "内置透明图片表情：WATER POLO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WATER POLO",
       "unicode": "U+1F93D"
     },
     {
       "id": "builtin-emoji-1f93e",
       "fileName": "builtin-emoji-1f93e.png",
-      "name": "手势 131",
-      "category": "手势",
+      "name": "Cử chỉ 131",
+      "category": "Cử chỉ",
       "tags": [
-        "手势",
-        "手势",
+        "Cử chỉ",
+        "Cử chỉ",
         "handball",
         "U+1F93E"
       ],
-      "description": "内置透明图片表情：HANDBALL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HANDBALL",
       "unicode": "U+1F93E"
     },
     {
       "id": "builtin-emoji-1f93f",
       "fileName": "builtin-emoji-1f93f.png",
-      "name": "日常 132",
-      "category": "日常",
+      "name": "Thường nhật 132",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "diving mask",
         "U+1F93F"
       ],
-      "description": "内置透明图片表情：DIVING MASK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DIVING MASK",
       "unicode": "U+1F93F"
     },
     {
       "id": "builtin-emoji-1f940",
       "fileName": "builtin-emoji-1f940.png",
-      "name": "日常 133",
-      "category": "日常",
+      "name": "Thường nhật 133",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "wilted flower",
         "U+1F940"
       ],
-      "description": "内置透明图片表情：WILTED FLOWER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WILTED FLOWER",
       "unicode": "U+1F940"
     },
     {
       "id": "builtin-emoji-1f941",
       "fileName": "builtin-emoji-1f941.png",
-      "name": "日常 134",
-      "category": "日常",
+      "name": "Thường nhật 134",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "drum with drumsticks",
         "U+1F941"
       ],
-      "description": "内置透明图片表情：DRUM WITH DRUMSTICKS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DRUM WITH DRUMSTICKS",
       "unicode": "U+1F941"
     },
     {
       "id": "builtin-emoji-1f942",
       "fileName": "builtin-emoji-1f942.png",
-      "name": "日常 135",
-      "category": "日常",
+      "name": "Thường nhật 135",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "clinking glasses",
         "U+1F942"
       ],
-      "description": "内置透明图片表情：CLINKING GLASSES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CLINKING GLASSES",
       "unicode": "U+1F942"
     },
     {
       "id": "builtin-emoji-1f943",
       "fileName": "builtin-emoji-1f943.png",
-      "name": "日常 136",
-      "category": "日常",
+      "name": "Thường nhật 136",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "tumbler glass",
         "U+1F943"
       ],
-      "description": "内置透明图片表情：TUMBLER GLASS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TUMBLER GLASS",
       "unicode": "U+1F943"
     },
     {
       "id": "builtin-emoji-1f944",
       "fileName": "builtin-emoji-1f944.png",
-      "name": "日常 137",
-      "category": "日常",
+      "name": "Thường nhật 137",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "spoon",
         "U+1F944"
       ],
-      "description": "内置透明图片表情：SPOON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SPOON",
       "unicode": "U+1F944"
     },
     {
       "id": "builtin-emoji-1f945",
       "fileName": "builtin-emoji-1f945.png",
-      "name": "日常 138",
-      "category": "日常",
+      "name": "Thường nhật 138",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "goal net",
         "U+1F945"
       ],
-      "description": "内置透明图片表情：GOAL NET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GOAL NET",
       "unicode": "U+1F945"
     },
     {
       "id": "builtin-emoji-1f947",
       "fileName": "builtin-emoji-1f947.png",
-      "name": "活动 139",
-      "category": "活动",
+      "name": "Hoạt động 139",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "first place medal",
         "U+1F947"
       ],
-      "description": "内置透明图片表情：FIRST PLACE MEDAL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FIRST PLACE MEDAL",
       "unicode": "U+1F947"
     },
     {
       "id": "builtin-emoji-1f948",
       "fileName": "builtin-emoji-1f948.png",
-      "name": "活动 140",
-      "category": "活动",
+      "name": "Hoạt động 140",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "second place medal",
         "U+1F948"
       ],
-      "description": "内置透明图片表情：SECOND PLACE MEDAL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SECOND PLACE MEDAL",
       "unicode": "U+1F948"
     },
     {
       "id": "builtin-emoji-1f949",
       "fileName": "builtin-emoji-1f949.png",
-      "name": "活动 141",
-      "category": "活动",
+      "name": "Hoạt động 141",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "third place medal",
         "U+1F949"
       ],
-      "description": "内置透明图片表情：THIRD PLACE MEDAL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: THIRD PLACE MEDAL",
       "unicode": "U+1F949"
     },
     {
       "id": "builtin-emoji-1f94a",
       "fileName": "builtin-emoji-1f94a.png",
-      "name": "喜欢 142",
-      "category": "爱意",
+      "name": "Thích 142",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "boxing glove",
         "U+1F94A"
       ],
-      "description": "内置透明图片表情：BOXING GLOVE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BOXING GLOVE",
       "unicode": "U+1F94A"
     },
     {
       "id": "builtin-emoji-1f94b",
       "fileName": "builtin-emoji-1f94b.png",
-      "name": "日常 143",
-      "category": "日常",
+      "name": "Thường nhật 143",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "martial arts uniform",
         "U+1F94B"
       ],
-      "description": "内置透明图片表情：MARTIAL ARTS UNIFORM",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MARTIAL ARTS UNIFORM",
       "unicode": "U+1F94B"
     },
     {
       "id": "builtin-emoji-1f94c",
       "fileName": "builtin-emoji-1f94c.png",
-      "name": "日常 144",
-      "category": "日常",
+      "name": "Thường nhật 144",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "curling stone",
         "U+1F94C"
       ],
-      "description": "内置透明图片表情：CURLING STONE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CURLING STONE",
       "unicode": "U+1F94C"
     },
     {
       "id": "builtin-emoji-1f94d",
       "fileName": "builtin-emoji-1f94d.png",
-      "name": "活动 145",
-      "category": "活动",
+      "name": "Hoạt động 145",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "lacrosse stick and ball",
         "U+1F94D"
       ],
-      "description": "内置透明图片表情：LACROSSE STICK AND BALL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LACROSSE STICK AND BALL",
       "unicode": "U+1F94D"
     },
     {
       "id": "builtin-emoji-1f94e",
       "fileName": "builtin-emoji-1f94e.png",
-      "name": "活动 146",
-      "category": "活动",
+      "name": "Hoạt động 146",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "softball",
         "U+1F94E"
       ],
-      "description": "内置透明图片表情：SOFTBALL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SOFTBALL",
       "unicode": "U+1F94E"
     },
     {
       "id": "builtin-emoji-1f94f",
       "fileName": "builtin-emoji-1f94f.png",
-      "name": "日常 147",
-      "category": "日常",
+      "name": "Thường nhật 147",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "flying disc",
         "U+1F94F"
       ],
-      "description": "内置透明图片表情：FLYING DISC",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FLYING DISC",
       "unicode": "U+1F94F"
     },
     {
       "id": "builtin-emoji-1f950",
       "fileName": "builtin-emoji-1f950.png",
-      "name": "日常 148",
-      "category": "日常",
+      "name": "Thường nhật 148",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "croissant",
         "U+1F950"
       ],
-      "description": "内置透明图片表情：CROISSANT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CROISSANT",
       "unicode": "U+1F950"
     },
     {
       "id": "builtin-emoji-1f951",
       "fileName": "builtin-emoji-1f951.png",
-      "name": "日常 149",
-      "category": "日常",
+      "name": "Thường nhật 149",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "avocado",
         "U+1F951"
       ],
-      "description": "内置透明图片表情：AVOCADO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: AVOCADO",
       "unicode": "U+1F951"
     },
     {
       "id": "builtin-emoji-1f952",
       "fileName": "builtin-emoji-1f952.png",
-      "name": "日常 150",
-      "category": "日常",
+      "name": "Thường nhật 150",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "cucumber",
         "U+1F952"
       ],
-      "description": "内置透明图片表情：CUCUMBER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CUCUMBER",
       "unicode": "U+1F952"
     },
     {
       "id": "builtin-emoji-1f953",
       "fileName": "builtin-emoji-1f953.png",
-      "name": "日常 151",
-      "category": "日常",
+      "name": "Thường nhật 151",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bacon",
         "U+1F953"
       ],
-      "description": "内置透明图片表情：BACON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BACON",
       "unicode": "U+1F953"
     },
     {
       "id": "builtin-emoji-1f954",
       "fileName": "builtin-emoji-1f954.png",
-      "name": "日常 152",
-      "category": "日常",
+      "name": "Thường nhật 152",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "potato",
         "U+1F954"
       ],
-      "description": "内置透明图片表情：POTATO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: POTATO",
       "unicode": "U+1F954"
     },
     {
       "id": "builtin-emoji-1f955",
       "fileName": "builtin-emoji-1f955.png",
-      "name": "日常 153",
-      "category": "日常",
+      "name": "Thường nhật 153",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "carrot",
         "U+1F955"
       ],
-      "description": "内置透明图片表情：CARROT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CARROT",
       "unicode": "U+1F955"
     },
     {
       "id": "builtin-emoji-1f956",
       "fileName": "builtin-emoji-1f956.png",
-      "name": "吃喝 154",
-      "category": "吃喝",
+      "name": "Ăn uống 154",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "baguette bread",
         "U+1F956"
       ],
-      "description": "内置透明图片表情：BAGUETTE BREAD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BAGUETTE BREAD",
       "unicode": "U+1F956"
     },
     {
       "id": "builtin-emoji-1f957",
       "fileName": "builtin-emoji-1f957.png",
-      "name": "日常 155",
-      "category": "日常",
+      "name": "Thường nhật 155",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "green salad",
         "U+1F957"
       ],
-      "description": "内置透明图片表情：GREEN SALAD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GREEN SALAD",
       "unicode": "U+1F957"
     },
     {
       "id": "builtin-emoji-1f958",
       "fileName": "builtin-emoji-1f958.png",
-      "name": "吃喝 156",
-      "category": "吃喝",
+      "name": "Ăn uống 156",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "shallow pan of food",
         "U+1F958"
       ],
-      "description": "内置透明图片表情：SHALLOW PAN OF FOOD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SHALLOW PAN OF FOOD",
       "unicode": "U+1F958"
     },
     {
       "id": "builtin-emoji-1f959",
       "fileName": "builtin-emoji-1f959.png",
-      "name": "吃喝 157",
-      "category": "吃喝",
+      "name": "Ăn uống 157",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "stuffed flatbread",
         "U+1F959"
       ],
-      "description": "内置透明图片表情：STUFFED FLATBREAD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: STUFFED FLATBREAD",
       "unicode": "U+1F959"
     },
     {
       "id": "builtin-emoji-1f95a",
       "fileName": "builtin-emoji-1f95a.png",
-      "name": "日常 158",
-      "category": "日常",
+      "name": "Thường nhật 158",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "egg",
         "U+1F95A"
       ],
-      "description": "内置透明图片表情：EGG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EGG",
       "unicode": "U+1F95A"
     },
     {
       "id": "builtin-emoji-1f95b",
       "fileName": "builtin-emoji-1f95b.png",
-      "name": "日常 159",
-      "category": "日常",
+      "name": "Thường nhật 159",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "glass of milk",
         "U+1F95B"
       ],
-      "description": "内置透明图片表情：GLASS OF MILK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GLASS OF MILK",
       "unicode": "U+1F95B"
     },
     {
       "id": "builtin-emoji-1f95c",
       "fileName": "builtin-emoji-1f95c.png",
-      "name": "日常 160",
-      "category": "日常",
+      "name": "Thường nhật 160",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "peanuts",
         "U+1F95C"
       ],
-      "description": "内置透明图片表情：PEANUTS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PEANUTS",
       "unicode": "U+1F95C"
     },
     {
       "id": "builtin-emoji-1f95d",
       "fileName": "builtin-emoji-1f95d.png",
-      "name": "吃喝 161",
-      "category": "吃喝",
+      "name": "Ăn uống 161",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "kiwifruit",
         "U+1F95D"
       ],
-      "description": "内置透明图片表情：KIWIFRUIT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KIWIFRUIT",
       "unicode": "U+1F95D"
     },
     {
       "id": "builtin-emoji-1f95e",
       "fileName": "builtin-emoji-1f95e.png",
-      "name": "吃喝 162",
-      "category": "吃喝",
+      "name": "Ăn uống 162",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "pancakes",
         "U+1F95E"
       ],
-      "description": "内置透明图片表情：PANCAKES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PANCAKES",
       "unicode": "U+1F95E"
     },
     {
       "id": "builtin-emoji-1f95f",
       "fileName": "builtin-emoji-1f95f.png",
-      "name": "日常 163",
-      "category": "日常",
+      "name": "Thường nhật 163",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "dumpling",
         "U+1F95F"
       ],
-      "description": "内置透明图片表情：DUMPLING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DUMPLING",
       "unicode": "U+1F95F"
     },
     {
       "id": "builtin-emoji-1f960",
       "fileName": "builtin-emoji-1f960.png",
-      "name": "日常 164",
-      "category": "日常",
+      "name": "Thường nhật 164",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "fortune cookie",
         "U+1F960"
       ],
-      "description": "内置透明图片表情：FORTUNE COOKIE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FORTUNE COOKIE",
       "unicode": "U+1F960"
     },
     {
       "id": "builtin-emoji-1f961",
       "fileName": "builtin-emoji-1f961.png",
-      "name": "日常 165",
-      "category": "日常",
+      "name": "Thường nhật 165",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "takeout box",
         "U+1F961"
       ],
-      "description": "内置透明图片表情：TAKEOUT BOX",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TAKEOUT BOX",
       "unicode": "U+1F961"
     },
     {
       "id": "builtin-emoji-1f962",
       "fileName": "builtin-emoji-1f962.png",
-      "name": "日常 166",
-      "category": "日常",
+      "name": "Thường nhật 166",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "chopsticks",
         "U+1F962"
       ],
-      "description": "内置透明图片表情：CHOPSTICKS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CHOPSTICKS",
       "unicode": "U+1F962"
     },
     {
       "id": "builtin-emoji-1f963",
       "fileName": "builtin-emoji-1f963.png",
-      "name": "吃喝 167",
-      "category": "吃喝",
+      "name": "Ăn uống 167",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "bowl with spoon",
         "U+1F963"
       ],
-      "description": "内置透明图片表情：BOWL WITH SPOON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BOWL WITH SPOON",
       "unicode": "U+1F963"
     },
     {
       "id": "builtin-emoji-1f964",
       "fileName": "builtin-emoji-1f964.png",
-      "name": "吃喝 168",
-      "category": "吃喝",
+      "name": "Ăn uống 168",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "cup with straw",
         "U+1F964"
       ],
-      "description": "内置透明图片表情：CUP WITH STRAW",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CUP WITH STRAW",
       "unicode": "U+1F964"
     },
     {
       "id": "builtin-emoji-1f965",
       "fileName": "builtin-emoji-1f965.png",
-      "name": "日常 169",
-      "category": "日常",
+      "name": "Thường nhật 169",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "coconut",
         "U+1F965"
       ],
-      "description": "内置透明图片表情：COCONUT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: COCONUT",
       "unicode": "U+1F965"
     },
     {
       "id": "builtin-emoji-1f966",
       "fileName": "builtin-emoji-1f966.png",
-      "name": "日常 170",
-      "category": "日常",
+      "name": "Thường nhật 170",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "broccoli",
         "U+1F966"
       ],
-      "description": "内置透明图片表情：BROCCOLI",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BROCCOLI",
       "unicode": "U+1F966"
     },
     {
       "id": "builtin-emoji-1f967",
       "fileName": "builtin-emoji-1f967.png",
-      "name": "日常 171",
-      "category": "日常",
+      "name": "Thường nhật 171",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "pie",
         "U+1F967"
       ],
-      "description": "内置透明图片表情：PIE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PIE",
       "unicode": "U+1F967"
     },
     {
       "id": "builtin-emoji-1f968",
       "fileName": "builtin-emoji-1f968.png",
-      "name": "日常 172",
-      "category": "日常",
+      "name": "Thường nhật 172",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "pretzel",
         "U+1F968"
       ],
-      "description": "内置透明图片表情：PRETZEL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PRETZEL",
       "unicode": "U+1F968"
     },
     {
       "id": "builtin-emoji-1f969",
       "fileName": "builtin-emoji-1f969.png",
-      "name": "吃喝 173",
-      "category": "吃喝",
+      "name": "Ăn uống 173",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "cut of meat",
         "U+1F969"
       ],
-      "description": "内置透明图片表情：CUT OF MEAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CUT OF MEAT",
       "unicode": "U+1F969"
     },
     {
       "id": "builtin-emoji-1f96a",
       "fileName": "builtin-emoji-1f96a.png",
-      "name": "日常 174",
-      "category": "日常",
+      "name": "Thường nhật 174",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "sandwich",
         "U+1F96A"
       ],
-      "description": "内置透明图片表情：SANDWICH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SANDWICH",
       "unicode": "U+1F96A"
     },
     {
       "id": "builtin-emoji-1f96b",
       "fileName": "builtin-emoji-1f96b.png",
-      "name": "吃喝 175",
-      "category": "吃喝",
+      "name": "Ăn uống 175",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "canned food",
         "U+1F96B"
       ],
-      "description": "内置透明图片表情：CANNED FOOD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CANNED FOOD",
       "unicode": "U+1F96B"
     },
     {
       "id": "builtin-emoji-1f96c",
       "fileName": "builtin-emoji-1f96c.png",
-      "name": "日常 176",
-      "category": "日常",
+      "name": "Thường nhật 176",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "leafy green",
         "U+1F96C"
       ],
-      "description": "内置透明图片表情：LEAFY GREEN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LEAFY GREEN",
       "unicode": "U+1F96C"
     },
     {
       "id": "builtin-emoji-1f96d",
       "fileName": "builtin-emoji-1f96d.png",
-      "name": "日常 177",
-      "category": "日常",
+      "name": "Thường nhật 177",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mango",
         "U+1F96D"
       ],
-      "description": "内置透明图片表情：MANGO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MANGO",
       "unicode": "U+1F96D"
     },
     {
       "id": "builtin-emoji-1f96e",
       "fileName": "builtin-emoji-1f96e.png",
-      "name": "吃喝 178",
-      "category": "吃喝",
+      "name": "Ăn uống 178",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "moon cake",
         "U+1F96E"
       ],
-      "description": "内置透明图片表情：MOON CAKE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MOON CAKE",
       "unicode": "U+1F96E"
     },
     {
       "id": "builtin-emoji-1f96f",
       "fileName": "builtin-emoji-1f96f.png",
-      "name": "日常 179",
-      "category": "日常",
+      "name": "Thường nhật 179",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bagel",
         "U+1F96F"
       ],
-      "description": "内置透明图片表情：BAGEL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BAGEL",
       "unicode": "U+1F96F"
     },
     {
       "id": "builtin-emoji-1f970",
       "fileName": "builtin-emoji-1f970.png",
-      "name": "喜欢 180",
-      "category": "情绪",
+      "name": "Thích 180",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "喜欢",
+        "Cảm xúc",
+        "Thích",
         "smiling face with smiling eyes and three hearts",
         "U+1F970"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH SMILING EYES AND THREE HEARTS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH SMILING EYES AND THREE HEARTS",
       "unicode": "U+1F970"
     },
     {
       "id": "builtin-emoji-1f971",
       "fileName": "builtin-emoji-1f971.png",
-      "name": "表情 181",
-      "category": "情绪",
+      "name": "Biểu cảm 181",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "yawning face",
         "U+1F971"
       ],
-      "description": "内置透明图片表情：YAWNING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: YAWNING FACE",
       "unicode": "U+1F971"
     },
     {
       "id": "builtin-emoji-1f972",
       "fileName": "builtin-emoji-1f972.png",
-      "name": "表情 182",
-      "category": "情绪",
+      "name": "Biểu cảm 182",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "smiling face with tear",
         "U+1F972"
       ],
-      "description": "内置透明图片表情：SMILING FACE WITH TEAR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SMILING FACE WITH TEAR",
       "unicode": "U+1F972"
     },
     {
       "id": "builtin-emoji-1f973",
       "fileName": "builtin-emoji-1f973.png",
-      "name": "表情 183",
-      "category": "情绪",
+      "name": "Biểu cảm 183",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with party horn and party hat",
         "U+1F973"
       ],
-      "description": "内置透明图片表情：FACE WITH PARTY HORN AND PARTY HAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH PARTY HORN AND PARTY HAT",
       "unicode": "U+1F973"
     },
     {
       "id": "builtin-emoji-1f974",
       "fileName": "builtin-emoji-1f974.png",
-      "name": "表情 184",
-      "category": "情绪",
+      "name": "Biểu cảm 184",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with uneven eyes and wavy mouth",
         "U+1F974"
       ],
-      "description": "内置透明图片表情：FACE WITH UNEVEN EYES AND WAVY MOUTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH UNEVEN EYES AND WAVY MOUTH",
       "unicode": "U+1F974"
     },
     {
       "id": "builtin-emoji-1f975",
       "fileName": "builtin-emoji-1f975.png",
-      "name": "表情 185",
-      "category": "情绪",
+      "name": "Biểu cảm 185",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "overheated face",
         "U+1F975"
       ],
-      "description": "内置透明图片表情：OVERHEATED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: OVERHEATED FACE",
       "unicode": "U+1F975"
     },
     {
       "id": "builtin-emoji-1f976",
       "fileName": "builtin-emoji-1f976.png",
-      "name": "表情 186",
-      "category": "情绪",
+      "name": "Biểu cảm 186",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "freezing face",
         "U+1F976"
       ],
-      "description": "内置透明图片表情：FREEZING FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FREEZING FACE",
       "unicode": "U+1F976"
     },
     {
       "id": "builtin-emoji-1f977",
       "fileName": "builtin-emoji-1f977.png",
-      "name": "日常 187",
-      "category": "日常",
+      "name": "Thường nhật 187",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "ninja",
         "U+1F977"
       ],
-      "description": "内置透明图片表情：NINJA",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: NINJA",
       "unicode": "U+1F977"
     },
     {
       "id": "builtin-emoji-1f978",
       "fileName": "builtin-emoji-1f978.png",
-      "name": "表情 188",
-      "category": "情绪",
+      "name": "Biểu cảm 188",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "disguised face",
         "U+1F978"
       ],
-      "description": "内置透明图片表情：DISGUISED FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DISGUISED FACE",
       "unicode": "U+1F978"
     },
     {
       "id": "builtin-emoji-1f979",
       "fileName": "builtin-emoji-1f979.png",
-      "name": "表情 189",
-      "category": "情绪",
+      "name": "Biểu cảm 189",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face holding back tears",
         "U+1F979"
       ],
-      "description": "内置透明图片表情：FACE HOLDING BACK TEARS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE HOLDING BACK TEARS",
       "unicode": "U+1F979"
     },
     {
       "id": "builtin-emoji-1f97a",
       "fileName": "builtin-emoji-1f97a.png",
-      "name": "表情 190",
-      "category": "情绪",
+      "name": "Biểu cảm 190",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with pleading eyes",
         "U+1F97A"
       ],
-      "description": "内置透明图片表情：FACE WITH PLEADING EYES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH PLEADING EYES",
       "unicode": "U+1F97A"
     },
     {
       "id": "builtin-emoji-1f97b",
       "fileName": "builtin-emoji-1f97b.png",
-      "name": "日常 191",
-      "category": "日常",
+      "name": "Thường nhật 191",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "sari",
         "U+1F97B"
       ],
-      "description": "内置透明图片表情：SARI",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SARI",
       "unicode": "U+1F97B"
     },
     {
       "id": "builtin-emoji-1f97c",
       "fileName": "builtin-emoji-1f97c.png",
-      "name": "日常 192",
-      "category": "日常",
+      "name": "Thường nhật 192",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "lab coat",
         "U+1F97C"
       ],
-      "description": "内置透明图片表情：LAB COAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LAB COAT",
       "unicode": "U+1F97C"
     },
     {
       "id": "builtin-emoji-1f97d",
       "fileName": "builtin-emoji-1f97d.png",
-      "name": "日常 193",
-      "category": "日常",
+      "name": "Thường nhật 193",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "goggles",
         "U+1F97D"
       ],
-      "description": "内置透明图片表情：GOGGLES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GOGGLES",
       "unicode": "U+1F97D"
     },
     {
       "id": "builtin-emoji-1f97e",
       "fileName": "builtin-emoji-1f97e.png",
-      "name": "日常 194",
-      "category": "日常",
+      "name": "Thường nhật 194",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "hiking boot",
         "U+1F97E"
       ],
-      "description": "内置透明图片表情：HIKING BOOT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HIKING BOOT",
       "unicode": "U+1F97E"
     },
     {
       "id": "builtin-emoji-1f97f",
       "fileName": "builtin-emoji-1f97f.png",
-      "name": "日常 195",
-      "category": "日常",
+      "name": "Thường nhật 195",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "flat shoe",
         "U+1F97F"
       ],
-      "description": "内置透明图片表情：FLAT SHOE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FLAT SHOE",
       "unicode": "U+1F97F"
     },
     {
       "id": "builtin-emoji-1f980",
       "fileName": "builtin-emoji-1f980.png",
-      "name": "日常 196",
-      "category": "日常",
+      "name": "Thường nhật 196",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "crab",
         "U+1F980"
       ],
-      "description": "内置透明图片表情：CRAB",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CRAB",
       "unicode": "U+1F980"
     },
     {
       "id": "builtin-emoji-1f981",
       "fileName": "builtin-emoji-1f981.png",
-      "name": "表情 197",
-      "category": "情绪",
+      "name": "Biểu cảm 197",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "lion face",
         "U+1F981"
       ],
-      "description": "内置透明图片表情：LION FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LION FACE",
       "unicode": "U+1F981"
     },
     {
       "id": "builtin-emoji-1f982",
       "fileName": "builtin-emoji-1f982.png",
-      "name": "日常 198",
-      "category": "日常",
+      "name": "Thường nhật 198",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "scorpion",
         "U+1F982"
       ],
-      "description": "内置透明图片表情：SCORPION",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SCORPION",
       "unicode": "U+1F982"
     },
     {
       "id": "builtin-emoji-1f983",
       "fileName": "builtin-emoji-1f983.png",
-      "name": "日常 199",
-      "category": "日常",
+      "name": "Thường nhật 199",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "turkey",
         "U+1F983"
       ],
-      "description": "内置透明图片表情：TURKEY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TURKEY",
       "unicode": "U+1F983"
     },
     {
       "id": "builtin-emoji-1f984",
       "fileName": "builtin-emoji-1f984.png",
-      "name": "表情 200",
-      "category": "情绪",
+      "name": "Biểu cảm 200",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "unicorn face",
         "U+1F984"
       ],
-      "description": "内置透明图片表情：UNICORN FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: UNICORN FACE",
       "unicode": "U+1F984"
     },
     {
       "id": "builtin-emoji-1f985",
       "fileName": "builtin-emoji-1f985.png",
-      "name": "日常 201",
-      "category": "日常",
+      "name": "Thường nhật 201",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "eagle",
         "U+1F985"
       ],
-      "description": "内置透明图片表情：EAGLE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EAGLE",
       "unicode": "U+1F985"
     },
     {
       "id": "builtin-emoji-1f986",
       "fileName": "builtin-emoji-1f986.png",
-      "name": "日常 202",
-      "category": "日常",
+      "name": "Thường nhật 202",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "duck",
         "U+1F986"
       ],
-      "description": "内置透明图片表情：DUCK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DUCK",
       "unicode": "U+1F986"
     },
     {
       "id": "builtin-emoji-1f987",
       "fileName": "builtin-emoji-1f987.png",
-      "name": "日常 203",
-      "category": "日常",
+      "name": "Thường nhật 203",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bat",
         "U+1F987"
       ],
-      "description": "内置透明图片表情：BAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BAT",
       "unicode": "U+1F987"
     },
     {
       "id": "builtin-emoji-1f988",
       "fileName": "builtin-emoji-1f988.png",
-      "name": "日常 204",
-      "category": "日常",
+      "name": "Thường nhật 204",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "shark",
         "U+1F988"
       ],
-      "description": "内置透明图片表情：SHARK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SHARK",
       "unicode": "U+1F988"
     },
     {
       "id": "builtin-emoji-1f989",
       "fileName": "builtin-emoji-1f989.png",
-      "name": "日常 205",
-      "category": "日常",
+      "name": "Thường nhật 205",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "owl",
         "U+1F989"
       ],
-      "description": "内置透明图片表情：OWL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: OWL",
       "unicode": "U+1F989"
     },
     {
       "id": "builtin-emoji-1f98a",
       "fileName": "builtin-emoji-1f98a.png",
-      "name": "表情 206",
-      "category": "情绪",
+      "name": "Biểu cảm 206",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "fox face",
         "U+1F98A"
       ],
-      "description": "内置透明图片表情：FOX FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FOX FACE",
       "unicode": "U+1F98A"
     },
     {
       "id": "builtin-emoji-1f98b",
       "fileName": "builtin-emoji-1f98b.png",
-      "name": "日常 207",
-      "category": "日常",
+      "name": "Thường nhật 207",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "butterfly",
         "U+1F98B"
       ],
-      "description": "内置透明图片表情：BUTTERFLY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BUTTERFLY",
       "unicode": "U+1F98B"
     },
     {
       "id": "builtin-emoji-1f98c",
       "fileName": "builtin-emoji-1f98c.png",
-      "name": "日常 208",
-      "category": "日常",
+      "name": "Thường nhật 208",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "deer",
         "U+1F98C"
       ],
-      "description": "内置透明图片表情：DEER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DEER",
       "unicode": "U+1F98C"
     },
     {
       "id": "builtin-emoji-1f98d",
       "fileName": "builtin-emoji-1f98d.png",
-      "name": "日常 209",
-      "category": "日常",
+      "name": "Thường nhật 209",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "gorilla",
         "U+1F98D"
       ],
-      "description": "内置透明图片表情：GORILLA",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GORILLA",
       "unicode": "U+1F98D"
     },
     {
       "id": "builtin-emoji-1f98e",
       "fileName": "builtin-emoji-1f98e.png",
-      "name": "日常 210",
-      "category": "日常",
+      "name": "Thường nhật 210",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "lizard",
         "U+1F98E"
       ],
-      "description": "内置透明图片表情：LIZARD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LIZARD",
       "unicode": "U+1F98E"
     },
     {
       "id": "builtin-emoji-1f98f",
       "fileName": "builtin-emoji-1f98f.png",
-      "name": "日常 211",
-      "category": "日常",
+      "name": "Thường nhật 211",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "rhinoceros",
         "U+1F98F"
       ],
-      "description": "内置透明图片表情：RHINOCEROS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RHINOCEROS",
       "unicode": "U+1F98F"
     },
     {
       "id": "builtin-emoji-1f990",
       "fileName": "builtin-emoji-1f990.png",
-      "name": "日常 212",
-      "category": "日常",
+      "name": "Thường nhật 212",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "shrimp",
         "U+1F990"
       ],
-      "description": "内置透明图片表情：SHRIMP",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SHRIMP",
       "unicode": "U+1F990"
     },
     {
       "id": "builtin-emoji-1f991",
       "fileName": "builtin-emoji-1f991.png",
-      "name": "日常 213",
-      "category": "日常",
+      "name": "Thường nhật 213",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "squid",
         "U+1F991"
       ],
-      "description": "内置透明图片表情：SQUID",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SQUID",
       "unicode": "U+1F991"
     },
     {
       "id": "builtin-emoji-1f992",
       "fileName": "builtin-emoji-1f992.png",
-      "name": "表情 214",
-      "category": "情绪",
+      "name": "Biểu cảm 214",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "giraffe face",
         "U+1F992"
       ],
-      "description": "内置透明图片表情：GIRAFFE FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GIRAFFE FACE",
       "unicode": "U+1F992"
     },
     {
       "id": "builtin-emoji-1f993",
       "fileName": "builtin-emoji-1f993.png",
-      "name": "表情 215",
-      "category": "情绪",
+      "name": "Biểu cảm 215",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "zebra face",
         "U+1F993"
       ],
-      "description": "内置透明图片表情：ZEBRA FACE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ZEBRA FACE",
       "unicode": "U+1F993"
     },
     {
       "id": "builtin-emoji-1f994",
       "fileName": "builtin-emoji-1f994.png",
-      "name": "日常 216",
-      "category": "日常",
+      "name": "Thường nhật 216",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "hedgehog",
         "U+1F994"
       ],
-      "description": "内置透明图片表情：HEDGEHOG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HEDGEHOG",
       "unicode": "U+1F994"
     },
     {
       "id": "builtin-emoji-1f995",
       "fileName": "builtin-emoji-1f995.png",
-      "name": "日常 217",
-      "category": "日常",
+      "name": "Thường nhật 217",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "sauropod",
         "U+1F995"
       ],
-      "description": "内置透明图片表情：SAUROPOD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SAUROPOD",
       "unicode": "U+1F995"
     },
     {
       "id": "builtin-emoji-1f996",
       "fileName": "builtin-emoji-1f996.png",
-      "name": "日常 218",
-      "category": "日常",
+      "name": "Thường nhật 218",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "t rex",
         "U+1F996"
       ],
-      "description": "内置透明图片表情：T-REX",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: T-REX",
       "unicode": "U+1F996"
     },
     {
       "id": "builtin-emoji-1f997",
       "fileName": "builtin-emoji-1f997.png",
-      "name": "日常 219",
-      "category": "日常",
+      "name": "Thường nhật 219",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "cricket",
         "U+1F997"
       ],
-      "description": "内置透明图片表情：CRICKET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CRICKET",
       "unicode": "U+1F997"
     },
     {
       "id": "builtin-emoji-1f998",
       "fileName": "builtin-emoji-1f998.png",
-      "name": "日常 220",
-      "category": "日常",
+      "name": "Thường nhật 220",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "kangaroo",
         "U+1F998"
       ],
-      "description": "内置透明图片表情：KANGAROO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KANGAROO",
       "unicode": "U+1F998"
     },
     {
       "id": "builtin-emoji-1f999",
       "fileName": "builtin-emoji-1f999.png",
-      "name": "日常 221",
-      "category": "日常",
+      "name": "Thường nhật 221",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "llama",
         "U+1F999"
       ],
-      "description": "内置透明图片表情：LLAMA",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LLAMA",
       "unicode": "U+1F999"
     },
     {
       "id": "builtin-emoji-1f99a",
       "fileName": "builtin-emoji-1f99a.png",
-      "name": "日常 222",
-      "category": "日常",
+      "name": "Thường nhật 222",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "peacock",
         "U+1F99A"
       ],
-      "description": "内置透明图片表情：PEACOCK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PEACOCK",
       "unicode": "U+1F99A"
     },
     {
       "id": "builtin-emoji-1f99b",
       "fileName": "builtin-emoji-1f99b.png",
-      "name": "日常 223",
-      "category": "日常",
+      "name": "Thường nhật 223",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "hippopotamus",
         "U+1F99B"
       ],
-      "description": "内置透明图片表情：HIPPOPOTAMUS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HIPPOPOTAMUS",
       "unicode": "U+1F99B"
     },
     {
       "id": "builtin-emoji-1f99c",
       "fileName": "builtin-emoji-1f99c.png",
-      "name": "日常 224",
-      "category": "日常",
+      "name": "Thường nhật 224",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "parrot",
         "U+1F99C"
       ],
-      "description": "内置透明图片表情：PARROT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PARROT",
       "unicode": "U+1F99C"
     },
     {
       "id": "builtin-emoji-1f99d",
       "fileName": "builtin-emoji-1f99d.png",
-      "name": "日常 225",
-      "category": "日常",
+      "name": "Thường nhật 225",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "raccoon",
         "U+1F99D"
       ],
-      "description": "内置透明图片表情：RACCOON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RACCOON",
       "unicode": "U+1F99D"
     },
     {
       "id": "builtin-emoji-1f99e",
       "fileName": "builtin-emoji-1f99e.png",
-      "name": "日常 226",
-      "category": "日常",
+      "name": "Thường nhật 226",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "lobster",
         "U+1F99E"
       ],
-      "description": "内置透明图片表情：LOBSTER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LOBSTER",
       "unicode": "U+1F99E"
     },
     {
       "id": "builtin-emoji-1f99f",
       "fileName": "builtin-emoji-1f99f.png",
-      "name": "日常 227",
-      "category": "日常",
+      "name": "Thường nhật 227",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mosquito",
         "U+1F99F"
       ],
-      "description": "内置透明图片表情：MOSQUITO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MOSQUITO",
       "unicode": "U+1F99F"
     },
     {
       "id": "builtin-emoji-1f9a0",
       "fileName": "builtin-emoji-1f9a0.png",
-      "name": "日常 228",
-      "category": "日常",
+      "name": "Thường nhật 228",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "microbe",
         "U+1F9A0"
       ],
-      "description": "内置透明图片表情：MICROBE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MICROBE",
       "unicode": "U+1F9A0"
     },
     {
       "id": "builtin-emoji-1f9a1",
       "fileName": "builtin-emoji-1f9a1.png",
-      "name": "日常 229",
-      "category": "日常",
+      "name": "Thường nhật 229",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "badger",
         "U+1F9A1"
       ],
-      "description": "内置透明图片表情：BADGER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BADGER",
       "unicode": "U+1F9A1"
     },
     {
       "id": "builtin-emoji-1f9a2",
       "fileName": "builtin-emoji-1f9a2.png",
-      "name": "日常 230",
-      "category": "日常",
+      "name": "Thường nhật 230",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "swan",
         "U+1F9A2"
       ],
-      "description": "内置透明图片表情：SWAN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SWAN",
       "unicode": "U+1F9A2"
     },
     {
       "id": "builtin-emoji-1f9a3",
       "fileName": "builtin-emoji-1f9a3.png",
-      "name": "日常 231",
-      "category": "日常",
+      "name": "Thường nhật 231",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mammoth",
         "U+1F9A3"
       ],
-      "description": "内置透明图片表情：MAMMOTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MAMMOTH",
       "unicode": "U+1F9A3"
     },
     {
       "id": "builtin-emoji-1f9a4",
       "fileName": "builtin-emoji-1f9a4.png",
-      "name": "日常 232",
-      "category": "日常",
+      "name": "Thường nhật 232",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "dodo",
         "U+1F9A4"
       ],
-      "description": "内置透明图片表情：DODO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DODO",
       "unicode": "U+1F9A4"
     },
     {
       "id": "builtin-emoji-1f9a5",
       "fileName": "builtin-emoji-1f9a5.png",
-      "name": "日常 233",
-      "category": "日常",
+      "name": "Thường nhật 233",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "sloth",
         "U+1F9A5"
       ],
-      "description": "内置透明图片表情：SLOTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SLOTH",
       "unicode": "U+1F9A5"
     },
     {
       "id": "builtin-emoji-1f9a6",
       "fileName": "builtin-emoji-1f9a6.png",
-      "name": "日常 234",
-      "category": "日常",
+      "name": "Thường nhật 234",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "otter",
         "U+1F9A6"
       ],
-      "description": "内置透明图片表情：OTTER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: OTTER",
       "unicode": "U+1F9A6"
     },
     {
       "id": "builtin-emoji-1f9a7",
       "fileName": "builtin-emoji-1f9a7.png",
-      "name": "日常 235",
-      "category": "日常",
+      "name": "Thường nhật 235",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "orangutan",
         "U+1F9A7"
       ],
-      "description": "内置透明图片表情：ORANGUTAN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ORANGUTAN",
       "unicode": "U+1F9A7"
     },
     {
       "id": "builtin-emoji-1f9a8",
       "fileName": "builtin-emoji-1f9a8.png",
-      "name": "日常 236",
-      "category": "日常",
+      "name": "Thường nhật 236",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "skunk",
         "U+1F9A8"
       ],
-      "description": "内置透明图片表情：SKUNK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SKUNK",
       "unicode": "U+1F9A8"
     },
     {
       "id": "builtin-emoji-1f9a9",
       "fileName": "builtin-emoji-1f9a9.png",
-      "name": "日常 237",
-      "category": "日常",
+      "name": "Thường nhật 237",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "flamingo",
         "U+1F9A9"
       ],
-      "description": "内置透明图片表情：FLAMINGO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FLAMINGO",
       "unicode": "U+1F9A9"
     },
     {
       "id": "builtin-emoji-1f9aa",
       "fileName": "builtin-emoji-1f9aa.png",
-      "name": "日常 238",
-      "category": "日常",
+      "name": "Thường nhật 238",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "oyster",
         "U+1F9AA"
       ],
-      "description": "内置透明图片表情：OYSTER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: OYSTER",
       "unicode": "U+1F9AA"
     },
     {
       "id": "builtin-emoji-1f9ab",
       "fileName": "builtin-emoji-1f9ab.png",
-      "name": "日常 239",
-      "category": "日常",
+      "name": "Thường nhật 239",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "beaver",
         "U+1F9AB"
       ],
-      "description": "内置透明图片表情：BEAVER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BEAVER",
       "unicode": "U+1F9AB"
     },
     {
       "id": "builtin-emoji-1f9ac",
       "fileName": "builtin-emoji-1f9ac.png",
-      "name": "日常 240",
-      "category": "日常",
+      "name": "Thường nhật 240",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bison",
         "U+1F9AC"
       ],
-      "description": "内置透明图片表情：BISON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BISON",
       "unicode": "U+1F9AC"
     },
     {
       "id": "builtin-emoji-1f9ad",
       "fileName": "builtin-emoji-1f9ad.png",
-      "name": "日常 241",
-      "category": "日常",
+      "name": "Thường nhật 241",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "seal",
         "U+1F9AD"
       ],
-      "description": "内置透明图片表情：SEAL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SEAL",
       "unicode": "U+1F9AD"
     },
     {
       "id": "builtin-emoji-1f9ae",
       "fileName": "builtin-emoji-1f9ae.png",
-      "name": "动物 242",
-      "category": "动物",
+      "name": "Động vật 242",
+      "category": "Động vật",
       "tags": [
-        "动物",
-        "动物",
+        "Động vật",
+        "Động vật",
         "guide dog",
         "U+1F9AE"
       ],
-      "description": "内置透明图片表情：GUIDE DOG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GUIDE DOG",
       "unicode": "U+1F9AE"
     },
     {
       "id": "builtin-emoji-1f9af",
       "fileName": "builtin-emoji-1f9af.png",
-      "name": "日常 243",
-      "category": "日常",
+      "name": "Thường nhật 243",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "probing cane",
         "U+1F9AF"
       ],
-      "description": "内置透明图片表情：PROBING CANE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PROBING CANE",
       "unicode": "U+1F9AF"
     },
     {
       "id": "builtin-emoji-1f9b0",
       "fileName": "builtin-emoji-1f9b0.png",
-      "name": "日常 244",
-      "category": "日常",
+      "name": "Thường nhật 244",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "emoji component red hair",
         "U+1F9B0"
       ],
-      "description": "内置透明图片表情：EMOJI COMPONENT RED HAIR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EMOJI COMPONENT RED HAIR",
       "unicode": "U+1F9B0"
     },
     {
       "id": "builtin-emoji-1f9b1",
       "fileName": "builtin-emoji-1f9b1.png",
-      "name": "日常 245",
-      "category": "日常",
+      "name": "Thường nhật 245",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "emoji component curly hair",
         "U+1F9B1"
       ],
-      "description": "内置透明图片表情：EMOJI COMPONENT CURLY HAIR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EMOJI COMPONENT CURLY HAIR",
       "unicode": "U+1F9B1"
     },
     {
       "id": "builtin-emoji-1f9b2",
       "fileName": "builtin-emoji-1f9b2.png",
-      "name": "日常 246",
-      "category": "日常",
+      "name": "Thường nhật 246",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "emoji component bald",
         "U+1F9B2"
       ],
-      "description": "内置透明图片表情：EMOJI COMPONENT BALD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EMOJI COMPONENT BALD",
       "unicode": "U+1F9B2"
     },
     {
       "id": "builtin-emoji-1f9b3",
       "fileName": "builtin-emoji-1f9b3.png",
-      "name": "日常 247",
-      "category": "日常",
+      "name": "Thường nhật 247",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "emoji component white hair",
         "U+1F9B3"
       ],
-      "description": "内置透明图片表情：EMOJI COMPONENT WHITE HAIR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EMOJI COMPONENT WHITE HAIR",
       "unicode": "U+1F9B3"
     },
     {
       "id": "builtin-emoji-1f9b4",
       "fileName": "builtin-emoji-1f9b4.png",
-      "name": "日常 248",
-      "category": "日常",
+      "name": "Thường nhật 248",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bone",
         "U+1F9B4"
       ],
-      "description": "内置透明图片表情：BONE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BONE",
       "unicode": "U+1F9B4"
     },
     {
       "id": "builtin-emoji-1f9b5",
       "fileName": "builtin-emoji-1f9b5.png",
-      "name": "日常 249",
-      "category": "日常",
+      "name": "Thường nhật 249",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "leg",
         "U+1F9B5"
       ],
-      "description": "内置透明图片表情：LEG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LEG",
       "unicode": "U+1F9B5"
     },
     {
       "id": "builtin-emoji-1f9b6",
       "fileName": "builtin-emoji-1f9b6.png",
-      "name": "日常 250",
-      "category": "日常",
+      "name": "Thường nhật 250",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "foot",
         "U+1F9B6"
       ],
-      "description": "内置透明图片表情：FOOT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FOOT",
       "unicode": "U+1F9B6"
     },
     {
       "id": "builtin-emoji-1f9b7",
       "fileName": "builtin-emoji-1f9b7.png",
-      "name": "日常 251",
-      "category": "日常",
+      "name": "Thường nhật 251",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "tooth",
         "U+1F9B7"
       ],
-      "description": "内置透明图片表情：TOOTH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TOOTH",
       "unicode": "U+1F9B7"
     },
     {
       "id": "builtin-emoji-1f9b8",
       "fileName": "builtin-emoji-1f9b8.png",
-      "name": "日常 252",
-      "category": "日常",
+      "name": "Thường nhật 252",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "superhero",
         "U+1F9B8"
       ],
-      "description": "内置透明图片表情：SUPERHERO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SUPERHERO",
       "unicode": "U+1F9B8"
     },
     {
       "id": "builtin-emoji-1f9b9",
       "fileName": "builtin-emoji-1f9b9.png",
-      "name": "日常 253",
-      "category": "日常",
+      "name": "Thường nhật 253",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "supervillain",
         "U+1F9B9"
       ],
-      "description": "内置透明图片表情：SUPERVILLAIN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SUPERVILLAIN",
       "unicode": "U+1F9B9"
     },
     {
       "id": "builtin-emoji-1f9ba",
       "fileName": "builtin-emoji-1f9ba.png",
-      "name": "日常 254",
-      "category": "日常",
+      "name": "Thường nhật 254",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "safety vest",
         "U+1F9BA"
       ],
-      "description": "内置透明图片表情：SAFETY VEST",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SAFETY VEST",
       "unicode": "U+1F9BA"
     },
     {
       "id": "builtin-emoji-1f9bb",
       "fileName": "builtin-emoji-1f9bb.png",
-      "name": "日常 255",
-      "category": "日常",
+      "name": "Thường nhật 255",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "ear with hearing aid",
         "U+1F9BB"
       ],
-      "description": "内置透明图片表情：EAR WITH HEARING AID",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: EAR WITH HEARING AID",
       "unicode": "U+1F9BB"
     },
     {
       "id": "builtin-emoji-1f9bc",
       "fileName": "builtin-emoji-1f9bc.png",
-      "name": "日常 256",
-      "category": "日常",
+      "name": "Thường nhật 256",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "motorized wheelchair",
         "U+1F9BC"
       ],
-      "description": "内置透明图片表情：MOTORIZED WHEELCHAIR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MOTORIZED WHEELCHAIR",
       "unicode": "U+1F9BC"
     },
     {
       "id": "builtin-emoji-1f9bd",
       "fileName": "builtin-emoji-1f9bd.png",
-      "name": "日常 257",
-      "category": "日常",
+      "name": "Thường nhật 257",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "manual wheelchair",
         "U+1F9BD"
       ],
-      "description": "内置透明图片表情：MANUAL WHEELCHAIR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MANUAL WHEELCHAIR",
       "unicode": "U+1F9BD"
     },
     {
       "id": "builtin-emoji-1f9be",
       "fileName": "builtin-emoji-1f9be.png",
-      "name": "日常 258",
-      "category": "日常",
+      "name": "Thường nhật 258",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mechanical arm",
         "U+1F9BE"
       ],
-      "description": "内置透明图片表情：MECHANICAL ARM",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MECHANICAL ARM",
       "unicode": "U+1F9BE"
     },
     {
       "id": "builtin-emoji-1f9bf",
       "fileName": "builtin-emoji-1f9bf.png",
-      "name": "日常 259",
-      "category": "日常",
+      "name": "Thường nhật 259",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mechanical leg",
         "U+1F9BF"
       ],
-      "description": "内置透明图片表情：MECHANICAL LEG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MECHANICAL LEG",
       "unicode": "U+1F9BF"
     },
     {
       "id": "builtin-emoji-1f9c0",
       "fileName": "builtin-emoji-1f9c0.png",
-      "name": "日常 260",
-      "category": "日常",
+      "name": "Thường nhật 260",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "cheese wedge",
         "U+1F9C0"
       ],
-      "description": "内置透明图片表情：CHEESE WEDGE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CHEESE WEDGE",
       "unicode": "U+1F9C0"
     },
     {
       "id": "builtin-emoji-1f9c1",
       "fileName": "builtin-emoji-1f9c1.png",
-      "name": "吃喝 261",
-      "category": "吃喝",
+      "name": "Ăn uống 261",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "cupcake",
         "U+1F9C1"
       ],
-      "description": "内置透明图片表情：CUPCAKE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CUPCAKE",
       "unicode": "U+1F9C1"
     },
     {
       "id": "builtin-emoji-1f9c2",
       "fileName": "builtin-emoji-1f9c2.png",
-      "name": "日常 262",
-      "category": "日常",
+      "name": "Thường nhật 262",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "salt shaker",
         "U+1F9C2"
       ],
-      "description": "内置透明图片表情：SALT SHAKER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SALT SHAKER",
       "unicode": "U+1F9C2"
     },
     {
       "id": "builtin-emoji-1f9c3",
       "fileName": "builtin-emoji-1f9c3.png",
-      "name": "日常 263",
-      "category": "日常",
+      "name": "Thường nhật 263",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "beverage box",
         "U+1F9C3"
       ],
-      "description": "内置透明图片表情：BEVERAGE BOX",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BEVERAGE BOX",
       "unicode": "U+1F9C3"
     },
     {
       "id": "builtin-emoji-1f9c4",
       "fileName": "builtin-emoji-1f9c4.png",
-      "name": "日常 264",
-      "category": "日常",
+      "name": "Thường nhật 264",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "garlic",
         "U+1F9C4"
       ],
-      "description": "内置透明图片表情：GARLIC",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GARLIC",
       "unicode": "U+1F9C4"
     },
     {
       "id": "builtin-emoji-1f9c5",
       "fileName": "builtin-emoji-1f9c5.png",
-      "name": "日常 265",
-      "category": "日常",
+      "name": "Thường nhật 265",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "onion",
         "U+1F9C5"
       ],
-      "description": "内置透明图片表情：ONION",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ONION",
       "unicode": "U+1F9C5"
     },
     {
       "id": "builtin-emoji-1f9c6",
       "fileName": "builtin-emoji-1f9c6.png",
-      "name": "日常 266",
-      "category": "日常",
+      "name": "Thường nhật 266",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "falafel",
         "U+1F9C6"
       ],
-      "description": "内置透明图片表情：FALAFEL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FALAFEL",
       "unicode": "U+1F9C6"
     },
     {
       "id": "builtin-emoji-1f9c7",
       "fileName": "builtin-emoji-1f9c7.png",
-      "name": "日常 267",
-      "category": "日常",
+      "name": "Thường nhật 267",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "waffle",
         "U+1F9C7"
       ],
-      "description": "内置透明图片表情：WAFFLE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: WAFFLE",
       "unicode": "U+1F9C7"
     },
     {
       "id": "builtin-emoji-1f9c8",
       "fileName": "builtin-emoji-1f9c8.png",
-      "name": "日常 268",
-      "category": "日常",
+      "name": "Thường nhật 268",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "butter",
         "U+1F9C8"
       ],
-      "description": "内置透明图片表情：BUTTER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BUTTER",
       "unicode": "U+1F9C8"
     },
     {
       "id": "builtin-emoji-1f9c9",
       "fileName": "builtin-emoji-1f9c9.png",
-      "name": "吃喝 269",
-      "category": "吃喝",
+      "name": "Ăn uống 269",
+      "category": "Ăn uống",
       "tags": [
-        "吃喝",
-        "吃喝",
+        "Ăn uống",
+        "Ăn uống",
         "mate drink",
         "U+1F9C9"
       ],
-      "description": "内置透明图片表情：MATE DRINK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MATE DRINK",
       "unicode": "U+1F9C9"
     },
     {
       "id": "builtin-emoji-1f9ca",
       "fileName": "builtin-emoji-1f9ca.png",
-      "name": "日常 270",
-      "category": "日常",
+      "name": "Thường nhật 270",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "ice cube",
         "U+1F9CA"
       ],
-      "description": "内置透明图片表情：ICE CUBE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ICE CUBE",
       "unicode": "U+1F9CA"
     },
     {
       "id": "builtin-emoji-1f9cb",
       "fileName": "builtin-emoji-1f9cb.png",
-      "name": "日常 271",
-      "category": "日常",
+      "name": "Thường nhật 271",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bubble tea",
         "U+1F9CB"
       ],
-      "description": "内置透明图片表情：BUBBLE TEA",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BUBBLE TEA",
       "unicode": "U+1F9CB"
     },
     {
       "id": "builtin-emoji-1f9cc",
       "fileName": "builtin-emoji-1f9cc.png",
-      "name": "日常 272",
-      "category": "日常",
+      "name": "Thường nhật 272",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "troll",
         "U+1F9CC"
       ],
-      "description": "内置透明图片表情：TROLL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TROLL",
       "unicode": "U+1F9CC"
     },
     {
       "id": "builtin-emoji-1f9cd",
       "fileName": "builtin-emoji-1f9cd.png",
-      "name": "日常 273",
-      "category": "日常",
+      "name": "Thường nhật 273",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "standing person",
         "U+1F9CD"
       ],
-      "description": "内置透明图片表情：STANDING PERSON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: STANDING PERSON",
       "unicode": "U+1F9CD"
     },
     {
       "id": "builtin-emoji-1f9ce",
       "fileName": "builtin-emoji-1f9ce.png",
-      "name": "日常 274",
-      "category": "日常",
+      "name": "Thường nhật 274",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "kneeling person",
         "U+1F9CE"
       ],
-      "description": "内置透明图片表情：KNEELING PERSON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KNEELING PERSON",
       "unicode": "U+1F9CE"
     },
     {
       "id": "builtin-emoji-1f9cf",
       "fileName": "builtin-emoji-1f9cf.png",
-      "name": "日常 275",
-      "category": "日常",
+      "name": "Thường nhật 275",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "deaf person",
         "U+1F9CF"
       ],
-      "description": "内置透明图片表情：DEAF PERSON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DEAF PERSON",
       "unicode": "U+1F9CF"
     },
     {
       "id": "builtin-emoji-1f9d0",
       "fileName": "builtin-emoji-1f9d0.png",
-      "name": "表情 276",
-      "category": "情绪",
+      "name": "Biểu cảm 276",
+      "category": "Cảm xúc",
       "tags": [
-        "情绪",
-        "表情",
+        "Cảm xúc",
+        "Biểu cảm",
         "face with monocle",
         "U+1F9D0"
       ],
-      "description": "内置透明图片表情：FACE WITH MONOCLE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FACE WITH MONOCLE",
       "unicode": "U+1F9D0"
     },
     {
       "id": "builtin-emoji-1f9d1",
       "fileName": "builtin-emoji-1f9d1.png",
-      "name": "日常 277",
-      "category": "日常",
+      "name": "Thường nhật 277",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "adult",
         "U+1F9D1"
       ],
-      "description": "内置透明图片表情：ADULT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ADULT",
       "unicode": "U+1F9D1"
     },
     {
       "id": "builtin-emoji-1f9d2",
       "fileName": "builtin-emoji-1f9d2.png",
-      "name": "日常 278",
-      "category": "日常",
+      "name": "Thường nhật 278",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "child",
         "U+1F9D2"
       ],
-      "description": "内置透明图片表情：CHILD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CHILD",
       "unicode": "U+1F9D2"
     },
     {
       "id": "builtin-emoji-1f9d3",
       "fileName": "builtin-emoji-1f9d3.png",
-      "name": "日常 279",
-      "category": "日常",
+      "name": "Thường nhật 279",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "older adult",
         "U+1F9D3"
       ],
-      "description": "内置透明图片表情：OLDER ADULT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: OLDER ADULT",
       "unicode": "U+1F9D3"
     },
     {
       "id": "builtin-emoji-1f9d4",
       "fileName": "builtin-emoji-1f9d4.png",
-      "name": "动物 280",
-      "category": "动物",
+      "name": "Động vật 280",
+      "category": "Động vật",
       "tags": [
-        "动物",
-        "动物",
+        "Động vật",
+        "Động vật",
         "bearded person",
         "U+1F9D4"
       ],
-      "description": "内置透明图片表情：BEARDED PERSON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BEARDED PERSON",
       "unicode": "U+1F9D4"
     },
     {
       "id": "builtin-emoji-1f9d5",
       "fileName": "builtin-emoji-1f9d5.png",
-      "name": "日常 281",
-      "category": "日常",
+      "name": "Thường nhật 281",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "person with headscarf",
         "U+1F9D5"
       ],
-      "description": "内置透明图片表情：PERSON WITH HEADSCARF",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON WITH HEADSCARF",
       "unicode": "U+1F9D5"
     },
     {
       "id": "builtin-emoji-1f9d6",
       "fileName": "builtin-emoji-1f9d6.png",
-      "name": "日常 282",
-      "category": "日常",
+      "name": "Thường nhật 282",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "person in steamy room",
         "U+1F9D6"
       ],
-      "description": "内置透明图片表情：PERSON IN STEAMY ROOM",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON IN STEAMY ROOM",
       "unicode": "U+1F9D6"
     },
     {
       "id": "builtin-emoji-1f9d7",
       "fileName": "builtin-emoji-1f9d7.png",
-      "name": "日常 283",
-      "category": "日常",
+      "name": "Thường nhật 283",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "person climbing",
         "U+1F9D7"
       ],
-      "description": "内置透明图片表情：PERSON CLIMBING",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON CLIMBING",
       "unicode": "U+1F9D7"
     },
     {
       "id": "builtin-emoji-1f9d8",
       "fileName": "builtin-emoji-1f9d8.png",
-      "name": "日常 284",
-      "category": "日常",
+      "name": "Thường nhật 284",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "person in lotus position",
         "U+1F9D8"
       ],
-      "description": "内置透明图片表情：PERSON IN LOTUS POSITION",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PERSON IN LOTUS POSITION",
       "unicode": "U+1F9D8"
     },
     {
       "id": "builtin-emoji-1f9d9",
       "fileName": "builtin-emoji-1f9d9.png",
-      "name": "日常 285",
-      "category": "日常",
+      "name": "Thường nhật 285",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mage",
         "U+1F9D9"
       ],
-      "description": "内置透明图片表情：MAGE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MAGE",
       "unicode": "U+1F9D9"
     },
     {
       "id": "builtin-emoji-1f9da",
       "fileName": "builtin-emoji-1f9da.png",
-      "name": "日常 286",
-      "category": "日常",
+      "name": "Thường nhật 286",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "fairy",
         "U+1F9DA"
       ],
-      "description": "内置透明图片表情：FAIRY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FAIRY",
       "unicode": "U+1F9DA"
     },
     {
       "id": "builtin-emoji-1f9db",
       "fileName": "builtin-emoji-1f9db.png",
-      "name": "日常 287",
-      "category": "日常",
+      "name": "Thường nhật 287",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "vampire",
         "U+1F9DB"
       ],
-      "description": "内置透明图片表情：VAMPIRE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: VAMPIRE",
       "unicode": "U+1F9DB"
     },
     {
       "id": "builtin-emoji-1f9dc",
       "fileName": "builtin-emoji-1f9dc.png",
-      "name": "日常 288",
-      "category": "日常",
+      "name": "Thường nhật 288",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "merperson",
         "U+1F9DC"
       ],
-      "description": "内置透明图片表情：MERPERSON",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MERPERSON",
       "unicode": "U+1F9DC"
     },
     {
       "id": "builtin-emoji-1f9dd",
       "fileName": "builtin-emoji-1f9dd.png",
-      "name": "日常 289",
-      "category": "日常",
+      "name": "Thường nhật 289",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "elf",
         "U+1F9DD"
       ],
-      "description": "内置透明图片表情：ELF",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ELF",
       "unicode": "U+1F9DD"
     },
     {
       "id": "builtin-emoji-1f9de",
       "fileName": "builtin-emoji-1f9de.png",
-      "name": "日常 290",
-      "category": "日常",
+      "name": "Thường nhật 290",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "genie",
         "U+1F9DE"
       ],
-      "description": "内置透明图片表情：GENIE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GENIE",
       "unicode": "U+1F9DE"
     },
     {
       "id": "builtin-emoji-1f9df",
       "fileName": "builtin-emoji-1f9df.png",
-      "name": "日常 291",
-      "category": "日常",
+      "name": "Thường nhật 291",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "zombie",
         "U+1F9DF"
       ],
-      "description": "内置透明图片表情：ZOMBIE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ZOMBIE",
       "unicode": "U+1F9DF"
     },
     {
       "id": "builtin-emoji-1f9e0",
       "fileName": "builtin-emoji-1f9e0.png",
-      "name": "天气 292",
-      "category": "天气时间",
+      "name": "Thời tiết 292",
+      "category": "Thời tiết & thời gian",
       "tags": [
-        "天气时间",
-        "天气",
+        "Thời tiết & thời gian",
+        "Thời tiết",
         "brain",
         "U+1F9E0"
       ],
-      "description": "内置透明图片表情：BRAIN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BRAIN",
       "unicode": "U+1F9E0"
     },
     {
       "id": "builtin-emoji-1f9e1",
       "fileName": "builtin-emoji-1f9e1.png",
-      "name": "喜欢 293",
-      "category": "爱意",
+      "name": "Thích 293",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "orange heart",
         "U+1F9E1"
       ],
-      "description": "内置透明图片表情：ORANGE HEART",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ORANGE HEART",
       "unicode": "U+1F9E1"
     },
     {
       "id": "builtin-emoji-1f9e2",
       "fileName": "builtin-emoji-1f9e2.png",
-      "name": "日常 294",
-      "category": "日常",
+      "name": "Thường nhật 294",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "billed cap",
         "U+1F9E2"
       ],
-      "description": "内置透明图片表情：BILLED CAP",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BILLED CAP",
       "unicode": "U+1F9E2"
     },
     {
       "id": "builtin-emoji-1f9e3",
       "fileName": "builtin-emoji-1f9e3.png",
-      "name": "日常 295",
-      "category": "日常",
+      "name": "Thường nhật 295",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "scarf",
         "U+1F9E3"
       ],
-      "description": "内置透明图片表情：SCARF",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SCARF",
       "unicode": "U+1F9E3"
     },
     {
       "id": "builtin-emoji-1f9e4",
       "fileName": "builtin-emoji-1f9e4.png",
-      "name": "喜欢 296",
-      "category": "爱意",
+      "name": "Thích 296",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "gloves",
         "U+1F9E4"
       ],
-      "description": "内置透明图片表情：GLOVES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GLOVES",
       "unicode": "U+1F9E4"
     },
     {
       "id": "builtin-emoji-1f9e5",
       "fileName": "builtin-emoji-1f9e5.png",
-      "name": "日常 297",
-      "category": "日常",
+      "name": "Thường nhật 297",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "coat",
         "U+1F9E5"
       ],
-      "description": "内置透明图片表情：COAT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: COAT",
       "unicode": "U+1F9E5"
     },
     {
       "id": "builtin-emoji-1f9e6",
       "fileName": "builtin-emoji-1f9e6.png",
-      "name": "日常 298",
-      "category": "日常",
+      "name": "Thường nhật 298",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "socks",
         "U+1F9E6"
       ],
-      "description": "内置透明图片表情：SOCKS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SOCKS",
       "unicode": "U+1F9E6"
     },
     {
       "id": "builtin-emoji-1f9e7",
       "fileName": "builtin-emoji-1f9e7.png",
-      "name": "日常 299",
-      "category": "日常",
+      "name": "Thường nhật 299",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "red gift envelope",
         "U+1F9E7"
       ],
-      "description": "内置透明图片表情：RED GIFT ENVELOPE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RED GIFT ENVELOPE",
       "unicode": "U+1F9E7"
     },
     {
       "id": "builtin-emoji-1f9e8",
       "fileName": "builtin-emoji-1f9e8.png",
-      "name": "天气 300",
-      "category": "天气时间",
+      "name": "Thời tiết 300",
+      "category": "Thời tiết & thời gian",
       "tags": [
-        "天气时间",
-        "天气",
+        "Thời tiết & thời gian",
+        "Thời tiết",
         "firecracker",
         "U+1F9E8"
       ],
-      "description": "内置透明图片表情：FIRECRACKER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FIRECRACKER",
       "unicode": "U+1F9E8"
     },
     {
       "id": "builtin-emoji-1f9e9",
       "fileName": "builtin-emoji-1f9e9.png",
-      "name": "日常 301",
-      "category": "日常",
+      "name": "Thường nhật 301",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "jigsaw puzzle piece",
         "U+1F9E9"
       ],
-      "description": "内置透明图片表情：JIGSAW PUZZLE PIECE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: JIGSAW PUZZLE PIECE",
       "unicode": "U+1F9E9"
     },
     {
       "id": "builtin-emoji-1f9ea",
       "fileName": "builtin-emoji-1f9ea.png",
-      "name": "日常 302",
-      "category": "日常",
+      "name": "Thường nhật 302",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "test tube",
         "U+1F9EA"
       ],
-      "description": "内置透明图片表情：TEST TUBE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TEST TUBE",
       "unicode": "U+1F9EA"
     },
     {
       "id": "builtin-emoji-1f9eb",
       "fileName": "builtin-emoji-1f9eb.png",
-      "name": "日常 303",
-      "category": "日常",
+      "name": "Thường nhật 303",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "petri dish",
         "U+1F9EB"
       ],
-      "description": "内置透明图片表情：PETRI DISH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PETRI DISH",
       "unicode": "U+1F9EB"
     },
     {
       "id": "builtin-emoji-1f9ec",
       "fileName": "builtin-emoji-1f9ec.png",
-      "name": "日常 304",
-      "category": "日常",
+      "name": "Thường nhật 304",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "dna double helix",
         "U+1F9EC"
       ],
-      "description": "内置透明图片表情：DNA DOUBLE HELIX",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DNA DOUBLE HELIX",
       "unicode": "U+1F9EC"
     },
     {
       "id": "builtin-emoji-1f9ed",
       "fileName": "builtin-emoji-1f9ed.png",
-      "name": "日常 305",
-      "category": "日常",
+      "name": "Thường nhật 305",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "compass",
         "U+1F9ED"
       ],
-      "description": "内置透明图片表情：COMPASS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: COMPASS",
       "unicode": "U+1F9ED"
     },
     {
       "id": "builtin-emoji-1f9ee",
       "fileName": "builtin-emoji-1f9ee.png",
-      "name": "日常 306",
-      "category": "日常",
+      "name": "Thường nhật 306",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "abacus",
         "U+1F9EE"
       ],
-      "description": "内置透明图片表情：ABACUS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ABACUS",
       "unicode": "U+1F9EE"
     },
     {
       "id": "builtin-emoji-1f9ef",
       "fileName": "builtin-emoji-1f9ef.png",
-      "name": "天气 307",
-      "category": "天气时间",
+      "name": "Thời tiết 307",
+      "category": "Thời tiết & thời gian",
       "tags": [
-        "天气时间",
-        "天气",
+        "Thời tiết & thời gian",
+        "Thời tiết",
         "fire extinguisher",
         "U+1F9EF"
       ],
-      "description": "内置透明图片表情：FIRE EXTINGUISHER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FIRE EXTINGUISHER",
       "unicode": "U+1F9EF"
     },
     {
       "id": "builtin-emoji-1f9f0",
       "fileName": "builtin-emoji-1f9f0.png",
-      "name": "日常 308",
-      "category": "日常",
+      "name": "Thường nhật 308",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "toolbox",
         "U+1F9F0"
       ],
-      "description": "内置透明图片表情：TOOLBOX",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TOOLBOX",
       "unicode": "U+1F9F0"
     },
     {
       "id": "builtin-emoji-1f9f1",
       "fileName": "builtin-emoji-1f9f1.png",
-      "name": "日常 309",
-      "category": "日常",
+      "name": "Thường nhật 309",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "brick",
         "U+1F9F1"
       ],
-      "description": "内置透明图片表情：BRICK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BRICK",
       "unicode": "U+1F9F1"
     },
     {
       "id": "builtin-emoji-1f9f2",
       "fileName": "builtin-emoji-1f9f2.png",
-      "name": "日常 310",
-      "category": "日常",
+      "name": "Thường nhật 310",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "magnet",
         "U+1F9F2"
       ],
-      "description": "内置透明图片表情：MAGNET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MAGNET",
       "unicode": "U+1F9F2"
     },
     {
       "id": "builtin-emoji-1f9f3",
       "fileName": "builtin-emoji-1f9f3.png",
-      "name": "日常 311",
-      "category": "日常",
+      "name": "Thường nhật 311",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "luggage",
         "U+1F9F3"
       ],
-      "description": "内置透明图片表情：LUGGAGE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LUGGAGE",
       "unicode": "U+1F9F3"
     },
     {
       "id": "builtin-emoji-1f9f4",
       "fileName": "builtin-emoji-1f9f4.png",
-      "name": "日常 312",
-      "category": "日常",
+      "name": "Thường nhật 312",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "lotion bottle",
         "U+1F9F4"
       ],
-      "description": "内置透明图片表情：LOTION BOTTLE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LOTION BOTTLE",
       "unicode": "U+1F9F4"
     },
     {
       "id": "builtin-emoji-1f9f5",
       "fileName": "builtin-emoji-1f9f5.png",
-      "name": "日常 313",
-      "category": "日常",
+      "name": "Thường nhật 313",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "spool of thread",
         "U+1F9F5"
       ],
-      "description": "内置透明图片表情：SPOOL OF THREAD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SPOOL OF THREAD",
       "unicode": "U+1F9F5"
     },
     {
       "id": "builtin-emoji-1f9f6",
       "fileName": "builtin-emoji-1f9f6.png",
-      "name": "活动 314",
-      "category": "活动",
+      "name": "Hoạt động 314",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "ball of yarn",
         "U+1F9F6"
       ],
-      "description": "内置透明图片表情：BALL OF YARN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BALL OF YARN",
       "unicode": "U+1F9F6"
     },
     {
       "id": "builtin-emoji-1f9f7",
       "fileName": "builtin-emoji-1f9f7.png",
-      "name": "日常 315",
-      "category": "日常",
+      "name": "Thường nhật 315",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "safety pin",
         "U+1F9F7"
       ],
-      "description": "内置透明图片表情：SAFETY PIN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SAFETY PIN",
       "unicode": "U+1F9F7"
     },
     {
       "id": "builtin-emoji-1f9f8",
       "fileName": "builtin-emoji-1f9f8.png",
-      "name": "动物 316",
-      "category": "动物",
+      "name": "Động vật 316",
+      "category": "Động vật",
       "tags": [
-        "动物",
-        "动物",
+        "Động vật",
+        "Động vật",
         "teddy bear",
         "U+1F9F8"
       ],
-      "description": "内置透明图片表情：TEDDY BEAR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: TEDDY BEAR",
       "unicode": "U+1F9F8"
     },
     {
       "id": "builtin-emoji-1f9f9",
       "fileName": "builtin-emoji-1f9f9.png",
-      "name": "日常 317",
-      "category": "日常",
+      "name": "Thường nhật 317",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "broom",
         "U+1F9F9"
       ],
-      "description": "内置透明图片表情：BROOM",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BROOM",
       "unicode": "U+1F9F9"
     },
     {
       "id": "builtin-emoji-1f9fa",
       "fileName": "builtin-emoji-1f9fa.png",
-      "name": "日常 318",
-      "category": "日常",
+      "name": "Thường nhật 318",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "basket",
         "U+1F9FA"
       ],
-      "description": "内置透明图片表情：BASKET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BASKET",
       "unicode": "U+1F9FA"
     },
     {
       "id": "builtin-emoji-1f9fb",
       "fileName": "builtin-emoji-1f9fb.png",
-      "name": "日常 319",
-      "category": "日常",
+      "name": "Thường nhật 319",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "roll of paper",
         "U+1F9FB"
       ],
-      "description": "内置透明图片表情：ROLL OF PAPER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ROLL OF PAPER",
       "unicode": "U+1F9FB"
     },
     {
       "id": "builtin-emoji-1f9fc",
       "fileName": "builtin-emoji-1f9fc.png",
-      "name": "日常 320",
-      "category": "日常",
+      "name": "Thường nhật 320",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "bar of soap",
         "U+1F9FC"
       ],
-      "description": "内置透明图片表情：BAR OF SOAP",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BAR OF SOAP",
       "unicode": "U+1F9FC"
     },
     {
       "id": "builtin-emoji-1f9fd",
       "fileName": "builtin-emoji-1f9fd.png",
-      "name": "日常 321",
-      "category": "日常",
+      "name": "Thường nhật 321",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "sponge",
         "U+1F9FD"
       ],
-      "description": "内置透明图片表情：SPONGE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SPONGE",
       "unicode": "U+1F9FD"
     },
     {
       "id": "builtin-emoji-1f9fe",
       "fileName": "builtin-emoji-1f9fe.png",
-      "name": "日常 322",
-      "category": "日常",
+      "name": "Thường nhật 322",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "receipt",
         "U+1F9FE"
       ],
-      "description": "内置透明图片表情：RECEIPT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RECEIPT",
       "unicode": "U+1F9FE"
     },
     {
       "id": "builtin-emoji-1f9ff",
       "fileName": "builtin-emoji-1f9ff.png",
-      "name": "日常 323",
-      "category": "日常",
+      "name": "Thường nhật 323",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "nazar amulet",
         "U+1F9FF"
       ],
-      "description": "内置透明图片表情：NAZAR AMULET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: NAZAR AMULET",
       "unicode": "U+1F9FF"
     },
     {
       "id": "builtin-emoji-1fa70",
       "fileName": "builtin-emoji-1fa70.png",
-      "name": "活动 324",
-      "category": "活动",
+      "name": "Hoạt động 324",
+      "category": "Hoạt động",
       "tags": [
-        "活动",
-        "活动",
+        "Hoạt động",
+        "Hoạt động",
         "ballet shoes",
         "U+1FA70"
       ],
-      "description": "内置透明图片表情：BALLET SHOES",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BALLET SHOES",
       "unicode": "U+1FA70"
     },
     {
       "id": "builtin-emoji-1fa71",
       "fileName": "builtin-emoji-1fa71.png",
-      "name": "日常 325",
-      "category": "日常",
+      "name": "Thường nhật 325",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "one piece swimsuit",
         "U+1FA71"
       ],
-      "description": "内置透明图片表情：ONE-PIECE SWIMSUIT",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ONE-PIECE SWIMSUIT",
       "unicode": "U+1FA71"
     },
     {
       "id": "builtin-emoji-1fa72",
       "fileName": "builtin-emoji-1fa72.png",
-      "name": "日常 326",
-      "category": "日常",
+      "name": "Thường nhật 326",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "briefs",
         "U+1FA72"
       ],
-      "description": "内置透明图片表情：BRIEFS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BRIEFS",
       "unicode": "U+1FA72"
     },
     {
       "id": "builtin-emoji-1fa73",
       "fileName": "builtin-emoji-1fa73.png",
-      "name": "日常 327",
-      "category": "日常",
+      "name": "Thường nhật 327",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "shorts",
         "U+1FA73"
       ],
-      "description": "内置透明图片表情：SHORTS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SHORTS",
       "unicode": "U+1FA73"
     },
     {
       "id": "builtin-emoji-1fa74",
       "fileName": "builtin-emoji-1fa74.png",
-      "name": "日常 328",
-      "category": "日常",
+      "name": "Thường nhật 328",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "thong sandal",
         "U+1FA74"
       ],
-      "description": "内置透明图片表情：THONG SANDAL",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: THONG SANDAL",
       "unicode": "U+1FA74"
     },
     {
       "id": "builtin-emoji-1fa75",
       "fileName": "builtin-emoji-1fa75.png",
-      "name": "喜欢 329",
-      "category": "爱意",
+      "name": "Thích 329",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "light blue heart",
         "U+1FA75"
       ],
-      "description": "内置透明图片表情：LIGHT BLUE HEART",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LIGHT BLUE HEART",
       "unicode": "U+1FA75"
     },
     {
       "id": "builtin-emoji-1fa76",
       "fileName": "builtin-emoji-1fa76.png",
-      "name": "喜欢 330",
-      "category": "爱意",
+      "name": "Thích 330",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "grey heart",
         "U+1FA76"
       ],
-      "description": "内置透明图片表情：GREY HEART",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: GREY HEART",
       "unicode": "U+1FA76"
     },
     {
       "id": "builtin-emoji-1fa77",
       "fileName": "builtin-emoji-1fa77.png",
-      "name": "喜欢 331",
-      "category": "爱意",
+      "name": "Thích 331",
+      "category": "Tình cảm",
       "tags": [
-        "爱意",
-        "喜欢",
+        "Tình cảm",
+        "Thích",
         "pink heart",
         "U+1FA77"
       ],
-      "description": "内置透明图片表情：PINK HEART",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PINK HEART",
       "unicode": "U+1FA77"
     },
     {
       "id": "builtin-emoji-1fa78",
       "fileName": "builtin-emoji-1fa78.png",
-      "name": "日常 332",
-      "category": "日常",
+      "name": "Thường nhật 332",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "drop of blood",
         "U+1FA78"
       ],
-      "description": "内置透明图片表情：DROP OF BLOOD",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DROP OF BLOOD",
       "unicode": "U+1FA78"
     },
     {
       "id": "builtin-emoji-1fa79",
       "fileName": "builtin-emoji-1fa79.png",
-      "name": "日常 333",
-      "category": "日常",
+      "name": "Thường nhật 333",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "adhesive bandage",
         "U+1FA79"
       ],
-      "description": "内置透明图片表情：ADHESIVE BANDAGE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ADHESIVE BANDAGE",
       "unicode": "U+1FA79"
     },
     {
       "id": "builtin-emoji-1fa7a",
       "fileName": "builtin-emoji-1fa7a.png",
-      "name": "日常 334",
-      "category": "日常",
+      "name": "Thường nhật 334",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "stethoscope",
         "U+1FA7A"
       ],
-      "description": "内置透明图片表情：STETHOSCOPE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: STETHOSCOPE",
       "unicode": "U+1FA7A"
     },
     {
       "id": "builtin-emoji-1fa7b",
       "fileName": "builtin-emoji-1fa7b.png",
-      "name": "日常 335",
-      "category": "日常",
+      "name": "Thường nhật 335",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "x ray",
         "U+1FA7B"
       ],
-      "description": "内置透明图片表情：X-RAY",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: X-RAY",
       "unicode": "U+1FA7B"
     },
     {
       "id": "builtin-emoji-1fa7c",
       "fileName": "builtin-emoji-1fa7c.png",
-      "name": "日常 336",
-      "category": "日常",
+      "name": "Thường nhật 336",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "crutch",
         "U+1FA7C"
       ],
-      "description": "内置透明图片表情：CRUTCH",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CRUTCH",
       "unicode": "U+1FA7C"
     },
     {
       "id": "builtin-emoji-1fa80",
       "fileName": "builtin-emoji-1fa80.png",
-      "name": "日常 337",
-      "category": "日常",
+      "name": "Thường nhật 337",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "yo yo",
         "U+1FA80"
       ],
-      "description": "内置透明图片表情：YO-YO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: YO-YO",
       "unicode": "U+1FA80"
     },
     {
       "id": "builtin-emoji-1fa81",
       "fileName": "builtin-emoji-1fa81.png",
-      "name": "日常 338",
-      "category": "日常",
+      "name": "Thường nhật 338",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "kite",
         "U+1FA81"
       ],
-      "description": "内置透明图片表情：KITE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: KITE",
       "unicode": "U+1FA81"
     },
     {
       "id": "builtin-emoji-1fa82",
       "fileName": "builtin-emoji-1fa82.png",
-      "name": "日常 339",
-      "category": "日常",
+      "name": "Thường nhật 339",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "parachute",
         "U+1FA82"
       ],
-      "description": "内置透明图片表情：PARACHUTE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PARACHUTE",
       "unicode": "U+1FA82"
     },
     {
       "id": "builtin-emoji-1fa83",
       "fileName": "builtin-emoji-1fa83.png",
-      "name": "日常 340",
-      "category": "日常",
+      "name": "Thường nhật 340",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "boomerang",
         "U+1FA83"
       ],
-      "description": "内置透明图片表情：BOOMERANG",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BOOMERANG",
       "unicode": "U+1FA83"
     },
     {
       "id": "builtin-emoji-1fa84",
       "fileName": "builtin-emoji-1fa84.png",
-      "name": "日常 341",
-      "category": "日常",
+      "name": "Thường nhật 341",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "magic wand",
         "U+1FA84"
       ],
-      "description": "内置透明图片表情：MAGIC WAND",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MAGIC WAND",
       "unicode": "U+1FA84"
     },
     {
       "id": "builtin-emoji-1fa85",
       "fileName": "builtin-emoji-1fa85.png",
-      "name": "日常 342",
-      "category": "日常",
+      "name": "Thường nhật 342",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "pinata",
         "U+1FA85"
       ],
-      "description": "内置透明图片表情：PINATA",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: PINATA",
       "unicode": "U+1FA85"
     },
     {
       "id": "builtin-emoji-1fa86",
       "fileName": "builtin-emoji-1fa86.png",
-      "name": "日常 343",
-      "category": "日常",
+      "name": "Thường nhật 343",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "nesting dolls",
         "U+1FA86"
       ],
-      "description": "内置透明图片表情：NESTING DOLLS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: NESTING DOLLS",
       "unicode": "U+1FA86"
     },
     {
       "id": "builtin-emoji-1fa87",
       "fileName": "builtin-emoji-1fa87.png",
-      "name": "日常 344",
-      "category": "日常",
+      "name": "Thường nhật 344",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "maracas",
         "U+1FA87"
       ],
-      "description": "内置透明图片表情：MARACAS",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MARACAS",
       "unicode": "U+1FA87"
     },
     {
       "id": "builtin-emoji-1fa88",
       "fileName": "builtin-emoji-1fa88.png",
-      "name": "日常 345",
-      "category": "日常",
+      "name": "Thường nhật 345",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "flute",
         "U+1FA88"
       ],
-      "description": "内置透明图片表情：FLUTE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: FLUTE",
       "unicode": "U+1FA88"
     },
     {
       "id": "builtin-emoji-1fa90",
       "fileName": "builtin-emoji-1fa90.png",
-      "name": "日常 346",
-      "category": "日常",
+      "name": "Thường nhật 346",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "ringed planet",
         "U+1FA90"
       ],
-      "description": "内置透明图片表情：RINGED PLANET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RINGED PLANET",
       "unicode": "U+1FA90"
     },
     {
       "id": "builtin-emoji-1fa91",
       "fileName": "builtin-emoji-1fa91.png",
-      "name": "日常 347",
-      "category": "日常",
+      "name": "Thường nhật 347",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "chair",
         "U+1FA91"
       ],
-      "description": "内置透明图片表情：CHAIR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CHAIR",
       "unicode": "U+1FA91"
     },
     {
       "id": "builtin-emoji-1fa92",
       "fileName": "builtin-emoji-1fa92.png",
-      "name": "日常 348",
-      "category": "日常",
+      "name": "Thường nhật 348",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "razor",
         "U+1FA92"
       ],
-      "description": "内置透明图片表情：RAZOR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: RAZOR",
       "unicode": "U+1FA92"
     },
     {
       "id": "builtin-emoji-1fa93",
       "fileName": "builtin-emoji-1fa93.png",
-      "name": "日常 349",
-      "category": "日常",
+      "name": "Thường nhật 349",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "axe",
         "U+1FA93"
       ],
-      "description": "内置透明图片表情：AXE",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: AXE",
       "unicode": "U+1FA93"
     },
     {
       "id": "builtin-emoji-1fa94",
       "fileName": "builtin-emoji-1fa94.png",
-      "name": "日常 350",
-      "category": "日常",
+      "name": "Thường nhật 350",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "diya lamp",
         "U+1FA94"
       ],
-      "description": "内置透明图片表情：DIYA LAMP",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: DIYA LAMP",
       "unicode": "U+1FA94"
     },
     {
       "id": "builtin-emoji-1fa95",
       "fileName": "builtin-emoji-1fa95.png",
-      "name": "日常 351",
-      "category": "日常",
+      "name": "Thường nhật 351",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "banjo",
         "U+1FA95"
       ],
-      "description": "内置透明图片表情：BANJO",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: BANJO",
       "unicode": "U+1FA95"
     },
     {
       "id": "builtin-emoji-1fa96",
       "fileName": "builtin-emoji-1fa96.png",
-      "name": "日常 352",
-      "category": "日常",
+      "name": "Thường nhật 352",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "military helmet",
         "U+1FA96"
       ],
-      "description": "内置透明图片表情：MILITARY HELMET",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MILITARY HELMET",
       "unicode": "U+1FA96"
     },
     {
       "id": "builtin-emoji-1fa97",
       "fileName": "builtin-emoji-1fa97.png",
-      "name": "日常 353",
-      "category": "日常",
+      "name": "Thường nhật 353",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "accordion",
         "U+1FA97"
       ],
-      "description": "内置透明图片表情：ACCORDION",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: ACCORDION",
       "unicode": "U+1FA97"
     },
     {
       "id": "builtin-emoji-1fa98",
       "fileName": "builtin-emoji-1fa98.png",
-      "name": "日常 354",
-      "category": "日常",
+      "name": "Thường nhật 354",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "long drum",
         "U+1FA98"
       ],
-      "description": "内置透明图片表情：LONG DRUM",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LONG DRUM",
       "unicode": "U+1FA98"
     },
     {
       "id": "builtin-emoji-1fa99",
       "fileName": "builtin-emoji-1fa99.png",
-      "name": "日常 355",
-      "category": "日常",
+      "name": "Thường nhật 355",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "coin",
         "U+1FA99"
       ],
-      "description": "内置透明图片表情：COIN",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: COIN",
       "unicode": "U+1FA99"
     },
     {
       "id": "builtin-emoji-1fa9a",
       "fileName": "builtin-emoji-1fa9a.png",
-      "name": "日常 356",
-      "category": "日常",
+      "name": "Thường nhật 356",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "carpentry saw",
         "U+1FA9A"
       ],
-      "description": "内置透明图片表情：CARPENTRY SAW",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: CARPENTRY SAW",
       "unicode": "U+1FA9A"
     },
     {
       "id": "builtin-emoji-1fa9b",
       "fileName": "builtin-emoji-1fa9b.png",
-      "name": "日常 357",
-      "category": "日常",
+      "name": "Thường nhật 357",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "screwdriver",
         "U+1FA9B"
       ],
-      "description": "内置透明图片表情：SCREWDRIVER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: SCREWDRIVER",
       "unicode": "U+1FA9B"
     },
     {
       "id": "builtin-emoji-1fa9c",
       "fileName": "builtin-emoji-1fa9c.png",
-      "name": "日常 358",
-      "category": "日常",
+      "name": "Thường nhật 358",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "ladder",
         "U+1FA9C"
       ],
-      "description": "内置透明图片表情：LADDER",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: LADDER",
       "unicode": "U+1FA9C"
     },
     {
       "id": "builtin-emoji-1fa9d",
       "fileName": "builtin-emoji-1fa9d.png",
-      "name": "日常 359",
-      "category": "日常",
+      "name": "Thường nhật 359",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "hook",
         "U+1FA9D"
       ],
-      "description": "内置透明图片表情：HOOK",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: HOOK",
       "unicode": "U+1FA9D"
     },
     {
       "id": "builtin-emoji-1fa9e",
       "fileName": "builtin-emoji-1fa9e.png",
-      "name": "日常 360",
-      "category": "日常",
+      "name": "Thường nhật 360",
+      "category": "Thường nhật",
       "tags": [
-        "日常",
-        "日常",
+        "Thường nhật",
+        "Thường nhật",
         "mirror",
         "U+1FA9E"
       ],
-      "description": "内置透明图片表情：MIRROR",
+      "description": "Nhãn dán ảnh trong suốt dựng sẵn: MIRROR",
       "unicode": "U+1FA9E"
     }
   ]

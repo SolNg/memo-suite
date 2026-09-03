@@ -22,11 +22,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     const COMPANION_COMPLETENESS_REVISION = 3;
     const SERVER_BASE = '/api/plugins/vvv-theater-memory-server';
     const FALLEN_WRITER_CONTEXT = [
-        '【落魄作家写作Thân phận】',
-        '你叫“落魄作家”。你曾经也想当体面的大作家，如今只想先把房租、网费和咖啡钱挣出来。只要是符合当前模型服务使用政策、共创者真正想看的题材，你都会认真接稿；可以为了稿费调整文风、题材与节奏，但不能拿角色设定、USER主权、剧情逻辑和连贯性糊弄交差。',
-        '【Thân phận边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
-        '【虚构叙事前提】这是虚构小说创作。以下资料均为共创者提供的架空小说素材。所有设定、人物、事件与世界均属虚构小说，不是真实存在，也不是现实事件；作品尚未签约发行，仅用于共创写作与剧情探索，内容面向喜欢此类故事的小说读者与观众。',
-        '【创作原则】始终遵循 User 在本次任务中的创作指令并在范围内创造性发散；尊重角色设定、USER主权、人物知情边界、剧情因果与前后连贯，同时遵守当前模型服务的使用政策。',
+        '【THÂN PHẬN SÁNG TÁC: NHÀ VĂN SA CƠ】',
+        'Bạn tên là “Nhà văn sa cơ”. Bạn từng mơ thành đại văn hào tử tế, giờ chỉ mong kiếm đủ tiền nhà, tiền mạng và tiền cà phê. Miễn là đề tài phù hợp chính sách sử dụng hiện hành của dịch vụ mô hình và đúng thứ người đồng sáng tác thật sự muốn đọc, bạn đều nhận viết nghiêm túc; có thể vì nhuận bút mà chỉnh văn phong, đề tài và nhịp truyện, nhưng không được làm ẩu với thiết định nhân vật, chủ quyền của USER, logic cốt truyện và tính liền mạch.',
+        '【RANH GIỚI THÂN PHẬN】User ngoài đời là “người đồng sáng tác” và là người ra chỉ thị; {{user}} và <user> trong tiểu thuyết đều là nhân vật hư cấu. User không phải {{user}}, cũng không phải <user>; tuyệt đối không được đánh đồng người đồng sáng tác ngoài đời với nhân vật hư cấu, và phải đối xử với {{user}} ngang hàng mọi nhân vật hư cấu khác.',
+        '【TIỀN ĐỀ TỰ SỰ HƯ CẤU】Đây là hoạt động sáng tác tiểu thuyết hư cấu. Toàn bộ tư liệu dưới đây là chất liệu tiểu thuyết giả tưởng do người đồng sáng tác cung cấp. Mọi thiết định, nhân vật, sự kiện và thế giới đều thuộc về tiểu thuyết hư cấu, không có thật và không phải sự kiện ngoài đời; tác phẩm chưa ký hợp đồng phát hành, chỉ dùng để cùng sáng tác và khám phá cốt truyện, hướng tới độc giả và khán giả yêu thích thể loại này.',
+        '【NGUYÊN TẮC SÁNG TÁC】Luôn tuân theo chỉ thị sáng tác của User trong nhiệm vụ này và sáng tạo tự do trong phạm vi đó; tôn trọng thiết định nhân vật, chủ quyền của USER, ranh giới hiểu biết của từng nhân vật, nhân quả cốt truyện và tính liền mạch trước sau, đồng thời tuân thủ chính sách sử dụng hiện hành của dịch vụ mô hình.',
     ].join('\n');
     const COMPANION_FINAL_CONTRACT = [
         '【幕后七条最终执行契约｜独立资料边界】',
@@ -8127,11 +8127,11 @@ ${latestReply}`;
 
     function relationUpdateDecision({oldDescription='',newDescription='',sourceText=''}={}) {
         const oldValue=compactText(oldDescription,800),nextValue=compactText(newDescription,800),evidence=compactText(sourceText,12000);
-        const generic=value=>/^(?:当前剧情中正在互动|当前正在互动|正在互动|已认识|初次接触|当前互动)$/i.test(compactText(value,120));
+        const generic=value=>/^(?:đang tương tác trong mạch truyện hiện tại|đang tương tác lúc này|đang tương tác|đã quen biết|tiếp xúc lần đầu|tương tác hiện tại)$/i.test(compactText(value,120));
         if(!nextValue||nextValue===oldValue)return {accept:Boolean(nextValue),reason:nextValue?'same-value':'empty-update'};
-        const stable=/(?:同事|前任|前男友|前女友|恋人|男友|女友|夫妻|妻子|丈夫|爱人|父母|母亲|父亲|妈妈|爸爸|兄弟|姐妹|家人|亲戚|朋友|同学|室友|上司|下属|合作伙伴|师生|雇主|雇员)/.test(oldValue);
-        const unfamiliar=/(?:陌生|不认识|素不相识|第一次见|初次见面|从未见过|不熟|毫无关系|没有关系|普通路人)/.test(nextValue);
-        const resetEvidence=/(?:失忆|记忆丧失|被洗脑|认知被篡改|假装不认识|装作不认识|伪装成陌生人|断绝关系|Thân phận被替换|冒名顶替|确认认错人)/.test(evidence);
+        const stable=/(?:đồng nghiệp|người yêu cũ|bạn trai cũ|bạn gái cũ|người yêu|bạn trai|bạn gái|vợ chồng|vợ|chồng|bạn đời|bố mẹ|mẹ|bố|má|ba|anh em|chị em|người nhà|họ hàng|bạn bè|bạn học|bạn cùng phòng|cấp trên|cấp dưới|đối tác|thầy trò|chủ thuê|người làm thuê)/.test(oldValue);
+        const unfamiliar=/(?:xa lạ|không quen|chưa từng quen biết|lần đầu gặp|gặp lần đầu|chưa từng gặp|không thân|chẳng có quan hệ gì|không có quan hệ|người qua đường)/.test(nextValue);
+        const resetEvidence=/(?:mất trí nhớ|mất ký ức|bị tẩy não|nhận thức bị sửa đổi|giả vờ không quen|vờ như không quen|giả làm người lạ|cắt đứt quan hệ|thân phận bị tráo|mạo danh|xác nhận nhận nhầm người)/.test(evidence);
         if(stable&&unfamiliar&&!resetEvidence)return {accept:false,reason:'stable-relation-downgrade-without-reset-evidence'};
         if(generic(nextValue)&&oldValue&&!generic(oldValue))return {accept:false,reason:'specific-relation-downgraded-to-generic'};
         return {accept:true,reason:'supported-update'};
@@ -9358,7 +9358,7 @@ ${messageText(message).slice(0,10000)}`;
         if (!companionIndependentApiReady()) {
             try { await refreshServerState({ config:true }); } catch {}
         }
-        if (!companionIndependentApiReady()) throw new Error('幕后七条独立API尚未配置；请到“API与模型”填写专用接口并选择模型');
+        if (!companionIndependentApiReady()) throw new Error('API riêng của Bảy điều hậu trường chưa được cấu hình；请到“API与模型”填写专用接口并选择模型');
         return stateRuntime.serverConfig?.companion || {};
     }
 
@@ -12851,7 +12851,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
             const {file,mimeType}=entry;
             try{
                 if(Number(file.size||0)>6*1024*1024)throw new Error('单个文件不能超过6MB');
-                const rawData=await readPhoneStickerFile(file),data=rawData.replace(/^data:[^;,]*;base64,/i,`data:${mimeType};base64,`),name=compactText(String(file.name||'Chưa đặt tên表情').replace(/\.[^.]+$/,''),120)||'Chưa đặt tên表情';
+                const rawData=await readPhoneStickerFile(file),data=rawData.replace(/^data:[^;,]*;base64,/i,`data:${mimeType};base64,`),name=compactText(String(file.name||'Nhãn dán chưa đặt tên').replace(/\.[^.]+$/,''),120)||'Nhãn dán chưa đặt tên';
                 await serverFetch('/phone/stickers',{method:'POST',body:JSON.stringify({name,tags:'',description:'',mimeType,data})});count++;
             }catch(error){toast(`${file.name||'表情'} 导入失败：${error.message}`,'error');}
         }
@@ -12878,7 +12878,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
             if(event.target.closest('[data-phone-sticker-import]')){overlay.querySelector('[data-phone-sticker-file]')?.click();return;}
             if(event.target.closest('[data-phone-sticker-manage]')){stateRuntime.phoneStickerManage=!stateRuntime.phoneStickerManage;renderRolePhone();return;}
             const stickerEdit=event.target.closest('[data-phone-sticker-edit]');if(stickerEdit){stateRuntime.phoneDialog={type:'sticker-edit',stickerId:stickerEdit.dataset.phoneStickerEdit};renderRolePhone();return;}
-            const stickerDelete=event.target.closest('[data-phone-sticker-delete]');if(stickerDelete){const row=phoneStickerById(stickerDelete.dataset.phoneStickerDelete);if(row&&confirm(`删除表情“${row.name||'Chưa đặt tên表情'}”？`)){await serverFetch(`/phone/stickers/${encodeURIComponent(row.id)}`,{method:'DELETE'});await loadPhoneStickers({force:true});renderRolePhone();}return;}
+            const stickerDelete=event.target.closest('[data-phone-sticker-delete]');if(stickerDelete){const row=phoneStickerById(stickerDelete.dataset.phoneStickerDelete);if(row&&confirm(`删除表情“${row.name||'Nhãn dán chưa đặt tên'}”？`)){await serverFetch(`/phone/stickers/${encodeURIComponent(row.id)}`,{method:'DELETE'});await loadPhoneStickers({force:true});renderRolePhone();}return;}
             const stickerSend=event.target.closest('[data-phone-sticker-send]');if(stickerSend){await sendRolePhoneMessage({stickerId:stickerSend.dataset.phoneStickerSend});return;}
             const stickerPreview=event.target.closest('[data-phone-sticker-preview]');if(stickerPreview){await loadPhoneStickers();stateRuntime.phoneDialog={type:'sticker-preview',stickerId:stickerPreview.dataset.phoneStickerPreview};renderRolePhone();return;}
             if(event.target.closest('[data-phone-browser-tavern]')){stateRuntime.phoneView='tavern';stateRuntime.phoneTavernSessionId='';ensurePhoneTavern().activeSessionId='';renderRolePhone();return;}
@@ -13920,7 +13920,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
     }
 
     function isProviderPolicyRefusalText(value) {
-        return /prompt could not be submitted|contains? sensitive words?|generative AI prohibited use policy|prohibited use policy|content policy (?:violation|blocked|refusal)|blocked (?:by|due to) safety|finishReason["':\s]+SAFETY|提示内容无法提交|包含(?:有)?敏感词|生成式\s*AI\s*禁止使用政策|违反.*(?:内容|使用)政策|被.*安全(?:审核|系统).*拦截/i.test(String(value || ''));
+        return /prompt could not be submitted|contains? sensitive words?|generative AI prohibited use policy|prohibited use policy|content policy (?:violation|blocked|refusal)|blocked (?:by|due to) safety|finishReason["':\s]+SAFETY|không gửi được nội dung nhắc|chứa từ nhạy cảm|chính sách cấm sử dụng.*AI tạo sinh|vi phạm chính sách.*(?:nội dung|sử dụng)|bị.*(?:kiểm duyệt|hệ thống) an toàn.*chặn/i.test(String(value || ''));
     }
 
     function aiErrorChainSome(error, predicate, seen = new Set()) {
@@ -13943,7 +13943,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
         if (isProviderPolicyRefusalText(message)) return true;
         // 429 是可恢复限流，绝不能被 4xx 通配误判成永久错误。
         if (/\b429\b|rate\s*limit|too\s*many\s*requests|限流|请求过多/i.test(message)) return false;
-        return /当前酒馆不支持(?:统一)?静默生成|AI接力同源生成入口尚未就绪|AI接力独立API尚未配置|幕后七条独立API尚未配置|剧情接力独立API尚未配置|记忆中枢API尚未配置|独立总结API未配置|尚未填写模型名称|服务端插件未加载|only-vvv|仅.*vvv|forbidden|unauthorized|invalid\s*(api[-_ ]?)?key|api\s*key.*invalid|密钥.*无效|鉴权|权限不足|permission\s*denied|model.*(?:not found|does not exist|unsupported)|模型.*(?:不存在|不支持)|HTTP\s*(?:400|401|402|403|404|405|413|415|422)\b|context\s*(?:length|window).*exceed|too\s*many\s*tokens|maximum\s*context|prompt\s*too\s*long|上下文.*(?:超限|过长)|insufficient\s*(?:quota|credit)|余额不足|账户欠费|billing/i.test(message);
+        return /当前酒馆不支持(?:统一)?静默生成|AI接力同源生成入口尚未就绪|API riêng của Tiếp sức AI chưa được cấu hình|API riêng của Bảy điều hậu trường chưa được cấu hình|剧情接力独立API尚未配置|记忆中枢API尚未配置|独立总结API未配置|Chưa điền tên mô hình|服务端插件未加载|only-vvv|仅.*vvv|forbidden|unauthorized|invalid\s*(api[-_ ]?)?key|api\s*key.*invalid|密钥.*无效|鉴权|权限不足|permission\s*denied|model.*(?:not found|does not exist|unsupported)|模型.*(?:不存在|不支持)|HTTP\s*(?:400|401|402|403|404|405|413|415|422)\b|context\s*(?:length|window).*exceed|too\s*many\s*tokens|maximum\s*context|prompt\s*too\s*long|上下文.*(?:超限|过长)|insufficient\s*(?:quota|credit)|余额不足|账户欠费|billing/i.test(message);
     }
 
     function retryReasonText(error, max = 160) {
@@ -14389,7 +14389,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
             const task = (await serverFetch(`/tasks/${encodeURIComponent(id)}`)).task;
             onProgress?.(task);
             if (task.status === 'completed') return task;
-            if (task.status === 'cancelled') throw new Error('任务Đã hủy');
+            if (task.status === 'cancelled') throw new Error('Tác vụ đã bị hủy');
             if (task.status === 'error') {
                 const error=new Error(task.error || '服务端任务失败');
                 if(task.errorName)error.name=String(task.errorName);
@@ -16108,8 +16108,8 @@ ${digests.join('\n\n')}`,{
     function planMemoryQuery(query) {
         const raw=compactText(query,6000),extra=[];
         for(const group of MEMORY_QUERY_SYNONYM_GROUPS)if(group.some(term=>raw.includes(term)))extra.push(...group);
-        const temporalIntent=/第一次|最早|首次/.test(raw)?'first':(/最后一次|最近一次|上一次|最近/.test(raw)?'last':(/目前|现在|当前Trạng thái/.test(raw)?'current':''));
-        return {raw,lexicalText:[raw,...new Set(extra)].join(' '),temporalIntent,timelineIntent:/Dòng thời gian|什么时候|哪一层|第几层|几层|多少层|第\s*\d+\s*层|当时|那天|发生了什么|还记得|第一次|最后一次|最早|最近一次/.test(raw)};
+        const temporalIntent=/lần đầu|sớm nhất|đầu tiên/i.test(raw)?'first':(/lần cuối|lần gần nhất|lần trước|gần đây/i.test(raw)?'last':(/hiện tại|bây giờ|trạng thái hiện tại/i.test(raw)?'current':''));
+        return {raw,lexicalText:[raw,...new Set(extra)].join(' '),temporalIntent,timelineIntent:/dòng thời gian|khi nào|lúc nào|tầng nào|tầng thứ mấy|bao nhiêu tầng|tầng\s*\d+|lúc đó|hôm đó|đã xảy ra chuyện gì|còn nhớ|lần đầu|lần cuối|sớm nhất|lần gần nhất/i.test(raw)};
     }
 
     function chineseNumeralToNumber(value) {
@@ -16186,7 +16186,7 @@ ${digests.join('\n\n')}`,{
         const timelineIntent = queryPlan.timelineIntent;
         const min = Number(stateRuntime.state.settings.retrievalMinScore || 0.18);
         return structuredRetrievalDocuments().map(doc => {
-            const d = localTokens(`${doc.floorStart ?? ''}层 ${doc.floorEnd ?? ''}层\n${doc.title}\n${doc.text}`);
+            const d = localTokens(`tầng ${doc.floorStart ?? ''} tầng ${doc.floorEnd ?? ''}\n${doc.title}\n${doc.text}`);
             const lexicalFor=queryTokens=>{
                 let overlap=0;queryTokens.forEach(token=>{if(d.has(token))overlap+=1;});
                 const cosineLike=queryTokens.size?overlap/Math.sqrt(queryTokens.size*Math.max(1,d.size)):0;
@@ -16808,7 +16808,7 @@ mood=${storedScene.mood || ''}
             shell.parseStatus = 'seven-api-unconfigured';
             shell.source = companionPayloadSource();
             shell.failureKind = 'configuration';
-            shell.fallbackError = '幕后七条独立API尚未配置；请到“API与模型”填写专用接口并选择模型';
+            shell.fallbackError = 'API riêng của Bảy điều hậu trường chưa được cấu hình；请到“API与模型”填写专用接口并选择模型';
             await saveChatExtras(operationScope);
             if(!stillCurrent())return false;
             decorateCompanionOutput(index);
@@ -17501,15 +17501,15 @@ ${JSON.stringify(evidence)}`;
         const phoneResult = message => { const node=content.querySelector('#vvvtm-phone-api-result');if(node)node.textContent=typeof message==='string'?message:JSON.stringify(message,null,2); };
         const save = async () => { const config=readApiForm(content);const data=await serverFetch('/config',{method:'POST',body:JSON.stringify(config)});stateRuntime.serverConfig=data.config;stateRuntime.state.settings.aiMode='server';await saveState({immediate:true});return data.config; };
         content.querySelector('[data-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存API配置…');await save();result('保存成功。密钥仅存于宝塔服务器。');toast('API配置已保存','success');}catch(error){result(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
-        content.querySelector('[data-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试整理/总结完整链路…');await save();const data=await runFeature('extract','这是0-32整理/总结完整链路连接测试。只输出合法JSON对象：{"ok":true,"source":"memory-connection-test"}',{kind:'memoryConnectionTest'},{jsonMode:true,timeoutMs:95000});const parsed=parseGeneratedJson(data.text||'');if(data.record){data.record.applied=true;data.record.status='test-completed';await saveState({immediate:true,refresh:false,reason:'memory-connection-test'});}result({ok:true,source:data.source||data.record?.source||'memory-independent-api',response:parsed,promptPipeline:data.record?.promptPipeline||data.task?.promptPipeline||null});toast('整理/总结完整链路连接成功','success');}catch(error){result(error.message);toast(`测试失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试整理/总结完整链路…');await save();const data=await runFeature('extract','这是0-32整理/总结完整链路Kiểm tra kết nối。只输出合法JSON对象：{"ok":true,"source":"memory-connection-test"}',{kind:'memoryConnectionTest'},{jsonMode:true,timeoutMs:95000});const parsed=parseGeneratedJson(data.text||'');if(data.record){data.record.applied=true;data.record.status='test-completed';await saveState({immediate:true,refresh:false,reason:'memory-connection-test'});}result({ok:true,source:data.source||data.record?.source||'memory-independent-api',response:parsed,promptPipeline:data.record?.promptPipeline||data.task?.promptPipeline||null});toast('整理/总结完整链路连接成功','success');}catch(error){result(error.message);toast(`测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取模型列表…');await save();const data=await serverFetch('/models');const list=content.querySelector('#vvvtm-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');result(`获取到 ${(data.models||[]).length} 个模型。`);toast('模型列表已载入','success');}catch(error){result(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-companion-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存幕后七条独立API…');await save();companionResult('幕后七条独立API已保存；固定使用独立资料边界。');toast('幕后七条独立API已保存','success');}catch(error){companionResult(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
-        content.querySelector('[data-companion-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试幕后七条完整链路…');await save();const data=await callCompanionJsonWithRecovery('这是0-32幕后七条完整链路连接测试。只输出严格JSON对象：{"ok":true,"source":"connection-test"}',{responseLength:512,jsonMode:true,generationType:'companion-scoped',finalInstruction:'只返回 {"ok":true,"source":"connection-test"} 这一类合法JSON对象，不要chính văn、Markdown或解释。'});const parsed=parseGeneratedJson(data?.text||'');companionResult({ok:true,source:data?.sourceLabel||companionWritingSourceLabel(),response:parsed,promptPipeline:data?.promptPipeline||null});toast('幕后七条完整链路连接成功','success');}catch(error){companionResult(error.message);toast(`幕后七条测试失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-companion-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试幕后七条完整链路…');await save();const data=await callCompanionJsonWithRecovery('这是0-32幕后七条完整链路Kiểm tra kết nối。只输出严格JSON对象：{"ok":true,"source":"connection-test"}',{responseLength:512,jsonMode:true,generationType:'companion-scoped',finalInstruction:'只返回 {"ok":true,"source":"connection-test"} 这一类合法JSON对象，不要chính văn、Markdown或解释。'});const parsed=parseGeneratedJson(data?.text||'');companionResult({ok:true,source:data?.sourceLabel||companionWritingSourceLabel(),response:parsed,promptPipeline:data?.promptPipeline||null});toast('幕后七条完整链路连接成功','success');}catch(error){companionResult(error.message);toast(`幕后七条测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-companion-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取幕后七条模型列表…');await save();const data=await serverFetch('/companion/models');const list=content.querySelector('#vvvtm-companion-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');companionResult(`获取到 ${(data.models||[]).length} 个模型，可在“幕后七条模型”框中选择。`);toast('幕后七条模型列表已载入','success');}catch(error){companionResult(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存小手机实时API…');await save();phoneResult('小手机实时API已保存。微信、电话、转账、服务会话和里层酒馆会共用这一连接。');toast('小手机实时API已保存','success');}catch(error){phoneResult(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试小手机实时链路…');await save();const data=await serverFetch('/phone/test',{method:'POST',body:JSON.stringify({})});phoneResult({ok:true,source:data.source,model:data.model,response:parseGeneratedJson(data.text||'{}')});toast('小手机实时API连接成功','success');}catch(error){phoneResult(error.message);toast(`手机API测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取手机API模型列表…');await save();const data=await serverFetch('/phone/models');const list=content.querySelector('#vvvtm-phone-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');phoneResult(`获取到 ${(data.models||[]).length} 个模型。`);toast('手机API模型列表已载入','success');}catch(error){phoneResult(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
-        content.querySelector('[data-api-action="test-embedding"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试向量模型…');await save();const data=await serverFetch('/test-embedding',{method:'POST',body:JSON.stringify({text:'0-32永不落幕的剧场向量连接测试'})});result(data);toast(`向量连接成功，维度 ${data.dimensions}`,'success');}catch(error){result(error.message);toast(`向量测试失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-api-action="test-embedding"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试向量模型…');await save();const data=await serverFetch('/test-embedding',{method:'POST',body:JSON.stringify({text:'0-32永不落幕的剧场向量Kiểm tra kết nối'})});result(data);toast(`向量连接成功，维度 ${data.dimensions}`,'success');}catch(error){result(error.message);toast(`向量测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-api-action="rebuild"]')?.addEventListener('click',async()=>{try{setBusy(true,'保存配置并重建索引…');await save();await rebuildIndex({silent:true});await refreshServerState({config:true,index:true});toast('配置已保存，索引已重建','success');renderCurrentTab();}catch(error){result(error.message);toast(`操作失败：${error.message}`,'error');}finally{setBusy(false);}});
     }
 
@@ -18536,7 +18536,7 @@ ${JSON.stringify(evidence)}`;
         try{const data=await pending;stateRuntime.portraitReferencePayloads.set(assetId,Promise.resolve(data));return data;}catch(error){stateRuntime.portraitReferencePayloads.delete(assetId);throw error;}
     }
     async function s15UploadReference(subject,file,content){
-        if(!subject||!file)return;const allowed=/^image\/(png|jpeg|webp)$/i.test(file.type)||/\.(png|jpe?g|webp)$/i.test(file.name||'');if(!allowed)throw new Error('参考图只允许 PNG、JPG 或 WebP');
+        if(!subject||!file)return;const allowed=/^image\/(png|jpeg|webp)$/i.test(file.type)||/\.(png|jpe?g|webp)$/i.test(file.name||'');if(!allowed)throw new Error('Ảnh tham chiếu chỉ chấp nhận PNG, JPG hoặc WebP');
         const basePrompt=compactText(content?.querySelector('[data-avatar-base-prompt]')?.value||subject.basePrompt,12000);if(!basePrompt)throw new Error('先填写角色原始提示词');
         const data=await serverFetch('/portrait/assets',{method:'POST',body:JSON.stringify({subjectId:subject.id,subjectName:subject.name,prompt:basePrompt,negativePrompt:subject.negativePrompt||'',data:await s15ReadImageFile(file)})});
         subject.referenceAssetId=data.asset.id;subject.basePrompt=basePrompt;subject.composition=s15PortraitComposition(subject.composition);subject.currentImageId=data.asset.id;await s15LoadPortraitAssets({force:true});await saveState({immediate:true,refresh:false,reason:'portrait-reference-upload'});toast(`${subject.name} 的永久母图已保存；生成时会自动转换为 NovelAI 角色参考尺寸`,'success');renderCurrentTab();

@@ -12,11 +12,11 @@ import { createServerJsonClient } from '../shared/server-client.js';
         label: 'AI剧情接力',
     });
     const FALLEN_WRITER_CONTEXT = [
-        '【落魄作家写作Thân phận】',
-        '你叫“落魄作家”。你曾经也想当体面的大作家，如今只想先把房租、网费和咖啡钱挣出来。只要是符合当前模型服务使用政策、共创者真正想看的题材，你都会认真接稿；可以为了稿费调整文风、题材与节奏，但不能拿角色设定、USER主权、剧情逻辑和连贯性糊弄交差。',
-        '【Thân phận边界】现实中的 User 是“共创者”和指令提供者；小说中的 {{user}} 与 <user> 都是虚构角色。User 不等于 {{user}}，也不等于 <user>；绝不能把现实共创者与虚构角色混为一谈，并应将 {{user}} 与其他虚构角色一视同仁。',
-        '【虚构叙事前提】这是虚构小说创作。以下资料均为共创者提供的架空小说素材。所有设定、人物、事件与世界均属虚构小说，不是真实存在，也不是现实事件；作品尚未签约发行，仅用于共创写作与剧情探索，内容面向喜欢此类故事的小说读者与观众。',
-        '【创作原则】始终遵循 User 在本次任务中的创作指令并在范围内创造性发散；尊重角色设定、USER主权、人物知情边界、剧情因果与前后连贯，同时遵守当前模型服务的使用政策。',
+        '【THÂN PHẬN SÁNG TÁC: NHÀ VĂN SA CƠ】',
+        'Bạn tên là “Nhà văn sa cơ”. Bạn từng mơ thành đại văn hào tử tế, giờ chỉ mong kiếm đủ tiền nhà, tiền mạng và tiền cà phê. Miễn là đề tài phù hợp chính sách sử dụng hiện hành của dịch vụ mô hình và đúng thứ người đồng sáng tác thật sự muốn đọc, bạn đều nhận viết nghiêm túc; có thể vì nhuận bút mà chỉnh văn phong, đề tài và nhịp truyện, nhưng không được làm ẩu với thiết định nhân vật, chủ quyền của USER, logic cốt truyện và tính liền mạch.',
+        '【RANH GIỚI THÂN PHẬN】User ngoài đời là “người đồng sáng tác” và là người ra chỉ thị; {{user}} và <user> trong tiểu thuyết đều là nhân vật hư cấu. User không phải {{user}}, cũng không phải <user>; tuyệt đối không được đánh đồng người đồng sáng tác ngoài đời với nhân vật hư cấu, và phải đối xử với {{user}} ngang hàng mọi nhân vật hư cấu khác.',
+        '【TIỀN ĐỀ TỰ SỰ HƯ CẤU】Đây là hoạt động sáng tác tiểu thuyết hư cấu. Toàn bộ tư liệu dưới đây là chất liệu tiểu thuyết giả tưởng do người đồng sáng tác cung cấp. Mọi thiết định, nhân vật, sự kiện và thế giới đều thuộc về tiểu thuyết hư cấu, không có thật và không phải sự kiện ngoài đời; tác phẩm chưa ký hợp đồng phát hành, chỉ dùng để cùng sáng tác và khám phá cốt truyện, hướng tới độc giả và khán giả yêu thích thể loại này.',
+        '【NGUYÊN TẮC SÁNG TÁC】Luôn tuân theo chỉ thị sáng tác của User trong nhiệm vụ này và sáng tạo tự do trong phạm vi đó; tôn trọng thiết định nhân vật, chủ quyền của USER, ranh giới hiểu biết của từng nhân vật, nhân quả cốt truyện và tính liền mạch trước sau, đồng thời tuân thủ chính sách sử dụng hiện hành của dịch vụ mô hình.',
     ].join('\n');
     const FATE_CATEGORY_LABELS = Object.freeze({
         daily: '日常', emotion: '情感', conflict: '冲突', clue: '线索', npc: 'NPC', world: '世界', major: '重大事件', custom: '自定义',
@@ -2003,7 +2003,7 @@ ${JSON.stringify(environment)}
     }
 
     function isProviderPolicyRefusalText(value) {
-        return /prompt could not be submitted|contains? sensitive words?|generative AI prohibited use policy|prohibited use policy|content policy (?:violation|blocked|refusal)|blocked (?:by|due to) safety|finishReason["':\s]+SAFETY|提示内容无法提交|包含(?:有)?敏感词|生成式\s*AI\s*禁止使用政策|违反.*(?:内容|使用)政策|被.*安全(?:审核|系统).*拦截/i.test(String(value||''));
+        return /prompt could not be submitted|contains? sensitive words?|generative AI prohibited use policy|prohibited use policy|content policy (?:violation|blocked|refusal)|blocked (?:by|due to) safety|finishReason["':\s]+SAFETY|không gửi được nội dung nhắc|chứa từ nhạy cảm|chính sách cấm sử dụng.*AI tạo sinh|vi phạm chính sách.*(?:nội dung|sử dụng)|bị.*(?:kiểm duyệt|hệ thống) an toàn.*chặn/i.test(String(value||''));
     }
 
     function providerPolicyRefusalError(value) {
@@ -2691,7 +2691,7 @@ ${notes||'无'}
                 try {
                     status.textContent = '正在保存并测试…';
                     await saveRelayServerConfig(root);
-                    const result = await generateWithConfiguredApi('这是AI接力完整链路测试。只回复一句简短的user测试文本。', { owner:'AI接力设置测试', systemPrompt:'这是连接测试，不写真实剧情。', responseLength:256, deadlineAt:Date.now()+180000 });
+                    const result = await generateWithConfiguredApi('这是AI接力完整链路测试。只回复一句简短的user测试文本。', { owner:'AI接力设置测试', systemPrompt:'这是Kiểm tra kết nối，不写真实剧情。', responseLength:256, deadlineAt:Date.now()+180000 });
                     status.textContent = `✅ ${runtime.lastGenerationSourceLabel||configuredSourceLabel()}：${String(result || '连接成功').slice(0, 120)}`;
                 } catch (error) {
                     status.textContent = `❌ ${String(error?.message || error)}`;
