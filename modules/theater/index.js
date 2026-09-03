@@ -6581,9 +6581,9 @@ ${scene.mood||''}`,12000);
         (s.characterWorld?.events || []).forEach(item => { if (eq(item.character)) item.character = newName; });
         (s.memoryAnchors || []).forEach(anchor => {
             if (Array.isArray(anchor.people)) anchor.people = anchor.people.map(name => eq(name) ? newName : name);
-            else if (typeof anchor.people === 'string') anchor.people = anchor.people.split(/[、,，]/).map(name => eq(name) ? newName : name).join('、');
+            else if (typeof anchor.people === 'string') anchor.people = anchor.people.split(/[,;]/).map(name => eq(name.trim()) ? newName : name.trim()).join(', ');
         });
-        // P13：长期生活认知必须跟随NPC真名合并，不能让旧称呼下的忌口/偏好变成孤岛。
+        // P13: nhận thức đời sống dài hạn phải được gộp theo tên thật của NPC, không để những mục kiêng khem/sở thích gắn với tên gọi cũ trở thành ốc đảo.
         (s.lifeFacts || []).forEach(item => { if (eq(item?.subject)) item.subject = newName; });
         (s.episodeFacts || []).forEach(item => { if (Array.isArray(item?.people)) item.people=item.people.map(person=>eq(person)?newName:person); });
         const phone = s.phone || {};
@@ -6603,9 +6603,9 @@ ${scene.mood||''}`,12000);
         if(!incoming)return oldIdentity;if(!oldIdentity)return incoming;
         if(npcNameKey(oldIdentity)===npcNameKey(incoming)||oldIdentity.includes(incoming))return oldIdentity;
         if(incoming.includes(oldIdentity))return incoming;
-        if(/^(?:Thân phậnChưa rõ|Chưa rõ|普通人|路人|陌生人|群聊成员|具体Thân phận待确认)/.test(incoming))return oldIdentity;
-        if(/(?:升职|降职|转正|离职|辞职|转岗|改名|Thân phận曝光|真实Thân phận|原来是|确认是)/.test(evidence))return incoming;
-        return `${oldIdentity}；${incoming}`.split('；').filter((value,index,array)=>value&&array.indexOf(value)===index).join('; ').slice(0,500);
+        if(/^(?:chưa rõ thân phận|chưa rõ|người thường|người qua đường|người lạ|thành viên nhóm chat|thân phận cụ thể chờ xác nhận)/i.test(incoming))return oldIdentity;
+        if(/(?:thăng chức|giáng chức|vào chính thức|nghỉ việc|từ chức|chuyển vị trí|đổi tên|lộ thân phận|thân phận thật|hóa ra là|xác nhận là)/i.test(evidence))return incoming;
+        return `${oldIdentity}; ${incoming}`.split(';').map(value=>value.trim()).filter((value,index,array)=>value&&array.indexOf(value)===index).join('; ').slice(0,500);
     }
 
     function registerNpcIdentity(raw = {}, floor = -1) {
@@ -6650,14 +6650,14 @@ ${scene.mood||''}`,12000);
         const s = stateRuntime.state;
         if ((s.tables?.people || []).some(row => npcNameKey(row?.['Họ tên']) === npcNameKey(clean))) return false;
         const profile = (s.phone?.groupProfiles || []).find(row => compactText(row?.groupName,120) === compactText(groupName,120));
-        const identityMap = { class:'同学/班级群成员', course:'同学/课程群成员', campus:'校内群成员', dorm:'室友/宿舍群成员', club:'社团成员', work:'同事/工作群成员', project:'项目组成员', family:'家庭群成员', friends:'朋友群成员', guild:'公会/战队群成员' };
+        const identityMap = { class:'Bạn học / thành viên nhóm lớp', course:'Bạn học / thành viên nhóm môn học', campus:'Thành viên nhóm trong trường', dorm:'Bạn cùng phòng / thành viên nhóm ký túc xá', club:'Thành viên câu lạc bộ', work:'Đồng nghiệp / thành viên nhóm công việc', project:'Thành viên nhóm dự án', family:'Thành viên nhóm gia đình', friends:'Thành viên nhóm bạn bè', guild:'Thành viên nhóm công hội/đội tuyển' };
         s.tables.people.push({
             'Họ tên':clean,
             'Tuổi':'',
-            'Thân phận':identityMap[profile?.type] || '群聊成员（具体Thân phận待剧情确认）',
-            '地点':'',
+            'Thân phận':identityMap[profile?.type] || 'Thành viên nhóm chat (thân phận cụ thể chờ mạch truyện xác nhận)',
+            'Địa điểm':'',
             'Tính cách':'',
-            'Ghi chú':`由稳定群聊「${compactText(groupName,120)||'群聊'}」首次出现，低影响背景NPC；具体资料等待剧情明确。`,
+            'Ghi chú':`Xuất hiện lần đầu từ nhóm chat ổn định “${compactText(groupName,120)||'nhóm chat'}”, là NPC nền ít tác động; tư liệu cụ thể chờ mạch truyện làm rõ.`,
             _sourceFloor:Number(floor),
             _sourceMessageKey:messageStableKey(context()?.chat?.[Number(floor)]),
         });
@@ -6675,13 +6675,13 @@ ${scene.mood||''}`,12000);
             const floor = resolvedMemoryFloor(raw?.floor, defaultFloor);
             const people = Array.isArray(raw?.people)
                 ? [...new Set(raw.people.map(name => canonicalNpcName(name)).filter(Boolean))].slice(0, 20)
-                : compactText(raw?.people, 400).split(/[、,，]/).map(name => canonicalNpcName(name)).filter(Boolean).slice(0,20);
+                : compactText(raw?.people, 400).split(/[,;]/).map(name => canonicalNpcName(name.trim())).filter(Boolean).slice(0,20);
             const anchor = {
                 id: uid('anchor'),
                 date: compactText(raw?.date, 120), time: compactText(raw?.time, 120), floor,
                 type: compactText(raw?.type || 'episode', 80), people,
                 event, details,
-                // 仅供主记忆API彻底失败时保存该AITầng的原文。正常模型锚点不产生此字段。
+                // Chỉ dùng để lưu nguyên văn của tầng AI đó khi API ký ức chính thất bại hoàn toàn. Mốc neo do mô hình sinh bình thường không tạo ra trường này.
                 rawFallbackText: compactText(raw?.rawFallbackText, 18000),
                 tags: Array.isArray(raw?.tags) ? raw.tags.map(tag => compactText(tag,80)).filter(Boolean).slice(0,16) : [],
                 importance: ['core','high','normal','detail'].includes(String(raw?.importance||'').toLowerCase()) ? String(raw.importance).toLowerCase() : 'normal',
@@ -6699,11 +6699,11 @@ ${scene.mood||''}`,12000);
     }
 
     function normalizeLifeFactKey(value, fallback = '') {
-        return compactText(value || fallback, 180).toLowerCase().replace(/[\s，,。；;：:]+/g, ':').replace(/^:+|:+$/g, '');
+        return compactText(value || fallback, 180).toLowerCase().replace(/[\s,.;:]+/g, ':').replace(/^:+|:+$/g, '');
     }
 
     function normalizeLifeFactValue(value) {
-        return compactText(value, 300).toLowerCase().replace(/\s+/g, '').replace(/[，,。；;]+$/g, '');
+        return compactText(value, 300).toLowerCase().replace(/\s+/g, ' ').trim().replace(/[,.;]+$/g, '');
     }
 
     function mergeLifeFacts(list, defaultFloor = -1) {
@@ -6721,7 +6721,7 @@ ${scene.mood||''}`,12000);
             if (!subject || !key || (!fact && !value)) continue;
             const floor = resolvedMemoryFloor(raw?.floor, defaultFloor);
             const sourceMessageKey=floor>=0?messageStableKey(context()?.chat?.[floor]):'';
-            const explicit = raw?.explicit === true || /^(?:true|1|yes|是)$/i.test(String(raw?.explicit ?? ''));
+            const explicit = raw?.explicit === true || /^(?:true|1|yes|có|đúng)$/i.test(String(raw?.explicit ?? ''));
             const normalizedValue = normalizeLifeFactValue(value || fact);
             const sameKey = s.lifeFacts.filter(item => npcNameKey(item?.subject) === npcNameKey(subject) && normalizeLifeFactKey(item?.key) === key);
             let existing = sameKey.find(item => normalizeLifeFactValue(item?.value || item?.fact) === normalizedValue && item?.status !== 'historical');
@@ -6753,7 +6753,7 @@ ${scene.mood||''}`,12000);
                 existing.status = 'confirmed';
                 delete existing.conflictsWithConfirmed;
             } else if (conflictingConfirmed) {
-                // P13：重复行为只能成为“观察到的例外/可能变化”，不能推翻角色亲口确认过的偏好或限制。
+                // P13: hành vi lặp lại chỉ có thể trở thành “ngoại lệ quan sát được / thay đổi khả dĩ”, không được lật đổ sở thích hay giới hạn mà chính nhân vật đã xác nhận.
                 existing.status = 'observed';
                 existing.conflictsWithConfirmed = conflictingConfirmed.id;
             } else if (evidenceCount >= threshold) {
@@ -6764,7 +6764,7 @@ ${scene.mood||''}`,12000);
                 delete existing.conflictsWithConfirmed;
             }
 
-            // P13优先级：新的明确陈述可推翻旧明确陈述；stable只能替代observed/stable，绝不覆盖confirmed。
+            // Thứ tự ưu tiên P13: một tuyên bố rõ ràng mới có thể lật một tuyên bố rõ ràng cũ; stable chỉ thay được observed/stable, tuyệt đối không ghi đè confirmed.
             if (existing.status === 'confirmed' || existing.status === 'stable') {
                 for (const other of sameKey) {
                     if (other === existing || normalizeLifeFactValue(other?.value || other?.fact) === normalizedValue) continue;
@@ -6777,7 +6777,7 @@ ${scene.mood||''}`,12000);
                 }
             }
         }
-        // S10 永久资料库：长期Sự thật đời thường只允许新增/Trạng thái演进，不再因容量阈值自动淘汰。
+        // Kho tư liệu vĩnh viễn S10: sự thật đời sống dài hạn chỉ được thêm mới/tiến hóa trạng thái, không còn bị loại tự động vì chạm ngưỡng dung lượng.
         return changed;
     }
 
@@ -6791,8 +6791,8 @@ ${scene.mood||''}`,12000);
     function currentChatMemoryHealthAttempts({ limit = 0 } = {}) {
         const currentChat = getChatKey();
         const rows = (memoryHealthState().attempts || []).filter(item => !item?.chatIdentity || item.chatIdentity === currentChat);
-        // U1.6.3：编辑/重生成同一AITầng时，旧signature审计仍保留在永久日志里，
-        // 但健康统计只认该Tầng最后一次结果，避免同一Tầng重复占“最近20轮”。
+        // U1.6.3: khi sửa/sinh lại cùng một tầng AI thì bản kiểm toán theo signature cũ vẫn nằm trong nhật ký vĩnh viễn,
+        // nhưng thống kê sức khỏe chỉ tính kết quả cuối cùng của tầng đó, tránh để một tầng chiếm nhiều suất trong “20 lượt gần nhất”.
         const byFloor = new Map();
         for (const item of rows) {
             const floor = resolvedMemoryFloor(item?.floor, -1);
@@ -6809,8 +6809,8 @@ ${scene.mood||''}`,12000);
         const attempt = { id: entry.id || uid('health'), time: nowText(), ...entry };
         const priorIndex = h.attempts.findIndex(item => item.id === attempt.id);
         if (priorIndex >= 0) h.attempts[priorIndex] = attempt; else h.attempts.push(attempt);
-        // U1.6.2：memoryHealthRecentLimit 以前只是摆设。现在只限制“健康统计窗口”，不删除历史审计记录。
-        // 这样既不会让几十/几百轮旧审计持续拖慢页面，也不会破坏永久档案的可追溯性。
+        // U1.6.2: memoryHealthRecentLimit trước đây chỉ là đồ trang trí. Giờ nó chỉ giới hạn “cửa sổ thống kê sức khỏe”, không xóa bản ghi kiểm toán lịch sử.
+        // Nhờ vậy vừa không để hàng chục/hàng trăm lượt kiểm toán cũ làm chậm trang, vừa không phá vỡ khả năng truy vết của hồ sơ vĩnh viễn.
         const limit=Math.max(20,Math.min(500,Number(stateRuntime.state?.settings?.memoryHealthRecentLimit||120)));
         const unique=currentChatMemoryHealthAttempts({limit});
         h.totalTurns = unique.length;
@@ -6832,51 +6832,51 @@ ${scene.mood||''}`,12000);
 
     function lifeDetailCategory(sentence) {
         const raw = String(sentence || '').trim();
-        // 只抓已经发生/明确陈述的Sự thật đời thường；疑问、假设、比喻/惯用语不触发补抓。
-        if (!raw || /[？?]/.test(raw) || /^(?:如果|假如|假设|要是|万一|是否|要不要|能不能|可不可以|会不会)/.test(raw) || /(?:如果|假如|假设|要是|万一).{0,80}(?:就|那么|的话)/.test(raw)) return '';
-        const s = raw.replace(/吃惊|吃亏|吃醋|吃瘪|吃苦|吃闭门羹|喝西北风/g, '');
-        const abstractConsume = /(?:吃(?:了)?[^，。；！？!?]{0,10}(?:亏|苦头|闭门羹|耳光|巴掌|官司)|(?:不)?吃(?:了)?这一套|喝(?:了)?(?:西北风|口风|一肚子气)|吃醋|吃惊)/;
+        // Chỉ bắt những sự thật đời sống đã xảy ra hoặc được nêu rõ; câu hỏi, giả định, ẩn dụ và thành ngữ không kích hoạt việc quét bù.
+        if (!raw || /[?]/.test(raw) || /^(?:nếu|giả như|giả sử|nếu mà|lỡ như|có phải|có nên|có thể không|được không|liệu có)/i.test(raw) || /(?:nếu|giả như|giả sử|nếu mà|lỡ như).{0,80}(?:thì|vậy thì)/i.test(raw)) return '';
+        const s = raw.replace(/ăn không ngồi rồi|ăn nói|ăn ý|ăn gian|ăn hiếp|ăn vạ|ăn mừng|uống rượu mừng/gi, '');
+        const abstractConsume = /(?:ăn[^,.;!?]{0,10}(?:thiệt|đòn|tát|quả đắng|vạ)|không ăn thua|ăn không được|nuốt cục tức|ghen tuông|giật mình)/i;
         if (abstractConsume.test(raw)) return '';
-        if (/(?:买|购买)(?:了)?(?:一个|个)?(?:教训|关子|安心|放心|面子|人情|希望|梦想|快乐|自由)|不买账|买账/.test(s)) return '';
-        const completedAction='(?:答应|承诺|同意|Lời hẹn|说好|接受|吃|喝|点单?|买|购买|下单|去|前往|到达|来到|回到|返回|穿|换上|戴上|套上|花|支付|付款|洗|收拾|打扫|刷|擦|清理|整理)';
+        if (/(?:mua)[^,.;!?]{0,8}(?:bài học|sự yên tâm|thể diện|cái tình|hy vọng|giấc mơ|niềm vui|tự do)|không mua chuộc|mua chuộc/i.test(s)) return '';
+        const completedAction='(?:đồng ý|hứa|chấp nhận|hẹn|đã hẹn|nhận lời|ăn|uống|gọi món|mua|đặt đơn|đi|tới|đến nơi|quay về|trở về|mặc|thay|đeo|khoác|tiêu|thanh toán|trả tiền|rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)';
         // Keep this regex as string concatenation. The test harness extracts
         // individual functions from this file and cannot safely parse a
         // template literal containing an interpolated regex fragment.
         const deniedCompletedAction=new RegExp(
-            '(?:(?:没有|没|未|未曾|并未|不曾|从未|不(?!但|仅|只|过)(?:会|能|愿意?|想)?)\\s*(?:真正|实际|明确)?\\s*'
+            '(?:(?:không|chưa|chẳng|không hề|chưa từng|chưa bao giờ|không (?:thể|muốn|chịu))\\s*(?:thật sự|thực tế|rõ ràng)?\\s*'
             + completedAction
-            + '|(?:拒绝|否认)(?:了)?\\s*'
+            + '|(?:từ chối|phủ nhận)\\s*'
             + completedAction
             + ')',
         );
         const hasDeniedCompletedAction=deniedCompletedAction.test(s);
-        // U1.6.2：计划/愿望不是“已经发生的生活细节”。旧P13会把“待会去买红豆面包 / 明天去市区”当成Đã hoàn thành事件，
-        // 既把覆盖分母越滚越大，也可能把未来计划写成历史事实。只有句内同时存在明确完成证据时才继续识别。
-        const futureIntent = /(?:打算|计划|准备(?:去|买|吃|喝|穿|换|点)|待会(?:儿)?|等会(?:儿)?|一会(?:儿)?|稍后|明天|后天|下次|回头|之后再|想去|想买|想吃|想喝|要去|要买|要吃|要喝|会去|将去|将要)/;
-        const completedEvidence = /(?:已经|刚刚|刚才|刚吃|刚喝|刚买|刚到|昨天|昨晚|前天|买了|购买了|下单了|吃了|喝了|去了|到达了|来到了|回到了|穿了|换上了|戴上了|花了|支付了|拿到了|领到了|完成了|答应(?:了)?|同意(?:了)?|承诺(?:了)?|Lời hẹn(?:了)?|说好|接受(?:了)?|洗(?:了|完)|收拾(?:了|完)|打扫(?:了|完))/;
+        // U1.6.2: kế hoạch/mong muốn không phải “chi tiết đời sống đã xảy ra”. P13 cũ coi những câu như “lát nữa đi mua bánh mì đậu đỏ / mai lên trung tâm” là sự kiện đã hoàn tất,
+        // vừa làm mẫu số độ phủ phình to, vừa có thể ghi kế hoạch tương lai thành sự thật lịch sử. Chỉ tiếp tục nhận diện khi trong câu có kèm bằng chứng hoàn tất rõ ràng.
+        const futureIntent = /(?:dự định|kế hoạch|chuẩn bị (?:đi|mua|ăn|uống|mặc|thay|gọi)|lát nữa|chốc nữa|một lát nữa|sau đó|ngày mai|ngày kia|lần sau|để sau|rồi sẽ|muốn đi|muốn mua|muốn ăn|muốn uống|sẽ đi|sẽ mua|sẽ ăn|sẽ uống|sắp)/i;
+        const completedEvidence = /(?:đã|vừa|vừa mới|vừa ăn|vừa uống|vừa mua|vừa tới|hôm qua|tối qua|hôm kia|đã mua|đã đặt đơn|đã ăn|đã uống|đã đi|đã tới nơi|đã quay về|đã mặc|đã thay|đã đeo|đã tiêu|đã thanh toán|đã nhận được|đã hoàn thành|đã đồng ý|đã hứa|đã hẹn|đã nhận lời|rửa xong|dọn xong|quét dọn xong)/i;
         if (futureIntent.test(s) && !completedEvidence.test(s)) return '';
-        // U1.7.2：P13只审计“已经发生/明确成立”的事实。旧版会把“也可以先去买…、绝不可能穿…、写到这里我想吃…”
-        // 这类建议、假设、作者旁白和否定情境当成漏记，导致一键修复永远清不零。先在候选源头剔除伪事实。
-        const speculativeIntent = /(?:也?可以(?:直接|先|去|让)?|不妨|建议|最好|应该|应当|不如|要不要|记得|别忘(?:了)?|先(?:去)?(?:吃|喝|买|点|穿|换|去)|以后|将来|即将|等[^，。；！？!?]{0,24}(?:再|后))/;
-        const metaNarration = /(?:<\/?user_input\b|共创者|输入解析|写到这里|这章稿费|作者(?:说|觉得|想)|旁白|选项[:：]?|建议[:：]?|情境[:：]?|确认[:：]?|动作[:：]?|反应[:：]?|可以直接让|也可以先)/i;
-        const narrativeCommitmentReference = /(?:对|看到|听到|关于)[^，。；！？!?\n]{0,48}(?:答应|承诺|Lời hẹn|说好)[^，。；！？!?\n]{0,48}(?:反应|回应|态度|描写)|(?:答应|承诺|Lời hẹn|说好)(?:完|过)[^，。；！？!?\n]{0,50}(?:之后|以后|后)/;
-        const negatedWear = /(?:绝不可能|不可能|不会|不能|没有|没|未|不|绝不)[^，。；！？!?]{0,18}(?:穿着|穿上|穿了|换上|戴上|套上)/;
+        // U1.7.2: P13 chỉ kiểm toán những sự thật “đã xảy ra/đã thành lập rõ ràng”. Bản cũ coi những câu như “cũng có thể đi mua trước…, không đời nào mặc…, viết tới đây tôi muốn ăn…”
+        // tức là gợi ý, giả định, lời dẫn của tác giả và ngữ cảnh phủ định, là bị bỏ sót, khiến nút sửa một chạm không bao giờ về 0. Hãy loại các sự thật giả ngay từ nguồn ứng viên.
+        const speculativeIntent = /(?:cũng có thể(?: trực tiếp| trước| đi| để)?|chi bằng|gợi ý|tốt nhất|nên|đáng lẽ|hay là|có nên|nhớ|đừng quên|(?:đi )?(?:ăn|uống|mua|gọi|mặc|thay|đi) trước|sau này|tương lai|sắp tới|đợi[^,.;!?]{0,24}(?:rồi|sau))/i;
+        const metaNarration = /(?:<\/?user_input\b|người đồng sáng tác|phân tích đầu vào|viết tới đây|nhuận bút chương này|tác giả (?:nói|thấy|muốn)|lời dẫn|lựa chọn[:]?|gợi ý[:]?|tình huống[:]?|xác nhận[:]?|hành động[:]?|phản ứng[:]?|có thể để thẳng|cũng có thể trước)/i;
+        const narrativeCommitmentReference = /(?:về việc|nhìn thấy|nghe thấy|liên quan tới)[^,.;!?\n]{0,48}(?:đồng ý|hứa|hẹn|đã hẹn)[^,.;!?\n]{0,48}(?:phản ứng|phản hồi|thái độ|miêu tả)|(?:đã|từng)\s*(?:đồng ý|hứa|hẹn)[^,.;!?\n]{0,50}(?:xong|sau đó|về sau)/i;
+        const negatedWear = /(?:không đời nào|không thể|sẽ không|không được|không có|chưa|chẳng|tuyệt đối không)[^,.;!?]{0,18}(?:đang mặc|mặc vào|đã mặc|thay sang|đeo lên|khoác lên)/i;
         if (negatedWear.test(s)) return '';
         if (metaNarration.test(s) || narrativeCommitmentReference.test(s)) return '';
         if (speculativeIntent.test(s) && !completedEvidence.test(s)) return '';
 
-        const commitment = /(?:答应|承诺|同意|Lời hẹn|说好|接受)(?:了)?[^，。；！？!?]{0,56}(?:参加|出席|代开|代为|帮|陪|接送|办理|处理|负责|照顾|去|做|完成|吃|喝|买|购买|洗|收拾|打扫|清理|整理)/;
+        const commitment = /(?:đồng ý|hứa|chấp nhận|hẹn|đã hẹn|nhận lời)[^,.;!?]{0,56}(?:tham gia|có mặt|làm thay|thay mặt|giúp|đi cùng|đưa đón|làm thủ tục|xử lý|phụ trách|chăm sóc|đi|làm|hoàn thành|ăn|uống|mua|rửa|dọn dẹp|quét dọn|lau dọn|sắp xếp)/i;
         if (commitment.test(s) && !hasDeniedCompletedAction) return 'commitment';
-        const householdRoutine=/(?:洗|收拾|打扫|刷|擦|清理|整理)(?:了|完|好|干净)?[^，。；！？!?]{0,24}(?:碗|餐具|厨房|房间|衣服|家务|卫生|桌子|地面|垃圾)/.test(s)
-            || /(?:把)?(?:碗|餐具|厨房|房间|衣服|家务|卫生|桌子|地面|垃圾)[^，。；！？!?]{0,16}(?:洗|收拾|打扫|刷|擦|清理|整理)(?:了|完|好|干净)/.test(s);
+        const householdRoutine=/(?:rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)[^,.;!?]{0,24}(?:bát|chén|bát đũa|bếp|căn phòng|quần áo|việc nhà|vệ sinh|bàn|sàn nhà|rác)/i.test(s)
+            || /(?:bát|chén|bát đũa|bếp|căn phòng|quần áo|việc nhà|vệ sinh|bàn|sàn nhà|rác)[^,.;!?]{0,16}(?:đã |)(?:rửa|dọn dẹp|quét dọn|cọ|lau|lau dọn|sắp xếp)\s*(?:xong|sạch)?/i.test(s);
         if (householdRoutine && !hasDeniedCompletedAction) return 'routine';
 
-        const namedFood = /(麻婆豆腐|宫保鸡丁|锅包肉|北京烤鸭|烤鸭|牛排|寿喜烧|韩式烤肉|煎饼果子|番茄牛腩|照烧鸡腿|酸菜鱼|水煮鱼|烤鱼|红烧肉|回锅肉|鱼香肉丝|青椒肉丝|糖醋里脊|小龙虾|烤串|炸串|螺蛳粉|桂林米粉|米线|拉面|乌冬|荞麦面|意面|意大利面|牛肉面|凉面|炸酱面|盖饭|炒饭|米饭|饭团|面条|火锅|烧烤|牛肉|鸡肉|猪排|饺子|馄饨|包子|小笼包|生煎|茶叶蛋|鸡蛋|三明治|披萨|汉堡|薯条|炸鸡|关东煮|寿司|咖喱|麻辣烫|冒菜|串串|甜品|蛋糕|冰淇淋|香菜|金针菇|豆皮|白萝卜|鱼豆腐|魔芋丝|福袋|海带结|苹果|香蕉|草莓|西瓜|橙子|葡萄)/;
-        const concreteDrink = /(杨枝甘露|抹茶拿铁|椰子水|珍珠奶绿|红豆冰|奶绿|拿铁|豆浆|酸奶|奶茶|咖啡|可乐|雪碧|果汁|柠檬茶|乌龙茶|绿茶|红茶|啤酒|红酒|白酒|鸡尾酒|矿泉水|苏打水|饮料)/;
-        const tasteOrSpec = /(微辣|中辣|重辣|特辣|少辣|不辣|无糖|少糖|三分糖|五分糖|七分糖|全糖|去冰|少冰|正常冰|常温|热饮|不要香菜|不加香菜|加香菜|少盐|少油|加蛋|加卤蛋|加金针菇|加豆皮)/;
-        const clothing = /(短靴|长靴|马丁靴|运动鞋|高跟鞋|凉鞋|皮鞋|拖鞋|连衣裙|短裙|长裙|牛仔裤|短裤|丝袜|袜子|外套|衬衫|T恤|制服|西装|帽子|围巾|内衣|睡衣|卫衣|毛衣|夹克|风衣|大衣|羽绒服|水手服|Cos服|cos服|鞋子|靴子|裙子|裤子|衣服)/;
-        const preferenceSpecific = /(爱吃|爱喝|喜欢吃|喜欢喝|不吃|不喝|讨厌吃|讨厌喝|偏爱吃|偏爱喝|忌口|过敏|不能吃|不能喝|习惯吃|习惯喝|通常吃|通常喝)/;
-        const generalPreference = /(喜欢|不喜欢|讨厌|偏爱)/;
+        const namedFood = /(phở|bún bò|bún chả|bún riêu|bún đậu|bánh mì|bánh cuốn|bánh xèo|bánh canh|hủ tiếu|mì quảng|cơm tấm|cơm rang|cơm chiên|cơm gà|cơm sườn|cơm|xôi|cháo|nem rán|nem nướng|chả giò|gỏi cuốn|bánh bao|há cảo|sủi cảo|mì tôm|mì gói|mì|miến|lẩu|nướng|thịt bò|thịt gà|sườn heo|bít tết|sushi|kimbap|ramen|udon|mì Ý|pizza|hamburger|khoai tây chiên|gà rán|oden|cà ri|trứng|trứng luộc|sandwich|tráng miệng|bánh ngọt|kem|rau mùi|nấm kim châm|đậu hũ|củ cải trắng|chả cá|thạch konjac|táo|chuối|dâu tây|dưa hấu|cam|nho)/i;
+        const concreteDrink = /(chè dưỡng nhan|matcha latte|nước dừa|trà sữa trân châu|đá đậu đỏ|trà sữa xanh|latte|sữa đậu nành|sữa chua|trà sữa|cà phê|coca|sprite|nước ép|trà chanh|trà ô long|trà xanh|hồng trà|bia|rượu vang|rượu trắng|cocktail|nước khoáng|nước soda|nước ngọt)/i;
+        const tasteOrSpec = /(hơi cay|cay vừa|cay nhiều|siêu cay|ít cay|không cay|không đường|ít đường|30% đường|50% đường|70% đường|100% đường|không đá|ít đá|đá bình thường|nhiệt độ thường|đồ nóng|không rau mùi|thêm rau mùi|ít muối|ít dầu|thêm trứng|thêm nấm kim châm|thêm đậu hũ)/i;
+        const clothing = /(bốt ngắn|bốt cao|giày martin|giày thể thao|giày cao gót|xăng đan|giày da|dép|váy liền|chân váy ngắn|váy dài|quần jean|quần short|tất da chân|tất|áo khoác|áo sơ mi|áo phông|đồng phục|vest|mũ|khăn quàng|đồ lót|đồ ngủ|áo hoodie|áo len|áo khoác jacket|áo gió|áo măng tô|áo phao|đồng phục thủy thủ|đồ cosplay|giày|bốt|váy|quần|quần áo)/i;
+        const preferenceSpecific = /(mê ăn|mê uống|thích ăn|thích uống|không ăn|không uống|ghét ăn|ghét uống|khoái ăn|khoái uống|kiêng|dị ứng|không ăn được|không uống được|quen ăn|quen uống|thường ăn|thường uống)/i;
+        const generalPreference = /(thích|không thích|ghét|ưa)/i;
         const hasNamedConsumable = namedFood.test(s) || concreteDrink.test(s) || tasteOrSpec.test(s);
         const genericWithFoodVerb = /(?:吃了?|点了?|点单|早餐|早饭|午饭|午餐|晚饭|晚餐|夜宵|宵夜|外卖).{0,18}(?:鱼|虾|蟹|面|粉|菜|汤|粥)/.test(s);
         const genericWithPreference = /(?:爱吃|喜欢吃|不吃|讨厌吃|偏爱吃|不能吃|习惯吃|通常吃).{0,28}[^，。；！？!?]{1,24}/.test(s)
