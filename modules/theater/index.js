@@ -2003,19 +2003,19 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function promiseTargetKeys(value) {
         const text = compactText(value, 1200);
         const rules = [
-            ['hospital', /医院|诊所|看病|就医/], ['cinema', /电影院|影院|看电影/],
-            ['school', /学校|上学|值日|家长会/], ['workplace', /公司|单位|办公室|上班/],
-            ['airport', /机场|航站楼/], ['station', /车站|火车站|高铁站|地铁站/],
-            ['restaurant', /餐厅|饭店|饭馆/], ['mall', /商场|超市|购物中心/], ['park', /公园|游乐园/],
-            ['room', /卧室|房间/], ['door', /门/], ['home', /家里|回家|住处/],
-            ['breakfast', /早餐|早饭|豆浆|油条/], ['lunch', /午饭|午餐/], ['dinner', /晚饭|晚餐|夜宵/],
+            ['hospital', /bệnh viện|phòng khám|khám bệnh|đi khám/i], ['cinema', /rạp chiếu phim|rạp phim|xem phim/i],
+            ['school', /trường học|đi học|trực nhật|họp phụ huynh/i], ['workplace', /công ty|cơ quan|văn phòng|đi làm/i],
+            ['airport', /sân bay|nhà ga hàng không/i], ['station', /bến xe|ga tàu|ga tàu cao tốc|ga tàu điện ngầm/i],
+            ['restaurant', /nhà hàng|quán ăn|tiệm ăn/i], ['mall', /trung tâm thương mại|siêu thị|trung tâm mua sắm/i], ['park', /công viên|khu vui chơi/i],
+            ['room', /phòng ngủ|căn phòng/i], ['door', /cửa/i], ['home', /ở nhà|về nhà|chỗ ở/i],
+            ['breakfast', /bữa sáng|đồ ăn sáng|sữa đậu nành|quẩy/i], ['lunch', /bữa trưa|cơm trưa/i], ['dinner', /bữa tối|cơm tối|ăn khuya/i],
         ];
         return new Set(rules.filter(([, pattern]) => pattern.test(text)).map(([key]) => key));
     }
 
     function promiseLexicalKeys(value) {
         const text = compactText(value, 1200).toLowerCase()
-            .replace(/(?:答应|承诺|Lời hẹn|说好|要求|保证|负责|需要|必须|应该|得|请|会|要|将|准备|计划|今天|今晚|今早|明天|后天|早上|上午|晚上|稍后|待会|等下|之后|接下来|每周|每天|长期|一辈子|永远|截止|并|且|和|与|把|给|在|去|来|过来|到|前往|陪|让|买|购买|下单|做|烧|炒|煮|炖|吃|喝|支付|付款|处理|完成)/g, '');
+            .replace(/\b(?:đồng ý|hứa|hẹn|đã hẹn|yêu cầu|bảo đảm|chịu trách nhiệm|cần|phải|nên|hãy|sẽ|muốn|chuẩn bị|dự định|hôm nay|tối nay|sáng nay|ngày mai|ngày kia|buổi sáng|sáng sớm|buổi tối|lát nữa|chốc nữa|chờ chút|sau đó|tiếp theo|mỗi tuần|mỗi ngày|dài hạn|cả đời|mãi mãi|hạn chót|và|với|cùng|cho|ở|đi|tới|qua đây|đến|đi cùng|mua|mua sắm|đặt đơn|làm|nấu|xào|luộc|hầm|ăn|uống|thanh toán|trả tiền|xử lý|hoàn thành)\b/gi, '');
         return semanticBigrams(text);
     }
 
@@ -2114,7 +2114,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             existing._lastSeenFloor=Number(floor);existing._repeatAfterClosureCount=Number(existing._repeatAfterClosureCount||0)+1;existing._lastRepeatedAfterClosureAt=nowText();
             return true;
         }
-        const meaningfulChange=pushHistoryIfChanged(existing, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], incoming, 'Lời hẹnTrạng thái/表述更新');
+        const meaningfulChange=pushHistoryIfChanged(existing, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], incoming, 'Cập nhật trạng thái/cách diễn đạt của lời hẹn');
         for (const key of ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái','Tầng']) if (compactText(incoming[key], 1400)) existing[key] = incoming[key];
         existing._entityId ||= promiseObjectId(item) || uid('promise');
         existing._recordedStoryTime ||= incoming._recordedStoryTime || (typeof storyTimeForFloor==='function'?storyTimeForFloor(existing._firstSeenFloor ?? floor).label:'');
@@ -2128,13 +2128,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return true;
     }
 
-    // UI 侧的明确确认不依赖剧情文本或后台分类器；只改变当前实体的生命周期，
-    // 并保留历史快照，供回溯和后续检索使用。_manualCompleted 也作为去重锚点，
-    // 防止下一轮模型换一种措辞后把同一条Lời hẹn重新打开。
+    // Việc xác nhận tường minh từ giao diện không phụ thuộc vào văn bản cốt truyện hay bộ phân loại ở nền; nó chỉ đổi vòng đời của thực thể hiện tại,
+    // đồng thời giữ lại ảnh chụp lịch sử để truy ngược và truy xuất về sau. _manualCompleted cũng là mốc neo khử trùng lặp,
+    // ngăn việc mô hình ở lượt sau đổi cách diễn đạt rồi mở lại đúng lời hẹn đó.
     function markPromiseCompleted(row, floor = -1) {
         if (!row || typeof row !== 'object' || promiseClosedStatus(row['Trạng thái'])) return false;
         row._history = Array.isArray(row._history) ? row._history : [];
-        row._history.push(historySnapshot(row, ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái'], '用户手动标记Lời hẹnĐã hoàn thành'));
+        row._history.push(historySnapshot(row, ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái'], 'Người dùng tự đánh dấu lời hẹn đã hoàn thành'));
         row._entityId ||= promiseObjectId(row) || uid('promise');
         const requestedFloor = Number(floor);
         const chatFloor = Number(context()?.chat?.length) - 1;
@@ -2148,7 +2148,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         row._completionMode = 'manual';
         row._completionFloor = completionFloor;
         row._manualCompletedAt = completionTime;
-        row._statusReason = `用户手动标记Lời hẹnĐã hoàn thành${completionFloor >= 0 ? `（第${completionFloor}层）` : ''}`;
+        row._statusReason = `Người dùng tự đánh dấu lời hẹn đã hoàn thành${completionFloor >= 0 ? ` (tầng ${completionFloor})` : ''}`;
         row._completionEvidence = {
             kind: 'manual-ui',
             id: row._entityId,
@@ -2174,12 +2174,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             : null;
         if (!explicitId && Array.isArray(rows) && Number.isInteger(numeric)) row = rows[numeric];
         if (!row) {
-            toast('找不到这条Lời hẹn，可能已被删除或聊天已切换', 'warn');
+            toast('Không tìm thấy lời hẹn này, có thể nó đã bị xóa hoặc bạn đã đổi cuộc trò chuyện', 'warn');
             return false;
         }
         const resolvedIndex = Array.isArray(rows) ? rows.indexOf(row) : -1;
-        // 允许用户先改内容再点“完成”，避免未保存的输入被丢掉。优先读取
-        // 实际点击按钮所在的表格行，兼容异步刷新/排序造成的索引变化。
+        // Cho phép người dùng sửa nội dung rồi mới bấm “hoàn thành”, tránh làm mất phần nhập chưa lưu. Ưu tiên đọc
+        // đúng dòng bảng chứa nút vừa bấm, để vẫn đúng khi làm mới/sắp xếp bất đồng bộ làm đổi chỉ số.
         if (content) {
             const rowScope = anchor?.closest?.('tr') || (resolvedIndex >= 0
                 ? content.querySelector(`tr[data-row="${resolvedIndex}"]`)
@@ -2189,11 +2189,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             inputs.forEach(input => { row[input.dataset.cell] = input.value.trim(); });
         }
         if (!markPromiseCompleted(row)) {
-            toast('这条Lời hẹn已经Đóng，无需重复完成', 'info');
+            toast('Lời hẹn này đã đóng rồi, không cần hoàn thành lại', 'info');
             return false;
         }
         await saveState({ immediate: true, refresh: true, reason: 'manual-promise-complete' });
-        toast('Lời hẹn已手动完成', 'success');
+        toast('Đã tự đánh dấu lời hẹn hoàn thành', 'success');
         return true;
     }
 
@@ -2241,12 +2241,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ? (Array.isArray(rows) ? rows.find(candidate => promiseEntityId(candidate) === explicitId) : null)
             : promiseRowForItem(source);
         if (!row) {
-            toast('找不到这条Lời hẹn，可能已被删除或聊天已切换', 'warn');
+            toast('Không tìm thấy lời hẹn này, có thể nó đã bị xóa hoặc bạn đã đổi cuộc trò chuyện', 'warn');
             return false;
         }
         const requestedFloor = Number(sidecarFloor);
         if (!markPromiseCompleted(row, Number.isFinite(requestedFloor) && requestedFloor >= 0 ? requestedFloor : -1)) {
-            toast('这条Lời hẹn已经Đóng，无需重复完成', 'info');
+            toast('Lời hẹn này đã đóng rồi, không cần hoàn thành lại', 'info');
             return false;
         }
         await saveState({ immediate: true, refresh: true, reason: 'manual-promise-complete' });
@@ -2254,18 +2254,18 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         // current state so a manually completed item disappears immediately.
         const floor = Number(sidecarFloor);
         if (Number.isFinite(floor) && floor >= 0) decorateCompanionOutput(floor);
-        toast('Lời hẹn已手动完成', 'success');
+        toast('Đã tự đánh dấu lời hẹn hoàn thành', 'success');
         return true;
     }
 
     function itemAcquisitionEvidence(itemName,sourceText) {
         const name=compactText(itemName,240),text=compactText(sourceText,18000);if(!name||!text)return null;
-        const significant=/(?:婚戒|戒指|钥匙|证件|Thân phận证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
-        const compact=value=>String(value||'').replace(/[\s“”"'‘’（）()]/g,'');
+        const significant=/(?:nhẫn cưới|nhẫn|chìa khóa|giấy tờ|căn cước|hộ chiếu|hợp đồng|sổ đỏ|quà|di vật|thẻ ngân hàng|con dấu|điện thoại|máy tính|máy ảnh|xe|nhà|căn hộ)/i.test(name);
+        const compact=value=>String(value||'').replace(/[\s“”"'‘’()]/g,'');
         const normalizedName=compact(name),normalizedText=compact(text);
-        const nameTokens=[normalizedName,...(normalizedName.match(/[一-鿿]{2,8}(?:戒指|钥匙|证|卡|手机|电脑|相机)/g)||[])];
-        if(significant&&!nameTokens.some(token=>token&&normalizedText.includes(token))&&!/(戒指|钥匙|证件|合同|礼物|手机|电脑|相机)/.test(normalizedText))return null;
-        const acquisition=/(?:买下|购买|买了|下单|付款买|送给|赠送|赠予|收到|收下|继承|捡到|拿到|领到|取回|交付|交到|递给|塞给|转交|归还|办完手续[^\u3002！？]{0,24}给|正式成为[^\u3002！？]{0,16}的持有人)/;
+        const nameTokens=[normalizedName,...(normalizedName.match(/[A-Za-zÀ-ỹ\s]{2,24}(?:nhẫn|chìa khóa|giấy tờ|thẻ|điện thoại|máy tính|máy ảnh)/gi)||[])];
+        if(significant&&!nameTokens.some(token=>token&&normalizedText.includes(token))&&!/(nhẫn|chìa khóa|giấy tờ|hợp đồng|quà|điện thoại|máy tính|máy ảnh)/i.test(normalizedText))return null;
+        const acquisition=/(?:mua về|mua sắm|đã mua|đặt đơn|trả tiền mua|tặng cho|tặng|biếu|nhận được|nhận lấy|thừa kế|nhặt được|lấy được|được cấp|lấy lại|bàn giao|giao cho|đưa cho|dúi cho|chuyển giao|hoàn lại|làm xong thủ tục[^.!?]{0,24}cho|chính thức trở thành[^.!?]{0,16}người sở hữu)/i;
         const match=normalizedText.match(acquisition);if(!match)return null;
         const start=Math.max(0,Number(match.index||0)-80),end=Math.min(text.length,Number(match.index||0)+match[0].length+160);
         return {kind:'acquisition',verb:match[0],evidenceText:compactText(text.slice(start,end),600),verified:true};
@@ -2287,12 +2287,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             _lastSeenFloor:Number(floor), _lastUpdatedAt:nowText(),
         };
         const sourceText=messageText(context()?.chat?.[Number(floor)]),acquisition=itemAcquisitionEvidence(name,sourceText);
-        const highMeaning=/(?:婚戒|戒指|钥匙|证件|Thân phận证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
+        const highMeaning=/(?:nhẫn cưới|nhẫn|chìa khóa|giấy tờ|căn cước|hộ chiếu|hợp đồng|sổ đỏ|quà|di vật|thẻ ngân hàng|con dấu|điện thoại|máy tính|máy ảnh|xe|nhà|căn hộ)/i.test(name);
         if (!existing) {
             if(highMeaning&&!acquisition){quarantineFactConflict('item-acquisition',null,incoming,{floor,sourceMessageKey,sourceText,reason:'important-item-without-acquisition-source'});return false;}
             rows.push({...incoming,_entityId:explicitId||uid('item'),_history:[],_acquisitionEvidence:acquisition||null,_evidenceRank:acquisition?80:45}); return true;
         }
-        pushHistoryIfChanged(existing, ['Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'], incoming, '物品Trạng thái/流转更新');
+        pushHistoryIfChanged(existing, ['Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'], incoming, 'Cập nhật trạng thái/luân chuyển vật phẩm');
         for (const key of ['Tên vật phẩm','Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú']) if (compactText(incoming[key], 1400)) existing[key]=incoming[key];
         existing._entityId ||= explicitId || uid('item'); existing._lastSeenFloor=Number(floor); existing._lastUpdatedAt=nowText();
         if(acquisition&&!existing._acquisitionEvidence)existing._acquisitionEvidence=acquisition;
@@ -2301,13 +2301,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function secretSubjectKey(subject, content) {
         const key = semanticText(subject, 300);
-        return !key || /^(?:秘密|情况|信息|真相)$/.test(key) ? `content:${semanticText(content, 320).slice(0,80)}` : `subject:${key}`;
+        return !key || /^(?:bí mật|tình hình|thông tin|sự thật)$/i.test(key) ? `content:${semanticText(content, 320).slice(0,80)}` : `subject:${key}`;
     }
 
     function upsertSecretSnapshot(item, floor = -1, sourceMessageKey = '', extra = {}) {
         const rows = stateRuntime.state?.secrets;
         if (!Array.isArray(rows)) return false;
-        const subject = compactText(item?.subject ?? '秘密', 260) || '秘密';
+        const subject = compactText(item?.subject ?? 'Bí mật', 260) || 'Bí mật';
         const content = compactText(item?.content, 1400);
         if (!content) return false;
         const explicitId = extractedEntityId(item?.secretId ?? item?._entityId);
@@ -2316,7 +2316,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!existing) existing = rows.find(row => secretSubjectKey(row?.subject,row?.content) === subjectKey || (semanticText(row?.subject,300)===semanticText(subject,300) && semanticSimilarity(row?.content,content)>=0.68));
         const incoming = {subject,content,knowers:compactText(item?.knowers,700),suspects:compactText(item?.suspects,700),unknown:compactText(item?.unknown,700),updatedAt:nowText(),_sourceFloor:Number(floor),_sourceMessageKey:sourceMessageKey,_lastSeenFloor:Number(floor),...extra};
         if (!existing) { rows.push({...incoming,id:uid('secret'),_entityId:explicitId||uid('secret-entity'),_history:[]}); return true; }
-        pushHistoryIfChanged(existing, ['subject','content','knowers','suspects','unknown'], incoming, '秘密内容/知情边界更新');
+        pushHistoryIfChanged(existing, ['subject','content','knowers','suspects','unknown'], incoming, 'Cập nhật nội dung bí mật/ranh giới người biết');
         for(const key of ['subject','content','knowers','suspects','unknown']) if(compactText(incoming[key],1600)) existing[key]=incoming[key];
         existing.updatedAt=nowText(); existing._sourceFloor=Number(floor); existing._lastSeenFloor=Number(floor); existing._entityId ||= explicitId||uid('secret-entity');
         return true;
@@ -2339,7 +2339,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const current = out[index];
                 const changed = fields.some(field => compactText(current?.[field],1600)!==compactText(row?.[field],1600) && compactText(row?.[field],1600));
                 const mergedHistory=[...(current._history||[]),...(row._history||[])];
-                if(changed)mergedHistory.push(historySnapshot(current,fields,'U1.6旧重复项合并'));
+                if(changed)mergedHistory.push(historySnapshot(current,fields,'U1.6 gộp các mục trùng cũ'));
                 for(const field of fields)if(compactText(row?.[field],1800)){
                     const resolved=resolveField?resolveField(field,current,row):row[field];
                     if(resolved!==undefined&&resolved!==null&&compactText(resolved,1800))current[field]=resolved;
@@ -2352,7 +2352,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             return out;
         };
         state.tables ||= {};
-        state.tables.people=mergeRows(state.tables.people,row=>npcNameKey(row?.['Họ tên']),['Họ tên','Tuổi','Thân phận','地点','Tính cách','Ghi chú'],'person',(field,current,incoming)=>{
+        state.tables.people=mergeRows(state.tables.people,row=>npcNameKey(row?.['Họ tên']),['Họ tên','Tuổi','Thân phận','Địa điểm','Tính cách','Ghi chú'],'person',(field,current,incoming)=>{
             if(field!=='Thân phận')return incoming[field];
             return mergeIdentityDescription(current?.['Thân phận'],incoming?.['Thân phận'],incoming?._evidenceText||'');
         });
@@ -2386,11 +2386,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if(!existing||bestScore<0.68){row._entityId ||= uid('promise');row._promiseKind ||= promiseKind(row['Nội dung lời hẹn']);row._firstSeenFloor=Number(row._firstSeenFloor??row._sourceFloor??row['Tầng']??-1);row._lastEvidenceFloor=Number(row._lastEvidenceFloor??row._firstSeenFloor);compactedPromises.push(row);continue;}
             const incoming=row;
             if(promiseClosedStatus(existing['Trạng thái'])&&!promiseClosedStatus(incoming['Trạng thái'])){existing._lastSeenFloor=Math.max(Number(existing._lastSeenFloor??-1),Number(incoming._lastSeenFloor??incoming._sourceFloor??incoming['Tầng']??-1));existing._repeatAfterClosureCount=Number(existing._repeatAfterClosureCount||0)+1;continue;}
-            const meaningfulChange=pushHistoryIfChanged(existing,['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],incoming,'U1.6旧重复Lời hẹn合并');
+            const meaningfulChange=pushHistoryIfChanged(existing,['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],incoming,'U1.6 gộp các lời hẹn trùng cũ');
             for(const field of ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái','Tầng'])if(compactText(incoming[field],1400))existing[field]=incoming[field];
             existing._history=[...(existing._history||[]),...(incoming._history||[])];
-            // 合并旧档重复项时保留手动完成元数据；否则若手动Đóng的副本排在后面，
-            // 合并后会只剩“Đã hoàn thành”文本而失去防重复锚点。
+            // Khi gộp các mục trùng của hồ sơ cũ thì giữ lại siêu dữ liệu hoàn thành thủ công; nếu không, khi bản đã đóng bằng tay nằm ở phía sau,
+            // sau khi gộp sẽ chỉ còn dòng chữ “đã hoàn thành” mà mất mốc neo chống trùng lặp.
             // Manual completion is an explicit user decision. Never let a later
             // model snapshot carrying `_manualCompleted:false` or empty metadata
             // reopen/erase that decision; fill missing proof only from incoming
@@ -2441,7 +2441,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const interval=Math.max(5,Number(state?.settings?.summaryEvery||20));
         const routineAge=Math.max(20,interval);
         let changed=0;
-        // 升级旧存档时回扫已存在的真实入账，修复“钱已到账，但旧Lời hẹn仍显示明天到账”。
+        // Khi nâng cấp bản lưu cũ thì quét lại các khoản tiền thật đã vào, để sửa cảnh “tiền đã về mà lời hẹn cũ vẫn ghi mai mới về”.
         for(const tx of state?.phone?.finance?.transactions||[]){
             if(Number(tx?.amount||0)<=0)continue;
             changed+=reconcilePromiseEvidenceForState(state,{kind:'finance-transaction',...tx},Number(tx?._floor??currentFloor));
@@ -2451,10 +2451,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             row._promiseKind ||= promiseKind(row?.['Nội dung lời hẹn']);
             const evidenceFloor=Number(row?._lastEvidenceFloor??row?._firstSeenFloor??row?._sourceFloor??row?.['Tầng']??-1);
             const age=Number.isFinite(evidenceFloor)&&evidenceFloor>=0?Math.max(0,Number(currentFloor)-evidenceFloor):0;
-            if(row._promiseKind==='短期日常'&&age>=routineAge){
+            if(row._promiseKind==='Thường nhật ngắn hạn'&&age>=routineAge){
                 row._history=Array.isArray(row._history)?row._history:[];
-                row._history.push(historySnapshot(row,['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],'超过一个阶段未再被剧情提及，短期日常事项默认已履行'));
-                row['Trạng thái']='默认已履行';row._statusReason=`截至第${currentFloor}层，距最后确认${age}层且属于短期日常事项；如剧情明确未完成可手动改回。`;row._lastUpdatedAt=nowText();changed+=1;
+                row._history.push(historySnapshot(row,['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],'Đã hơn một giai đoạn mà mạch truyện không nhắc lại, việc thường nhật ngắn hạn được mặc định là đã thực hiện'));
+                row['Trạng thái']='Mặc định đã thực hiện';row._statusReason=`Tính tới tầng ${currentFloor}, đã cách lần xác nhận cuối ${age} tầng và thuộc loại việc thường nhật ngắn hạn; nếu mạch truyện nói rõ là chưa xong thì có thể chỉnh lại bằng tay.`;row._lastUpdatedAt=nowText();changed+=1;
             }
         }
         return changed;
@@ -2472,10 +2472,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     const TIMELINE_META_TAIL_PATTERNS = Object.freeze([
-        /(?:^|\n)\s*(?:回复|reply|serial|time|scene|plot|echo|seeds)\s*[:：]/im,
-        /(?:^|\n)\s*\[(?:短期|长期|short(?:-?term)?|long(?:-?term)?)(?:\s|\/|：|:)[^\]]*\]/im,
-        /(?:^|\n)\s*(?:🎭\s*)?(?:剧情分支|选择分支|分支选项)\s*[:：]?/im,
-        /(?:^|\n)\s*(?:chat-floor|important-message|source|来源)\s*[:：]/im,
+        /(?:^|\n)\s*(?:trả lời|reply|serial|time|scene|plot|echo|seeds)\s*[:]/im,
+        /(?:^|\n)\s*\[(?:ngắn hạn|dài hạn|short(?:-?term)?|long(?:-?term)?)(?:\s|\/|:)[^\]]*\]/im,
+        /(?:^|\n)\s*(?:🎭\s*)?(?:nhánh cốt truyện|nhánh lựa chọn|các nhánh)\s*[:]?/im,
+        /(?:^|\n)\s*(?:chat-floor|important-message|source|nguồn)\s*[:]/im,
     ]);
 
     function sanitizeTimelineSummary(value, max = 360) {
@@ -2491,20 +2491,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         // Some damaged rows were whitespace-flattened before storage, so line-boundary
         // detection is no longer possible. These protocol keys are sufficiently specific
         // to be treated as a tail once narrative text has already started.
-        const flattened = /\s+(?:回复|reply|serial|scene|plot|echo|seeds)\s*[:：]/ig;
+        const flattened = /\s+(?:trả lời|reply|serial|scene|plot|echo|seeds)\s*[:]/ig;
         let flatMatch;
         while ((flatMatch = flattened.exec(raw))) {
             if (flatMatch.index >= 60) { cut = Math.min(cut, flatMatch.index); break; }
         }
         raw = raw.slice(0, cut)
-            .replace(/^\s*(?:详情|Tóm tắt sự kiện|摘要)\s*[:：]\s*/i,'')
+            .replace(/^\s*(?:chi tiết|tóm tắt sự kiện|tóm tắt)\s*[:]\s*/i,'')
             .trim();
         let text = sanitizeRetrievalDocumentText(raw).replace(/\s+/g,' ').trim();
         if (!text) return '';
         const limit = Math.max(120, Math.min(600, Number(max) || 360));
         if (text.length <= limit) return text;
         const probe = text.slice(0, limit + 1);
-        const sentenceEnds = [...probe.matchAll(/[。！？!?](?=\s|$|[^。！？!?])/g)].map(match => Number(match.index) + 1).filter(index => index >= Math.min(120, Math.floor(limit * 0.45)));
+        const sentenceEnds = [...probe.matchAll(/[.!?](?=\s|$|[^.!?])/g)].map(match => Number(match.index) + 1).filter(index => index >= Math.min(120, Math.floor(limit * 0.45)));
         const end = sentenceEnds.length ? sentenceEnds[sentenceEnds.length - 1] : limit;
         return text.slice(0, end).trim();
     }
@@ -2517,9 +2517,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function recentEventSummaryLooksInternal(value) {
         const text=compactText(value,1800);
         if(!text)return true;
-        const startsInternal=/^\s*(?:\[|【)?(?:模式检测|输入强调|叙事视角|头部分析|写作定位|写作原则|最高优先级|共创者(?:要求|确认)|输出要求|任务规则)(?:\]|】|[:：\s-])/i.test(text);
-        const markers=text.match(/(?:\[(?:模式检测|输入强调|叙事视角|头部分析)[^\]]*\]|【(?:模式检测|输入强调|叙事视角|头部分析|写作任务|输出规则)[^】]*】|STEP\s*[.．:]?\s*\d+|<user_input>|\[\/user_input\])/gi)||[];
-        const procedural=/(?:chính văn必须从|只输出(?:最终|chính văn|JSON)|不要解释|写作流程|角色信息差|共创者操控|本轮需直接承接|开写前先|必须保留\s*\/\s*必须禁止)/i.test(text);
+        const startsInternal=/^\s*(?:\[|【)?(?:phát hiện chế độ|nhấn mạnh đầu vào|ngôi kể|phân tích phần đầu|định vị hành văn|nguyên tắc sáng tác|ưu tiên cao nhất|(?:yêu cầu|xác nhận) của người đồng sáng tác|yêu cầu kết quả|quy tắc nhiệm vụ)(?:\]|】|[:\s-])/i.test(text);
+        const markers=text.match(/(?:\[(?:phát hiện chế độ|nhấn mạnh đầu vào|ngôi kể|phân tích phần đầu)[^\]]*\]|【(?:phát hiện chế độ|nhấn mạnh đầu vào|ngôi kể|phân tích phần đầu|nhiệm vụ viết|quy tắc kết quả)[^】]*】|STEP\s*[.:]?\s*\d+|<user_input>|\[\/user_input\])/gi)||[];
+        const procedural=/(?:chính văn bắt buộc bắt đầu từ|chỉ xuất ra (?:kết quả cuối|chính văn|JSON)|không giải thích|quy trình viết|chênh lệch thông tin giữa các nhân vật|người đồng sáng tác điều khiển|lượt này phải tiếp nối thẳng|trước khi viết hãy|bắt buộc giữ\s*\/\s*bắt buộc cấm)/i.test(text);
         return startsInternal||markers.length>=2||(markers.length>=1&&procedural);
     }
 
@@ -2604,14 +2604,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 && String(state?.progress?.lastExtractedAssistantSignature || '') === String(sourceSignature || ''));
         return assistantMainlineRows(state, floor, sourceMessageKey).some(row => {
             const summary = assistantMainlineSummary(row);
-            // Tầng号会在重Roll/编辑后复用；只有明确绑定当前chính văn签名的
-            // 结构化主线，才可以抑制本轮缺口检测。旧版本没有签名的行
-            // 允许被当前chính văn重新整理，避免“旧人设/旧剧情”冒充新记忆。
+            // Số tầng sẽ được dùng lại sau khi roll lại/chỉnh sửa; chỉ tuyến chính có cấu trúc gắn rõ chữ ký của chính văn hiện tại
+            // mới được phép chặn bước dò chỗ trống của lượt này. Những dòng cũ không có chữ ký
+            // thì cho phép chính văn hiện tại sắp xếp lại, tránh việc “thiết định cũ/tình tiết cũ” đội lốt ký ức mới.
             return row?._assistantOnce === true
                 && (String(row?._sourceBoundSignature || '') === String(sourceSignature || '')
-                    // 兼容Đã hoàn thành整理的旧主线：旧行没有签名时，只能由
-                    // 当前chính văn的完成标记/进度签名为它背书；重Roll后
-                    // 这些标记会失配，于是旧摘要不会压住新记忆。
+                    // Tương thích với tuyến chính cũ đã sắp xếp xong: khi dòng cũ không có chữ ký thì chỉ
+                    // cờ hoàn tất/chữ ký tiến độ của chính văn hiện tại mới bảo chứng cho nó; sau khi roll lại
+                    // các cờ đó sẽ lệch, nên bản tóm tắt cũ không đè được lên ký ức mới.
                     || (!row?._sourceBoundSignature && processedByCurrentSignature))
                 && Boolean(summary)
                 && !recentEventSummaryLooksInternal(summary);
@@ -2732,9 +2732,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const sourceRepair = existing && assistantMainlineSummary(existing) && (
                 assistantMainlineNeedsSourceRepair(existing)
                 || recentEventSummaryLooksInternal(existing?.['Tóm tắt sự kiện'])
-                // 旧版主线没有绑定chính văn签名；仅当旧行明确写过签名且
-                // 与当前回复冲突时才修复。无签名旧档无法证明冲突，
-                // 应保留其历史摘要，避免长聊天载入时批量改写。
+                // Tuyến chính bản cũ không gắn chữ ký chính văn; chỉ khi dòng cũ đã ghi chữ ký rõ ràng
+                // và mâu thuẫn với câu trả lời hiện tại thì mới sửa. Hồ sơ cũ không có chữ ký thì không chứng minh được mâu thuẫn,
+                // nên giữ nguyên bản tóm tắt lịch sử của nó, tránh viết lại hàng loạt khi nạp cuộc trò chuyện dài.
                 || (String(existing?._sourceBoundSignature || '')
                     && String(existing._sourceBoundSignature) !== String(entry.signature || ''))
             );
@@ -2753,12 +2753,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function validateExtractionPayload(value) {
-        if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('主记忆JSON顶层不是对象');
+        if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('Tầng cao nhất của JSON ký ức chính không phải là một đối tượng');
         const arrayKeys=['mainline','branches','states','people','relations','world','items','promises','secrets','chapters','anchors','lifeFacts'];
         const missing=[];
         if(!value.scene||typeof value.scene!=='object'||Array.isArray(value.scene))missing.push('scene');
         for(const key of arrayKeys)if(!Array.isArray(value[key]))missing.push(key);
-        if(missing.length)throw new Error(`主记忆JSON缺少或写坏顶层字段：${missing.join('、')}`);
+        if(missing.length)throw new Error(`JSON ký ức chính thiếu hoặc hỏng các trường cấp cao nhất: ${missing.join(', ')}`);
         return value;
     }
 
@@ -2768,7 +2768,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function mergeExtraction(raw, targetFloor = null) {
         const s = stateRuntime.state;
-        // 原聊天仅保留给记忆体检/证据诊断，不允许进入正常混合检索、UI预览或每轮Prompt。
+        // Đoạn chat gốc chỉ dành cho việc khám ký ức/chẩn đoán bằng chứng, không được vào truy xuất hỗn hợp thông thường, phần xem trước trên giao diện hay prompt của mỗi lượt.
         const chat = context()?.chat || [];
         const hasRequestedFloor = hasExplicitFloorTarget(targetFloor);
         const requestedFloor = hasRequestedFloor ? Number(targetFloor) : NaN;
@@ -2779,7 +2779,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (hasRequestedFloor && Number.isInteger(requestedFloor)) {
             const modelCandidates = data.mainline.filter(item => assistantMainlineSummary(item));
             const modelMainline = modelCandidates.find(item => !recentEventSummaryLooksInternal(assistantMainlineSummary(item)) && assistantMainlineGroundedInMessage(item, chat[floor]));
-            if (!modelMainline && modelCandidates.length) logAudit('主线来源拦截',`第${floor}层模型主线与目标AIchính văn缺少文本证据，已改用该层chính văn保底。`);
+            if (!modelMainline && modelCandidates.length) logAudit('Chặn nguồn tuyến chính',`Tuyến chính do mô hình sinh ở tầng ${floor} thiếu bằng chứng văn bản so với chính văn AI mục tiêu, đã dùng chính văn của tầng đó làm phương án tối thiểu.`);
             data.mainline = [modelMainline || buildDeterministicAssistantMainline(floor, chat[floor])].filter(Boolean);
         }
         const ensured = ensurePeopleRelationSnapshots({ people:data.people, relations:data.relations });
@@ -2788,24 +2788,24 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const f = String(floor);
         data.mainline.forEach(item => upsertAssistantMainline(item, floor, chat[floor], s));
         data.branches.forEach(item => uniquePush(s.tables.branches, {
-            'Trạng thái': item.status ?? 'Đang diễn ra', '支线名': item.name ?? '', 'Giờ bắt đầu': item.start ?? '',
-            'Giờ kết thúc': item.end ?? '', '事件追踪': item.tracking ?? item.summary ?? '', '关键NPC': item.npcs ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['支线名']}|${row['事件追踪']}`));
+            'Trạng thái': item.status ?? 'Đang diễn ra', 'Tên nhánh phụ': item.name ?? '', 'Giờ bắt đầu': item.start ?? '',
+            'Giờ kết thúc': item.end ?? '', 'Theo dõi sự kiện': item.tracking ?? item.summary ?? '', 'NPC then chốt': item.npcs ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+        }, row => `${row['Tên nhánh phụ']}|${row['Theo dõi sự kiện']}`));
         data.states.forEach(item => uniquePush(s.tables.states, {
-            'Tên nhân vật': item.name ?? '', 'Trạng thái变化': item.change ?? item.state ?? '', '时间': item.time ?? '',
-            '原因': item.reason ?? '', 'Vị trí hiện tại': item.location ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['Tên nhân vật']}|${row['Trạng thái变化']}|${row['时间']}`));
+            'Tên nhân vật': item.name ?? '', 'Thay đổi trạng thái': item.change ?? item.state ?? '', 'Thời gian': item.time ?? '',
+            'Nguyên nhân': item.reason ?? '', 'Vị trí hiện tại': item.location ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+        }, row => `${row['Tên nhân vật']}|${row['Thay đổi trạng thái']}|${row['Thời gian']}`));
         data.people.forEach(item => {
             const canonical = registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor) || compactText(item?.name,120);
             if (!canonical) return;
-            const incoming = { 'Họ tên':canonical, 'Tuổi':item.age??'', 'Thân phận':item.identity??'', '地点':item.location??'', 'Tính cách':item.personality??'', 'Ghi chú':item.note??'', _sourceFloor:Number(item?.floor??floor), _sourceMessageKey:sourceMessageKey };
+            const incoming = { 'Họ tên':canonical, 'Tuổi':item.age??'', 'Thân phận':item.identity??'', 'Địa điểm':item.location??'', 'Tính cách':item.personality??'', 'Ghi chú':item.note??'', _sourceFloor:Number(item?.floor??floor), _sourceMessageKey:sourceMessageKey };
             const existing=s.tables.people.find(row=>npcNameKey(row?.['Họ tên'])===npcNameKey(canonical));
-            if(!existing)s.tables.people.push(incoming);else{if(String(incoming['Thân phận']||'').trim())existing['Thân phận']=mergeIdentityDescription(existing['Thân phận'],incoming['Thân phận'],messageText(chat[floor]));for(const key of ['Tuổi','地点','Tính cách','Ghi chú'])if(String(incoming[key]||'').trim())existing[key]=incoming[key];existing['Họ tên']=canonical;}
+            if(!existing)s.tables.people.push(incoming);else{if(String(incoming['Thân phận']||'').trim())existing['Thân phận']=mergeIdentityDescription(existing['Thân phận'],incoming['Thân phận'],messageText(chat[floor]));for(const key of ['Tuổi','Địa điểm','Tính cách','Ghi chú'])if(String(incoming[key]||'').trim())existing[key]=incoming[key];existing['Họ tên']=canonical;}
         });
         data.relations.forEach(item => upsertRelationSnapshot(item, floor, sourceMessageKey));
         data.world.forEach(item => uniquePush(s.tables.world, {
-            '设定名': item.name ?? '', 'Loại': item.type ?? '', '详细说明': item.description ?? '', '影响范围': item.scope ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['设定名']}|${row['详细说明']}`));
+            'Tên thiết định': item.name ?? '', 'Loại': item.type ?? '', 'Diễn giải chi tiết': item.description ?? '', 'Phạm vi ảnh hưởng': item.scope ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+        }, row => `${row['Tên thiết định']}|${row['Diễn giải chi tiết']}`));
         data.items.forEach(item => upsertItemSnapshot(item, floor, sourceMessageKey));
         data.promises.forEach(item => upsertPromiseSnapshot(item, floor, sourceMessageKey));
         data.secrets.forEach(item => upsertSecretSnapshot(item, floor, sourceMessageKey));
@@ -2814,7 +2814,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         compactCurrentStateCollections(s);
         data.chapters.forEach(item => uniquePush(s.chapters, {
             id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`,
-            title: item.title ?? `第${s.chapters.length + 1}章`, startFloor: item.startFloor ?? f,
+            title: item.title ?? `Chương ${s.chapters.length + 1}`, startFloor: item.startFloor ?? f,
             endFloor: item.endFloor ?? f, summary: item.summary ?? '', time: item.time ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, item2 => `${item2.title}|${item2.startFloor}`));
         mergeMemoryAnchors(data.anchors, floor);
@@ -8261,7 +8261,7 @@ ${latestReply}`;
         m.world.forEach(item => uniquePush(s.tables.world, {
             '设定名': item?.name ?? '', 'Loại': item?.type ?? '', '详细说明': item?.description ?? '', '影响范围': item?.scope ?? '',
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
-        }, row => `${row['设定名']}|${row['详细说明']}`));
+        }, row => `${row['Tên thiết định']}|${row['Diễn giải chi tiết']}`));
         m.items.forEach(item => upsertItemSnapshot({...item,holder:canon(item?.holder)}, Number(item?.floor ?? floor), sourceMessageKey));
         m.chapters.forEach(item => {
             if (!compactText(item?.title,200) && !compactText(item?.summary,800)) return;
