@@ -5826,12 +5826,12 @@ ${scene.mood||''}`,12000);
 
     function currentWorldMatchesOrigin(current = inferCurrentWorldContext()) {
         const origin = stateRuntime.state?.worldTransit?.origin || {};
-        // 原生奇幻/历史卡也可能以“异世界/古代”为自己的原世界；同一个worldKey必须先判为原世界。
+        // Thẻ kỳ ảo/lịch sử gốc cũng có thể lấy “dị giới/cổ đại” làm thế giới gốc của mình; cùng một worldKey thì phải được xét là thế giới gốc trước.
         if (origin?.worldKey && origin.worldKey === current.worldKey) return true;
         if (current?.alternateRealm) return false;
         if (!origin?.worldKey) return current.communicationType === 'smartphone' && current.technologyLevel === 'modern-digital';
-        // 原user是现代人时，在同一现代世界内换城市/国家仍然可以联网；location不参与世界key。
-        if (/现代/.test(String(origin.worldType||'')) && current.technologyLevel === 'modern-digital' && !/(异世界|平行世界)/.test(String(current.worldType||''))) return true;
+        // Khi user gốc là người hiện đại thì đổi thành phố/quốc gia trong cùng thế giới hiện đại vẫn vào mạng được; location không tham gia vào khóa thế giới.
+        if (/[Hh]iện đại/.test(String(origin.worldType||'')) && current.technologyLevel === 'modern-digital' && !/(dị giới|thế giới song song)/i.test(String(current.worldType||''))) return true;
         return false;
     }
 
@@ -5841,7 +5841,7 @@ ${scene.mood||''}`,12000);
         const p = normalizeCommunicationProfile(profile || inferCurrentWorldContext(), {skipTransit:true});
         if (!s.worldTransit.origin?.worldKey || s.worldTransit.origin.worldKey === 'origin-modern' && !s.worldTransit.history.length) {
             const identity = originSocialIdentityProfile();
-            if (identity.modern) s.worldTransit.origin = { worldKey:'origin-modern', worldType:'Hiện đại', era:'2026/原世界', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' };
+            if (identity.modern) s.worldTransit.origin = { worldKey:'origin-modern', worldType:'Hiện đại', era:'2026/thế giới gốc', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' };
             else s.worldTransit.origin = { worldKey:p.worldKey, worldType:p.worldType, era:p.era, location:p.location, technologyLevel:p.technologyLevel, communicationType:p.communicationType, deviceLabel:p.deviceLabel };
         }
         const previous=s.worldTransit.current||{};
@@ -5856,21 +5856,21 @@ ${scene.mood||''}`,12000);
         const current = inferCurrentWorldContext();
         const origin = originSocialIdentityProfile();
 
-        // 当前就是原世界时，学校/公司/宿舍等由originThân phận档案负责；这里不再重复造一套“local”群。
+        // Khi hiện tại chính là thế giới gốc thì trường học/công ty/ký túc xá do hồ sơ thân phận gốc lo; ở đây không dựng thêm một bộ nhóm “local” trùng lặp.
         if (currentWorldMatchesOrigin(current)) {
             return { raw:'', student:false, dorm:false, club:false, work:false, schoolName:'', mayUseCardFallback:false, sameAsOrigin:true };
         }
 
-        // 穿越后只读取“最近一次世界/时代迁移之后”的剧情。
-        // 这样1900香港不会因为8层以前提过“2026大学上课”就凭空生成1900年的班级电报簿。
+        // Sau khi xuyên không thì chỉ đọc phần cốt truyện “sau lần dịch chuyển thế giới/thời đại gần nhất”.
+        // Nhờ vậy bối cảnh Hồng Kông 1900 sẽ không vì tám tầng trước có nhắc “đi học đại học năm 2026” mà tự dựng ra sổ điện báo lớp học của năm 1900.
         const live = [currentWorldSegmentTranscript(8), stateRuntime.state?.scene?.location || '', stateRuntime.state?.scene?.goal || ''].join('\n');
         const raw = live;
-        const student = /(?:已?在(?:魔法)?学院就读|入学|转学|成为[^。！？\n]{0,12}学生|被编入[^。！？\n]{0,12}班|当前班级|同班|同学|课程|上课|导师|教室|学堂|书院|academy student|enrolled|classmate)/i.test(raw);
-        const dorm = /(?:入住|住进|当前住在|被安排到)[^。！？\n]{0,12}(?:宿舍|寝室|宿屋|dorm)|(?:室友|舍友|roommate)/i.test(raw);
-        const club = /(?:加入|参加|隶属|当前在)[^。！？\n]{0,18}(?:社团|学生会|协会|学派|研究会|俱乐部|club|guild)/i.test(raw);
-        const work = /(?:入职|上班|任职|受雇|当前在)[^。！？\n]{0,20}(?:公司|商行|工厂|报馆|警署|军队|部门|项目组|office|company)|(?:同事|coworker)/i.test(raw);
-        const schoolMatch = raw.match(/([\u4e00-\u9fffA-Za-z0-9·]{2,28}?(?:大学|学院|学校|高中|中学|学堂|书院|魔法学院))/);
-        const cleanSchool = compactText(schoolMatch?.[1],80).replace(/^(?:我在|来到|进入|转入|就读于|当前在|现在在)/,'');
+        const student = /(?:đang học tại (?:học viện|học viện ma pháp)|nhập học|chuyển trường|trở thành[^.!?\n]{0,12}học sinh|được xếp vào[^.!?\n]{0,12}lớp|lớp hiện tại|cùng lớp|bạn học|môn học|lên lớp|người hướng dẫn|phòng học|trường học|academy student|enrolled|classmate)/i.test(raw);
+        const dorm = /(?:nhận phòng|dọn vào|hiện đang ở|được sắp xếp vào)[^.!?\n]{0,12}(?:ký túc xá|phòng ở|nhà trọ|dorm)|(?:bạn cùng phòng|bạn ở ghép|roommate)/i.test(raw);
+        const club = /(?:gia nhập|tham gia|trực thuộc|hiện đang ở)[^.!?\n]{0,18}(?:câu lạc bộ|hội sinh viên|hiệp hội|học phái|hội nghiên cứu|club|guild)/i.test(raw);
+        const work = /(?:vào làm|đi làm|công tác|được thuê|hiện đang ở)[^.!?\n]{0,20}(?:công ty|hãng buôn|nhà máy|tòa soạn|đồn cảnh sát|quân đội|phòng ban|nhóm dự án|office|company)|(?:đồng nghiệp|coworker)/i.test(raw);
+        const schoolMatch = raw.match(/((?:Đại học|Học viện ma pháp|Học viện|Trường THPT|Trường trung học|Trường)[A-Za-zÀ-ỹ0-9\s]{2,28}?)(?=[,.;!?\n]|$)/);
+        const cleanSchool = compactText(schoolMatch?.[1],80).replace(/^(?:tôi ở|tới|bước vào|chuyển vào|học tại|hiện ở|bây giờ ở)\s*/i,'');
         return { raw, student, dorm, club, work, schoolName:cleanSchool, mayUseCardFallback:false, sameAsOrigin:false };
     }
 
@@ -5886,15 +5886,15 @@ ${scene.mood||''}`,12000);
     function sourceRosterMatchesGroup(row,type='') {
         const role=`${row?.role||''} ${row?.entry||''} ${row?.evidence||''}`;
         const rules={
-            class:/(?:school|同学|学生|班长|班委|辅导员|老师|教师|教授|导师|助教|室友|舍友|学校|学院|课程)/i,
-            course:/(?:school|同学|学生|老师|教授|导师|助教|课程|学院)/i,
-            dorm:/(?:school|室友|舍友|宿舍|寝室)/i,
-            club:/(?:club|社团|学生会|协会|俱乐部|会长|社长|成员)/i,
-            work:/(?:work|同事|上司|下属|老板|领导|助理|公司|工作|项目|客户)/i,
-            project:/(?:work|同事|项目|组员|合作|客户)/i,
-            family:/(?:family|父亲|母亲|父母|哥哥|姐姐|弟弟|妹妹|家人|亲属|丈夫|妻子)/i,
-            friends:/(?:friend|朋友|好友|闺蜜|发小|旧友|romance|恋人|伴侣)/i,
-            guild:/(?:club|guild|公会|战队|队友|组织)/i,
+            class:/(?:school|bạn học|học sinh|lớp trưởng|ban cán sự|cố vấn học tập|giáo viên|thầy giáo|giáo sư|người hướng dẫn|trợ giảng|bạn cùng phòng|bạn ở ghép|trường học|học viện|môn học)/i,
+            course:/(?:school|bạn học|học sinh|giáo viên|giáo sư|người hướng dẫn|trợ giảng|môn học|học viện)/i,
+            dorm:/(?:school|bạn cùng phòng|bạn ở ghép|ký túc xá|phòng ở)/i,
+            club:/(?:club|câu lạc bộ|hội sinh viên|hiệp hội|hội trưởng|chủ nhiệm|thành viên)/i,
+            work:/(?:work|đồng nghiệp|cấp trên|cấp dưới|sếp|lãnh đạo|trợ lý|công ty|công việc|dự án|khách hàng)/i,
+            project:/(?:work|đồng nghiệp|dự án|thành viên nhóm|hợp tác|khách hàng)/i,
+            family:/(?:family|bố|mẹ|bố mẹ|anh trai|chị gái|em trai|em gái|người nhà|họ hàng|chồng|vợ)/i,
+            friends:/(?:friend|bạn bè|bạn thân|bạn gái thân|bạn từ nhỏ|bạn cũ|romance|người yêu|bạn đời)/i,
+            guild:/(?:club|guild|công hội|đội tuyển|đồng đội|tổ chức)/i,
         };
         return !type || !(type in rules) || rules[type].test(role);
     }
@@ -5907,10 +5907,10 @@ ${scene.mood||''}`,12000);
         sourceRows.forEach(row=>push(row.name));
         for (const row of s.tables?.people || []) {
             const identity = `${row?.['Thân phận']||''} ${row?.['Ghi chú']||''}`;
-            if (/(同学|学生|室友|舍友|班长|班委|辅导员|老师|教师|教授|助教|社团|学生会|同事|组员|项目|家人|亲友|朋友|好友|队友|公会|classmate|student|roommate|teacher|professor|assistant|coworker|friend|family|guild)/i.test(identity)) push(row?.['Họ tên']);
+            if (/(bạn học|học sinh|bạn cùng phòng|bạn ở ghép|lớp trưởng|ban cán sự|cố vấn học tập|giáo viên|thầy giáo|giáo sư|trợ giảng|câu lạc bộ|hội sinh viên|đồng nghiệp|thành viên nhóm|dự án|người nhà|người thân|bạn bè|bạn thân|đồng đội|công hội|classmate|student|roommate|teacher|professor|assistant|coworker|friend|family|guild)/i.test(identity)) push(row?.['Họ tên']);
         }
         for (const entry of s.npcRegistry || []) {
-            if (/(同学|学生|室友|班长|班委|辅导员|老师|教授|助教|社团|学生会|同事|组员|项目|家人|亲友|朋友|好友|队友|公会|角色卡\/世界书人物)/i.test(`${entry?.identity||''} ${entry?.source||''}`)) push(entry?.currentName);
+            if (/(bạn học|học sinh|bạn cùng phòng|lớp trưởng|ban cán sự|cố vấn học tập|giáo viên|giáo sư|trợ giảng|câu lạc bộ|hội sinh viên|đồng nghiệp|thành viên nhóm|dự án|người nhà|người thân|bạn bè|bạn thân|đồng đội|công hội|nhân vật từ thẻ\/sách thế giới)/i.test(`${entry?.identity||''} ${entry?.source||''}`)) push(entry?.currentName);
         }
         return [...new Set(rows.filter(Boolean))].slice(0,limit);
     }
@@ -5922,8 +5922,8 @@ ${scene.mood||''}`,12000);
         const profile = institutionalSocialProfile();
         updateWorldTransit(profile.current, floor);
         stateRuntime.state.communicationProfile = normalizeCommunicationProfile(profile.current,{skipTransit:true});
-        // 初始化纯奇幻/历史卡时，updateWorldTransit可能刚把默认origin-modern替换成真实原世界；
-        // 必须在同一轮重新计算可达性，不能让第一轮群体关系错误显示为离线。
+        // Khi khởi tạo một thẻ thuần kỳ ảo/lịch sử, updateWorldTransit có thể vừa thay origin-modern mặc định bằng thế giới gốc thật;
+        // phải tính lại khả năng liên lạc ngay trong cùng lượt, không để các nhóm quan hệ ở lượt đầu bị hiện sai thành ngoại tuyến.
         profile.originReachable = Boolean((currentWorldMatchesOrigin(profile.current) && profile.current.available) || (stateRuntime.state.communicationProfile?.originReachable===true && stateRuntime.state.communicationProfile?.personalDeviceAvailable===true));
         refreshPhoneContactAvailability();
         let changed = false;
@@ -5931,7 +5931,7 @@ ${scene.mood||''}`,12000);
         const currentKey = profile.current.worldKey || 'current';
         const currentChannel = profile.current.communicationType === 'smartphone' ? 'wechat' : profile.current.communicationType;
 
-        // 每轮先刷新所有旧群的“可达性”。穿越不会删除关系，回到原世界会自动重新上线。
+        // Mỗi lượt đều làm mới “khả năng liên lạc” của mọi nhóm cũ trước. Xuyên không không xóa quan hệ, và khi quay về thế giới gốc thì chúng tự trực tuyến trở lại.
         for (const row of s.phone.groupProfiles) {
             const scope = compactText(row?.scope,40) || 'origin';
             const home = compactText(row?.homeWorldKey,120) || (scope==='origin'?originKey:'');
@@ -5966,40 +5966,40 @@ ${scene.mood||''}`,12000);
             ensurePhoneGroupThread(name, row.members || members, homeKey);
         };
 
-        // 原世界社会关系永久保留：穿越/换时代时只变成离线，不删除、不伪造新消息。
+        // Quan hệ xã hội ở thế giới gốc được giữ vĩnh viễn: khi xuyên không/đổi thời đại thì chỉ chuyển sang ngoại tuyến, không xóa và không bịa tin nhắn mới.
         const originAvailability = profile.originReachable ? 'active' : 'offline-origin';
         const originCommRaw = compactText(s.worldTransit?.origin?.communicationType || (profile.origin.modern?'smartphone':'letter'),60) || 'letter';
         const originChannel = originCommRaw === 'smartphone' ? 'wechat' : originCommRaw;
         const originSuffix = (kind) => {
-            if (originChannel === 'wechat') return ({class:'班级群',course:'课程交流群',dorm:'宿舍群',club:'社团群',work:'工作群',family:'家人群',friends:'朋友群',guild:'公会/战队群'})[kind] || '群聊';
-            if (originChannel === 'magic') return ({class:'学员传讯频道',course:'课程传讯频道',dorm:'宿舍传讯频道',club:'组织传讯频道',work:'工作传讯频道',family:'家族传讯',friends:'友人传讯',guild:'公会传讯频道'})[kind] || '传讯频道';
-            if (['telegram','letter','messenger'].includes(originChannel)) return ({class:'同窗联络组',course:'课程联络组',dorm:'宿舍联络',club:'组织联络',work:'工作联络',family:'家族联络',friends:'友人联络',guild:'公会联络'})[kind] || '联络组';
-            return ({class:'班级频道',course:'课程频道',dorm:'宿舍频道',club:'组织频道',work:'工作频道',family:'家族频道',friends:'友人频道',guild:'公会频道'})[kind] || '通讯频道';
+            if (originChannel === 'wechat') return ({class:'Nhóm lớp',course:'Nhóm trao đổi môn học',dorm:'Nhóm ký túc xá',club:'Nhóm câu lạc bộ',work:'Nhóm công việc',family:'Nhóm gia đình',friends:'Nhóm bạn bè',guild:'Nhóm công hội/đội tuyển'})[kind] || 'Nhóm chat';
+            if (originChannel === 'magic') return ({class:'Kênh truyền tin học viên',course:'Kênh truyền tin môn học',dorm:'Kênh truyền tin ký túc xá',club:'Kênh truyền tin tổ chức',work:'Kênh truyền tin công việc',family:'Truyền tin gia tộc',friends:'Truyền tin bạn bè',guild:'Kênh truyền tin công hội'})[kind] || 'Kênh truyền tin';
+            if (['telegram','letter','messenger'].includes(originChannel)) return ({class:'Tổ liên lạc bạn học',course:'Tổ liên lạc môn học',dorm:'Liên lạc ký túc xá',club:'Liên lạc tổ chức',work:'Liên lạc công việc',family:'Liên lạc gia tộc',friends:'Liên lạc bạn bè',guild:'Liên lạc công hội'})[kind] || 'Tổ liên lạc';
+            return ({class:'Kênh lớp',course:'Kênh môn học',dorm:'Kênh ký túc xá',club:'Kênh tổ chức',work:'Kênh công việc',family:'Kênh gia tộc',friends:'Kênh bạn bè',guild:'Kênh công hội'})[kind] || 'Kênh liên lạc';
         };
         if (profile.origin.student && phoneAutoGroupTypeEligible('class')) {
-            const prefix = profile.origin.schoolName ? `${profile.origin.schoolName}·` : '';
-            const customClass = profile.origin.className && !/专业$/.test(profile.origin.className) ? profile.origin.className : '';
-            const className = originChannel==='wechat' && customClass ? `${prefix}${customClass}群` : `${prefix}${originSuffix('class')}`;
-            add(className, 'class', '课程通知、作业、集合地点、同学日常与临时安排', 'high', 'user原世界学生Thân phận', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-            if (profile.origin.university) add(`${prefix}${originSuffix('course')}`, 'course', '课程、作业、考试、学习资料与课程安排', 'high', 'user原世界大学/学院Thân phận', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+            const prefix = profile.origin.schoolName ? `${profile.origin.schoolName} · ` : '';
+            const customClass = profile.origin.className && !/^ngành\b/i.test(profile.origin.className) ? profile.origin.className : '';
+            const className = originChannel==='wechat' && customClass ? `${prefix}Nhóm ${customClass}` : `${prefix}${originSuffix('class')}`;
+            add(className, 'class', 'Thông báo môn học, bài tập, điểm tập trung, sinh hoạt của bạn học và các sắp xếp tạm thời', 'high', 'Thân phận học sinh ở thế giới gốc của user', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+            if (profile.origin.university) add(`${prefix}${originSuffix('course')}`, 'course', 'Môn học, bài tập, thi cử, tài liệu và lịch học', 'high', 'Thân phận đại học/học viện ở thế giới gốc của user', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         }
-        if (profile.origin.dorm && phoneAutoGroupTypeEligible('dorm')) add(originSuffix('dorm'),'dorm','宿舍日常、门禁/作息、卫生、吃饭与室友安排','high','user原世界宿舍Thân phận',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.club && phoneAutoGroupTypeEligible('club')) add(originSuffix('club'),'club','活动安排、报名、会议/排练、物资与成员闲聊','medium','user原世界社团Thân phận',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.work) add(originSuffix('work'),'work','会议、排班、进度、文件与同事日常','medium','user原世界职场Thân phận',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.family) add(originSuffix('family'),'family','家里安排、吃饭、出行、节日与亲友日常','medium','user原世界家庭关系',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.friends) add(originSuffix('friends'),'friends','约见、娱乐、出行、分享与朋友日常','medium','user原世界朋友关系',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-        if (profile.origin.guild && phoneAutoGroupTypeEligible('guild')) add(originSuffix('guild'),'guild','组队、活动、排期、资源与成员闲聊','medium','user原世界群体',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.dorm && phoneAutoGroupTypeEligible('dorm')) add(originSuffix('dorm'),'dorm','Sinh hoạt ký túc xá, giờ giấc/ra vào, vệ sinh, ăn uống và sắp xếp với bạn cùng phòng','high','Thân phận ký túc xá ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.club && phoneAutoGroupTypeEligible('club')) add(originSuffix('club'),'club','Lịch hoạt động, đăng ký, họp/tập luyện, vật tư và chuyện phiếm của thành viên','medium','Thân phận câu lạc bộ ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.work) add(originSuffix('work'),'work','Họp hành, xếp ca, tiến độ, tài liệu và sinh hoạt của đồng nghiệp','medium','Thân phận công sở ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.family) add(originSuffix('family'),'family','Sắp xếp trong nhà, ăn uống, đi lại, ngày lễ và sinh hoạt của người thân','medium','Quan hệ gia đình ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.friends) add(originSuffix('friends'),'friends','Hẹn gặp, giải trí, đi chơi, chia sẻ và sinh hoạt của bạn bè','medium','Quan hệ bạn bè ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+        if (profile.origin.guild && phoneAutoGroupTypeEligible('guild')) add(originSuffix('guild'),'guild','Lập đội, hoạt động, lịch trình, tài nguyên và chuyện phiếm của thành viên','medium','Nhóm cộng đồng ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
 
-        // 只有剧情明确加入“当前世界”的机构，才建立当地频道。只是穿越过去绝不会凭user原Thân phận自动造当地班级群。
-        const localName = profile.local.schoolName || (profile.current.communicationType==='magic'?'当地学院':'当前机构');
-        const labelByChannel = { magic:'传讯频道', telegram:'班级电报簿', letter:'班级通信簿', messenger:'班级传令簿', radio:'班级无线频道', terminal:'班级频道', landline:'班级联络簿', smartphone:'班级群', wechat:'班级群' };
+        // Chỉ khi mạch truyện nói rõ là đã gia nhập một tổ chức ở “thế giới hiện tại” thì mới lập kênh địa phương. Việc xuyên không đơn thuần tuyệt đối không tự dựng nhóm lớp bản địa dựa trên thân phận gốc của user.
+        const localName = profile.local.schoolName || (profile.current.communicationType==='magic'?'Học viện bản địa':'Tổ chức hiện tại');
+        const labelByChannel = { magic:'Kênh truyền tin', telegram:'Sổ điện báo lớp', letter:'Sổ thư tín lớp', messenger:'Sổ truyền tin lớp', radio:'Kênh vô tuyến lớp', terminal:'Kênh lớp', landline:'Sổ liên lạc lớp', smartphone:'Nhóm lớp', wechat:'Nhóm lớp' };
         if (profile.local.student) {
-            const suffix=labelByChannel[currentChannel] || '班级通讯';
-            add(`${localName}·${suffix}`, 'class', '当前世界的课程/集合/通知/同学日常', 'high', '当前世界已明确入学/同班', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+            const suffix=labelByChannel[currentChannel] || 'Liên lạc lớp';
+            add(`${localName} · ${suffix}`, 'class', 'Môn học/tập trung/thông báo/sinh hoạt bạn học ở thế giới hiện tại', 'high', 'Thế giới hiện tại đã ghi rõ việc nhập học/cùng lớp', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
         }
-        if (profile.local.dorm) add(`${localName}·宿舍联络`, 'dorm', '当前世界宿舍日常与成员安排', 'high', '当前世界宿舍关系', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
-        if (profile.local.club) add(`${localName}·组织联络`, 'club', '当前世界社团/组织活动与成员往来', 'medium', '当前世界组织关系', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
-        if (profile.local.work) add(`${localName}·工作联络`, 'work', '当前世界工作安排与成员往来', 'medium', '当前世界工作关系', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+        if (profile.local.dorm) add(`${localName} · Liên lạc ký túc xá`, 'dorm', 'Sinh hoạt ký túc xá và sắp xếp giữa các thành viên ở thế giới hiện tại', 'high', 'Quan hệ ký túc xá ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+        if (profile.local.club) add(`${localName} · Liên lạc tổ chức`, 'club', 'Hoạt động câu lạc bộ/tổ chức và giao tiếp giữa các thành viên ở thế giới hiện tại', 'medium', 'Quan hệ tổ chức ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+        if (profile.local.work) add(`${localName} · Liên lạc công việc`, 'work', 'Sắp xếp công việc và giao tiếp giữa các thành viên ở thế giới hiện tại', 'medium', 'Quan hệ công việc ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
 
         if (changed && !stateRuntime.loadingState) {
             clearTimeout(stateRuntime.socialBootstrapSaveTimer);
@@ -6046,8 +6046,8 @@ ${scene.mood||''}`,12000);
     }
 
     function worldNpcEventBudget() {
-        // R9S：按“已知NPC数量 + 用户最低槽位”动态扩展，避免明明只有5个人却诱导模型硬写80条，
-        // 同时角色很多时仍能覆盖完整人物池。
+        // R9S: mở rộng động theo “số NPC đã biết + số suất tối thiểu người dùng đặt”, tránh cảnh chỉ có 5 người mà lại dụ mô hình viết cho đủ 80 mục,
+        // đồng thời khi có nhiều nhân vật thì vẫn phủ hết được cả bể nhân vật.
         const settings=stateRuntime.state?.settings||{};
         const configured=Math.max(1,Math.min(80,Number(settings.companionWorldMaxEvents||4)));
         const known=Math.max(1,allKnownNpcNames().length);
@@ -6057,23 +6057,23 @@ ${scene.mood||''}`,12000);
     function worldStateBrief() {
         const world = stateRuntime.state.characterWorld || { characters: [], events: [] };
         const characters = (world.characters || []).slice(-30).map(item =>
-            `- ${item.name}｜位置:${item.location || 'Chưa rõ'}｜正在做:${item.activity || 'Chưa rõ'}｜目标:${item.goal || 'Chưa rõ'}｜Trạng thái:${item.mood || 'Chưa rõ'}｜更新:${item.time || item.updatedAt || ''}`
+            `- ${item.name}｜vị trí: ${item.location || 'chưa rõ'}｜đang làm: ${item.activity || 'chưa rõ'}｜mục tiêu: ${item.goal || 'chưa rõ'}｜trạng thái: ${item.mood || 'chưa rõ'}｜cập nhật: ${item.time || item.updatedAt || ''}`
         );
         const events = (world.events || []).slice(-16).map(item =>
-            `- ${item.time || ''}｜${item.character || '世界'}@${item.location || 'Chưa rõ'}：${item.activity || ''}${item.goal ? `；目标:${item.goal}` : ''}`
+            `- ${item.time || ''}｜${item.character || 'Thế giới'}@${item.location || 'chưa rõ'}: ${item.activity || ''}${item.goal ? `; mục tiêu: ${item.goal}` : ''}`
         );
-        return `${characters.length ? `[角色当前生活Trạng thái]\n${characters.join('\n')}` : ''}${events.length ? `\n\n[近期镜头外动态]\n${events.join('\n')}` : ''}`.trim();
+        return `${characters.length ? `[TRẠNG THÁI SINH HOẠT HIỆN TẠI CỦA NHÂN VẬT]\n${characters.join('\n')}` : ''}${events.length ? `\n\n[CHUYỂN ĐỘNG NGOÀI ỐNG KÍNH GẦN ĐÂY]\n${events.join('\n')}` : ''}`.trim();
     }
 
     function canonicalCommunicationReason({available=true,communicationType='',technologyLevel='',inferred={}}={}) {
-        // fixed42：说明文字和 available/networkState 共用同一个真值，禁止再出现“上面说在线、下面显示离线”。
+        // fixed42: phần chữ mô tả và available/networkState dùng chung một giá trị thật, không còn cảnh “trên nói trực tuyến, dưới hiện ngoại tuyến”.
         if (available === false) {
-            if (communicationType === 'smartphone' || technologyLevel === 'modern-digital') return '当前地点明确检测到无信号、断网或通信屏蔽';
-            return '当前时空Chưa có可用远程通讯';
+            if (communicationType === 'smartphone' || technologyLevel === 'modern-digital') return 'Địa điểm hiện tại được xác nhận rõ là mất sóng, mất mạng hoặc bị chặn liên lạc';
+            return 'Không-thời gian hiện tại tạm thời không có phương tiện liên lạc từ xa nào dùng được';
         }
-        if (communicationType === 'smartphone' && technologyLevel === 'modern-digital') return '现代环境，手机信号与网络连接稳定正常';
-        if (communicationType === 'none') return '当前时空Chưa có可用远程通讯';
-        return inferred?.originReachable === false ? '当前通讯媒介可用；原世界网络不可达' : '当前通讯连接正常';
+        if (communicationType === 'smartphone' && technologyLevel === 'modern-digital') return 'Môi trường hiện đại, sóng điện thoại và kết nối mạng ổn định bình thường';
+        if (communicationType === 'none') return 'Không-thời gian hiện tại tạm thời không có phương tiện liên lạc từ xa nào dùng được';
+        return inferred?.originReachable === false ? 'Phương tiện liên lạc hiện tại dùng được; không kết nối được tới mạng của thế giới gốc' : 'Kết nối liên lạc hiện tại bình thường';
     }
 
     function normalizeCommunicationProfile(raw = {}, options = {}) {
@@ -6098,14 +6098,14 @@ ${scene.mood||''}`,12000);
         };
         let communicationType = allowed.includes(requested) ? requested : inferred.communicationType;
         if (!(compatibility[technologyLevel]||compatibility.unknown).has(communicationType)) communicationType = inferred.communicationType || 'terminal';
-        const explicitCrossNet = source.originReachable === true && /(?:跨世界|跨时空|原世界|现代网络|地球网络)[^。！？]{0,40}(?:联网|连接|通讯|网络可用|保持连接)/i.test(compactText(source.reason,600));
+        const explicitCrossNet = source.originReachable === true && /(?:xuyên thế giới|xuyên không thời gian|thế giới gốc|mạng hiện đại|mạng Trái Đất)[^.!?]{0,40}(?:vào mạng|kết nối|liên lạc|mạng dùng được|giữ kết nối)/i.test(compactText(source.reason,600));
         if (['fantasy','preindustrial','industrial-telegraph'].includes(technologyLevel) && communicationType==='smartphone' && !explicitCrossNet) communicationType=inferred.communicationType==='smartphone'?(technologyLevel==='fantasy'?'magic':technologyLevel==='industrial-telegraph'?'telegram':'letter'):inferred.communicationType;
         if (technologyLevel==='modern-digital' && !inferred.alternateRealm) communicationType = communicationType==='none'?'none':(communicationType||'smartphone');
         let available = source.available !== false && communicationType !== 'none' && inferred.available !== false;
         if (explicitCrossNet) available = source.available !== false;
-        const defaults={smartphone:'iPhone17Promax',mobile:'移动通讯设备',sms:'文字通讯终端',pager:'寻呼机',landline:'固定电话',telegram:'电报系统',letter:'书信往来',messenger:'信使往来',radio:'无线电设备',magic:'魔法通讯媒介',terminal:'当前区域通讯终端',none:'当前区域无可用通讯'};
+        const defaults={smartphone:'iPhone17Promax',mobile:'Thiết bị liên lạc di động',sms:'Thiết bị nhắn tin',pager:'Máy nhắn tin',landline:'Điện thoại bàn',telegram:'Hệ thống điện báo',letter:'Thư từ qua lại',messenger:'Sứ giả qua lại',radio:'Thiết bị vô tuyến',magic:'Phương tiện liên lạc ma pháp',terminal:'Thiết bị liên lạc của khu vực hiện tại',none:'Khu vực hiện tại không có phương tiện liên lạc'};
         let deviceLabel = compactText(source.deviceLabel || source.label,120);
-        if (!deviceLabel || (!(compatibility[technologyLevel]||compatibility.unknown).has(requested)) || (/iPhone|智能手机|微信/i.test(deviceLabel) && communicationType!=='smartphone')) deviceLabel=defaults[communicationType]||'当前区域通讯终端';
+        if (!deviceLabel || (!(compatibility[technologyLevel]||compatibility.unknown).has(requested)) || (/iPhone|điện thoại thông minh|WeChat/i.test(deviceLabel) && communicationType!=='smartphone')) deviceLabel=defaults[communicationType]||'Thiết bị liên lạc của khu vực hiện tại';
         if (communicationType==='smartphone') deviceLabel='iPhone17Promax';
         const origin = stateRuntime.state?.worldTransit?.origin || {};
         const personaOrigin = originSocialIdentityProfile();
@@ -6128,7 +6128,7 @@ ${scene.mood||''}`,12000);
         const normalized=normalizeCommunicationProfile(inferred,{skipTransit:true});
         const current=s.communicationProfile||{};
         const calibration=activeTimeCalibration(s);
-        const nextReason=calibration?'用户手动时间校准':'U1.7.2 当前现实Trạng thái机自动校正';
+        const nextReason=calibration?'Người dùng hiệu chỉnh thời gian thủ công':'Máy trạng thái hiện thực U1.7.2 tự hiệu chỉnh';
         const keys=['worldKey','worldType','era','technologyLevel','communicationType','deviceLabel','available','networkState'];
         let changed=keys.some(k=>String(current?.[k]??'')!==String(normalized?.[k]??''));
         if(calibration&&current.reason!==nextReason)changed=true;
