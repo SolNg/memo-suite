@@ -2819,15 +2819,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }, item2 => `${item2.title}|${item2.startFloor}`));
         mergeMemoryAnchors(data.anchors, floor);
         mergeLifeFacts(data.lifeFacts, floor);
-        // U1.7.2：主“每条AI回复一次”记忆API同样没有改写现实的权限。
-        // 旧版这里直接信任data.scene，正是背景年份（如1000年历史）可能污染scene.time并持续影响后续Trạng thái的另一条入口。
+        // U1.7.2: API ký ức chính chạy “một lần cho mỗi câu trả lời AI” cũng không có quyền viết lại hiện thực.
+        // Bản cũ ở đây tin thẳng data.scene, và đó chính là một lối khác khiến năm bối cảnh (ví dụ lịch sử 1000 năm) làm bẩn scene.time rồi ảnh hưởng dài lâu tới trạng thái sau này.
         const safeReality=sanitizeCompanionReality({},data.scene||{});
         const safeScene=safeReality.scene||{};
         for (const key of Object.keys(s.scene)) {
             const value = safeScene[key];
             if (value !== undefined && value !== null && String(value).trim()) s.scene[key] = String(value);
         }
-        if(safeReality.audit?.length)logAudit('主记忆现实层拦截',`第${floor}层：${safeReality.audit.join('; ')}`);
+        if(safeReality.audit?.length)logAudit('Chặn ở lớp hiện thực của ký ức chính',`Tầng ${floor}: ${safeReality.audit.join('; ')}`);
         selfHealCommunicationReality({floor});
         s.progress.lastExtractedMessage = Math.max(Number(s.progress.lastExtractedMessage ?? -1), floor);
         reconcilePromiseNarrativeEvidenceForState(s, messageText(chat[floor]), floor);
@@ -2837,8 +2837,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             s.progress.lastExtractedAssistantSignature = messageSignature(floor, chat[floor]);
         }
         ensureTurnMemoryFactCoverage(floor,{source:'r52-post-extraction-source-evidence'});
-        // R21 fixed4：如果本轮健康检查先于后台重试成功落地，旧 attempt 会停在 memory-missing。
-        // 每次真正写入主记忆后都立即按当前表格重新核验，使 1/1、细节覆盖等无需手动“重建本层”刷新。
+        // R21 fixed4: nếu lượt kiểm tra sức khỏe này hoàn tất trước khi lần thử lại ở nền thành công thì attempt cũ sẽ kẹt ở trạng thái memory-missing.
+        // Sau mỗi lần thực sự ghi ký ức chính thì kiểm tra lại ngay theo bảng hiện tại, để các chỉ số như 1/1 hay độ phủ chi tiết tự cập nhật mà không cần bấm tay “dựng lại tầng này”.
         reconcileMemoryHealthForFloors([floor]);
         runDiagnostics();
     }
@@ -2847,9 +2847,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const operationScope=captureChatScope(),operationState=stateRuntime.state;
         if(!operationScope||!operationState)return false;
         const count = Math.max(2, Number(operationState.settings.bigSummariesPerEra || 10));
-        const rows = contiguousSummaryGroup('大总结','_includedInEra',count,{force});
+        const rows = contiguousSummaryGroup('Đại tổng kết','_includedInEra',count,{force});
         if (!rows.length) return false;
-        setBusy(true, '正在合并时代总结…');
+        setBusy(true, 'Đang gộp tổng kết thời đại…');
         try {
             const sourceSummaryIds = rows.map(row => row._id).filter(Boolean);
             const sourceRanges = rows.map(row => row['Tầng bao phủ']);
@@ -2862,11 +2862,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if (result.task && !(await applyCompletedJob(record, result.task))) return false;
             else if(!(await applyCompletedJob(record, { status:'completed', result:{ text:result.text }, model:result.model, usage:result.usage })))return false;
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast('时代总结完成', 'success');
+            if (!quiet) toast('Đã hoàn tất tổng kết thời đại', 'success');
             return true;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast(`时代总结失败：${error.message}`, 'error');
+            if (!quiet) toast(`Tổng kết thời đại thất bại: ${error.message}`, 'error');
             if (throwOnError) throw error;
             return false;
         } finally { if(chatScopeIsCurrent(operationScope))setBusy(false); }
@@ -2890,8 +2890,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }
     }
 
-    // P41-S1：正常游玩和旧档回放统一使用“每条AI回复一次”的记忆规则。
-    // user消息仅作为上下文，不单独触发即时简记，也不生成userDòng thời gian。
+    // P41-S1: chơi bình thường và phát lại hồ sơ cũ đều dùng chung quy tắc ký ức “một lần cho mỗi câu trả lời AI”.
+    // Tin nhắn của user chỉ là ngữ cảnh, không tự kích hoạt ghi nhanh tức thời và cũng không sinh dòng thời gian cho user.
     function assistantEntryAtFloor(floor) {
         const chat = context()?.chat || [];
         const index = Number(floor);
@@ -2919,9 +2919,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!entry) return '';
         const user = previousUserEntryForAssistant(entry.index);
         const contextPart = user
-            ? `【仅供理解上下文的user输入｜第${user.index}层｜禁止单独记忆/禁止Thời điểm tạo线】\n${memoryNarrativeText(user.message).slice(0,7000)}\n\n`
+            ? `【ĐẦU VÀO CỦA USER, CHỈ ĐỂ HIỂU NGỮ CẢNH｜tầng ${user.index}｜cấm ghi nhớ riêng / cấm sinh dòng thời gian】\n${memoryNarrativeText(user.message).slice(0,7000)}\n\n`
             : '';
-        return `${contextPart}【唯一记忆目标：AI/角色回复｜第${entry.index}层】\n${memoryNarrativeText(entry.message).slice(0,18000)}`;
+        return `${contextPart}【MỤC TIÊU GHI NHỚ DUY NHẤT: câu trả lời của AI/nhân vật｜tầng ${entry.index}】\n${memoryNarrativeText(entry.message).slice(0,18000)}`;
     }
 
     function latestAssistantMemoryCandidate() {
@@ -2966,7 +2966,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return true;
     }
 
-    // The companion (幕后七条) request and the per-assistant main-memory
+    // The companion (Bảy điều hậu trường) request and the per-assistant main-memory
     // request are intentionally independent.  If the companion finishes after
     // the normal GENERATION_ENDED flush missed its window, bridge that exact
     // floor back into the existing main-memory queue.  This never copies
@@ -3046,15 +3046,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)return;
                 success=Boolean(repaired?.success)&&assistantMainlineHasValidRow(operationState,target,entry.message);
                 if(success){
-                    const health=await auditLatestTurnMemoryHealth(target,sig).catch(error=>{console.warn('[vvv记忆中枢] 自动重建后健康复检失败',error);return null;});
+                    const health=await auditLatestTurnMemoryHealth(target,sig).catch(error=>{console.warn('[Trung tâm Ký ức vvv] Kiểm tra lại sức khỏe sau khi tự dựng lại thất bại',error);return null;});
                     if(health)scheduleLifeDetailRescueAfterSettled(health);
                     stateRuntime.memoryPipelineNotice='';
                     await saveState({immediate:true,refresh:false,reason:`core-memory-auto-recovered-${target}`}).catch(()=>{});
                     scheduleReindex();
-                    console.info(`[vvv记忆中枢] 第${target}层主记忆已后台自动重建，无需手动点击。`);
+                    console.info(`[Trung tâm Ký ức vvv] Ký ức chính của tầng ${target} đã được tự dựng lại ở nền, không cần bấm tay.`);
                 }
             }catch(error){
-                console.warn(`[vvv记忆中枢] 第${target}层主记忆后台自动重建 ${cappedAttempt}/2 失败`,error);
+                console.warn(`[Trung tâm Ký ức vvv] Lần tự dựng lại ký ức chính ở nền cho tầng ${target} (${cappedAttempt}/2) thất bại`,error);
             }finally{
                 stateRuntime.coreMemoryRecoveryInFlight?.delete?.(target);
             }
@@ -3096,10 +3096,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     async function flushAutoExtract(targetFloor=null,targetSignature='') {
         clearTimeout(stateRuntime.autoTimer);
         const scope=captureChatScope();const st=stateRuntime.state;
-        if(!st?.settings?.enabled){stateRuntime.memoryPipelineNotice='记忆中枢已Đóng；本轮未启动主记忆整理';return false;}
-        if(!st.settings.autoExtract){stateRuntime.memoryPipelineNotice='即时记忆已Đóng；可点击“AI整理”或“重建本层”手动运行';return false;}
+        if(!st?.settings?.enabled){stateRuntime.memoryPipelineNotice='Trung tâm Ký ức đang tắt; lượt này không chạy phần sắp xếp ký ức chính';return false;}
+        if(!st.settings.autoExtract){stateRuntime.memoryPipelineNotice='Ký ức tức thời đang tắt; có thể bấm “AI sắp xếp” hoặc “Dựng lại tầng này” để chạy tay';return false;}
         const entry=hasExplicitFloorTarget(targetFloor)?assistantEntryAtFloor(targetFloor):latestAssistantMemoryCandidate();
-        if(!entry||targetSignature&&entry.signature!==targetSignature){stateRuntime.memoryPipelineNotice='没有锁定到本轮AI回复，主记忆未启动';return false;}
+        if(!entry||targetSignature&&entry.signature!==targetSignature){stateRuntime.memoryPipelineNotice='Chưa khóa được câu trả lời AI của lượt này, ký ức chính chưa khởi động';return false;}
         if(parseMemoryTag()){
             await markAssistantMemoryDone(entry.index,entry.signature);
             stateRuntime.memoryPipelineNotice='';
@@ -3138,17 +3138,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!last || last.is_user) return;
         const text = messageText(last);
         const floor = chat.length - 1;
-        if (/(?:\{\{user\}\}|\buser\b).{0,18}(?:点头|答应|拒绝|说道|开口|走向|伸手|亲吻|脱下|决定|同意)/i.test(text)) {
-            addDiagnostic('抢{{user}}动作', 'AI可能替{{user}}做出了动作、决定或发言。', floor);
+        if (/(?:\{\{user\}\}|\buser\b).{0,18}(?:gật đầu|đồng ý|từ chối|nói rằng|cất tiếng|đi về phía|đưa tay|hôn|cởi ra|quyết định|chấp nhận)/i.test(text)) {
+            addDiagnostic('Giành hành động của {{user}}', 'AI có thể đã hành động, quyết định hoặc phát ngôn thay cho {{user}}.', floor);
         }
-        if (/(过了几天|几日后|不久后|许久以后|转眼间|后来某天)/.test(text)) {
-            addDiagnostic('时间模糊', '出现了模糊时间推进，建议补充具体Ngày或与上一事件的间隔。', floor);
+        if (/(vài ngày sau|mấy hôm sau|chẳng bao lâu sau|rất lâu sau đó|thoáng cái|một ngày nọ về sau)/i.test(text)) {
+            addDiagnostic('Thời gian mơ hồ', 'Xuất hiện bước đẩy thời gian mơ hồ; nên bổ sung ngày cụ thể hoặc khoảng cách so với sự kiện trước.', floor);
         }
         const previous = [...chat.slice(0, -1)].reverse().find(message => !message.is_user && !message.is_system);
         if (previous) {
             const a = text.replace(/\s+/g, '').slice(0, 70);
             const b = messageText(previous).replace(/\s+/g, '').slice(0, 70);
-            if (a.length > 35 && a === b) addDiagnostic('重复开头', '本轮与上一轮开头高度重复。', floor);
+            if (a.length > 35 && a === b) addDiagnostic('Mở đầu lặp lại', 'Phần mở đầu của lượt này trùng lặp rất cao với lượt trước.', floor);
         }
         saveState();
     }
@@ -3162,7 +3162,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             closeModal();
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
             element.animate([{ outline: '3px solid #a78bfa' }, { outline: '0 solid transparent' }], { duration: 1800 });
-        } else toast(`没有在页面上找到第 ${index} 层`, 'warn');
+        } else toast(`Không tìm thấy tầng ${index} trên trang`, 'warn');
     }
 
     function toast(message, type = 'info') {
@@ -3238,7 +3238,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         overlay.setAttribute('role','dialog');
         overlay.setAttribute('aria-modal','true');
         overlay.setAttribute('aria-labelledby','vvvtm-pipeline-complete-title');
-        overlay.innerHTML='<button type="button" data-pipeline-complete-close><span aria-hidden="true">👍</span><strong id="vvvtm-pipeline-complete-title">整理完毕，继续跑吧</strong></button>';
+        overlay.innerHTML='<button type="button" data-pipeline-complete-close><span aria-hidden="true">👍</span><strong id="vvvtm-pipeline-complete-title">Sắp xếp xong, chạy tiếp nào</strong></button>';
         let closed=false;
         let releaseViewport=()=>{};
         const close=({restoreFocus=true}={})=>{if(closed)return previousFocus;closed=true;releaseViewport();transientOverlayClosers.delete(overlay);overlay.remove();if(restoreFocus&&previousFocus?.isConnected)requestAnimationFrame(()=>previousFocus.focus?.({preventScroll:true}));return previousFocus;};
@@ -3257,14 +3257,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         toast(message,type);
         if(fullscreen&&type==='success')showPipelineCompletionOverlay();
         try{
-            if(globalThis.document?.hidden&&globalThis.Notification?.permission==='granted')new globalThis.Notification('0-32 · 永不落幕的剧场',{body:String(message||'后台任务Đã hoàn thành'),tag:'vvvtm-memory-pipeline'});
+            if(globalThis.document?.hidden&&globalThis.Notification?.permission==='granted')new globalThis.Notification('0-32 · Sân Khấu Không Bao Giờ Hạ Màn',{body:String(message||'Tác vụ nền đã hoàn tất'),tag:'vvvtm-memory-pipeline'});
         }catch{}
     }
 
     function deviceTimeCalibrationValue() {
         const date=new Date();
         const pad=value=>String(value).padStart(2,'0');
-        return `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日 ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+        return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
 
     function mountTransientDialog(overlay,{focusSelector='button',mobileFocusSelector='',select=false,restoreFocusTarget=null}={}) {
@@ -3307,19 +3307,19 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const calibration=activeTimeCalibration();
         const overlay=document.createElement('div');
         overlay.id='vvvtm-time-calibration';
-        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-time-calibration-title"><header><div><b id="vvvtm-time-calibration-title">校准剧情时间</b><small>${calibration?'当前使用手动时间锚点':'当前由剧情Trạng thái机自动识别'}</small></div><button type="button" data-time-calibration-close aria-label="Đóng" title="Đóng">×</button></header><label><span>自定义剧情时间</span><input id="vvvtm-time-calibration-input" maxlength="180" value="${esc(effectiveStoryTime())}" placeholder="例如：2026年9月26日 08:40"></label><footer><button type="button" data-time-calibration-device>使用设备当前时间</button><button type="button" data-time-calibration-auto ${calibration?'':'disabled'}>恢复自动识别</button><button type="button" data-time-calibration-save>应用校准</button></footer></section>`;
+        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-time-calibration-title"><header><div><b id="vvvtm-time-calibration-title">Hiệu chỉnh thời gian cốt truyện</b><small>${calibration?'Đang dùng mốc thời gian thủ công':'Đang do máy trạng thái cốt truyện tự nhận diện'}</small></div><button type="button" data-time-calibration-close aria-label="Đóng" title="Đóng">×</button></header><label><span>Thời gian cốt truyện tùy chỉnh</span><input id="vvvtm-time-calibration-input" maxlength="180" value="${esc(effectiveStoryTime())}" placeholder="Ví dụ: 26/9/2026 08:40"></label><footer><button type="button" data-time-calibration-device>Dùng giờ hiện tại của thiết bị</button><button type="button" data-time-calibration-auto ${calibration?'':'disabled'}>Khôi phục nhận diện tự động</button><button type="button" data-time-calibration-save>Áp dụng hiệu chỉnh</button></footer></section>`;
         const close=mountTransientDialog(overlay,{focusSelector:'#vvvtm-time-calibration-input',mobileFocusSelector:'[data-time-calibration-close]',select:true,restoreFocusTarget:replacementFocus});
         overlay.querySelector('[data-time-calibration-close]')?.addEventListener('click',close);
         overlay.querySelector('[data-time-calibration-device]')?.addEventListener('click',()=>{const input=overlay.querySelector('#vvvtm-time-calibration-input');if(input){input.value=deviceTimeCalibrationValue();input.focus({preventScroll:true});}});
         overlay.querySelector('[data-time-calibration-save]')?.addEventListener('click',async event=>{
             const button=event.currentTarget;button.disabled=true;
-            try{const value=await applyTimeCalibration(overlay.querySelector('#vvvtm-time-calibration-input')?.value);close();toast(`剧情时间已校准为 ${value}`,'success');}
-            catch(error){toast(`校准失败：${error.message}`,'error');button.disabled=false;}
+            try{const value=await applyTimeCalibration(overlay.querySelector('#vvvtm-time-calibration-input')?.value);close();toast(`Thời gian cốt truyện đã được hiệu chỉnh thành ${value}`,'success');}
+            catch(error){toast(`Hiệu chỉnh thất bại: ${error.message}`,'error');button.disabled=false;}
         });
         overlay.querySelector('[data-time-calibration-auto]')?.addEventListener('click',async event=>{
             const button=event.currentTarget;button.disabled=true;
-            try{await clearTimeCalibration();close();toast('已恢复自动时间识别','success');}
-            catch(error){toast(`恢复失败：${error.message}`,'error');button.disabled=false;}
+            try{await clearTimeCalibration();close();toast('Đã khôi phục nhận diện thời gian tự động','success');}
+            catch(error){toast(`Khôi phục thất bại: ${error.message}`,'error');button.disabled=false;}
         });
     }
 
@@ -3327,7 +3327,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const node = document.getElementById('vvvtm-busy');
         if (!node) return;
         node.hidden = !active;
-        node.querySelector('span').textContent = label || '处理中…';
+        node.querySelector('span').textContent = label || 'Đang xử lý…';
     }
 
     function isMobileViewport() {
@@ -3421,8 +3421,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             entry = document.createElement('div');
             entry.id = 'vvvtm-topnav-button';
             entry.className = 'drawer';
-            entry.title = '打开 0-32 · 永不落幕的剧场 · 记忆中枢';
-            entry.innerHTML = `<div class="drawer-toggle"><div class="vvvtm-nav-avatar interactable" tabindex="0" role="button" aria-label="打开 0-32 · 永不落幕的剧场 · 记忆中枢" title="0-32 · 永不落幕的剧场 · 记忆中枢"></div></div>`;
+            entry.title = 'Mở 0-32 · Sân Khấu Không Bao Giờ Hạ Màn · Trung tâm Ký ức';
+            entry.innerHTML = `<div class="drawer-toggle"><div class="vvvtm-nav-avatar interactable" tabindex="0" role="button" aria-label="Mở 0-32 · Sân Khấu Không Bao Giờ Hạ Màn · Trung tâm Ký ức" title="0-32 · Sân Khấu Không Bao Giờ Hạ Màn · Trung tâm Ký ức"></div></div>`;
             const open = event => { event?.preventDefault?.(); event?.stopPropagation?.(); openModal(); };
             entry.addEventListener('click', open);
             entry.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') open(event); });
@@ -3442,8 +3442,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             entry.id = 'vvvtm-wand-entry';
             entry.className = 'list-group-item flex-container flexGap5 interactable';
             entry.tabIndex = 0;
-            entry.title = '打开 0-32 · 永不落幕的剧场 · 记忆中枢';
-            entry.innerHTML = '<span class="vvvtm-wand-avatar" aria-hidden="true"></span><span>0-32 · 永不落幕的剧场 · 记忆中枢</span>';
+            entry.title = 'Mở 0-32 · Sân Khấu Không Bao Giờ Hạ Màn · Trung tâm Ký ức';
+            entry.innerHTML = '<span class="vvvtm-wand-avatar" aria-hidden="true"></span><span>0-32 · Sân Khấu Không Bao Giờ Hạ Màn · Trung tâm Ký ức</span>';
             const open = event => {
                 event?.preventDefault?.();
                 event?.stopPropagation?.();
@@ -3469,20 +3469,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             modal.id = 'vvvtm-modal';
             modal.hidden = true;
             modal.innerHTML = `
-                <div class="vvvtm-shell" role="dialog" aria-modal="true" aria-label="0-32永不落幕的剧场记忆中枢">
+                <div class="vvvtm-shell" role="dialog" aria-modal="true" aria-label="Trung tâm Ký ức 0-32 Sân Khấu Không Bao Giờ Hạ Màn">
                     <header class="vvvtm-head">
-                        <div><strong>✒️ 0-32 · 永不落幕的剧场</strong><span>记忆中枢 v${VERSION}</span></div>
+                        <div><strong>✒️ 0-32 · Sân Khấu Không Bao Giờ Hạ Màn</strong><span>Trung tâm Ký ức v${VERSION}</span></div>
                         <div class="vvvtm-head-actions">
                             <button data-action="memory-hub">🧠 Memory Hub</button>
-                            <button data-action="ai-extract">✨ AI整理</button>
-                            <button data-action="unhide-all">👁 Hủy隐藏</button>
-                            <button data-action="export">导出</button>
+                            <button data-action="ai-extract">✨ AI sắp xếp</button>
+                            <button data-action="unhide-all">👁 Bỏ ẩn</button>
+                            <button data-action="export">Xuất</button>
                             <button data-action="close" class="icon">×</button>
                         </div>
                     </header>
                     <nav id="vvvtm-tabs" class="vvvtm-tabs"></nav>
                     <main id="vvvtm-content" class="vvvtm-content"></main>
-                    <div id="vvvtm-busy" class="vvvtm-busy" hidden><b></b><span>处理中…</span></div>
+                    <div id="vvvtm-busy" class="vvvtm-busy" hidden><b></b><span>Đang xử lý…</span></div>
                 </div>`;
             modal.addEventListener('click', event => {
                 if (event.target === modal) closeModal();
@@ -3559,8 +3559,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function pagerMarkup(info) {
-        if (!info || info.totalPages <= 1) return info?.total ? `<div class="vvvtm-pager single"><span>共 ${info.total} 条</span></div>` : '';
-        return `<div class="vvvtm-pager"><button data-page-key="${esc(info.key)}" data-page-to="${Math.max(0, info.page - 1)}" ${info.page <= 0 ? 'disabled' : ''}>‹ 上一页</button><span>${info.page + 1} / ${info.totalPages} · ${info.start + 1}-${info.end} / ${info.total}</span><button data-page-key="${esc(info.key)}" data-page-to="${Math.min(info.totalPages - 1, info.page + 1)}" ${info.page >= info.totalPages - 1 ? 'disabled' : ''}>下一页 ›</button></div>`;
+        if (!info || info.totalPages <= 1) return info?.total ? `<div class="vvvtm-pager single"><span>Tổng ${info.total} mục</span></div>` : '';
+        return `<div class="vvvtm-pager"><button data-page-key="${esc(info.key)}" data-page-to="${Math.max(0, info.page - 1)}" ${info.page <= 0 ? 'disabled' : ''}>‹ Trang trước</button><span>${info.page + 1} / ${info.totalPages} · ${info.start + 1}-${info.end} / ${info.total}</span><button data-page-key="${esc(info.key)}" data-page-to="${Math.min(info.totalPages - 1, info.page + 1)}" ${info.page >= info.totalPages - 1 ? 'disabled' : ''}>Trang sau ›</button></div>`;
     }
 
     function bindPaging(content) {
@@ -3577,16 +3577,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function listRecent(key, mainColumn, floorColumn, filter = () => true) {
         const rows = stateRuntime.state.tables[key].filter(filter).slice(-6).reverse();
-        if (!rows.length) return '<div class="vvvtm-empty">Chưa có记录</div>';
+        if (!rows.length) return '<div class="vvvtm-empty">Chưa có bản ghi nào</div>';
         return `<div class="vvvtm-list">${rows.map(row => {
             const floor=row[floorColumn];
             const hasFloor=floor!==undefined&&floor!==null&&String(floor)!=='';
             if(key==='mainline'&&hasFloor){
                 const invalid=recentEventSummaryLooksInternal(row[mainColumn]);
                 const stamp=timelineRowStamp(row);
-                return `<button type="button" class="vvvtm-list-item vvvtm-recent-event ${invalid?'invalid':''}" data-recent-event-floor="${esc(floor)}"><span><b class="vvvtm-story-stamp">${esc(stamp)}</b>${invalid?'摘要异常，点击进入重新提取':esc(row[mainColumn] || 'Chưa đặt tên')}</span><small>${esc(`${floor}层`)} <b aria-hidden="true">›</b></small></button>`;
+                return `<button type="button" class="vvvtm-list-item vvvtm-recent-event ${invalid?'invalid':''}" data-recent-event-floor="${esc(floor)}"><span><b class="vvvtm-story-stamp">${esc(stamp)}</b>${invalid?'Tóm tắt bất thường, bấm vào để trích xuất lại':esc(row[mainColumn] || 'Chưa đặt tên')}</span><small>${esc(`Tầng ${floor}`)} <b aria-hidden="true">›</b></small></button>`;
             }
-            return `<button type="button" class="vvvtm-list-item" ${hasFloor?`data-jump="${esc(floor)}"`:''}><span>${esc(row[mainColumn] || 'Chưa đặt tên')}</span><small>${hasFloor?esc(`${floor}层`):''}</small></button>`;
+            return `<button type="button" class="vvvtm-list-item" ${hasFloor?`data-jump="${esc(floor)}"`:''}><span>${esc(row[mainColumn] || 'Chưa đặt tên')}</span><small>${hasFloor?esc(`Tầng ${floor}`):''}</small></button>`;
         }).join('')}</div>`;
     }
 
@@ -3595,15 +3595,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const rows = source.map((row, index) => ({ row, index }))
             .filter(({ row }) => !promiseClosedStatus(row?.['Trạng thái']))
             .slice(-6).reverse();
-        if (!rows.length) return '<div class="vvvtm-empty">Chưa cóLời hẹn chờ thực hiện</div>';
+        if (!rows.length) return '<div class="vvvtm-empty">Chưa có lời hẹn nào chờ thực hiện</div>';
         return `<div class="vvvtm-list vvvtm-promise-list">${rows.map(({ row, index }) => {
             const floor = row?.['Tầng'];
             const hasFloor = floor !== undefined && floor !== null && String(floor) !== '';
             const recorded=promiseRecordedStamp(row);
             const due=compactText(row?._due || row?.['Thời điểm hẹn'],120);
-            const meta = [`记录于 ${recorded}`, due ? `兑现 ${due}` : '', row?.['Trạng thái'] || 'Chờ thực hiện', hasFloor ? `${floor}层` : ''].filter(Boolean).join(' · ');
+            const meta = [`Ghi nhận lúc ${recorded}`, due ? `Thực hiện ${due}` : '', row?.['Trạng thái'] || 'Chờ thực hiện', hasFloor ? `Tầng ${floor}` : ''].filter(Boolean).join(' · ');
             const promiseId = promiseEntityId(row, { create: true });
-            return `<div class="vvvtm-list-item vvvtm-promise-item"><button type="button" class="vvvtm-promise-jump" ${hasFloor ? `data-jump="${esc(floor)}"` : ''}><span><b class="vvvtm-story-stamp">${esc(recorded)}</b>${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}</span><small>${esc(meta)}</small></button><button type="button" class="vvvtm-promise-complete" data-promise-complete-index="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="完成Lời hẹn：${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}" title="立即标记为Đã hoàn thành">完成</button></div>`;
+            return `<div class="vvvtm-list-item vvvtm-promise-item"><button type="button" class="vvvtm-promise-jump" ${hasFloor ? `data-jump="${esc(floor)}"` : ''}><span><b class="vvvtm-story-stamp">${esc(recorded)}</b>${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}</span><small>${esc(meta)}</small></button><button type="button" class="vvvtm-promise-complete" data-promise-complete-index="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="Hoàn thành lời hẹn: ${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}" title="Đánh dấu đã hoàn thành ngay">Hoàn thành</button></div>`;
         }).join('')}</div>`;
     }
 
@@ -3611,12 +3611,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const numeric=Number.parseInt(String(floor),10);
         const entry=assistantEntryAtFloor(numeric);
         const row=assistantMainlineRows(stateRuntime.state,numeric,entry?messageStableKey(entry.message):'').find(item=>item?._assistantOnce===true);
-        if(!entry||!row){toast(`第 ${numeric} 层没有可重新提取的自动事件`,'warn');return;}
+        if(!entry||!row){toast(`Tầng ${numeric} không có sự kiện tự động nào để trích xuất lại`,'warn');return;}
         const replacementFocus=closeTransientOverlayById('vvvtm-recent-event-dialog',{restoreFocus:false});
         const invalid=recentEventSummaryLooksInternal(row['Tóm tắt sự kiện']);
         const overlay=document.createElement('div');
         overlay.id='vvvtm-recent-event-dialog';
-        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-recent-event-title"><header><div><b id="vvvtm-recent-event-title">${esc(timelineRowStamp(row))} · 第 ${numeric} 层Sự kiện gần đây</b><small>${row._deterministicFallback?'原文保底摘要':'AI提取摘要'}</small></div><button type="button" data-recent-event-close aria-label="Đóng" title="Đóng">×</button></header>${invalid?'<div class="vvvtm-recent-event-warning">检测到内部写作流程文本。这条记录已暂停参与检索和下一轮记忆注入，请重新提取。</div>':`<p class="vvvtm-recent-event-detail">${esc(row['Tóm tắt sự kiện']||'Sự kiện chưa đặt tên')}</p>`}<footer><button type="button" data-recent-event-jump>跳到原文</button><button type="button" data-recent-event-rerun>↻ 重新提取本条</button></footer></section>`;
+        overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="vvvtm-recent-event-title"><header><div><b id="vvvtm-recent-event-title">${esc(timelineRowStamp(row))} · Sự kiện gần nhất ở tầng ${numeric}</b><small>${row._deterministicFallback?'Tóm tắt dự phòng từ nguyên văn':'Tóm tắt do AI trích xuất'}</small></div><button type="button" data-recent-event-close aria-label="Đóng" title="Đóng">×</button></header>${invalid?'<div class="vvvtm-recent-event-warning">Phát hiện văn bản thuộc quy trình viết nội bộ. Bản ghi này đã tạm ngừng tham gia truy xuất và việc chèn ký ức ở lượt sau, hãy trích xuất lại.</div>':`<p class="vvvtm-recent-event-detail">${esc(row['Tóm tắt sự kiện']||'Sự kiện chưa đặt tên')}</p>`}<footer><button type="button" data-recent-event-jump>Nhảy tới nguyên văn</button><button type="button" data-recent-event-rerun>↻ Trích xuất lại mục này</button></footer></section>`;
         const close=mountTransientDialog(overlay,{focusSelector:'[data-recent-event-close]',restoreFocusTarget:replacementFocus});
         overlay.querySelector('[data-recent-event-close]')?.addEventListener('click',close);
         overlay.querySelector('[data-recent-event-jump]')?.addEventListener('click',()=>{close();jumpToFloor(numeric);});
@@ -3626,45 +3626,45 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     async function runPreciseMemoryRepair(button) {
         const floor=Number(button?.dataset?.memoryReextractFloor);
         if(!button||!Number.isFinite(floor)||button.dataset.memoryRepairRunning==='1')return;
-        const originalText=button.textContent||'精准修复',startedAt=Date.now();let active=true,timer=0;
+        const originalText=button.textContent||'Sửa chính xác',startedAt=Date.now();let active=true,timer=0;
         button.dataset.memoryRepairRunning='1';button.disabled=true;button.setAttribute('aria-busy','true');
-        const updateElapsed=()=>{if(!active)return;button.textContent=`修复中 ${Math.max(0,Math.floor((Date.now()-startedAt)/1000))}s`;timer=setTimeout(updateElapsed,1000);};
-        updateElapsed();setBusy(true,`正在精准修复第 ${floor} 层…`);
+        const updateElapsed=()=>{if(!active)return;button.textContent=`Đang sửa ${Math.max(0,Math.floor((Date.now()-startedAt)/1000))}s`;timer=setTimeout(updateElapsed,1000);};
+        updateElapsed();setBusy(true,`Đang sửa chính xác tầng ${floor}…`);
         try{
             const result=await reExtractMemoryFloor(floor),remaining=Math.max(0,Number(result?.missing||0));
             if(!result?.success){
-                const message=result?.stale?`第 ${floor} 层修复期间切换了聊天，本次结果已丢弃`:remaining?`第 ${floor} 层Đã hoàn thành补抓，但仍有 ${remaining} 条遗漏，请查看本层原文或稍后重试`:`第 ${floor} 层修复未完成，请查看当前Trạng thái后重试`;
+                const message=result?.stale?`Đã đổi cuộc trò chuyện trong lúc sửa tầng ${floor}, kết quả lần này bị hủy`:remaining?`Tầng ${floor} đã quét bù xong nhưng vẫn còn ${remaining} mục bị sót, hãy xem nguyên văn của tầng này hoặc thử lại sau`:`Tầng ${floor} chưa sửa xong, hãy xem trạng thái hiện tại rồi thử lại`;
                 toast(message,'warn');
             }else{
-                toast(result.mode==='full'?`第 ${floor} 层整轮记忆已重建`:(result.mode==='noop'?`第 ${floor} 层复检已通过`:`第 ${floor} 层生活细节已精准补抓`),'success');
+                toast(result.mode==='full'?`Đã dựng lại toàn bộ ký ức của tầng ${floor}`:(result.mode==='noop'?`Tầng ${floor} đã qua bước kiểm tra lại`:`Đã quét bù chính xác các chi tiết đời thường ở tầng ${floor}`),'success');
             }
             renderCurrentTab();
-        }catch(error){toast(`修复失败：${error.message}`,'error');}
+        }catch(error){toast(`Sửa thất bại: ${error.message}`,'error');}
         finally{active=false;clearTimeout(timer);button.textContent=originalText;button.disabled=false;button.removeAttribute('aria-busy');delete button.dataset.memoryRepairRunning;setBusy(false);}
     }
 
     function bindOverview(content) {
-        content.querySelector('[data-memory-review-open]')?.addEventListener('click',()=>openMemoryReviewInChat(0).catch(error=>toast(`AI记忆体检启动失败：${error.message}`,'error')));
+        content.querySelector('[data-memory-review-open]')?.addEventListener('click',()=>openMemoryReviewInChat(0).catch(error=>toast(`Không khởi động được phần khám ký ức bằng AI: ${error.message}`,'error')));
         content.querySelector('[data-overview-action="save-scene"]')?.addEventListener('click', () => {
             const calibration=activeTimeCalibration();
             content.querySelectorAll('[data-scene]').forEach(input => { stateRuntime.state.scene[input.dataset.scene] = input.value.trim(); });
             if(calibration&&stateRuntime.state.scene.time!==calibration.value)releaseTimeCalibrationIfSceneAdvanced(stateRuntime.state.scene.time);
             selfHealCommunicationReality();
-            saveState({ refresh: true }); toast('场景已保存', 'success');
+            saveState({ refresh: true }); toast('Đã lưu bối cảnh', 'success');
         });
         content.querySelector('[data-overview-action="calibrate-time"]')?.addEventListener('click',showTimeCalibrationDialog);
         content.querySelectorAll('[data-recent-event-floor]').forEach(button=>button.addEventListener('click',()=>showRecentEventDialog(button.dataset.recentEventFloor)));
         bindPromiseCompletionButtons(content, '[data-promise-complete-index]', 'promiseCompleteIndex');
         content.querySelector('[data-overview-action="save-director"]')?.addEventListener('click', () => {
             stateRuntime.state.directorInstruction = content.querySelector('#vvvtm-director')?.value.trim() ?? '';
-            saveState(); toast('导演指令已注入下一轮', 'success');
+            saveState(); toast('Đã chèn chỉ thị đạo diễn vào lượt kế tiếp', 'success');
         });
         content.querySelector('[data-overview-action="clear-director"]')?.addEventListener('click', () => {
             stateRuntime.state.directorInstruction = ''; saveState({ refresh: true });
         });
         content.querySelector('[data-overview-action="roll"]')?.addEventListener('click', rollDice);
         content.querySelectorAll('[data-memory-reextract-floor]').forEach(button=>button.addEventListener('click',()=>runPreciseMemoryRepair(button)));
-        content.querySelector('[data-memory-repair-all]')?.addEventListener('click',async()=>{setBusy(true,'正在准备 P13 一键修复…');try{const rows=await repairAllMemoryHealthFailures({limit:20});const ok=rows.filter(item=>item.ok&&item.success!==false).length;const fail=rows.length-ok;toast(rows.length?`P13 批量修复完成：成功 ${ok}${fail?`，仍需处理 ${fail}`:''}`:'最近20轮没有需要修复的遗漏',fail?'warning':'success');renderCurrentTab();}catch(error){toast(`一键修复失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-memory-repair-all]')?.addEventListener('click',async()=>{setBusy(true,'Đang chuẩn bị bước sửa một chạm P13…');try{const rows=await repairAllMemoryHealthFailures({limit:20});const ok=rows.filter(item=>item.ok&&item.success!==false).length;const fail=rows.length-ok;toast(rows.length?`Sửa hàng loạt P13 xong: thành công ${ok}${fail?`, còn ${fail} mục cần xử lý`:''}`:'20 lượt gần đây không có chỗ sót nào cần sửa',fail?'warning':'success');renderCurrentTab();}catch(error){toast(`Sửa một chạm thất bại: ${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelectorAll('[data-go-tab]').forEach(button => button.addEventListener('click', () => {
             stateRuntime.currentTab = button.dataset.goTab;
             if (button.dataset.table) stateRuntime.currentTable = button.dataset.table;
@@ -3680,10 +3680,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return `
             <section class="vvvtm-card table-card">
                 <div class="vvvtm-table-tabs">${TABLE_ORDER.map(tableKey => `<button data-table-key="${tableKey}" class="${key === tableKey ? 'active' : ''}">${TABLE_DEFS[tableKey].title}<small>${stateRuntime.state.tables[tableKey].length}</small></button>`).join('')}</div>
-                <div class="vvvtm-section-title table-tools"><div><h3>${def.title}</h3><p class="vvvtm-note">超长档案模式按页渲染，避免几千条记录一次性拖慢手机/浏览器。</p></div><div><button data-table-action="add">＋新增</button><button data-table-action="delete" class="danger-soft">删除选中</button><button data-table-action="clear" class="danger-soft">Bỏ chọn本表</button></div></div>
+                <div class="vvvtm-section-title table-tools"><div><h3>${def.title}</h3><p class="vvvtm-note">Chế độ hồ sơ siêu dài dựng theo từng trang, tránh để vài nghìn bản ghi cùng lúc làm chậm điện thoại/trình duyệt.</p></div><div><button data-table-action="add">＋ Thêm</button><button data-table-action="delete" class="danger-soft">Xóa mục đã chọn</button><button data-table-action="clear" class="danger-soft">Dọn sạch bảng</button></div></div>
                 ${pagerMarkup(page)}
-                <div class="vvvtm-table-wrap"><table><thead><tr><th class="check"><input type="checkbox" id="vvvtm-check-all"></th>${def.columns.map(column => `<th>${esc(column)}</th>`).join('')}<th>操作</th></tr></thead><tbody>
-                    ${page.items.length ? page.items.map((row, offset) => { const index = page.start + offset; const promiseDone = key === 'promises' && promiseClosedStatus(row?.['Trạng thái']); const promiseId = key === 'promises' ? promiseEntityId(row, { create: true }) : ''; const promiseAction = key === 'promises' ? `<button type="button" class="vvvtm-promise-complete" data-promise-complete="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="${promiseDone ? 'Đã hoàn thành' : `完成Lời hẹn：${row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên'}`}" title="立即标记为Đã hoàn thành" ${promiseDone ? 'disabled' : ''}>${promiseDone ? 'Đã hoàn thành' : '完成'}</button>` : ''; return `<tr data-row="${index}"><td class="check"><input type="checkbox" data-check-row="${index}"></td>${def.columns.map(column => `<td><textarea data-cell="${esc(column)}" data-row-index="${index}">${esc(row[column])}</textarea></td>`).join('')}<td><button data-row-save="${index}">保存</button>${promiseAction}${row['Tầng'] !== undefined ? `<button data-jump="${esc(row['Tầng'])}">跳转</button>` : ''}</td></tr>`; }).join('') : `<tr><td colspan="${def.columns.length + 2}" class="vvvtm-empty">Chưa có数据，点击新增或“AI整理”</td></tr>`}
+                <div class="vvvtm-table-wrap"><table><thead><tr><th class="check"><input type="checkbox" id="vvvtm-check-all"></th>${def.columns.map(column => `<th>${esc(column)}</th>`).join('')}<th>Thao tác</th></tr></thead><tbody>
+                    ${page.items.length ? page.items.map((row, offset) => { const index = page.start + offset; const promiseDone = key === 'promises' && promiseClosedStatus(row?.['Trạng thái']); const promiseId = key === 'promises' ? promiseEntityId(row, { create: true }) : ''; const promiseAction = key === 'promises' ? `<button type="button" class="vvvtm-promise-complete" data-promise-complete="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="${promiseDone ? 'Đã hoàn thành' : `Hoàn thành lời hẹn: ${row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên'}`}" title="Đánh dấu đã hoàn thành ngay" ${promiseDone ? 'disabled' : ''}>${promiseDone ? 'Đã hoàn thành' : 'Hoàn thành'}</button>` : ''; return `<tr data-row="${index}"><td class="check"><input type="checkbox" data-check-row="${index}"></td>${def.columns.map(column => `<td><textarea data-cell="${esc(column)}" data-row-index="${index}">${esc(row[column])}</textarea></td>`).join('')}<td><button data-row-save="${index}">Lưu</button>${promiseAction}${row['Tầng'] !== undefined ? `<button data-jump="${esc(row['Tầng'])}">Nhảy tới</button>` : ''}</td></tr>`; }).join('') : `<tr><td colspan="${def.columns.length + 2}" class="vvvtm-empty">Chưa có dữ liệu, hãy bấm Thêm hoặc “AI sắp xếp”</td></tr>`}
                 </tbody></table></div>
                 ${pagerMarkup(page)}
             </section>`;
@@ -3700,14 +3700,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         });
         content.querySelector('[data-table-action="delete"]')?.addEventListener('click', () => {
             const checked = [...content.querySelectorAll('[data-check-row]:checked')].map(input => Number(input.dataset.checkRow)).sort((a, b) => b - a);
-            if (!checked.length) return toast('请先勾选要删除的记录', 'warn');
+            if (!checked.length) return toast('Hãy tích chọn các bản ghi cần xóa trước', 'warn');
             const rows=stateRuntime.state.tables[stateRuntime.currentTable]||[];
             recordManualDeletion(`tables.${stateRuntime.currentTable}`, checked.map(index=>rows[index]).filter(Boolean));
             checked.forEach(index => rows.splice(index, 1));
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
         });
         content.querySelector('[data-table-action="clear"]')?.addEventListener('click', () => {
-            if (!confirm(`确认Bỏ chọn“${TABLE_DEFS[stateRuntime.currentTable].title}”吗？`)) return;
+            if (!confirm(`Xác nhận dọn sạch bảng “${TABLE_DEFS[stateRuntime.currentTable].title}”?`)) return;
             recordManualDeletion(`tables.${stateRuntime.currentTable}`, stateRuntime.state.tables[stateRuntime.currentTable]||[]);
             stateRuntime.state.tables[stateRuntime.currentTable] = [];
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
@@ -3720,7 +3720,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const row = stateRuntime.state.tables[stateRuntime.currentTable][index];
             content.querySelectorAll(`[data-row-index="${index}"]`).forEach(input => { row[input.dataset.cell] = input.value.trim(); });
             row._manualEdited=true;
-            saveState({ refresh: true }); toast('记录已保存', 'success');
+            saveState({ refresh: true }); toast('Đã lưu bản ghi', 'success');
         }));
         bindPromiseCompletionButtons(content, '[data-promise-complete]', 'promiseComplete');
     }
@@ -3739,45 +3739,45 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if (!done && button.isConnected) button.disabled = false;
             } catch (error) {
                 button.disabled = false;
-                toast(`完成Lời hẹn失败：${error?.message || error}`, 'error');
+                toast(`Hoàn thành lời hẹn thất bại: ${error?.message || error}`, 'error');
             }
         }));
     }
 
     function renderTimeline() {
         const rows = stateRuntime.state.tables.mainline.slice().reverse();
-        if (!rows.length) return '<div class="vvvtm-empty big">还没有Dòng thời gian，点击右上角“AI整理”。</div>';
+        if (!rows.length) return '<div class="vvvtm-empty big">Chưa có dòng thời gian, hãy bấm “AI sắp xếp” ở góc trên bên phải.</div>';
         const page = pageSlice(rows, 'timeline');
-        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕰 Dòng thời gian档案</h3><p class="vvvtm-note">Dòng thời gian是一级长期检索源；R9只渲染当前页，2万层档案也不会一次性画出全部事件。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-timeline">${page.items.map(row => `<article><div class="dot"></div><div class="line"></div><div class="vvvtm-card"><small><b class="vvvtm-story-stamp">${esc(timelineRowStamp(row))}</b>${row['Giờ kết thúc'] ? ` — ${esc(row['Giờ kết thúc'])}` : ''}</small><h3>${esc(row['Tóm tắt sự kiện'] || 'Sự kiện chưa đặt tên')}</h3><p>${esc(row['Trạng thái'])}</p>${row['Tầng'] !== undefined && row['Tầng'] !== '' ? `<button data-jump="${esc(row['Tầng'])}">跳到 ${esc(row['Tầng'])} 层</button>` : ''}</div></article>`).join('')}</section>${pagerMarkup(page)}`;
+        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕰 Hồ sơ dòng thời gian</h3><p class="vvvtm-note">Dòng thời gian là nguồn truy xuất dài hạn hạng nhất; R9 chỉ dựng trang hiện tại, nên hồ sơ 20.000 tầng cũng không vẽ hết mọi sự kiện cùng lúc.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-timeline">${page.items.map(row => `<article><div class="dot"></div><div class="line"></div><div class="vvvtm-card"><small><b class="vvvtm-story-stamp">${esc(timelineRowStamp(row))}</b>${row['Giờ kết thúc'] ? ` — ${esc(row['Giờ kết thúc'])}` : ''}</small><h3>${esc(row['Tóm tắt sự kiện'] || 'Sự kiện chưa đặt tên')}</h3><p>${esc(row['Trạng thái'])}</p>${row['Tầng'] !== undefined && row['Tầng'] !== '' ? `<button data-jump="${esc(row['Tầng'])}">Tới tầng ${esc(row['Tầng'])}</button>` : ''}</div></article>`).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderCharacters() {
         const people = stateRuntime.state.tables.people;
         const states = stateRuntime.state.tables.states;
         const names = [...new Set([...people.map(row => row['Họ tên']), ...states.map(row => row['Tên nhân vật'])].filter(Boolean))];
-        if (!names.length) return '<div class="vvvtm-empty big">Chưa có nhân vật资料。</div>';
+        if (!names.length) return '<div class="vvvtm-empty big">Chưa có tư liệu nhân vật nào.</div>';
         const page = pageSlice(names, 'characters');
-        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>👥 人物档案</h3><p class="vvvtm-note">同一人物只保留当前人物档案；大量NPC按页显示。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-grid characters">${page.items.map(name => {
+        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>👥 Hồ sơ nhân vật</h3><p class="vvvtm-note">Mỗi nhân vật chỉ giữ một hồ sơ hiện hành; khi có nhiều NPC thì hiển thị theo trang.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-grid characters">${page.items.map(name => {
             const profile = people.find(row => row['Họ tên'] === name) ?? {};
             const recent = states.filter(row => row['Tên nhân vật'] === name).at(-1) ?? {};
-            return `<article class="vvvtm-card character"><div class="avatar">${esc(name.slice(0, 1))}</div><div><h3>${esc(name)}</h3><p>${esc(profile['Thân phận'] || 'Chưa ghi thân phận')} · ${esc(profile['Tuổi'] || 'Chưa rõ tuổi')}</p><dl><dt>位置</dt><dd>${esc(recent['Vị trí hiện tại'] || profile['地点'] || 'Chưa rõ')}</dd><dt>Trạng thái</dt><dd>${esc(recent['Trạng thái变化'] || 'Chưa có')}</dd><dt>Tính cách</dt><dd>${esc(profile['Tính cách'] || 'Chưa có')}</dd><dt>Ghi chú</dt><dd>${esc(profile['Ghi chú'] || recent['原因'] || 'Chưa có')}</dd></dl></div></article>`;
+            return `<article class="vvvtm-card character"><div class="avatar">${esc(name.slice(0, 1))}</div><div><h3>${esc(name)}</h3><p>${esc(profile['Thân phận'] || 'Chưa ghi thân phận')} · ${esc(profile['Tuổi'] || 'Chưa rõ tuổi')}</p><dl><dt>Vị trí</dt><dd>${esc(recent['Vị trí hiện tại'] || profile['Địa điểm'] || 'Chưa rõ')}</dd><dt>Trạng thái</dt><dd>${esc(recent['Thay đổi trạng thái'] || 'Chưa có')}</dd><dt>Tính cách</dt><dd>${esc(profile['Tính cách'] || 'Chưa có')}</dd><dt>Ghi chú</dt><dd>${esc(profile['Ghi chú'] || recent['Nguyên nhân'] || 'Chưa có')}</dd></dl></div></article>`;
         }).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderRelations() {
         const rows = stateRuntime.state.tables.relations;
-        if (!rows.length) return '<div class="vvvtm-empty big">Chưa có nhân vật关系。</div>';
+        if (!rows.length) return '<div class="vvvtm-empty big">Chưa có quan hệ nhân vật nào.</div>';
         const page = pageSlice(rows, 'relations');
-        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕸 Quan hệ nhân vật</h3><p class="vvvtm-note">每一对人物只显示截至当前的关系与心理Trạng thái；发生变化时覆盖当前值，并把旧Trạng thái保存在可展开历史中。</p></div>${pagerMarkup(page)}</section><section class="vvvtm-relation-map">${page.items.map(row => {
+        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕸 Quan hệ nhân vật</h3><p class="vvvtm-note">Mỗi cặp nhân vật chỉ hiển thị quan hệ và trạng thái tâm lý tính tới hiện tại; khi có thay đổi thì ghi đè giá trị hiện hành và cất trạng thái cũ vào phần lịch sử mở rộng được.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-relation-map">${page.items.map(row => {
             const history=(row._history||[]).slice().reverse();
-            const historical=history.length?`<details class="vvvtm-relation-history"><summary>关系与心理变化历史（${history.length}）</summary>${history.map(item=>`<div><b>${esc(item['Thời điểm cập nhật']||item.time||'Chưa ghi giờ')}</b><span>${esc(item['Mô tả quan hệ']||'Chưa ghi quan hệ')}</span><small>${esc(item['Thái độ tình cảm']||'心理Chưa ghi nhận')}${item._psychologyChange?`；当时变化：${esc(item._psychologyChange)}`:''}${Number.isFinite(Number(item.floor))&&Number(item.floor)>=0?` · 第${esc(item.floor)}层`:''}</small></div>`).join('')}</details>`:'';
-            return `<article class="vvvtm-card relation"><div class="node">${esc(row['Nhân vật A'] || '?')}</div><div class="edge"><span>${esc(row['Mô tả quan hệ'] || '关系')}</span><i></i><small>${esc(row['Thái độ tình cảm']||'心理Trạng tháiChưa ghi nhận')}${row._psychologyChange?`<br>本轮心理变化：${esc(row._psychologyChange)}`:''}</small></div><div class="node">${esc(row['Nhân vật B'] || '?')}</div>${historical}</article>`;
+            const historical=history.length?`<details class="vvvtm-relation-history"><summary>Lịch sử thay đổi quan hệ và tâm lý (${history.length})</summary>${history.map(item=>`<div><b>${esc(item['Thời điểm cập nhật']||item.time||'Chưa ghi giờ')}</b><span>${esc(item['Mô tả quan hệ']||'Chưa ghi quan hệ')}</span><small>${esc(item['Thái độ tình cảm']||'Chưa ghi tâm lý')}${item._psychologyChange?`; thay đổi lúc đó: ${esc(item._psychologyChange)}`:''}${Number.isFinite(Number(item.floor))&&Number(item.floor)>=0?` · tầng ${esc(item.floor)}`:''}</small></div>`).join('')}</details>`:'';
+            return `<article class="vvvtm-card relation"><div class="node">${esc(row['Nhân vật A'] || '?')}</div><div class="edge"><span>${esc(row['Mô tả quan hệ'] || 'Quan hệ')}</span><i></i><small>${esc(row['Thái độ tình cảm']||'Chưa ghi trạng thái tâm lý')}${row._psychologyChange?`<br>Thay đổi tâm lý lượt này: ${esc(row._psychologyChange)}`:''}</small></div><div class="node">${esc(row['Nhân vật B'] || '?')}</div>${historical}</article>`;
         }).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderSecrets() {
         const rows = stateRuntime.state.secrets;
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔒 谁知道什么</h3><button data-secret-action="add">＋新增秘密</button></div><div class="vvvtm-secret-list">${rows.length ? rows.map((item, index) => `<article><input data-secret-field="subject" data-secret-index="${index}" value="${esc(item.subject)}" placeholder="秘密名称"><textarea data-secret-field="content" data-secret-index="${index}" placeholder="秘密内容">${esc(item.content)}</textarea><div class="vvvtm-form-grid"><label><span>明确知道</span><input data-secret-field="knowers" data-secret-index="${index}" value="${esc(item.knowers)}"></label><label><span>只是怀疑</span><input data-secret-field="suspects" data-secret-index="${index}" value="${esc(item.suspects)}"></label><label><span>明确不知道</span><input data-secret-field="unknown" data-secret-index="${index}" value="${esc(item.unknown)}"></label></div><div class="vvvtm-row-actions"><button data-secret-save="${index}">保存</button><button class="danger-soft" data-secret-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có秘密记录</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔒 Ai biết chuyện gì</h3><button data-secret-action="add">＋ Thêm bí mật</button></div><div class="vvvtm-secret-list">${rows.length ? rows.map((item, index) => `<article><input data-secret-field="subject" data-secret-index="${index}" value="${esc(item.subject)}" placeholder="Tên bí mật"><textarea data-secret-field="content" data-secret-index="${index}" placeholder="Nội dung bí mật">${esc(item.content)}</textarea><div class="vvvtm-form-grid"><label><span>Biết rõ</span><input data-secret-field="knowers" data-secret-index="${index}" value="${esc(item.knowers)}"></label><label><span>Chỉ nghi ngờ</span><input data-secret-field="suspects" data-secret-index="${index}" value="${esc(item.suspects)}"></label><label><span>Chắc chắn không biết</span><input data-secret-field="unknown" data-secret-index="${index}" value="${esc(item.unknown)}"></label></div><div class="vvvtm-row-actions"><button data-secret-save="${index}">Lưu</button><button class="danger-soft" data-secret-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có bí mật nào được ghi</div>'}</div></section>`;
     }
 
     function bindSecrets(content) {
@@ -3800,13 +3800,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function renderChapters() {
         const rows = stateRuntime.state.chapters;
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>📚 长篇章节锚点</h3><p class="vvvtm-note">保留这个功能：它不负责每轮剧情，只标记地点/人生阶段/主目标或重大关系阶段的切换，并参与长期检索。</p></div><button data-chapter-add>＋新增章节</button></div><div class="vvvtm-chapters">${rows.length ? rows.map((item, index) => `<article><div><small>${esc(item.time || '')} · ${esc(item.startFloor)}-${esc(item.endFloor)}层</small><input data-chapter-field="title" data-chapter-index="${index}" value="${esc(item.title)}"><textarea data-chapter-field="summary" data-chapter-index="${index}">${esc(item.summary)}</textarea></div><div><button data-jump="${esc(item.startFloor)}">跳转</button><button data-chapter-save="${index}">保存</button><button class="danger-soft" data-chapter-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có章节</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>📚 Mốc chương cho truyện dài</h3><p class="vvvtm-note">Tính năng này vẫn được giữ: nó không lo từng lượt truyện, chỉ đánh dấu những lần chuyển địa điểm/giai đoạn cuộc đời/mục tiêu chính hoặc bước ngoặt quan hệ lớn, và tham gia vào truy xuất dài hạn.</p></div><button data-chapter-add>＋ Thêm chương</button></div><div class="vvvtm-chapters">${rows.length ? rows.map((item, index) => `<article><div><small>${esc(item.time || '')} · tầng ${esc(item.startFloor)}-${esc(item.endFloor)}</small><input data-chapter-field="title" data-chapter-index="${index}" value="${esc(item.title)}"><textarea data-chapter-field="summary" data-chapter-index="${index}">${esc(item.summary)}</textarea></div><div><button data-jump="${esc(item.startFloor)}">Nhảy tới</button><button data-chapter-save="${index}">Lưu</button><button class="danger-soft" data-chapter-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có chương nào</div>'}</div></section>`;
     }
 
     function bindChapters(content) {
         content.querySelector('[data-chapter-add]')?.addEventListener('click', () => {
             const floor = Math.max(0, (context()?.chat?.length ?? 1) - 1);
-            stateRuntime.state.chapters.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), title: `第${stateRuntime.state.chapters.length + 1}章`, startFloor: floor, endFloor: floor, summary: '', time: stateRuntime.state.scene.time, _manualRecord:true });
+            stateRuntime.state.chapters.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), title: `Chương ${stateRuntime.state.chapters.length + 1}`, startFloor: floor, endFloor: floor, summary: '', time: stateRuntime.state.scene.time, _manualRecord:true });
             saveState({ refresh: true });
         });
         content.querySelectorAll('[data-chapter-save]').forEach(button => button.addEventListener('click', () => {
@@ -3824,8 +3824,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
 
     // =====================================================================
-    // v0.7.4 历史数据结构入口（U1.7.10 已改为chính văn与幕后七条两个独立请求）
-    // chính văn只负责可见chính văn；通讯终端、彼间私文等在chính văn完全收尾后由幕后七条独立API另行生成。
+    // Lối vào cấu trúc dữ liệu lịch sử của v0.7.4 (từ U1.7.10 đã tách thành hai yêu cầu riêng: chính văn và Bảy điều hậu trường)
+    // Phần chính văn chỉ lo phần chính văn nhìn thấy được; Thiết bị liên lạc, Bỉ Gian Tư Văn... được API riêng của Bảy điều hậu trường sinh sau khi chính văn kết thúc hoàn toàn.
     // =====================================================================
     function uid(prefix = 'vvv') {
         return `${prefix}-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
@@ -3833,7 +3833,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
 
     // =====================================================================
-    // R9S1P41-S10：永久资料库“只有用户能删”协议
+    // R9S1P41-S10: giao thức “chỉ người dùng mới được xóa” của kho tư liệu vĩnh viễn
     // =====================================================================
     function frontArchivePathIsReplaceableArray(pathKey='') {
         return [
@@ -3909,9 +3909,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     async function restoreManualDeletionTombstone(id) {
         const operationScope=captureChatScope(),operationState=stateRuntime.state;
-        if(!operationScope||!operationState)throw new Error('当前聊天尚未完成载入');
+        if(!operationScope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         const bins=operationState.manualDeletionTombstones||[];
-        const row=bins.find(x=>x?.id===id);if(!row)throw new Error('回收站项目不存在');
+        const row=bins.find(x=>x?.id===id);if(!row)throw new Error('Mục trong thùng rác không tồn tại');
         const current=getStatePath(row.path);const target=Array.isArray(current)?current:[];
         const seen=new Set(target.map(item=>recycleItemKey(item,row.path)));
         let restored=0;
@@ -3926,26 +3926,26 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function recycleBinMarkup() {
         const rows=(stateRuntime.state?.manualDeletionTombstones||[]).slice().sort((a,b)=>Number(b.deletedAt||0)-Number(a.deletedAt||0));
-        if(!rows.length)return '<div class="vvvtm-empty">回收站为空。只有你亲手删除的资料才会进入这里。</div>';
-        return `<div class="vvvtm-recycle-list">${rows.slice(0,100).map(row=>`<article class="vvvtm-recycle-row"><div><b>${esc(row.path||'资料')}</b><small>${esc(row.deletedTime||'')} · ${Number(row.items?.length||0)} 项</small></div><button data-recycle-restore="${esc(row.id)}">恢复</button></article>`).join('')}</div>${rows.length>100?`<p class="vvvtm-note">仅显示最近100次删除记录，共 ${rows.length} 次；更早墓碑仍保留在永久档案中。</p>`:''}`;
+        if(!rows.length)return '<div class="vvvtm-empty">Thùng rác đang trống. Chỉ những tư liệu do chính bạn xóa mới vào đây.</div>';
+        return `<div class="vvvtm-recycle-list">${rows.slice(0,100).map(row=>`<article class="vvvtm-recycle-row"><div><b>${esc(row.path||'Tư liệu')}</b><small>${esc(row.deletedTime||'')} · ${Number(row.items?.length||0)} mục</small></div><button data-recycle-restore="${esc(row.id)}">Khôi phục</button></article>`).join('')}</div>${rows.length>100?`<p class="vvvtm-note">Chỉ hiển thị 100 lần xóa gần nhất, tổng cộng ${rows.length} lần; các bia mộ cũ hơn vẫn nằm trong hồ sơ vĩnh viễn.</p>`:''}`;
     }
 
     function storyDaypart(value='') {
-        const match=String(value||'').match(/(?:^|\D)([01]?\d|2[0-3])\s*(?::|：|点|时)/);
+        const match=String(value||'').match(/(?:^|\D)([01]?\d|2[0-3])\s*(?::|gi[ờo]|h(?![A-Za-zÀ-ỹ]))/i);
         const hour=match?Number(match[1]):Number.NaN;
         if(!Number.isFinite(hour))return '';
-        if(hour<=4)return '凌晨';
-        if(hour<=8)return '早上';
-        if(hour<=11)return '上午';
-        if(hour<=13)return '中午';
-        if(hour<=17)return '下午';
-        if(hour<=22)return '晚上';
-        return '深夜';
+        if(hour<=4)return 'rạng sáng';
+        if(hour<=8)return 'sáng sớm';
+        if(hour<=11)return 'buổi sáng';
+        if(hour<=13)return 'buổi trưa';
+        if(hour<=17)return 'buổi chiều';
+        if(hour<=22)return 'buổi tối';
+        return 'đêm khuya';
     }
 
     function storyDateTimeLabel(parts={}) {
         const year=String(parts?.year||''),month=String(parts?.month||''),day=String(parts?.day||''),time=String(parts?.time||'');
-        const date=month&&day?(year?`${year}年${month}月${day}日`:`${month}月${day}日`):'';
+        const date=month&&day?(year?`ngày ${day}/${month}/${year}`:`ngày ${day}/${month}`):'';
         const period=time?storyDaypart(time):'';
         return [date,period,time].filter(Boolean).join(' ');
     }
@@ -3957,7 +3957,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             day:String(primary?.day||fallback?.day||''),
             time:String(primary?.time||fallback?.time||''),
         };
-        next.date=next.month&&next.day?(next.year?`${next.year}年${next.month}月${next.day}日`:`${next.month}月${next.day}日`):'';
+        next.date=next.month&&next.day?(next.year?`ngày ${next.day}/${next.month}/${next.year}`:`ngày ${next.day}/${next.month}`):'';
         next.label=storyDateTimeLabel(next);
         return next;
     }
@@ -3979,7 +3979,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }
         const clock = [...text.matchAll(/(?:^|[^\d])([01]?\d|2[0-3])\s*(?::|：|点|时)\s*([0-5]?\d)?\s*(?:分)?/g)].at(-1);
         if (clock) time = `${String(Number(clock[1])).padStart(2,'0')}:${String(Number(clock[2] || 0)).padStart(2,'0')}`;
-        const date = month && day ? (year?`${year}年${month}月${day}日`:`${month}月${day}日`) : '';
+        const date = month && day ? (year?`ngày ${day}/${month}/${year}`:`ngày ${day}/${month}`) : '';
         const result={year,month,day,time,date,label:''};
         result.label=storyDateTimeLabel(result);
         return result;
@@ -7396,7 +7396,7 @@ ${scene.mood||''}`,12000);
 
     async function reExtractMemoryFloor(floor) {
         const operationScope=captureChatScope(),operationState=stateRuntime.state;const target=Math.max(0,Number(floor||0));
-        if(!operationScope||!operationState)throw new Error('当前聊天尚未完成载入');
+        if(!operationScope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         const stillCurrent=()=>chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState;
         const prior=memoryHealthAttemptForFloor(target);const live=liveMemoryHealthAttempt(prior);
         const missing=(live?.missingAfter||[]).map(item=>({...item}));
@@ -10892,7 +10892,7 @@ ${messageText(message).slice(0,10000)}`;
         return {items:pageIds.map(i=>s9FoodStore(platform,i)),page,totalPages,totalItems};
     }
     function s9Pager(platform,page,totalPages,totalItems){
-        return `<div class="vvvtm-mega-pager"><button data-phone-catalog-page="${platform}" data-phone-page-delta="-1" ${page<=1?'disabled':''}>‹ 上一页</button><span><b>${page}</b> / ${totalPages} 页<small>共 ${totalItems} 条</small></span><button data-phone-catalog-page="${platform}" data-phone-page-delta="1" ${page>=totalPages?'disabled':''}>下一页 ›</button></div>`;
+        return `<div class="vvvtm-mega-pager"><button data-phone-catalog-page="${platform}" data-phone-page-delta="-1" ${page<=1?'disabled':''}>‹ Trang trước</button><span><b>${page}</b> / ${totalPages} 页<small>共 ${totalItems} 条</small></span><button data-phone-catalog-page="${platform}" data-phone-page-delta="1" ${page>=totalPages?'disabled':''}>Trang sau ›</button></div>`;
     }
     function isWechatPaymentSms(item={}) {
         const sender=compactText(item?.author||item?.contact||item?.smsAuthor,120);
@@ -13689,7 +13689,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
                     if (!completed && promiseComplete.isConnected) promiseComplete.disabled = false;
                 } catch (error) {
                     promiseComplete.disabled = false;
-                    toast(`完成Lời hẹn失败：${error?.message || error}`, 'error');
+                    toast(`Hoàn thành lời hẹn thất bại: ${error?.message || error}`, 'error');
                 }
                 return;
             }
@@ -14449,7 +14449,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
 
     async function applySummaryHideState(row, hidden = true, { silent = false } = {}) {
         const operationScope=captureChatScope(),operationState=stateRuntime.state;
-        if(!operationScope||!operationState)throw new Error('当前聊天尚未完成载入');
+        if(!operationScope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         if(row&&!((operationState.tables?.summaries||[]).includes(row)))throw new Error('总结对象不属于当前聊天，已拒绝跨聊天Tầng操作');
         if(hidden && (row?.['Loại']||row?.['Loại bảng'])==='阶段总结'){
             if(!/完成|成功/.test(String(row?.['Trạng thái']||''))||!isFixedStageSummaryText(row?.['Nội dung tổng kết']))throw new Error('该阶段总结尚未通过固定格式质量校验，禁止隐藏原聊天');
@@ -14640,7 +14640,7 @@ ${sources}`;
         if(stateRuntime.memoryCollectionRunning){toast('记忆集合已经在运行','info');return false;}
         if(!independentApiReady()){toast('请先配置独立整理/总结 API','warn');return false;}
         const operationScope=captureChatScope(),operationState=stateRuntime.state;
-        if(!operationScope||!operationState)throw new Error('当前聊天尚未完成载入');
+        if(!operationScope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         const maxChars=memoryCollectionLimit(),parts=memoryCollectionParts(maxChars);
         if(!parts.length){toast('当前聊天没有可重新整理的AITầng','warn');return false;}
         const sourceFingerprint=memoryCollectionSourceFingerprint(maxChars);
@@ -17059,7 +17059,7 @@ ${JSON.stringify(evidence)}`;
     async function runMemoryReviewAudit(){
         if(stateRuntime.memoryReviewRunning){toast('AI记忆体检已经在运行','info');return false;}
         if(!independentApiReady()){toast('请先配置独立整理/总结 API','warn');return false;}
-        const scope=captureChatScope(),operationState=stateRuntime.state;if(!scope||!operationState)throw new Error('当前聊天尚未完成载入');
+        const scope=captureChatScope(),operationState=stateRuntime.state;if(!scope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         const source=buildMemoryReviewData(),memoryParts=memoryReviewDocumentParts(source.documents),transcriptParts=transcriptRangeParts(0,Math.max(0,source.totalFloors-1),18000);if(!transcriptParts.length){toast('当前聊天没有可体检的内容','warn');return false;}
         const estimate=memoryParts.length+transcriptParts.length+1;
         if(!confirm(`开始AI记忆体检吗？\n\n第一阶段：${memoryParts.length} 次容量接力，只读 ${source.documents.length} 条实际记忆资料，不给原聊天。\n第二阶段：${transcriptParts.length} 次逐段读取原聊天，核验哪些记住、漏记或记错。\n第三阶段：1 次AI总评。\n\n预计 ${estimate} 次API请求；质量校验失败时单项最多重试3次。报告不会写进聊天历史。`))return false;
