@@ -1063,7 +1063,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const raw = localStorage.getItem(localKey(chatKey));
             return raw ? JSON.parse(raw) : null;
         } catch (error) {
-            console.warn('[vvv记忆中枢] 本地数据读取失败', error);
+            console.warn('[Trung tâm Ký ức vvv] Đọc dữ liệu cục bộ thất bại', error);
             return null;
         }
     }
@@ -1117,7 +1117,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         next.migration = {
             importedGaigai: true,
             importedAt: nowText(),
-            sourceVersion: String(oldData.v ?? oldData.version ?? 'Chưa rõ'),
+            sourceVersion: String(oldData.v ?? oldData.version ?? 'không rõ'),
         };
         next.updatedAt = Date.now();
         return next;
@@ -1168,7 +1168,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function catastrophicShrink(previous, next) {
-        // previous 来自当前聊天自己的 metadata；即使聊天文件改名导致 chatIdentity 变化，也必须继续做缩水保护。
+        // previous đến từ chính metadata của cuộc trò chuyện hiện tại; kể cả khi đổi tên tệp chat làm chatIdentity thay đổi thì vẫn phải tiếp tục bảo vệ chống teo dữ liệu.
         if (!previous || !next) return false;
         const a = stateContentMetrics(previous), b = stateContentMetrics(next);
         if (a.score < 35) return false;
@@ -1201,16 +1201,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const stream=new Blob([rawBytes]).stream().pipeThrough(new CompressionStream('gzip'));
                 const zipped=new Uint8Array(await new Response(stream).arrayBuffer());
                 if(zipped.length < rawBytes.length * 0.92) return { bytes:zipped, encoding:'gzip-base64' };
-            } catch(error) { console.warn('[vvv记忆中枢] 浏览器gzip快照不可用，改用原始分片',error); }
+            } catch(error) { console.warn('[Trung tâm Ký ức vvv] Không dùng được ảnh chụp gzip của trình duyệt, chuyển sang gửi từng mảnh thô',error); }
         }
         return { bytes:rawBytes, encoding:'utf8-base64' };
     }
 
     async function uploadSafetyState(state, reason, rawText, scope) {
         const key=scope?.serverChatKey;
-        if(!key)throw new Error('安全快照缺少聊天作用域');
+        if(!key)throw new Error('Ảnh chụp an toàn thiếu phạm vi cuộc trò chuyện');
         const rawBytes=new TextEncoder().encode(rawText);
-        // 很小的数据直接POST；较大Trạng thái改用压缩+小分片。整个上传固定使用捕获的serverChatKey，切聊天也不会串包。
+        // Dữ liệu rất nhỏ thì POST thẳng; trạng thái lớn hơn thì nén rồi chia mảnh nhỏ. Cả lượt tải lên luôn dùng serverChatKey đã bắt được, nên đổi chat cũng không lẫn gói.
         if(rawBytes.length <= 18000) {
             return serverFetch(`/states/${encodeURIComponent(key)}/snapshot`, { method:'POST', body:JSON.stringify({ state, reason }) });
         }
@@ -1225,7 +1225,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 method:'POST',body:JSON.stringify({uploadId,index,total,encoding:encoded.encoding,reason,data:snapshotBytesToBase64(chunk)})
             });
         }
-        if(!result?.complete||!result?.snapshot)throw new Error('安全快照分片上传未完成');
+        if(!result?.complete||!result?.snapshot)throw new Error('Việc tải từng mảnh của ảnh chụp an toàn chưa hoàn tất');
         return result;
     }
 
@@ -1252,20 +1252,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             }
             return data?.snapshot || null;
         } catch (error) {
-            console.warn('[vvv记忆中枢] 安全快照失败，不影响当前保存', error);
+            console.warn('[Trung tâm Ký ức vvv] Ảnh chụp an toàn thất bại, không ảnh hưởng tới lần lưu hiện tại', error);
             return null;
         }
     }
 
     function assertSafetySnapshotArchive(data, expected=serverChatKey()) {
         const actual=String(data?.snapshot?.chatKey||'');
-        if(actual && actual!==expected)throw new Error('安全快照档案ID不匹配，已拒绝跨聊天恢复');
+        if(actual && actual!==expected)throw new Error('ID hồ sơ của ảnh chụp an toàn không khớp, đã từ chối khôi phục chéo giữa các cuộc trò chuyện');
         return true;
     }
 
-    async function applySafetySnapshotData(data, scope, { saveReason='restore-safety-snapshot', label='安全快照', silent=false }={}) {
-        if (!data?.state) throw new Error('安全快照不存在或已损坏');
-        if(!chatScopeIsCurrent(scope))throw new Error('读取快照期间已切换聊天，Đã hủy恢复');
+    async function applySafetySnapshotData(data, scope, { saveReason='restore-safety-snapshot', label='Ảnh chụp an toàn', silent=false }={}) {
+        if (!data?.state) throw new Error('Ảnh chụp an toàn không tồn tại hoặc đã hỏng');
+        if(!chatScopeIsCurrent(scope))throw new Error('Đã đổi cuộc trò chuyện trong lúc đọc ảnh chụp, đã hủy việc khôi phục');
         assertSafetySnapshotArchive(data,scope.serverChatKey);
         const currentKey=scope.chatKey;
         const oldIdentity=String(data.state.chatIdentity||'');
@@ -1274,7 +1274,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         s12ReconcileCallReceipts();
         if(oldIdentity&&oldIdentity!==currentKey){
             restoredState.auditLog ||= [];
-            restoredState.auditLog.push({time:nowText(),type:'snapshot-chat-identity-rebound',note:`快照聊天标识 ${compactText(oldIdentity,120)} 已按稳定档案ID确认属于当前聊天，恢复后更新为 ${compactText(currentKey,120)}`});
+            restoredState.auditLog.push({time:nowText(),type:'snapshot-chat-identity-rebound',note:`Định danh chat của ảnh chụp ${compactText(oldIdentity,120)} đã được xác nhận thuộc cuộc trò chuyện hiện tại theo ID hồ sơ ổn định, sau khi khôi phục cập nhật thành ${compactText(currentKey,120)}`});
         }
         restoredState.chatIdentity=currentKey;
         restoredState.chatAnchor=scope.chatAnchor;
@@ -1288,44 +1288,44 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         await saveState({immediate:true,refresh:true,reason:`${saveReason}-hide-reconciled`,allowDestructive:true,forceSnapshot:true});
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==restoredState)return false;
         scheduleReindex();
-        if(!silent)toast(`已恢复${label}：${data.snapshot?.reason||'备份'}`,'success');
+        if(!silent)toast(`Đã khôi phục ${label}: ${data.snapshot?.reason||'bản sao lưu'}`,'success');
         return true;
     }
 
     async function restoreLatestSafetySnapshot({ silent=false }={}) {
         const scope=captureChatScope();
         const data=await fetchLatestSafetyState(scope);
-        if(!data?.state)throw new Error('没有可恢复的服务器安全快照');
-        return applySafetySnapshotData(data,scope,{saveReason:'restore-safety-snapshot',label:'安全快照',silent});
+        if(!data?.state)throw new Error('Không có ảnh chụp an toàn nào trên máy chủ để khôi phục');
+        return applySafetySnapshotData(data,scope,{saveReason:'restore-safety-snapshot',label:'Ảnh chụp an toàn',silent});
     }
 
     async function restoreSafetySnapshotById(snapshotId, { silent=false }={}) {
         const id=String(snapshotId||'').trim();
-        if(!id)throw new Error('快照ID为空');
+        if(!id)throw new Error('ID ảnh chụp đang trống');
         const scope=captureChatScope();
-        if(!scope)throw new Error('当前聊天尚未载入');
+        if(!scope)throw new Error('Cuộc trò chuyện hiện tại chưa được nạp');
         const data=await serverFetch(`/states/${encodeURIComponent(scope.serverChatKey)}/${encodeURIComponent(id)}`);
-        if(!data?.state)throw new Error('安全快照不存在或已损坏');
-        return applySafetySnapshotData(data,scope,{saveReason:`restore-safety-${id}`,label:`指定安全快照`,silent});
+        if(!data?.state)throw new Error('Ảnh chụp an toàn không tồn tại hoặc đã hỏng');
+        return applySafetySnapshotData(data,scope,{saveReason:`restore-safety-${id}`,label:`Ảnh chụp an toàn được chỉ định`,silent});
     }
 
     async function chooseSafetySnapshotHistory() {
         const scope=captureChatScope();
         const data = await serverFetch(`/states/${encodeURIComponent(scope.serverChatKey)}/history`);
-        if(!chatScopeIsCurrent(scope))throw new Error('读取历史期间已切换聊天，Đã hủy操作');
+        if(!chatScopeIsCurrent(scope))throw new Error('Đã đổi cuộc trò chuyện trong lúc đọc lịch sử, đã hủy thao tác');
         const history = Array.isArray(data?.history) ? data.history : [];
-        if (!history.length) throw new Error('当前聊天还没有服务器安全快照');
+        if (!history.length) throw new Error('Cuộc trò chuyện hiện tại chưa có ảnh chụp an toàn nào trên máy chủ');
         const lines = history.map((item, index) => {
-            const time = item.createdAt ? new Date(Number(item.createdAt)).toLocaleString() : 'Chưa rõ时间';
+            const time = item.createdAt ? new Date(Number(item.createdAt)).toLocaleString() : 'thời điểm không rõ';
             const m = item.metrics || {};
-            return `${index + 1}. ${time}｜${item.reason || 'auto'}｜记忆${m.rows ?? '?'} 总结${m.summaries ?? '?'} 手机${m.phone ?? '?'}`;
+            return `${index + 1}. ${time}｜${item.reason || 'auto'}｜ký ức ${m.rows ?? '?'} · tổng kết ${m.summaries ?? '?'} · điện thoại ${m.phone ?? '?'}`;
         });
-        const answer = prompt(`选择要恢复的安全快照（1-${history.length}）：\n\n${lines.join('\n')}\n\nHủy则不恢复。`, '1');
+        const answer = prompt(`Chọn ảnh chụp an toàn muốn khôi phục (1-${history.length}):\n\n${lines.join('\n')}\n\nBấm Hủy thì không khôi phục.`, '1');
         if (answer == null) return false;
         const index = Number(answer) - 1;
-        if (!Number.isInteger(index) || index < 0 || index >= history.length) throw new Error('输入的快照序号无效');
+        if (!Number.isInteger(index) || index < 0 || index >= history.length) throw new Error('Số thứ tự ảnh chụp bạn nhập không hợp lệ');
         const target = history[index];
-        if (!confirm(`确定恢复第 ${index + 1} 份快照吗？\n\n${lines[index]}\n\n恢复前，当前Trạng thái会再保存一份保险快照；真实聊天不会改变。`)) return false;
+        if (!confirm(`Bạn chắc chắn khôi phục ảnh chụp thứ ${index + 1}?\n\n${lines[index]}\n\nTrước khi khôi phục, trạng thái hiện tại sẽ được lưu thêm một ảnh chụp dự phòng; đoạn chat thật không bị thay đổi.`)) return false;
         await createSafetySnapshot('before-history-restore', { force:true, scope });
         if(!chatScopeIsCurrent(scope))return false;
         return restoreSafetySnapshotById(target.id);
@@ -1339,7 +1339,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function memoryStateArrayKey(item,pathKey='') {
         if(item===null||item===undefined||typeof item!=='object')return `primitive:${String(item)}`;
-        const semantic=value=>String(value??'').toLowerCase().replace(/[\s，。；、：:,.!?！？“”"'‘’（）()\[\]【】_\-—–]+/g,'').slice(0,600);
+        const semantic=value=>String(value??'').toLowerCase().replace(/[\s:,.;!?“”"'‘’()\[\]【】_\-—–]+/g,'').slice(0,600);
         if(pathKey==='tables.people')return `person:${semantic(item['Họ tên']||item.name||'')}`;
         if(pathKey==='tables.relations'){const a=semantic(item['Nhân vật A']||item.a||''),b=semantic(item['Nhân vật B']||item.b||'');return `relation:${[a,b].sort().join('|')}`;}
         if(pathKey==='tables.summaries')return `summary:${semantic(item['Loại']||item['Loại bảng']||'')}|${semantic(item['Tầng bao phủ']||'')}`;
@@ -1370,7 +1370,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                         const decision=relationUpdateDecision({oldDescription:previous?.['Mô tả quan hệ'],newDescription:item?.['Mô tả quan hệ'],sourceText:item?._evidenceText||''});
                         if(!decision.accept&&item?.['Mô tả quan hệ']!==previous?.['Mô tả quan hệ']){next['Mô tả quan hệ']=previous['Mô tả quan hệ'];conflicts.push({id:`merge-conflict-${conflicts.length+1}`,kind:'relation',reason:decision.reason,active:clone(previous),incoming:clone(item),createdAt:compactText(incoming.updatedAt||'',120)});}
                     }
-                    if(path==='tables.people'&&previous?.['Thân phận']&&item?.['Thân phận']&&/^(?:Chưa rõ|路人|陌生人|群聊成员|具体Thân phận待确认)/.test(String(item['Thân phận'])))next['Thân phận']=previous['Thân phận'];
+                    if(path==='tables.people'&&previous?.['Thân phận']&&item?.['Thân phận']&&/^(?:Chưa rõ|người qua đường|người lạ|thành viên nhóm chat|thân phận cụ thể chờ xác nhận)/i.test(String(item['Thân phận'])))next['Thân phận']=previous['Thân phận'];
                     out[index]=next;
                 }
                 return out;
@@ -1396,15 +1396,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         let relationRepairs=0,itemRepairs=0;
         for(const row of state.tables?.relations||[]){
             const current=compactText(row?.['Mô tả quan hệ'],800),history=Array.isArray(row?._history)?row._history:[];
-            if(!/(?:陌生|不认识|素不相识|第一次见|初次见面|从未见过|不熟|普通路人)/.test(current)||!history.length)continue;
-            const previous=[...history].reverse().find(item=>/(?:同事|前任|前男友|前女友|恋人|男友|女友|夫妻|家人|亲戚|朋友|同学|室友|上司|下属)/.test(String(item?.['Mô tả quan hệ']||'')));
+            if(!/(?:xa lạ|không quen|chưa từng quen biết|lần đầu gặp|gặp lần đầu|chưa từng gặp|không thân|người qua đường)/i.test(current)||!history.length)continue;
+            const previous=[...history].reverse().find(item=>/(?:đồng nghiệp|người yêu cũ|bạn trai cũ|bạn gái cũ|người yêu|bạn trai|bạn gái|vợ chồng|người nhà|họ hàng|bạn bè|bạn học|bạn cùng phòng|cấp trên|cấp dưới)/i.test(String(item?.['Mô tả quan hệ']||'')));
             if(!previous)continue;const source=sourceText(row),decision=relationUpdateDecision({oldDescription:previous['Mô tả quan hệ'],newDescription:current,sourceText:source.text});if(decision.accept)continue;
             quarantineFactConflict('legacy-relation',previous,row,{floor:source.floor,sourceMessageKey:source.messageKey,sourceText:source.text,reason:decision.reason});
             const retained=history.filter(item=>item!==previous);Object.assign(row,clone(previous));row._history=retained;row._integrityRestoredAt=nowText();relationRepairs+=1;
         }
         const kept=[];
         for(const row of state.tables?.items||[]){
-            const name=compactText(row?.['Tên vật phẩm'],240),bound=Number.isFinite(Number(row?._sourceFloor))||Boolean(row?._sourceMessageKey),highMeaning=/(?:婚戒|戒指|钥匙|证件|Thân phận证|护照|合同|房产证|礼物|遗物|银行卡|印章|手机|电脑|相机|车辆|房子|公寓)/.test(name);
+            const name=compactText(row?.['Tên vật phẩm'],240),bound=Number.isFinite(Number(row?._sourceFloor))||Boolean(row?._sourceMessageKey),highMeaning=/(?:nhẫn cưới|nhẫn|chìa khóa|giấy tờ|căn cước|hộ chiếu|hợp đồng|sổ đỏ|quà|di vật|thẻ ngân hàng|con dấu|điện thoại|máy tính|máy ảnh|xe|nhà|căn hộ)/i.test(name);
             if(!highMeaning||row?._acquisitionEvidence||historyRecordIsManual(row)||!bound){kept.push(row);continue;}
             const source=sourceText(row);let evidence=itemAcquisitionEvidence(name,source.text),evidenceFloor=source.floor,evidenceMessageKey=source.messageKey;
             if(!evidence){for(let floor=chat.length-1;floor>=0;floor-=1){const text=messageText(chat[floor]),candidate=itemAcquisitionEvidence(name,text);if(!candidate)continue;evidence=candidate;evidenceFloor=floor;evidenceMessageKey=messageStableKey(chat[floor]);break;}}
@@ -1457,7 +1457,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 (rawBackup && sameChatIdentity(rawBackup,currentKey)) ? { source:'safety', data:rawBackup } : null,
             ].filter(Boolean);
 
-            // R15：metadata和永久档案按稳定实体键并集。不再因“只少两个总结”未达45%缩水阈值而整包丢数据。
+            // R15: metadata và hồ sơ vĩnh viễn được hợp nhất theo khóa thực thể ổn định. Không còn cảnh mất trọn gói dữ liệu chỉ vì “thiếu hai bản tổng kết” mà chưa chạm ngưỡng teo 45%.
             const archiveCandidate = candidates.find(item => item.source === 'archive') || null;
             const metadataCandidate = candidates.find(item => item.source === 'metadata') || null;
             let selected = null;
@@ -1492,17 +1492,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const migrated = tryMigrateFromMetadata(ctx);
                 if (migrated) {
                     selected = { source:'migration', data:migrated };
-                    if (notifyMigration && chatScopeIsCurrent(scope)) toast('已自动迁移本聊天的旧记忆表格', 'success');
+                    if (notifyMigration && chatScopeIsCurrent(scope)) toast('Đã tự động di trú các bảng ký ức cũ của cuộc trò chuyện này', 'success');
                 }
             }
             if(!chatScopeIsCurrent(scope))return null;
 
-            // 从这里开始全部同步执行，先完成本地规范化，再一次性发布到runtime，避免半成品Trạng thái被其它聊天看见。
+            // Từ đây trở đi chạy hoàn toàn đồng bộ: chuẩn hóa cục bộ xong rồi mới công bố một lần vào runtime, tránh để trạng thái dang dở lọt sang cuộc trò chuyện khác.
             const selectedPromiseCount = Array.isArray(selected?.data?.tables?.promises) ? selected.data.tables.promises.length : 0;
             const selectedPromiseFingerprint = JSON.stringify(selected?.data?.tables?.promises || []);
             const nextState = normalizeState(selected?.data || null);
-            // 打开或切换聊天时，旧会话里持久化的队列/重试只作为历史Trạng thái，不得自动续跑。
-            // 下一次真实新回复只处理它锁定的AITầng，避免旧队列把几十层前的chính văn误写成当前层表格。
+            // Khi mở hoặc đổi cuộc trò chuyện, hàng đợi/lượt thử lại còn lưu từ phiên cũ chỉ là trạng thái lịch sử, không được tự chạy tiếp.
+            // Lượt trả lời thật kế tiếp chỉ xử lý đúng tầng AI mà nó khóa, tránh để hàng đợi cũ ghi nhầm chính văn của mấy chục tầng trước vào bảng của tầng hiện tại.
             nextState.progress.assistantMemoryQueue = [];
             nextState.progress.extractRetryPending = false;
             nextState.progress.extractRetryAttempt = 0;
@@ -1521,12 +1521,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             cleanupLegacyTimeline();
             if (selected?.source === 'metadata' && selected?.data?.chatIdentity && selected.data.chatIdentity !== currentKey) {
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({ time:nowText(), type:'chat-identity-rebound', note:`聊天标识由 ${compactText(selected.data.chatIdentity,160)} 更新为 ${compactText(currentKey,160)}；保留全部记忆。` });
+                nextState.auditLog.push({ time:nowText(), type:'chat-identity-rebound', note:`Định danh cuộc trò chuyện đã đổi từ ${compactText(selected.data.chatIdentity,160)} thành ${compactText(currentKey,160)}; toàn bộ ký ức được giữ nguyên.` });
             }
             nextState.chatIdentity = currentKey;
             if (selected?.data?.chatAnchor && anchor && selected.data.chatAnchor !== anchor) {
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({ time:nowText(), type:'anchor-changed', note:'聊天锚点变化，保留原记忆并更新锚点；未执行Bỏ chọn。' });
+                nextState.auditLog.push({ time:nowText(), type:'anchor-changed', note:'Mốc neo của cuộc trò chuyện thay đổi, giữ nguyên ký ức cũ và cập nhật mốc neo; không thực hiện xóa.' });
             }
             nextState.chatAnchor = anchor;
             nextState.progress.maxObservedFloor = Math.max(Number(nextState.progress.maxObservedFloor ?? -1), chat.length - 1);
@@ -1536,16 +1536,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 : {changed:false,added:[],repaired:[]};
             if(mainlineCoverage.changed){
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({time:nowText(),type:'r55-extract-source-lock-backfill',note:`已补齐AITầng主线：新增 ${mainlineCoverage.added.join('、')||'无'}；修复空白 ${mainlineCoverage.repaired.join('、')||'无'}`});
+                nextState.auditLog.push({time:nowText(),type:'r55-extract-source-lock-backfill',note:`Đã bù đủ tuyến chính cho các tầng AI: thêm mới ${mainlineCoverage.added.join(', ')||'không có'}; sửa chỗ trống ${mainlineCoverage.repaired.join(', ')||'không có'}`});
             }
             if(legacyIntegrityRepair.changed){
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({time:nowText(),type:'r15-fact-integrity-repair',note:`恢复被降级的关系 ${legacyIntegrityRepair.relations} 条；隔离无取得来源的重要物品 ${legacyIntegrityRepair.items} 条。`});
+                nextState.auditLog.push({time:nowText(),type:'r15-fact-integrity-repair',note:`Đã khôi phục ${legacyIntegrityRepair.relations} quan hệ bị hạ cấp; cách ly ${legacyIntegrityRepair.items} vật phẩm quan trọng không rõ nguồn gốc.`});
             }
             recalculateSummaryProgress();
             stateRuntime.lastChatKey = currentKey;
             if(!chatScopeIsCurrent(scope)){
-                // 极小概率：同步规范化刚结束就切了聊天。不要让旧state留在runtime。
+                // Xác suất cực nhỏ: vừa chuẩn hóa đồng bộ xong thì người dùng đổi chat. Đừng để state cũ nằm lại trong runtime.
                 stateRuntime.state=previousRuntimeState;
                 return null;
             }
@@ -1558,7 +1558,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if (selected?.source === 'safety' || selected?.source === 'migration') {
                 await saveState({ immediate:true, refresh:false, reason:`load-${selected.source}`, allowDestructive:true, forceSnapshot:true });
                 if(!chatScopeIsCurrent(scope))return null;
-                if (selected.source === 'safety' && notifyMigration) toast('当前聊天记忆主Trạng thái缺失，已从服务器安全快照恢复', 'warn');
+                if (selected.source === 'safety' && notifyMigration) toast('Trạng thái ký ức chính của cuộc trò chuyện hiện tại bị thiếu, đã khôi phục từ ảnh chụp an toàn trên máy chủ', 'warn');
             } else if (hasUserMessage && selected) {
                 await savePermanentArchiveState(selected.source==='merged'?'load-merged-device-sources':(rawArchive?'load-normalized-state':'initial-bind-from-existing-state'),{stateSnapshot:authoritativeSnapshot,scope});
                 if(!chatScopeIsCurrent(scope))return null;
@@ -1597,11 +1597,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const promiseStateBefore = JSON.stringify(stateRuntime.state.tables?.promises || []);
         compactCurrentStateCollections(stateRuntime.state);
         if (promiseStateBefore !== JSON.stringify(stateRuntime.state.tables?.promises || [])) {
-            logAudit('Lời hẹn表自愈', '保存前已清理非实体Lời hẹn并合并重复条目。');
+            logAudit('Tự phục hồi bảng lời hẹn', 'Trước khi lưu đã dọn các lời hẹn không phải thực thể và gộp các mục trùng.');
         }
 
-        // 每次保存先把“当前聊天Thân phận”焊进Trạng thái；后面的持久化一律只用本次不可变快照，
-        // 这样即使420ms内切换聊天，A聊天的定时器也绝不会把B聊天Trạng thái写回A。
+        // Mỗi lần lưu đều hàn “danh tính cuộc trò chuyện hiện tại” vào trạng thái trước; các bước lưu trữ sau đó chỉ dùng ảnh chụp bất biến của lần này,
+        // nhờ vậy dù có đổi chat trong vòng 420ms thì bộ đếm của chat A cũng không bao giờ ghi trạng thái của chat B ngược về A.
         stateRuntime.state.updatedAt=Date.now();
         stateRuntime.state.chatIdentity=scope.chatKey;
         stateRuntime.state.chatAnchor=scope.chatAnchor;
@@ -1609,7 +1609,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
         const destructiveAllowed=allowDestructive||stateRuntime.destructiveSaveDepth>0;
         if(!destructiveAllowed&&previous&&catastrophicShrink(previous,stateRuntime.state)){
-            console.error('[vvv记忆中枢] 已阻止异常缩水保存',stateContentMetrics(previous),stateContentMetrics(stateRuntime.state),reason);
+            console.error('[Trung tâm Ký ức vvv] Đã chặn một lần lưu làm teo dữ liệu bất thường',stateContentMetrics(previous),stateContentMetrics(stateRuntime.state),reason);
             stateRuntime.state=normalizeState(clone(previous));
             s12ReconcileCallReceipts();
             stateRuntime.state.chatIdentity=scope.chatKey;
@@ -1617,7 +1617,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const protectedSnapshot=clone(stateRuntime.state);
             if(Date.now()-stateRuntime.lastSafetyNoticeAt>2500){
                 stateRuntime.lastSafetyNoticeAt=Date.now();
-                toast('🛡️ 安全保护：检测到记忆数量异常骤减，已阻止覆盖旧数据。','error');
+                toast('🛡️ Bảo vệ an toàn: phát hiện số lượng ký ức sụt giảm bất thường, đã chặn việc ghi đè lên dữ liệu cũ.','error');
             }
             await savePermanentArchiveState(reason,{stateSnapshot:protectedSnapshot,scope});
             if(chatScopeIsCurrent(scope)){
@@ -1629,18 +1629,18 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
         const snapshot=clone(stateRuntime.state);
         const serialized=JSON.stringify(snapshot);
-        // 同步更新当前内存metadata镜像，避免下一次同步逻辑在持久化定时器执行前看到旧Trạng thái。
+        // Cập nhật đồng bộ bản sao metadata trong bộ nhớ, tránh để lượt đồng bộ kế tiếp thấy trạng thái cũ trước khi bộ đếm lưu trữ chạy.
         if(chatScopeIsCurrent(scope)&&ctx?.chatMetadata)ctx.chatMetadata[META_KEY]=clone(snapshot);
 
         const perform=async()=>{
-            // localStorage key已在scope捕获，不依赖执行时的当前聊天。
+            // Khóa localStorage đã được bắt trong scope, không phụ thuộc vào cuộc trò chuyện hiện tại lúc chạy.
             try{
                 if(serialized.length<=3000000)localStorage.setItem(scope.localStorageKey,serialized);
                 else localStorage.removeItem(scope.localStorageKey);
-            }catch(error){console.warn('[vvv记忆中枢] 本地镜像保存失败',error);}
+            }catch(error){console.warn('[Trung tâm Ký ức vvv] Lưu bản sao cục bộ thất bại',error);}
 
-            // SillyTavern的saveMetadata/saveChat面向“当前活动聊天”。聊天已切走时禁止调用，
-            // 旧聊天的数据仍会由上面的独立local镜像 + 下面的永久档案/安全快照完整落盘。
+            // saveMetadata/saveChat của SillyTavern hướng tới “cuộc trò chuyện đang hoạt động”. Khi đã chuyển sang chat khác thì cấm gọi,
+            // dữ liệu của chat cũ vẫn được ghi đầy đủ nhờ bản sao cục bộ riêng ở trên cộng với hồ sơ vĩnh viễn/ảnh chụp an toàn ở dưới.
             if(chatScopeIsCurrent(scope)&&ctx?.chatMetadata){
                 ctx.chatMetadata[META_KEY]=clone(snapshot);
                 try{
@@ -1648,7 +1648,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     else if(typeof ctx.saveMetadataDebounced==='function')ctx.saveMetadataDebounced();
                     else if(typeof ctx.saveChat==='function')await ctx.saveChat();
                 }catch(error){
-                    console.warn('[vvv记忆中枢] metadata保存失败，正在依赖安全快照/本地镜像',error);
+                    console.warn('[Trung tâm Ký ức vvv] Lưu metadata thất bại, đang dựa vào ảnh chụp an toàn/bản sao cục bộ',error);
                 }
             }
 
@@ -1657,7 +1657,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if(refresh)renderCurrentTab();
             }
 
-            // 永久档案与安全快照也只吃本次snapshot+scope，不再读取执行时的全局state。
+            // Hồ sơ vĩnh viễn và ảnh chụp an toàn cũng chỉ nhận snapshot+scope của lần này, không đọc state toàn cục lúc chạy nữa.
             if(immediate) await savePermanentArchiveSnapshot(snapshot,scope,`immediate:${reason}`);
             else schedulePermanentArchiveSync(reason,220,{stateSnapshot:snapshot,scope});
             const significant=Boolean(forceSnapshot)||/wipe|import|restore|delete|redo|version-restore|pre-destructive|manual-destructive/i.test(String(reason));
@@ -1700,8 +1700,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function messageSpeaker(message) {
         if (message?.is_user) return '{{user}}';
-        if (message?.is_system) return '系统';
-        return String(message?.name ?? '角色');
+        if (message?.is_system) return 'Hệ thống';
+        return String(message?.name ?? 'Nhân vật');
     }
 
     function recentTranscript(limit = 10) {
@@ -1709,7 +1709,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const start = Math.max(0, chat.length - limit);
         return chat.slice(start).map((message, offset) => {
             const floor = start + offset;
-            return `【${floor}层｜${messageSpeaker(message)}】${memoryNarrativeText(message).slice(0, 2500)}`;
+            return `【Tầng ${floor}｜${messageSpeaker(message)}】${memoryNarrativeText(message).slice(0, 2500)}`;
         }).join('\n\n');
     }
 
@@ -1724,8 +1724,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const cleaned=stripJsonFence(text);
         try{return JSON.parse(cleaned);}
         catch(cause){
-            const preview=String(text??'').trim().replace(/\s+/g,' ').slice(0,220)||'空响应';
-            const error=new Error(`模型未返回合法JSON对象：${preview}`);
+            const preview=String(text??'').trim().replace(/\s+/g,' ').slice(0,220)||'phản hồi rỗng';
+            const error=new Error(`Mô hình không trả về đối tượng JSON hợp lệ: ${preview}`);
             error.name='GeneratedJsonFormatError';error.cause=cause;
             throw error;
         }
@@ -1741,7 +1741,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function semanticText(value, max = 1200) {
         return compactText(value, max).toLowerCase()
             .replace(/[\s\p{P}\p{S}]+/gu, '')
-            .replace(/(?:已经|仍然|目前|当前|将会|准备|决定|答应|承诺|Lời hẹn|说好|表示|计划)/g, '');
+            .replace(/(?:đã|vẫn|hiện tại|lúc này|sẽ|chuẩn bị|quyết định|đồng ý|hứa|hẹn|đã hẹn|bày tỏ|dự định)/gi, '');
     }
 
     function semanticBigrams(value) {
@@ -1770,7 +1770,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return (2 * common) / (left.size + right.size);
     }
 
-    function historySnapshot(row, fields, reason = 'Trạng thái更新') {
+    function historySnapshot(row, fields, reason = 'Cập nhật trạng thái') {
         return {
             ...Object.fromEntries(fields.map(key => [key, row?.[key] ?? ''])),
             floor: Number(row?._lastSeenFloor ?? row?._sourceFloor ?? row?.['Tầng'] ?? -1),
@@ -1787,11 +1787,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseClosedStatus(value) {
-        return /(?:Đã thực hiện|已履行|默认已履行|Đã hoàn thành|完成|Hủy|失效|拒绝|未履行后Đóng)/.test(compactText(value, 120));
+        return /(?:Đã thực hiện|đã hoàn thành xong|mặc định đã thực hiện|Đã hoàn thành|hoàn thành|hủy|hết hiệu lực|từ chối|đóng lại vì không thực hiện)/i.test(compactText(value, 120));
     }
 
     function promiseParticipantKey(value) {
-        return [...new Set(compactText(value, 300).split(/[、,，/与和及;；|]/).map(npcNameKey).filter(Boolean))].sort().join('|');
+        return [...new Set(compactText(value, 300).split(/[,/;|]|\svà\s|\scùng\s/i).map(npcNameKey).filter(Boolean))].sort().join('|');
     }
 
     function promiseRecordContent(item) {
@@ -1803,14 +1803,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseMoneyAmounts(value) {
-        const text = compactText(value, 1600).replace(/[,，]/g, '');
+        const text = compactText(value, 1600).replace(/[,.]/g, '');
         const amounts = [];
-        const patterns=[/[¥￥]\s*(\d+(?:\.\d+)?)\s*([wW万千kK]?)/g,/(\d+(?:\.\d+)?)\s*([wW万千kK])(?:元|块钱?|人民币)?/g,/(\d+(?:\.\d+)?)\s*(?:元|块钱?|人民币)/g,/(\d+(?:\.\d+)?)(?=\s*(?:到账|入账|打款|汇款|收款))/g];
+        const patterns=[/(?:đ|₫|VND|vnd)\s*(\d+(?:\.\d+)?)\s*([kKmMtT]?)/g,/(\d+(?:\.\d+)?)\s*([kKmM]|nghìn|ngàn|triệu|tỷ)(?:\s*(?:đồng|đ|VND))?/gi,/(\d+(?:\.\d+)?)\s*(?:đồng|đ|VND)/gi,/(\d+(?:\.\d+)?)(?=\s*(?:tiền về|vào tài khoản|chuyển tiền|nhận tiền))/gi];
         for(const pattern of patterns)for (const match of text.matchAll(pattern)) {
             let amount = Number(match[1]);
             if (!Number.isFinite(amount) || amount <= 0) continue;
-            if (/[wW万]/.test(match[2] || '')) amount *= 10000;
-            else if (/千|[kK]/.test(match[2] || '')) amount *= 1000;
+            if (/^(?:[mM]|triệu)$/.test(match[2] || '')) amount *= 1000000;
+            else if (/^(?:[kK]|nghìn|ngàn)$/i.test(match[2] || '')) amount *= 1000;
             amounts.push(Math.round(amount * 100) / 100);
         }
         return [...new Set(amounts)];
@@ -1819,17 +1819,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function promiseMoneyTopicKeys(value) {
         const text = compactText(value, 1400);
         const rules = [
-            ['稿费', /画稿|稿费|稿酬|约稿|插画|设计费/], ['工资', /工资|薪水|薪资|月薪|发薪/],
-            ['奖金', /奖金|年终奖|提成/], ['报销', /报销/], ['退款', /退款|退回|退还/],
-            ['转账', /转账|打款|汇款/], ['借款', /借款|还款|借给|归还/], ['房租', /房租|租金/],
-            ['货款', /货款|尾款|定金|订金|结算款/], ['补贴', /补贴|津贴|生活费|零花钱/],
+            ['Nhuận bút', /vẽ tranh|nhuận bút|tiền công|đặt vẽ|minh họa|phí thiết kế/i], ['Lương', /lương|tiền lương|mức lương|lương tháng|trả lương/i],
+            ['Thưởng', /tiền thưởng|thưởng tết|hoa hồng/i], ['Hoàn ứng', /hoàn ứng|thanh toán chi phí/i], ['Hoàn tiền', /hoàn tiền|trả lại tiền|hoàn trả/i],
+            ['Chuyển khoản', /chuyển khoản|chuyển tiền|gửi tiền/i], ['Vay mượn', /vay|trả nợ|cho vay|hoàn lại/i], ['Tiền nhà', /tiền nhà|tiền thuê/i],
+            ['Tiền hàng', /tiền hàng|tiền còn lại|tiền cọc|đặt cọc|tiền quyết toán/i], ['Trợ cấp', /trợ cấp|phụ cấp|tiền sinh hoạt|tiền tiêu vặt/i],
         ];
         return new Set(rules.filter(([, pattern]) => pattern.test(text)).map(([key]) => key));
     }
 
     function promiseEvidenceParticipantKeys(evidence) {
         const values = [evidence?.counterparty, evidence?.payer, evidence?.payee, ...(Array.isArray(evidence?.participants) ? evidence.participants : [])];
-        return new Set(values.flatMap(value => [...promiseParticipantKeys(value)]).filter(key => !/^(?:我|本人|用户|user|\{\{user\}\})$/i.test(key)));
+        return new Set(values.flatMap(value => [...promiseParticipantKeys(value)]).filter(key => !/^(?:tôi|mình|bản thân|người dùng|user|\{\{user\}\})$/i.test(key)));
     }
 
     function promiseEvidenceMatchScore(row, evidence) {
@@ -1837,13 +1837,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const evidenceFloor=Number(evidence?.floor??evidence?._floor),promiseFloor=Number(row?._firstSeenFloor??row?._sourceFloor??row?.['Tầng']);
         if(Number.isFinite(evidenceFloor)&&evidenceFloor>=0&&Number.isFinite(promiseFloor)&&promiseFloor>=0&&evidenceFloor<promiseFloor)return -1;
         const content = `${row['Thời điểm hẹn'] || ''} ${promiseRecordContent(row)}`;
-        if (!/(?:到账|入账|收款|打款|汇款|转账|结算|发放|支付|给付|工资|薪资|稿费|稿酬|奖金|报销|退款|货款|尾款)/.test(content)) return -1;
+        if (!/(?:tiền về|vào tài khoản|nhận tiền|chuyển tiền|chuyển khoản|quyết toán|chi trả|thanh toán|trả tiền|lương|tiền lương|nhuận bút|tiền công|tiền thưởng|hoàn ứng|hoàn tiền|tiền hàng|tiền còn lại)/i.test(content)) return -1;
         const evidenceAmount = Math.abs(Number(evidence?.amount || 0));
         const promisedAmounts = promiseMoneyAmounts(content);
         if (!evidenceAmount || !promisedAmounts.some(amount => Math.abs(amount - evidenceAmount) <= Math.max(0.01, amount * 0.0001))) return -1;
 
         const evidencePeople = promiseEvidenceParticipantKeys(evidence);
-        const promisePeople = new Set([...promiseParticipantKeys(promiseRecordCharacters(row))].filter(key => !/^(?:我|本人|用户|user|\{\{user\}\})$/i.test(key)));
+        const promisePeople = new Set([...promiseParticipantKeys(promiseRecordCharacters(row))].filter(key => !/^(?:tôi|mình|bản thân|người dùng|user|\{\{user\}\})$/i.test(key)));
         const contentNameKey=npcNameKey(promiseRecordContent(row));
         for(const key of evidencePeople)if(contentNameKey.includes(key))promisePeople.add(key);
         if (promisePeople.size && evidencePeople.size && !setOverlap(promisePeople, evidencePeople)) return -1;
@@ -1854,7 +1854,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         let score = 0.62;
         if (promisePeople.size && evidencePeople.size) score += 0.18;
         if (promiseTopics.size && evidenceTopics.size) score += 0.18;
-        if (/明天|明早|稍后|待会|等下|未到账|等待/.test(content)) score += 0.04;
+        if (/ngày mai|sáng mai|lát nữa|chốc nữa|chờ chút|chưa nhận được tiền|đang đợi/i.test(content)) score += 0.04;
         return Math.min(1, score);
     }
 
@@ -1866,21 +1866,21 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!ranked.length) return 0;
         const bestScore = ranked[0].score;
         const selected = ranked.filter(item => item.score >= Math.max(0.8, bestScore - 0.02));
-        // 只有缺少人物/事项信息时才允许0.62的单条金额强匹配；多条同额Lời hẹn必须保持未决，避免误Đóng。
+        // Chỉ khi thiếu thông tin nhân vật/sự việc mới cho phép khớp mạnh 0.62 dựa trên một khoản tiền duy nhất; nhiều lời hẹn cùng số tiền thì phải để ngỏ, tránh đóng nhầm.
         if (bestScore < 0.8 && ranked.length !== 1) return 0;
         if(selected.length>1&&!promiseEvidenceParticipantKeys(normalizedEvidence).size)return 0;
         let changed = 0;
         for (const { row } of selected) {
             row._history = Array.isArray(row._history) ? row._history : [];
-            row._history.push(historySnapshot(row, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], '真实到账证据已履行Lời hẹn'));
-            row['Trạng thái'] = '已履行';
+            row._history.push(historySnapshot(row, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], 'Bằng chứng tiền về thật đã hoàn thành lời hẹn'));
+            row['Trạng thái'] = 'Đã thực hiện xong';
             row._completionFloor = Number(currentFloor);
             row._completionEvidence = {
                 kind:compactText(normalizedEvidence.kind || 'finance-transaction', 80), id:compactText(normalizedEvidence.id, 180),
                 amount:Math.abs(Number(normalizedEvidence.amount || 0)), title:compactText(normalizedEvidence.title, 240),
                 counterparty:compactText(normalizedEvidence.counterparty, 160), floor:Number(currentFloor), time:compactText(normalizedEvidence.time, 120),
             };
-            row._statusReason = `第${Number.isFinite(Number(currentFloor)) ? Number(currentFloor) : '?'}层检测到${compactText(normalizedEvidence.title || '款项到账', 120)} ${s8MoneyText(Math.abs(Number(normalizedEvidence.amount || 0)))}，旧的待到账Lời hẹn已由真实交易证据覆盖。`;
+            row._statusReason = `Tại tầng ${Number.isFinite(Number(currentFloor)) ? Number(currentFloor) : '?'} phát hiện ${compactText(normalizedEvidence.title || 'khoản tiền đã về', 120)} ${s8MoneyText(Math.abs(Number(normalizedEvidence.amount || 0)))}; lời hẹn chờ nhận tiền cũ đã được bằng chứng giao dịch thật thay thế.`;
             row._lastEvidenceFloor = Number(currentFloor); row._lastUpdatedAt = nowText(); changed += 1;
         }
         return changed;
@@ -1888,7 +1888,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function reconcilePromiseNarrativeEvidenceForState(state, text, currentFloor = -1) {
         const value = compactText(text, 4000);
-        if (!/(?:已经|已|刚刚|刚才|成功)?\s*(?:到账|入账|收款成功|打款成功|汇款成功|发放成功)/.test(value)) return 0;
+        if (!/(?:đã|vừa|vừa mới|thành công)?\s*(?:tiền về|vào tài khoản|nhận tiền thành công|chuyển tiền thành công|chuyển khoản thành công|chi trả thành công)/i.test(value)) return 0;
         let changed = 0;
         for (const amount of promiseMoneyAmounts(value)) changed += reconcilePromiseEvidenceForState(state, { kind:'narrative-arrival', amount, title:value }, currentFloor);
         return changed;
@@ -1899,7 +1899,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function extractedEntityId(value) {
-        const id=compactText(value,180);return /(?:沿用|留空|未分配|新Lời hẹn|新物品|新秘密)/.test(id)?'':id;
+        const id=compactText(value,180);return /(?:dùng lại|để trống|chưa gán|lời hẹn mới|vật phẩm mới|bí mật mới)/i.test(id)?'':id;
     }
 
     function promiseObjectId(item) {
@@ -1915,21 +1915,21 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const named = compactText(explicit, 80);
         if (named) return named;
         const text = compactText(content, 1000);
-        if (/(?:长期|永远|一辈子|结婚|婚约|财产|房产|生育|孩子|毕业|回国|休学|每周|每天|持续|共同生活)/.test(text)) return '长期/重大';
-        if (/(?:如果|假如|若是|一旦|除非|条件是|前提是)/.test(text)) return '条件式';
-        if (/(?:今天|今晚|明天|稍后|等下|待会|下班后|回去后|买|拿|带|送|接|吃|喝|陪.+去|顺路)/.test(text)) return '短期日常';
-        return '一次性待确认';
+        if (/(?:dài hạn|mãi mãi|cả đời|kết hôn|hôn ước|tài sản|nhà đất|sinh con|con cái|tốt nghiệp|về nước|bảo lưu|mỗi tuần|mỗi ngày|liên tục|sống chung)/i.test(text)) return 'Dài hạn/trọng đại';
+        if (/(?:nếu|giả như|nếu như|một khi|trừ khi|điều kiện là|với điều kiện)/i.test(text)) return 'Có điều kiện';
+        if (/(?:hôm nay|tối nay|ngày mai|lát nữa|chốc nữa|chờ chút|sau giờ làm|sau khi về|mua|cầm|mang|đưa|đón|ăn|uống|đi cùng.+tới|tiện đường)/i.test(text)) return 'Thường nhật ngắn hạn';
+        return 'Một lần, chờ xác nhận';
     }
 
     function isMemoryMetaPromiseContent(value) {
         const text = compactText(value, 1400);
         if (!text) return false;
-        // 只拦截高置信度的后台规则、写作脚手架和“提到Lời hẹn”的剧情摘录，避免误删用户手工维护的普通Lời hẹn。
-        if (/USER\s*主权|不替\s*(?:\{\{?\s*user\s*\}?\}|<user>|user)|不创造[^。！？!?\n]{0,80}(?:发言|对白|举动|动作)|(?:只|仅)输出[^。！？!?\n]{0,24}(?:严格\s*)?JSON|严格\s*JSON|后台(?:提示|规则|指令|整理|输出|任务|引擎|七条)|系统(?:规则|提示|指令)|导演(?:指令|提示)|提示词|Impersonate/i.test(text)) return true;
-        if (/<\/?user_input\b|共创者|输入解析|原子事实覆盖清单|本次目标|创作(?:确认|要求|任务)/i.test(text)) return true;
-        if (/^(?:动作|反应|镜头|描写|旁白|场景|剧情摘录|台词|输出|任务|指令)\s*[:：]/.test(text)) return true;
-        if (/(?:对|看到|听到|关于)[^。！？!?\n]{0,48}(?:答应|承诺|Lời hẹn|说好)[^。！？!?\n]{0,48}(?:反应|回应|态度|描写)/.test(text)) return true;
-        if (/(?:答应|承诺|Lời hẹn|说好)(?:完|过)[^。！？!?\n]{0,50}(?:之后|以后|后)/.test(text)) return true;
+        // Chỉ chặn những quy tắc hậu đài, khung viết và trích đoạn cốt truyện “có nhắc tới lời hẹn” với độ tin cậy cao, tránh xóa nhầm lời hẹn thường do người dùng tự duy trì.
+        if (/chủ quyền\s*USER|không (?:thay|hộ)\s*(?:\{\{?\s*user\s*\}?\}|<user>|user)|không (?:được )?tạo ra[^.!?\n]{0,80}(?:phát ngôn|lời thoại|cử chỉ|hành động)|chỉ xuất[^.!?\n]{0,24}JSON|JSON\s*hợp lệ nghiêm ngặt|hậu đài(?: |-)?(?:gợi ý|quy tắc|chỉ thị|sắp xếp|kết quả|nhiệm vụ|bộ máy)|Bảy điều hậu trường|(?:quy tắc|gợi ý|chỉ thị) hệ thống|(?:chỉ thị|gợi ý) đạo diễn|câu lệnh nhắc|Impersonate/i.test(text)) return true;
+        if (/<\/?user_input\b|người đồng sáng tác|phân tích đầu vào|danh sách sự thật nguyên tử cần bao phủ|mục tiêu lần này|(?:xác nhận|yêu cầu|nhiệm vụ) sáng tác/i.test(text)) return true;
+        if (/^(?:hành động|phản ứng|ống kính|miêu tả|lời dẫn|bối cảnh|trích đoạn cốt truyện|lời thoại|kết quả|nhiệm vụ|chỉ thị)\s*[:]/i.test(text)) return true;
+        if (/(?:về việc|nhìn thấy|nghe thấy|liên quan tới)[^.!?\n]{0,48}(?:đồng ý|hứa|hẹn|đã hẹn)[^.!?\n]{0,48}(?:phản ứng|phản hồi|thái độ|miêu tả)/i.test(text)) return true;
+        if (/(?:đã|từng)\s*(?:đồng ý|hứa|hẹn)[^.!?\n]{0,50}(?:xong|sau đó|về sau)/i.test(text)) return true;
         return false;
     }
 
@@ -1939,13 +1939,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function promiseContentIsConcrete(value, item = {}) {
         const text = compactText(value, 1400);
         if (!text || isMemoryMetaPromiseContent(text)) return false;
-        const explicitCommitment = /(?:答应|承诺|Lời hẹn|说好|保证|负责|要求|让|付清|结算|尾款|定金|到账|支付|发放|还款|归还)/.test(text);
-        const directive = /(?:必须|需要|得|不许|别|请)/.test(text);
+        const explicitCommitment = /(?:đồng ý|hứa|hẹn|đã hẹn|bảo đảm|chịu trách nhiệm|yêu cầu|bảo|trả đủ|quyết toán|tiền còn lại|tiền cọc|tiền về|thanh toán|chi trả|trả nợ|hoàn lại)/i.test(text);
+        const directive = /(?:phải|cần|nhớ|không được|đừng|hãy)/i.test(text);
         const strongCommitment = explicitCommitment || directive;
-        if (/(?:很自然|不矫情|符合人设|轻松互动|给出[^。！？!?\n]{0,24}互动|人物反应|角色反应|表现出|体现出|描写|镜头|场景推进|Thúc đẩy cốt truyện)/.test(text) && !explicitCommitment) return false;
-        const action = /(?:别走|不要走|留下|留宿|过夜|来(?:一趟|一下)?|过来|到场|锁(?:好|上)?门|陪伴|守着|叫醒|送[^。！？!?\n]{0,20}(?:学校|上学|值日)|(?:买|带)[^。！？!?\n]{0,24}(?:早餐|早饭|豆浆|油条|东西|用品|礼物|药|衣|鞋)|家长会|会议|见面|赴约|吃饭|用餐|做饭|晚饭|早餐|接送|接[^。！？!?\n]{0,12}(?:回家|放学|下班)|下单|洗碗|收拾|打扫|清理|整理|烧|炒|喝|吃|看电影|拿[^。！？!?\n]{0,20}(?:电脑|笔记本|资料)|处理[^。！？!?\n]{0,24}(?:项目|参数|工作)|完成|联系|回家|出门)/.test(text);
-        const temporal = /(?:今天|今晚|今早|明天|后天|早上|上午|晚上|稍后|待会|等下|下班后|放学后|回去后|接下来|之后|每周|每天|长期|一辈子|永远|截止|到账)/.test(text);
-        const financial = /(?:工资|薪水|薪资|稿费|稿酬|奖金|报销|退款|货款|尾款|定金|转账|打款|汇款|支付|发放|还款|归还|元|万)/.test(text);
+        if (/(?:rất tự nhiên|không màu mè|đúng thiết định nhân vật|tương tác nhẹ nhàng|đưa ra[^.!?\n]{0,24}tương tác|phản ứng nhân vật|thể hiện ra|bộc lộ|miêu tả|ống kính|đẩy bối cảnh|đẩy cốt truyện)/i.test(text) && !explicitCommitment) return false;
+        const action = /(?:đừng đi|đừng về|ở lại|ngủ lại|qua đêm|(?:ghé|tới)(?: một chuyến| một lát)?|qua đây|có mặt|khóa cửa|cửa.{0,8}khóa|bầu bạn|trông chừng|gọi dậy|đưa[^.!?\n]{0,20}(?:tới trường|đi học|trực nhật)|(?:mua|mang)[^.!?\n]{0,24}(?:bữa sáng|đồ ăn sáng|sữa đậu nành|quẩy|đồ|vật dụng|quà|thuốc|áo|giày)|họp phụ huynh|cuộc họp|gặp mặt|đi hẹn|ăn cơm|dùng bữa|nấu ăn|bữa tối|bữa sáng|đưa đón|đón[^.!?\n]{0,12}(?:về nhà|tan học|tan làm)|đặt đơn|rửa bát|dọn dẹp|quét dọn|lau dọn|sắp xếp|nấu|xào|uống|ăn|xem phim|cầm[^.!?\n]{0,20}(?:máy tính|laptop|tài liệu)|xử lý[^.!?\n]{0,24}(?:dự án|tham số|công việc)|hoàn thành|liên lạc|về nhà|ra ngoài)/i.test(text);
+        const temporal = /(?:hôm nay|tối nay|sáng nay|ngày mai|ngày kia|buổi sáng|sáng sớm|buổi tối|lát nữa|chốc nữa|chờ chút|sau giờ làm|sau giờ học|sau khi về|tiếp theo|sau đó|mỗi tuần|mỗi ngày|dài hạn|cả đời|mãi mãi|hạn chót|tiền về)/i.test(text);
+        const financial = /(?:lương|tiền lương|mức lương|nhuận bút|tiền công|tiền thưởng|hoàn ứng|hoàn tiền|tiền hàng|tiền còn lại|tiền cọc|chuyển khoản|chuyển tiền|thanh toán|chi trả|trả nợ|hoàn lại|đồng|triệu|nghìn)/i.test(text);
         const hasExplicitId = Boolean(item?.promiseId || item?._entityId);
         // A bare imperative such as “得把这罐酒喝完” is narration or an
         // instruction, not a durable promise. Require a time window for this
@@ -1957,18 +1957,18 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function promiseActionKeys(value) {
         const text = compactText(value, 1200);
         const rules = [
-            ['stay', /别走|不要走|不走|留下|留宿|住下|过夜/],
-            ['arrive', /(?:明天|今晚|今早|早上|上午|晚上|稍后|待会|等下)?(?:来(?:一趟|一下)?|过来|到场|赴约)/],
-            ['lock-door', /锁(?:好|上)?[^，。；！？!?\n]{0,8}门|门[^，。；！？!?\n]{0,8}锁(?:好|上)/],
-            ['accompany', /陪伴|陪着|陪她|陪他|守着/],
-            ['wake', /叫醒|喊醒|唤醒|叫[^，。；！？!?\n]{0,12}起来/],
-            ['escort-school', /送[^，。；！？!?\n]{0,20}(?:学校|上学|值日)/],
-            ['buy-breakfast', /(?:买|带)[^，。；！？!?\n]{0,20}(?:早餐|早饭|豆浆|油条)/],
-            ['meeting', /家长会|会议|见面|赴约/],
-            ['meal', /(?:一起|陪)[^，。；！？!?\n]{0,12}(?:吃饭|用餐)|做饭|晚饭|早餐/],
-            ['pickup', /接送|接[^，。；！？!?\n]{0,12}(?:回家|放学|下班)/],
-            ['shopping', /(?:买|购买|下单)[^，。；！？!?\n]{0,24}(?:东西|用品|礼物|药|衣|鞋)/],
-            ['housework', /洗碗|收拾|打扫|清理|整理[^，。；！？!?\n]{0,10}(?:房间|厨房|家务)/],
+            ['stay', /đừng đi|đừng về|không đi|ở lại|ngủ lại|nghỉ lại|qua đêm/i],
+            ['arrive', /(?:ngày mai|tối nay|sáng nay|buổi sáng|sáng sớm|buổi tối|lát nữa|chốc nữa|chờ chút)?\s*(?:ghé(?: một chuyến| một lát)?|qua đây|tới nơi|có mặt|đi hẹn)/i],
+            ['lock-door', /khóa[^,.;!?\n]{0,8}cửa|cửa[^,.;!?\n]{0,8}khóa/i],
+            ['accompany', /bầu bạn|đi cùng|ở cùng cô ấy|ở cùng anh ấy|trông chừng/i],
+            ['wake', /gọi dậy|đánh thức|gọi[^,.;!?\n]{0,12}dậy/i],
+            ['escort-school', /đưa[^,.;!?\n]{0,20}(?:tới trường|đi học|trực nhật)/i],
+            ['buy-breakfast', /(?:mua|mang)[^,.;!?\n]{0,20}(?:bữa sáng|đồ ăn sáng|sữa đậu nành|quẩy)/i],
+            ['meeting', /họp phụ huynh|cuộc họp|gặp mặt|đi hẹn/i],
+            ['meal', /(?:cùng|đi cùng)[^,.;!?\n]{0,12}(?:ăn cơm|dùng bữa)|nấu ăn|bữa tối|bữa sáng/i],
+            ['pickup', /đưa đón|đón[^,.;!?\n]{0,12}(?:về nhà|tan học|tan làm)/i],
+            ['shopping', /(?:mua|mua sắm|đặt đơn)[^,.;!?\n]{0,24}(?:đồ|vật dụng|quà|thuốc|áo|giày)/i],
+            ['housework', /rửa bát|dọn dẹp|quét dọn|lau dọn|sắp xếp[^,.;!?\n]{0,10}(?:phòng|bếp|việc nhà)/i],
         ];
         return new Set(rules.filter(([, pattern]) => pattern.test(text)).map(([key]) => key));
     }
@@ -1976,16 +1976,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function promiseTemporalKeys(item) {
         const text = [item?.time, item?.due, item?.deadline, item?.['Thời điểm hẹn'], promiseRecordContent(item)].map(value => compactText(value, 300)).filter(Boolean).join(' ');
         const rules = [
-            ['day:today', /今天|今晚|今早/], ['day:tomorrow', /明天|明早|明晚/], ['day:day-after-tomorrow', /后天/],
-            ['period:morning', /今早|明早|(?:今天|明天|后天)(?:早上|上午)/],
-            ['period:evening', /今晚|明晚|(?:今天|明天|后天)(?:晚上|夜里)/],
-            ['window:later', /稍后|待会|等下/], ['window:after-work', /下班后/],
-            ['window:after-school', /放学后/], ['window:after-return', /回去后/],
-            ['schedule:daily', /每天/], ['schedule:weekly', /每周/], ['schedule:monthly', /每月/],
-            ['schedule:long-term', /长期|一辈子|永远/],
+            ['day:today', /hôm nay|tối nay|sáng nay/i], ['day:tomorrow', /ngày mai|sáng mai|tối mai/i], ['day:day-after-tomorrow', /ngày kia/i],
+            ['period:morning', /sáng nay|sáng mai|sáng (?:hôm nay|mai|ngày kia)/i],
+            ['period:evening', /tối nay|tối mai|(?:tối|đêm) (?:hôm nay|mai|ngày kia)/i],
+            ['window:later', /lát nữa|chốc nữa|chờ chút/i], ['window:after-work', /sau giờ làm|sau khi tan làm/i],
+            ['window:after-school', /sau giờ học|sau khi tan học/i], ['window:after-return', /sau khi về/i],
+            ['schedule:daily', /mỗi ngày|hằng ngày/i], ['schedule:weekly', /mỗi tuần|hằng tuần/i], ['schedule:monthly', /mỗi tháng|hằng tháng/i],
+            ['schedule:long-term', /dài hạn|cả đời|mãi mãi/i],
         ];
         const result = new Set(rules.filter(([, pattern]) => pattern.test(text)).map(([key]) => key));
-        for (const value of text.match(/\d{4}[-/.年]\d{1,2}(?:[-/.月]\d{1,2}日?)?/g) || []) result.add(`day:${value.replace(/[/.年月日]/g, '-')}`);
+        for (const value of text.match(/\d{1,2}[-/.]\d{1,2}(?:[-/.]\d{4})?|\d{4}[-/.]\d{1,2}(?:[-/.]\d{1,2})?/g) || []) result.add(`day:${value.replace(/[/.]/g, '-')}`);
         return result;
     }
 
