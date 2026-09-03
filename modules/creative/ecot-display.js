@@ -257,7 +257,7 @@ export function sanitizeRetrievalDocumentText(value) {
     .replace(/<\/?[A-Za-z][\w:.-]*\b[^>]*>/g,' ')
     .replace(/&lt;\/?[A-Za-z][\w:.-]*\b[^&]*&gt;/gi,' ')
     .replace(/(?:^|\n)\s*(?:<!doctype\s+html\b[^>]*>|&lt;!doctype\s+html\b[^&]*&gt;)\s*/gi,'\n')
-    .replace(/^\s*(?:chính văn|chính văn chính thức|bắt đầu chính văn)[。．.:：]*\s*$/gmi,'')
+    .replace(/^\s*(?:chính văn|chính văn chính thức|bắt đầu chính văn)[.:]*\s*$/gmi,'')
     .replace(/[ \t]+\n/g,'\n')
     .replace(/\n[ \t]+/g,'\n')
     .replace(/\n{3,}/g,'\n\n')
@@ -271,7 +271,7 @@ export function normalizeECoTText(value) {
     .replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&amp;/gi, '&')
     .replace(/<!--\s*(?:Start|End)\s+(?:of\s+)?(?:the\s+)?ECoT\s*-->/gi, '')
     .replace(/<\/?\s*(?:think|thinking|analysis|reasoning|ecot|vvv_ecot)\b[^>]*>/gi, '')
-    .replace(/^\s*(?:chính văn|chính văn chính thức|bắt đầu chính văn)[。．.:：]*\s*$/gmi, '')
+    .replace(/^\s*(?:chính văn|chính văn chính thức|bắt đầu chính văn)[.:]*\s*$/gmi, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }

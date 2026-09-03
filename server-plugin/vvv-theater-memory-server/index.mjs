@@ -621,7 +621,7 @@ function buildNovelAiPortraitRequest(config,{prompt,negativePrompt,referenceBuff
     return {model,action:'generate',workflow:effectiveMode,requestedWorkflow:requestedMode,usesCharacterReference:useCharacterReference,body:{input:positive,model,action:'generate',parameters}};
 }
 function novelAiHttpError(status,detail,totalAttempts) {
-    const suffix=detail?`：${String(detail).slice(0,1200)}`:'';
+    const suffix=detail?`: ${String(detail).slice(0,1200)}`:'';
     if(status===400)return `NovelAI 400 tham số yêu cầu không qua được kiểm tra${suffix}`;
     if(status===401)return 'NovelAI 401: API Token không hợp lệ hoặc đã hết hạn';
     if(status===402)return 'NovelAI 402: gói thuê bao hoặc hạn mức Anlas của tài khoản không đủ';
@@ -866,7 +866,7 @@ function archivePathIsPermanentHistory(pathKey) {
 function archiveArrayItemKey(item, pathKey) {
     if (item === null || item === undefined) return `primitive:${String(item)}`;
     if (typeof item !== 'object') return `primitive:${String(item)}`;
-    const semantic=value=>String(value??'').toLowerCase().replace(/[\s，。；、：:,.!?！？“”"'‘’（）()\[\]【】_-]+/g,'').slice(0,500);
+    const semantic=value=>String(value??'').toLowerCase().replace(/[\s:,.;!?"'“”‘’()\[\]【】_-]+/g,'').slice(0,500);
     if (/^tables\.people$/.test(pathKey) && item['Họ tên']) return `person:${semantic(item['Họ tên'])}`;
     if (/^tables\.relations$/.test(pathKey)) {
         const a=semantic(item['Nhân vật A']||''),b=semantic(item['Nhân vật B']||'');
@@ -3147,7 +3147,7 @@ export async function init(router) {
             const data=loadPhoneStickers();if(data.stickers.length>=MAX_PHONE_STICKERS)throw new Error(`Kho nhãn dán chứa tối đa ${MAX_PHONE_STICKERS} mục`);
             const decoded=decodePhoneStickerData(req.body?.data,req.body?.mimeType);
             const id=`sticker-${crypto.randomUUID()}`;const fileName=`${id}.${decoded.extension}`;const now=Date.now();
-            const row={id,fileName,mimeType:decoded.mime,size:decoded.buffer.length,name:cleanPhoneStickerText(req.body?.name||'Nhãn dán chưa đặt tên',120)||'Nhãn dán chưa đặt tên',tags:String(req.body?.tags||'').split(/[，,、\n]/).map(x=>cleanPhoneStickerText(x,40)).filter(Boolean).slice(0,24),description:cleanPhoneStickerText(req.body?.description,500),createdAt:now,updatedAt:now};
+            const row={id,fileName,mimeType:decoded.mime,size:decoded.buffer.length,name:cleanPhoneStickerText(req.body?.name||'Nhãn dán chưa đặt tên',120)||'Nhãn dán chưa đặt tên',tags:String(req.body?.tags||'').split(/[,;\n]/).map(x=>cleanPhoneStickerText(x,40)).filter(Boolean).slice(0,24),description:cleanPhoneStickerText(req.body?.description,500),createdAt:now,updatedAt:now};
             fs.writeFileSync(path.join(PHONE_STICKERS_DIR(),fileName),decoded.buffer,{mode:0o600});
             data.stickers.push(row);savePhoneStickers(data);res.json({ok:true,sticker:phoneStickerPublic(row)});
         }catch(error){res.status(400).json({ok:false,error:String(error?.message||error)});}
@@ -3156,7 +3156,7 @@ export async function init(router) {
         try{
             const data=loadPhoneStickers(),id=safeId(req.params.id),row=data.stickers.find(item=>item.id===id);if(!row)return res.status(404).json({ok:false,error:'Nhãn dán không tồn tại'});
             if(Object.hasOwn(req.body||{},'name'))row.name=cleanPhoneStickerText(req.body.name,120)||row.name;
-            if(Object.hasOwn(req.body||{},'tags'))row.tags=(Array.isArray(req.body.tags)?req.body.tags:String(req.body.tags||'').split(/[，,、\n]/)).map(x=>cleanPhoneStickerText(x,40)).filter(Boolean).slice(0,24);
+            if(Object.hasOwn(req.body||{},'tags'))row.tags=(Array.isArray(req.body.tags)?req.body.tags:String(req.body.tags||'').split(/[,;\n]/)).map(x=>cleanPhoneStickerText(x,40)).filter(Boolean).slice(0,24);
             if(Object.hasOwn(req.body||{},'description'))row.description=cleanPhoneStickerText(req.body.description,500);
             row.updatedAt=Date.now();savePhoneStickers(data);res.json({ok:true,sticker:phoneStickerPublic(row)});
         }catch(error){res.status(400).json({ok:false,error:String(error?.message||error)});}

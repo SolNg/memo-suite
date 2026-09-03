@@ -9,7 +9,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     const SERVER = '/api/plugins/vvv-theater-memory-server';
     const serverJson = createServerJsonClient(SERVER, {
         getContext: () => globalThis.SillyTavern?.getContext?.() || null,
-        label: 'AI剧情接力',
+        label: 'Tiếp sức cốt truyện bằng AI',
     });
     const FALLEN_WRITER_CONTEXT = [
         '【THÂN PHẬN SÁNG TÁC: NHÀ VĂN SA CƠ】',
@@ -19,43 +19,43 @@ import { createServerJsonClient } from '../shared/server-client.js';
         '【NGUYÊN TẮC SÁNG TÁC】Luôn tuân theo chỉ thị sáng tác của User trong nhiệm vụ này và sáng tạo tự do trong phạm vi đó; tôn trọng thiết định nhân vật, chủ quyền của USER, ranh giới hiểu biết của từng nhân vật, nhân quả cốt truyện và tính liền mạch trước sau, đồng thời tuân thủ chính sách sử dụng hiện hành của dịch vụ mô hình.',
     ].join('\n');
     const FATE_CATEGORY_LABELS = Object.freeze({
-        daily: '日常', emotion: '情感', conflict: '冲突', clue: '线索', npc: 'NPC', world: '世界', major: '重大事件', custom: '自定义',
+        daily: 'Thường nhật', emotion: 'Tình cảm', conflict: 'Xung đột', clue: 'Manh mối', npc: 'NPC', world: 'Thế giới', major: 'Sự kiện lớn', custom: 'Tùy chỉnh',
     });
     const BUILTIN_FATE_CARDS = Object.freeze([
-        { id:'daily-forgotten-item', category:'daily', text:'一个此前出现过的小物件在当前场景以合理方式重新进入视线，但不要强迫任何角色立刻处理它。', weight:1 },
-        { id:'daily-delivery', category:'daily', text:'出现一个符合当前时代与地点的日常通知、快递、账单、预约或生活安排，让场景多一个自然的小变量。', weight:1 },
-        { id:'daily-routine-break', category:'daily', text:'当前人物原本稳定的日常节奏被一个很小但真实的生活细节打断，不制造重大危机。', weight:1 },
-        { id:'daily-choice', category:'daily', text:'给角色一个很普通但能体现习惯或偏好的生活选择，让旧有生活记忆有机会自然回响。', weight:1 },
-        { id:'emotion-old-phrase', category:'emotion', text:'让过去某句重要的话、某个Lời hẹn或某种熟悉的小动作在当前情境里产生情绪回声，但不要直接替角色下结论。', weight:1 },
-        { id:'emotion-small-jealousy', category:'emotion', text:'加入轻微、可解释的在意或吃味迹象，只能作为细节，不允许无依据升级成争吵或关系突变。', weight:.8 },
-        { id:'emotion-unspoken', category:'emotion', text:'让某个角色存在一个没有马上说出口的小顾虑或小期待，通过可观察细节呈现，不读心。', weight:1 },
-        { id:'emotion-care', category:'emotion', text:'安排一个适合当前关系阶段的照顾或被照顾契机，强度必须服从既有关系与人物Tính cách。', weight:1 },
-        { id:'conflict-schedule', category:'conflict', text:'出现一个现实的时间、安排或优先级冲突，规模保持可控，不凭空制造恶意。', weight:.8 },
-        { id:'conflict-misread', category:'conflict', text:'产生一个有现实依据的小误解，但必须保留澄Bỏ chọn间，不把角色强行写成降智。', weight:.8 },
-        { id:'conflict-boundary', category:'conflict', text:'让某个既有边界、习惯或Lời hẹn被轻微碰触，从而需要角色表态，但不预设表态结果。', weight:.8 },
-        { id:'conflict-interruption', category:'conflict', text:'当前互动被合理的外部事务短暂打断，让人物选择如何处理，禁止强行中断核心剧情。', weight:1 },
-        { id:'clue-old-note', category:'clue', text:'一个旧记录、旧消息、旧物或历史细节提供新的联想线索，但只能使用已经存在或可合理出现的信息。', weight:.9 },
-        { id:'clue-name', category:'clue', text:'让一个过去出现过的人名、地点名或关键词再次出现，优先联动0-32长期记忆，不凭空新增阴谋。', weight:.9 },
-        { id:'clue-contradiction', category:'clue', text:'暴露一个值得注意的小矛盾或信息不一致，先作为疑点保留，不立即宣布真相。', weight:.8 },
-        { id:'clue-object', category:'clue', text:'让一个关键物品的Trạng thái、位置或使用痕迹重新变得重要，必须服从既有物品记录。', weight:.9 },
-        { id:'npc-contact', category:'npc', text:'让一个已经认识或有合理渠道的NPC通过符合时代的方式主动联系，但NPC行为必须符合其自身生活与关系。', weight:1 },
-        { id:'npc-crossing', category:'npc', text:'让一个已有NPC在合理地点或事件链中与当前剧情发生轻量交集，不做巧合堆叠。', weight:.8 },
-        { id:'npc-choice', category:'npc', text:'让某个NPC依据自己的目标做一个不围绕user的小决定，并让它对当前场景产生可见影响。', weight:1 },
-        { id:'npc-group', category:'npc', text:'通过群聊、工作、课程、家庭或社交圈产生一条背景动态，让世界继续运转。', weight:1 },
-        { id:'world-weather', category:'world', text:'天气、交通、营业Trạng thái或公共环境发生一个符合地点与时间的变化，只改变条件，不强推剧情。', weight:1 },
-        { id:'world-public', category:'world', text:'出现一个与当前世界观相符的小型公共事件或新闻背景，为人物提供讨论或行动契机。', weight:.8 },
-        { id:'world-resource', category:'world', text:'当前地点某项资源、服务或设施Trạng thái改变，迫使人物重新安排一个小步骤。', weight:.8 },
-        { id:'world-calendar', category:'world', text:'让Ngày、节日、截止时间、课程或工作安排中的既有节点自然靠近，不凭空跳时间。', weight:.8 },
-        { id:'major-invitation', category:'major', text:'出现一个有现实来源的重要邀请、机会或决定窗口，但只提出选择，不替user或角色做决定。', weight:.5 },
-        { id:'major-family-news', category:'major', text:'已有家庭/组织关系中出现一条会影响后续安排的重要消息，必须先尊重既有设定与知情边界。', weight:.45 },
-        { id:'major-travel', category:'major', text:'出现一个跨地点行动的真实理由或机会，只作为未来选项，除非user明确选择，否则本轮不直接跳转。', weight:.45 },
-        { id:'major-turn', category:'major', text:'把一个已经埋下的长期伏笔推近一步，但不得凭空创造新伏笔，更不能本轮直接把整件事结算完。', weight:.45 },
+        { id:'daily-forgotten-item', category:'daily', text:'Một món đồ nhỏ từng xuất hiện trước đây lọt lại vào tầm mắt trong cảnh hiện tại theo cách hợp lý, nhưng đừng ép nhân vật nào phải xử lý nó ngay.', weight:1 },
+        { id:'daily-delivery', category:'daily', text:'Xuất hiện một thông báo thường ngày, kiện hàng, hóa đơn, lịch hẹn hoặc sắp xếp sinh hoạt phù hợp với thời đại và địa điểm hiện tại, thêm cho cảnh một biến số nhỏ tự nhiên.', weight:1 },
+        { id:'daily-routine-break', category:'daily', text:'Nhịp sinh hoạt vốn đều đặn của nhân vật bị một chi tiết đời thường rất nhỏ nhưng có thật làm gián đoạn, không tạo ra khủng hoảng lớn.', weight:1 },
+        { id:'daily-choice', category:'daily', text:'Đặt cho nhân vật một lựa chọn sinh hoạt rất bình thường nhưng bộc lộ được thói quen hay sở thích, để những ký ức đời thường cũ có dịp vang vọng lại một cách tự nhiên.', weight:1 },
+        { id:'emotion-old-phrase', category:'emotion', text:'Để một câu nói quan trọng trong quá khứ, một lời hẹn hay một cử chỉ nhỏ quen thuộc tạo ra dư âm cảm xúc trong tình huống hiện tại, nhưng đừng kết luận thay nhân vật.', weight:1 },
+        { id:'emotion-small-jealousy', category:'emotion', text:'Thêm một dấu hiệu để tâm hoặc ghen nhẹ, có thể lý giải được, chỉ ở mức chi tiết; không được vô căn cứ leo thang thành cãi vã hay đột biến quan hệ.', weight:.8 },
+        { id:'emotion-unspoken', category:'emotion', text:'Để một nhân vật ôm một nỗi băn khoăn hoặc mong đợi nhỏ chưa nói ra ngay, thể hiện qua chi tiết quan sát được, không đọc suy nghĩ.', weight:1 },
+        { id:'emotion-care', category:'emotion', text:'Sắp xếp một dịp chăm sóc hoặc được chăm sóc phù hợp với giai đoạn quan hệ hiện tại; mức độ phải tuân theo quan hệ sẵn có và tính cách nhân vật.', weight:1 },
+        { id:'conflict-schedule', category:'conflict', text:'Xuất hiện một xung đột có thật về thời gian, lịch trình hay thứ tự ưu tiên, quy mô vẫn trong tầm kiểm soát, không dựng chuyện ác ý.', weight:.8 },
+        { id:'conflict-misread', category:'conflict', text:'Nảy sinh một hiểu lầm nhỏ có căn cứ thực tế, nhưng phải chừa chỗ để làm sáng tỏ, không viết nhân vật thành ngớ ngẩn một cách gượng ép.', weight:.8 },
+        { id:'conflict-boundary', category:'conflict', text:'Để một ranh giới, thói quen hoặc lời hẹn sẵn có bị chạm nhẹ, khiến nhân vật phải bày tỏ thái độ, nhưng không định trước kết quả của thái độ đó.', weight:.8 },
+        { id:'conflict-interruption', category:'conflict', text:'Tương tác hiện tại bị một việc bên ngoài hợp lý làm gián đoạn trong chốc lát, để nhân vật tự chọn cách xử lý; cấm cắt ngang mạch truyện cốt lõi một cách gượng ép.', weight:1 },
+        { id:'clue-old-note', category:'clue', text:'Một bản ghi cũ, tin nhắn cũ, món đồ cũ hoặc chi tiết lịch sử mang lại manh mối liên tưởng mới, nhưng chỉ được dùng thông tin đã tồn tại hoặc có thể xuất hiện hợp lý.', weight:.9 },
+        { id:'clue-name', category:'clue', text:'Để một tên người, tên địa điểm hoặc từ khóa từng xuất hiện quay lại, ưu tiên liên kết với ký ức dài hạn của 0-32, không bịa thêm âm mưu.', weight:.9 },
+        { id:'clue-contradiction', category:'clue', text:'Hé lộ một mâu thuẫn nhỏ hoặc điểm thông tin bất nhất đáng chú ý, tạm giữ lại như một nghi vấn, không công bố sự thật ngay.', weight:.8 },
+        { id:'clue-object', category:'clue', text:'Để trạng thái, vị trí hoặc dấu vết sử dụng của một vật phẩm then chốt trở nên quan trọng trở lại; phải tuân theo bản ghi vật phẩm sẵn có.', weight:.9 },
+        { id:'npc-contact', category:'npc', text:'Để một NPC đã quen biết hoặc có kênh liên lạc hợp lý chủ động liên hệ theo cách phù hợp thời đại, nhưng hành vi của NPC phải khớp với đời sống và quan hệ của chính họ.', weight:1 },
+        { id:'npc-crossing', category:'npc', text:'Để một NPC sẵn có giao thoa nhẹ với mạch truyện hiện tại tại một địa điểm hoặc chuỗi sự kiện hợp lý, không chồng chất trùng hợp.', weight:.8 },
+        { id:'npc-choice', category:'npc', text:'Để một NPC đưa ra quyết định nhỏ theo mục tiêu riêng, không xoay quanh user, và cho quyết định đó tác động thấy được lên cảnh hiện tại.', weight:1 },
+        { id:'npc-group', category:'npc', text:'Tạo một chuyển động nền qua nhóm chat, công việc, lớp học, gia đình hoặc vòng bạn bè, để thế giới tiếp tục vận hành.', weight:1 },
+        { id:'world-weather', category:'world', text:'Thời tiết, giao thông, tình trạng kinh doanh hoặc môi trường công cộng thay đổi một cách phù hợp với địa điểm và thời gian; chỉ đổi điều kiện, không đẩy mạch truyện.', weight:1 },
+        { id:'world-public', category:'world', text:'Xuất hiện một sự kiện công cộng nhỏ hoặc bối cảnh tin tức phù hợp thế giới quan hiện tại, tạo cớ cho nhân vật bàn luận hoặc hành động.', weight:.8 },
+        { id:'world-resource', category:'world', text:'Một nguồn lực, dịch vụ hoặc tiện ích tại địa điểm hiện tại đổi trạng thái, buộc nhân vật phải sắp xếp lại một bước nhỏ.', weight:.8 },
+        { id:'world-calendar', category:'world', text:'Để một mốc sẵn có trong lịch ngày, dịp lễ, hạn chót, lịch học hay lịch làm việc tiến lại gần một cách tự nhiên, không nhảy thời gian vô cớ.', weight:.8 },
+        { id:'major-invitation', category:'major', text:'Xuất hiện một lời mời, cơ hội hoặc cửa sổ ra quyết định quan trọng có nguồn gốc thực tế, nhưng chỉ nêu lựa chọn, không quyết thay user hay nhân vật.', weight:.5 },
+        { id:'major-family-news', category:'major', text:'Trong quan hệ gia đình/tổ chức sẵn có xuất hiện một tin quan trọng sẽ ảnh hưởng tới sắp xếp về sau; phải tôn trọng thiết định sẵn có và ranh giới ai được biết.', weight:.45 },
+        { id:'major-travel', category:'major', text:'Xuất hiện một lý do hoặc cơ hội có thật để di chuyển sang địa điểm khác, chỉ để làm phương án tương lai; trừ khi user chọn rõ ràng, lượt này không nhảy địa điểm.', weight:.45 },
+        { id:'major-turn', category:'major', text:'Đẩy một điểm gài dài hạn đã cắm sẵn tiến thêm một bước, nhưng không được bịa điểm gài mới, càng không được kết toán trọn vẹn cả sự việc ngay trong lượt này.', weight:.45 },
     ]);
     const DIRECTIONS = [
-        ['natural', '自然推进'], ['meal', '吃饭'], ['date', '约会'], ['intimate', '亲密/做爱'],
-        ['rest', '休息'], ['outing', '出门'], ['work', '工作/学习'], ['conflict', '冲突'],
-        ['adventure', '调查/冒险'], ['time', '时间推进'], ['travel', '旅行/跨城'], ['major', '重大变化'],
-        ['random', '随机'], ['custom', '自定义'],
+        ['natural', 'Tiến triển tự nhiên'], ['meal', 'Ăn uống'], ['date', 'Hẹn hò'], ['intimate', 'Thân mật/ân ái'],
+        ['rest', 'Nghỉ ngơi'], ['outing', 'Ra ngoài'], ['work', 'Làm việc/học tập'], ['conflict', 'Xung đột'],
+        ['adventure', 'Điều tra/phiêu lưu'], ['time', 'Đẩy thời gian'], ['travel', 'Du lịch/liên thành'], ['major', 'Biến động lớn'],
+        ['random', 'Ngẫu nhiên'], ['custom', 'Tùy chỉnh'],
     ];
     const DIRECTION_ICONS = Object.freeze({
         natural: '↗', meal: '◌', date: '◇', intimate: '♡', rest: '☾', outing: '↪',
@@ -68,9 +68,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     const PERSPECTIVES = Object.freeze({
-        first:  { label:'第一人称', mark:'我', short:'以「我」写user', instruction:'第一人称：叙述 user 的动作、感受、想法时统一使用「我」；对话中的正常称呼不受限制。' },
-        second: { label:'第二人称', mark:'你', short:'以「你」写user', instruction:'第二人称：叙述 user 的动作、感受、想法时统一使用「你」；这里的「你」只代表 user 本人，不得因此把 char/NPC 的动作写进 user 消息。' },
-        third:  { label:'第三人称', mark:'TA', short:'以Tên nhân vật写user', instruction:'第三人称：叙述 user 的动作、感受、想法时优先使用当前 user Tên nhân vật，必要时使用与 user 对应的第三人称代词；不要用「我」作为叙述者。' },
+        first:  { label:'Ngôi thứ nhất', mark:'tôi', short:'Viết user bằng “tôi”', instruction:'Ngôi thứ nhất: khi kể hành động, cảm nhận và suy nghĩ của user thì thống nhất dùng “tôi”; cách xưng hô bình thường trong hội thoại không bị hạn chế.' },
+        second: { label:'Ngôi thứ hai', mark:'bạn', short:'Viết user bằng “bạn”', instruction:'Ngôi thứ hai: khi kể hành động, cảm nhận và suy nghĩ của user thì thống nhất dùng “bạn”; chữ “bạn” ở đây chỉ trỏ chính user, không vì thế mà viết hành động của char/NPC vào tin nhắn của user.' },
+        third:  { label:'Ngôi thứ ba', mark:'TA', short:'Viết user bằng tên nhân vật', instruction:'Ngôi thứ ba: khi kể hành động, cảm nhận và suy nghĩ của user thì ưu tiên dùng tên nhân vật user hiện tại, khi cần thì dùng đại từ ngôi thứ ba tương ứng với user; đừng lấy “tôi” làm người kể.' },
     });
     const defaults = {
         enabled: true,
@@ -95,7 +95,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         pendingFateCard: null,
         relayRetryAttempts: 4,
         relayRepairAttempts: 3,
-        relayMaxChars: 0, // 0=不主动截断，交给模型max_tokens
+        relayMaxChars: 0, // 0 = không tự cắt bớt, để max_tokens của mô hình lo
         relayAntiTruncation: true,
         relayContinuationMax: 3,
     };
@@ -116,8 +116,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
         commandViewportCleanup: null,
         settingsViewportCleanup: null,
         previewViewportCleanup: null,
-        // R9S1P14：始终记住最近一次真正 settled 的 AI Tầng。
-        // 用户发送下一条 user 消息后即使中止 AI 回复，也能把接力入口恢复到这个稳定锚点。
+        // R9S1P14: luôn nhớ tầng AI gần nhất thực sự đã chốt xong.
+        // Sau khi người dùng gửi tin nhắn kế tiếp, kể cả khi ngắt câu trả lời của AI, lối vào tiếp sức vẫn khôi phục được về mốc neo ổn định này.
         lastSettledAnchor: null,
         generationStartAnchor: null,
         generationWatchTimer: 0,
@@ -164,7 +164,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         for (let i = chat.length - 1; i >= 0; i -= 1) {
             const message = chat[i];
             if (!message || message.is_system || !textOf(message)) continue;
-            // 只允许“当前聊天最后一条真实消息就是AI回复”时挂接力条。
+            // Chỉ gắn thanh tiếp sức khi “tin nhắn thật cuối cùng của cuộc trò chuyện hiện tại đúng là câu trả lời của AI”.
             if (message.is_user) return null;
             return { index: i, message, text: textOf(message) };
         }
@@ -212,7 +212,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const native=[c.chatId,c.chat_id,c.chatMetadata?.chat_id,c.chatMetadata?.chatId,c.chatMetadata?.file_name,c.chatMetadata?.fileName]
             .find(value=>value!==undefined&&value!==null&&String(value).trim());
         if(native)return `native:${String(native).trim()}`;
-        // 同一角色可以拥有多份聊天；绝不再退化成 characterId 作为聊天Thân phận。
+        // Một nhân vật có thể có nhiều cuộc trò chuyện; tuyệt đối không lùi về dùng characterId làm danh tính cuộc trò chuyện nữa.
         if(c.chatMetadata&&typeof c.chatMetadata==='object'){
             let id=String(c.chatMetadata[RELAY_CHAT_INSTANCE_META_KEY]||'').trim();
             if(!id){id=`meta-${globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`}`;c.chatMetadata[RELAY_CHAT_INSTANCE_META_KEY]=id;try{c.saveMetadataDebounced?.();}catch{}}
@@ -326,8 +326,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function recoverableAnchorEntry() {
-        // P22：不再让陈旧 lastSettledAnchor 抢优先级。
-        // 当前聊天拓扑是真相：从后往前找最近一条“非中止半截”的AI。
+        // P22: không để lastSettledAnchor cũ giành quyền ưu tiên nữa.
+        // Cấu trúc của cuộc trò chuyện hiện tại mới là sự thật: dò ngược từ cuối để tìm câu trả lời AI gần nhất “không phải nửa chừng bị ngắt”.
         return latestSafeAssistant()
             || looseEntryFromAnchor(runtime.stopRecoveryAnchor)
             || looseEntryFromAnchor(runtime.generationStartAnchor)
@@ -335,8 +335,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function commandEntry() {
-        // 面板打开后若用户删除/重算Tầng，index可能整体位移。
-        // commandAnchor必须做hash校验；失配就重新按当前聊天拓扑取最新完整AI，绝不能“错位引用旧Tầng”。
+        // Sau khi mở bảng, nếu người dùng xóa/tính lại tầng thì toàn bộ index có thể xê dịch.
+        // commandAnchor bắt buộc phải kiểm tra hash; nếu lệch thì lấy lại câu trả lời AI hoàn chỉnh mới nhất theo cấu trúc chat hiện tại, tuyệt đối không được “trỏ lệch sang tầng cũ”.
         const anchored = strictEntryFromAnchor(runtime.commandAnchor);
         if (anchored && !isStoppedPartial(anchored)) return anchored;
         const fresh = entryForDock() || latestSafeAssistant();
@@ -372,14 +372,14 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const last = latestRealMessage();
             let generating = true;
             try { generating = await isGenerating(); } catch {}
-            // P22：流式生成时“半截assistant”会很早写入chat，不能一看到assistant就停掉watchdog。
-            // 只要酒馆仍显示正在生成，就继续观察。
+            // P22: khi sinh nội dung theo luồng, phần “assistant dở dang” được ghi vào chat rất sớm, nên không thể vừa thấy assistant là tắt watchdog.
+            // Chừng nào SillyTavern còn báo đang sinh nội dung thì tiếp tục theo dõi.
             if (generating) {
                 if (Date.now() - startedAt > 10 * 60 * 1000) return clearGenerationWatch();
                 runtime.generationWatchTimer = setTimeout(watch, 420);
                 return;
             }
-            // 生成已停止且最后仍是user：明确没有完整AI结果。
+            // Đã ngừng sinh mà tin cuối vẫn là user: rõ ràng không có kết quả AI hoàn chỉnh.
             if (Date.now() - startedAt > 600 && last?.message?.is_user) {
                 restoreAfterGenerationStopped({ source:'watchdog-empty' });
                 return clearGenerationWatch();
@@ -406,18 +406,18 @@ import { createServerJsonClient } from '../shared/server-client.js';
             ? runtime.settings.fateCategories.filter(key => Object.hasOwn(FATE_CATEGORY_LABELS, key))
             : [...defaults.fateCategories];
         runtime.settings.fateHistory = Array.isArray(runtime.settings.fateHistory) ? runtime.settings.fateHistory.slice(-24) : [];
-        // P33：清掉P31/P32遗留的跨轮命运卡，卡牌只在user接力生成阶段使用一次。
+        // P33: dọn các thẻ định mệnh còn sót lại giữa các lượt từ P31/P32; mỗi lá bài chỉ dùng một lần trong giai đoạn sinh nội dung tiếp sức của user.
         const clearedLegacyPendingFate = Boolean(runtime.settings.pendingFateCard);
         runtime.settings.pendingFateCard = null;
         runtime.settings.ledgerTimed = Array.isArray(runtime.settings.ledgerTimed) ? runtime.settings.ledgerTimed
             .map(item => ({ text:String(item?.text || '').trim().slice(0,500), expiresFloor:Number(item?.expiresFloor || 0) }))
             .filter(item => item.text && Number.isFinite(item.expiresFloor)) : [];
-        // AI接力固定使用自己的独立API和本模块明确提供的有限资料。
+        // Tiếp sức AI luôn dùng API riêng của nó và phần tư liệu hữu hạn do chính mô-đun này cung cấp.
         const applyDualIndependentMigration = runtime.settings.mode !== 'independent' || !runtime.settings.u1710DualIndependentApiApplied;
         runtime.settings.mode = 'independent';
         runtime.settings.u1710DualIndependentApiApplied = true;
-        // P23：AI剧情接力回归严格单API稳定模式。
-        // 即使旧版本保存过 multiFlashEnabled=true，也强制迁移成false。
+        // P23: Tiếp sức cốt truyện bằng AI quay về chế độ ổn định dùng đúng một API.
+        // Kể cả khi bản cũ từng lưu multiFlashEnabled=true thì vẫn ép di trú về false.
         const applyP23SingleMigration = !runtime.settings.p23SingleApiMigrationApplied;
         runtime.settings.multiFlashEnabled = false;
         runtime.settings.p23SingleApiMigrationApplied = true;
@@ -435,7 +435,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function toast(message, type = 'info') {
         const t = globalThis.toastr;
-        if (t?.[type]) t[type](message, '0-32 · AI剧情接力');
+        if (t?.[type]) t[type](message, '0-32 · Tiếp sức cốt truyện bằng AI');
         else console.log(`[${ID}] ${message}`);
     }
 
@@ -450,7 +450,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
 
     function removeBars() {
-        // P19：chính vănTầng里不再放AI接力入口。旧版残留统一清理。
+        // P19: không đặt lối vào Tiếp sức AI trong tầng chính văn nữa. Tàn dư của bản cũ được dọn thống nhất.
         document.querySelectorAll('.vvv-relay-bar').forEach(node => node.remove());
     }
 
@@ -477,16 +477,16 @@ import { createServerJsonClient } from '../shared/server-client.js';
         button.classList.toggle('is-busy', runtime.dockBusy);
         button.setAttribute('aria-busy', runtime.dockBusy ? 'true' : 'false');
         button.title = runtime.dockBusy
-            ? '0-32 接力：当前chính văn正在生成'
-            : '0-32 · AI剧情接力';
+            ? '0-32 Tiếp sức: chính văn đang được sinh'
+            : '0-32 · Tiếp sức cốt truyện bằng AI';
     }
 
     function entryForDock() {
-        // P22：发送栏接力永远按“当前聊天实际最后Trạng thái”选锚点。
-        // 1) 有最新完整AI -> 必须用它；
-        // 2) 最后一条是真实user -> 用它之前最近的完整AI；
-        // 3) 中止留下的半截AI -> fingerprint标记后跳过；
-        // 永远不因为 runtime.generationStartAnchor 残留而倒退到旧Tầng。
+        // P22: nút tiếp sức trên thanh gửi luôn chọn mốc neo theo “trạng thái cuối cùng thực tế của cuộc trò chuyện”.
+        // 1) Có câu trả lời AI hoàn chỉnh mới nhất -> bắt buộc dùng nó;
+        // 2) Tin cuối là user thật -> dùng câu trả lời AI hoàn chỉnh gần nhất trước đó;
+        // 3) Phần AI dở dang do bị ngắt -> đánh dấu fingerprint rồi bỏ qua;
+        // Tuyệt đối không vì runtime.generationStartAnchor còn sót mà lùi về tầng cũ.
         const chat = Array.isArray(ctx()?.chat) ? ctx().chat : [];
         for (let i = chat.length - 1; i >= 0; i -= 1) {
             const message = chat[i];
@@ -503,13 +503,13 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!runtime.settings?.enabled) return;
         if (await isGenerating()) {
             setDockBusy(true);
-            toast('上一轮chính văn仍在生成，请等待本轮完成。', 'info');
+            toast('Chính văn của lượt trước vẫn đang được sinh, hãy đợi lượt này xong đã.', 'info');
             return;
         }
         setDockBusy(false);
         const entry = entryForDock();
         if (!entry) {
-            toast('当前没有可用于接力的完整AIchính văn。', 'info');
+            toast('Hiện chưa có chính văn AI hoàn chỉnh nào để tiếp sức.', 'info');
             return;
         }
         runtime.commandAnchor = anchorFromEntry(entry);
@@ -528,7 +528,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
         let button = dockButton();
         if (button && button.parentNode === sendButton.parentNode) {
-            // 保证始终紧挨原生发送键左侧。
+            // Đảm bảo luôn nằm sát bên trái nút gửi gốc.
             if (button.nextSibling !== sendButton) sendButton.parentNode.insertBefore(button, sendButton);
             setDockBusy(runtime.dockBusy);
             return button;
@@ -539,7 +539,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         button.type = 'button';
         button.id = 'vvv-relay-dock-button';
         button.className = 'vvv-relay-dock-button';
-        button.setAttribute('aria-label', '打开0-32 AI剧情接力');
+        button.setAttribute('aria-label', 'Mở Tiếp sức cốt truyện bằng AI của 0-32');
         button.innerHTML = `<span class="vvv-relay-dock-glyph" aria-hidden="true">✒</span><span class="vvv-relay-dock-dot" aria-hidden="true"></span>`;
         button.addEventListener('click', event => {
             event.preventDefault();
@@ -553,7 +553,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function scheduleBarRestore(delay = 120) {
-        // 保留旧函数名兼容内部调用；P19恢复的是发送栏按钮。
+        // Giữ tên hàm cũ để tương thích với các lời gọi nội bộ; thứ P19 khôi phục là nút trên thanh gửi.
         clearTimeout(runtime.restoreTimer);
         runtime.restoreTimer = setTimeout(() => {
             runtime.restoreTimer = 0;
@@ -582,7 +582,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function installBarObserver() {
-        // 保留旧内部名。现在观察发送栏是否被主题/移动端重建。
+        // Giữ tên nội bộ cũ. Giờ theo dõi xem thanh gửi có bị chủ đề/bản di động dựng lại không.
         runtime.domObserver?.disconnect?.();
         if (typeof MutationObserver === 'undefined') return;
         const host = document.querySelector('#send_form')?.parentElement
@@ -620,7 +620,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const meta = relayPerspectiveMeta();
         const userName = String(ctx()?.name1 || 'user').trim() || 'user';
         if (key === 'third') {
-            return `${meta.instruction} 当前 user Tên nhân vật是「${userName}」；chính văn动作主语优先直接写「${userName}」，不要误把 char/NPC 当成 user。`;
+            return `${meta.instruction} Tên nhân vật user hiện tại là “${userName}”; chủ ngữ của hành động trong chính văn nên viết thẳng là “${userName}”, đừng nhầm char/NPC thành user.`;
         }
         return meta.instruction;
     }
@@ -638,7 +638,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function relayModeLabel() {
-        return '独立API · 有限剧情资料';
+        return 'API riêng · tư liệu cốt truyện hữu hạn';
     }
 
     function currentFloorIndex() {
@@ -653,7 +653,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     function activeLedgerRules() {
         const floor = currentFloorIndex();
         const timed = (runtime.settings?.ledgerTimed || []).filter(item => Number(item.expiresFloor) > floor && String(item.text || '').trim());
-        // 顺手清理过期规则，避免旧规则永久留在设置里。
+        // Tiện thể dọn các quy tắc đã hết hạn, tránh để quy tắc cũ nằm lại vĩnh viễn trong phần cài đặt.
         if (runtime.settings && timed.length !== (runtime.settings.ledgerTimed || []).length) {
             runtime.settings.ledgerTimed = timed;
             saveSettings();
@@ -748,21 +748,21 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function controlStatusText() {
         const bits = [];
-        if (runtime.settings?.directorEnabled === false) bits.push('导演OFF');
+        if (runtime.settings?.directorEnabled === false) bits.push('Đạo diễn TẮT');
         else {
             const scopes = [];
-            if (directorAppliesToMain()) scopes.push('主AI');
-            if (directorAppliesToRelay()) scopes.push('接力');
-            bits.push(scopes.length ? `导演ON·${scopes.join('+')}` : '导演ON·未选择范围');
+            if (directorAppliesToMain()) scopes.push('AI chính');
+            if (directorAppliesToRelay()) scopes.push('Tiếp sức');
+            bits.push(scopes.length ? `Đạo diễn BẬT·${scopes.join('+')}` : 'Đạo diễn BẬT·chưa chọn phạm vi');
         }
-        bits.push(runtime.settings?.fateEnabled === false ? '卡池OFF' : `卡池ON${runtime.settings?.fateAutoEnabled ? '·自动' : ''}`);
-        bits.push(`账本${activeLedgerRuleCount()}`);
-        bits.push('接力独立API');
+        bits.push(runtime.settings?.fateEnabled === false ? 'Bể thẻ TẮT' : `Bể thẻ BẬT${runtime.settings?.fateAutoEnabled ? '·tự động' : ''}`);
+        bits.push(`Sổ cái ${activeLedgerRuleCount()}`);
+        bits.push('API riêng cho tiếp sức');
         return bits.join(' · ');
     }
 
     function fateCardLabel(card = runtime.currentFateCard) {
-        if (!card) return '尚未抽取命运卡';
+        if (!card) return 'Chưa rút thẻ định mệnh';
         return `【${FATE_CATEGORY_LABELS[card.category] || card.category}】${card.text}`;
     }
 
@@ -786,8 +786,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (custom) custom.hidden = !customSelected;
         const summary = root.querySelector('[data-relay-selection-summary]');
         if (summary) {
-            const labels = selectedDirectionLabels().filter(label => label !== '自定义');
-            summary.textContent = labels.length ? `已选：${labels.join(' · ')}` : '未选择方向时，将按“自然推进”生成';
+            const labels = selectedDirectionLabels().filter(label => label !== 'Tùy chỉnh');
+            summary.textContent = labels.length ? `Đã chọn: ${labels.join(' · ')}` : 'Không chọn hướng nào thì sẽ sinh theo “Tiến triển tự nhiên”';
         }
     }
 
@@ -905,7 +905,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const left = Math.round(vv?.offsetLeft || 0);
             const top = Math.round(vv?.offsetTop || 0);
 
-            // 与已验证成功的剧情接力主窗口使用同一套 VisualViewport 定位方式。
+            // Dùng đúng cách định vị VisualViewport như cửa sổ tiếp sức chính đã được kiểm chứng.
             root.style.setProperty('inset', 'auto', 'important');
             root.style.setProperty('left', `${left}px`, 'important');
             root.style.setProperty('top', `${top}px`, 'important');
@@ -916,7 +916,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             root.style.setProperty('justify-content', 'center', 'important');
             root.style.setProperty('box-sizing', 'border-box', 'important');
 
-            // 设置页内容比主接力窗口更长，限制在真实可见高度内并允许内部滚动。
+            // Trang cài đặt dài hơn cửa sổ tiếp sức chính, nên giới hạn trong chiều cao thực sự nhìn thấy và cho phép cuộn bên trong.
             shell.style.setProperty('max-height', `${Math.max(360, Math.floor(height * 0.84))}px`, 'important');
             shell.style.setProperty('overflow-x', 'hidden', 'important');
             shell.style.setProperty('overflow-y', 'auto', 'important');
@@ -969,8 +969,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
             return;
         }
 
-        // P36：iPhone / 微信 WebView 必须跟随 visualViewport。
-        // 不主动 focus textarea，避免键盘/浏览器为了聚焦把整个 fixed 弹窗卷到屏幕顶部。
+        // P36: iPhone / WebView của WeChat bắt buộc phải bám theo visualViewport.
+        // Không chủ động focus vào textarea, tránh việc bàn phím/trình duyệt cuộn cả hộp thoại fixed lên đỉnh màn hình chỉ để lấy tiêu điểm.
         try { textarea?.blur(); } catch {}
         const vv = globalThis.visualViewport;
         let raf = 0;
@@ -1050,9 +1050,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
     async function openCommandPanel(entryOverride = null) {
         globalThis.VVVUnifiedCore?.overlays?.activate?.('relay');
         removeLegacyPerspectiveStyle();
-        if (await isGenerating()) throw new Error('上一轮chính văn仍在生成，请等它结束后再接力');
+        if (await isGenerating()) throw new Error('Chính văn của lượt trước vẫn đang được sinh, hãy đợi xong rồi mới tiếp sức');
         const entry = entryOverride || entryForDock() || latestSafeAssistant();
-        if (!entry) throw new Error('当前没有可接力的AIchính văn');
+        if (!entry) throw new Error('Hiện chưa có chính văn AI nào để tiếp sức');
         runtime.commandAnchor = anchorFromEntry(entry);
         closeCommandPanel();
         runtime.lastError='';
@@ -1065,55 +1065,55 @@ import { createServerJsonClient } from '../shared/server-client.js';
             <span class="vvv-relay-choice-check">✓</span>
         </button>`).join('');
         root.innerHTML = `<div class="vvv-relay-backdrop" data-relay-panel-close></div>
-            <section class="vvv-relay-command-shell" role="dialog" aria-modal="true" aria-label="0-32 AI剧情接力" tabindex="-1">
+            <section class="vvv-relay-command-shell" role="dialog" aria-modal="true" aria-label="0-32 Tiếp sức cốt truyện bằng AI" tabindex="-1">
                 <div class="vvv-relay-command-glow"></div>
                 <header class="vvv-relay-command-head">
                     <div>
                         <div class="vvv-relay-kicker"><span>✦</span> 0-32 STORY RELAY</div>
-                        <h2>下一步，由你决定</h2>
-                        <p>AI只替 <b>user</b> 写下一小步。连续剧情锁已开启，不会无缘无故跳时间、换地点或替NPC做决定。</p>
+                        <h2>Bước tiếp theo, bạn quyết định</h2>
+                        <p>AI chỉ viết bước nhỏ kế tiếp thay cho <b>user</b>. Khóa liền mạch cốt truyện đang bật, sẽ không tự dưng nhảy thời gian, đổi địa điểm hay quyết thay NPC.</p>
                     </div>
                     <div class="vvv-relay-command-tools">
-                        <button type="button" class="vvv-relay-iconbtn" data-relay-panel-settings title="接力设置" aria-label="接力设置">⚙</button>
+                        <button type="button" class="vvv-relay-iconbtn" data-relay-panel-settings title="Cài đặt tiếp sức" aria-label="Cài đặt tiếp sức">⚙</button>
                         <button type="button" class="vvv-relay-iconbtn" data-relay-panel-close title="Đóng" aria-label="Đóng">×</button>
                     </div>
                 </header>
                 <div class="vvv-relay-status-strip">
-                    <span><i class="vvv-relay-dot"></i>连续剧情锁 <b>ON</b></span>
-                    <span>接力锚点 <b>#${Number(entry.index)}</b></span>
-                    <span>上下文 <b>最近${normalizedRecentFloorCount()}层 + R9记忆</b></span>
-                    <span>写作源 <b>${esc(relayModeLabel())}</b></span>
-                    <span>文风 <b>纯直叙 · 拒绝比喻</b></span>
+                    <span><i class="vvv-relay-dot"></i>Khóa liền mạch <b>BẬT</b></span>
+                    <span>Mốc neo tiếp sức <b>#${Number(entry.index)}</b></span>
+                    <span>Ngữ cảnh <b>${normalizedRecentFloorCount()} tầng gần nhất + ký ức R9</b></span>
+                    <span>Nguồn viết <b>${esc(relayModeLabel())}</b></span>
+                    <span>Văn phong <b>kể thẳng · không ẩn dụ</b></span>
                 </div>
-                ${(() => { const rf=deriveRelayRealityFacts(entry); return rf.hardFacts.length ? `<div class="vvv-relay-reality-lock"><b>⛓ 当前现实锁</b>${rf.hardFacts.map(x=>`<span>${esc(x)}</span>`).join('')}</div>` : ''; })()}
+                ${(() => { const rf=deriveRelayRealityFacts(entry); return rf.hardFacts.length ? `<div class="vvv-relay-reality-lock"><b>⛓ Khóa hiện thực hiện tại</b>${rf.hardFacts.map(x=>`<span>${esc(x)}</span>`).join('')}</div>` : ''; })()}
                 <div class="vvv-relay-command-body">
-                    <div class="vvv-relay-section-title"><div><b>选择推进方向</b><small>支持多选；默认只推进当前场景的一个小节拍</small></div><span>STEP 01</span></div>
+                    <div class="vvv-relay-section-title"><div><b>Chọn hướng đẩy tới</b><small>Chọn được nhiều mục; mặc định chỉ đẩy một nhịp nhỏ của cảnh hiện tại</small></div><span>STEP 01</span></div>
                     <div class="vvv-relay-choice-grid">${cards}</div>
                     <div class="vvv-relay-control-box">
-                        <div><b>✒️ 0-32 控制层</b><small>导演 / 统筹 / 命运卡池 / 规则账本</small></div>
-                        <button type="button" data-fate-draw>🎴 抽一张命运卡</button>
+                        <div><b>✒️ Lớp điều khiển 0-32</b><small>Đạo diễn / Điều phối / Bể thẻ định mệnh / Sổ cái quy tắc</small></div>
+                        <button type="button" data-fate-draw>🎴 Rút một thẻ định mệnh</button>
                         <p data-fate-card>${esc(fateCardLabel())}</p>
                     </div>
                     <div class="vvv-relay-perspective-box">
                         <div class="vvv-relay-perspective-head">
-                            <div><b>以什么视角来写</b><small>只控制这次 user 接力的叙述视角；三选一，并记住上次选择</small></div>
+                            <div><b>Viết theo ngôi kể nào</b><small>Chỉ chi phối ngôi kể của lượt tiếp sức này; chọn một trong ba và ghi nhớ lựa chọn lần trước</small></div>
                             <span data-relay-perspective-hint>${esc(relayPerspectiveMeta().label)} · ${esc(relayPerspectiveMeta().short)}</span>
                         </div>
-                        <div class="vvv-relay-perspective-options" role="group" aria-label="写作视角">
+                        <div class="vvv-relay-perspective-options" role="group" aria-label="Ngôi kể">
                             ${Object.entries(PERSPECTIVES).map(([key, meta]) => `<button type="button" class="vvv-relay-perspective-option" data-relay-perspective="${key}" aria-pressed="false"><i>${esc(meta.mark)}</i><span>${esc(meta.label)}</span></button>`).join('')}
                         </div>
                     </div>
                     <div class="vvv-relay-custom-panel" data-relay-custom-wrap hidden>
-                        <div class="vvv-relay-section-title compact"><div><b>user 需要发送的话</b><small>写你真正想发出去的内容；不开扩写时只做语句规整</small></div><span>USER TEXT</span></div>
+                        <div class="vvv-relay-section-title compact"><div><b>Lời user cần gửi đi</b><small>Viết đúng nội dung bạn thật sự muốn gửi; khi không bật mở rộng thì chỉ chỉnh câu cho gọn</small></div><span>USER TEXT</span></div>
                         <div class="vvv-relay-usertext-row">
-                            <textarea maxlength="20000" data-relay-user-text placeholder="例如：顾霖走到她椅子旁说，宝宝站起来……"></textarea>
-                            <button type="button" class="vvv-relay-expand-toggle" data-relay-expand aria-pressed="false" title="开启后会在不偷换核心意思的前提下补充动作、感受与对白；Đóng时仍会由AI做轻度语句规整">
-                                <i>✦</i><b>AI扩写</b><small data-relay-expand-state>Đóng · 仅规整</small>
+                            <textarea maxlength="20000" data-relay-user-text placeholder="Ví dụ: Cố Lâm bước tới bên ghế cô ấy và nói, cưng đứng dậy đi…"></textarea>
+                            <button type="button" class="vvv-relay-expand-toggle" data-relay-expand aria-pressed="false" title="Khi bật, AI sẽ bổ sung hành động, cảm nhận và lời thoại mà không đánh tráo ý chính; khi tắt, AI vẫn chỉnh câu ở mức nhẹ">
+                                <i>✦</i><b>AI mở rộng</b><small data-relay-expand-state>Tắt · chỉ chỉnh câu</small>
                             </button>
                         </div>
-                        <div class="vvv-relay-section-title compact vvv-relay-thought-title"><div><b>补充你的想法</b><small>与上方user文字一起发送；用于补充方向、语气或细节</small></div><span>OPTIONAL</span></div>
-                        <textarea maxlength="1200" data-relay-custom-text placeholder="例如：语气自然一点，先接住刚才的话题；如果扩写开启，可以补一点动作细节……"></textarea>
-                        <small class="vvv-relay-custom-note">两栏会一起交给AI。Đóng“AI扩写”时只做轻度规整；开启后必须真正重写并自然扩充，不会再把原文原样发出去。</small>
+                        <div class="vvv-relay-section-title compact vvv-relay-thought-title"><div><b>Bổ sung ý của bạn</b><small>Gửi kèm phần chữ của user ở trên; dùng để bổ sung hướng đi, giọng điệu hoặc chi tiết</small></div><span>OPTIONAL</span></div>
+                        <textarea maxlength="1200" data-relay-custom-text placeholder="Ví dụ: giọng tự nhiên hơn chút, bắt lại chủ đề vừa nãy trước đã; nếu bật mở rộng thì thêm một chút chi tiết hành động…"></textarea>
+                        <small class="vvv-relay-custom-note">Cả hai ô sẽ được đưa cho AI cùng lúc. Khi tắt “AI mở rộng” thì chỉ chỉnh câu ở mức nhẹ; khi bật thì bắt buộc viết lại thật sự và mở rộng tự nhiên, không gửi lại nguyên văn nữa.</small>
                     </div>
                 </div>
                 <footer class="vvv-relay-command-footer">
@@ -1122,8 +1122,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
                         <div class="vvv-relay-inline-error" data-relay-inline-error role="alert" hidden></div>
                     </div>
                     <div class="vvv-relay-generation-actions">
-                        <button type="button" class="vvv-relay-primary" data-relay-panel-generate title="使用AI接力独立API生成">
-                            <span>生成我的下一句话</span><i>→</i>
+                        <button type="button" class="vvv-relay-primary" data-relay-panel-generate title="Sinh nội dung bằng API riêng của Tiếp sức AI">
+                            <span>Sinh câu tiếp theo của tôi</span><i>→</i>
                         </button>
                     </div>
                 </footer>
@@ -1137,7 +1137,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         });
         root.querySelector('[data-fate-draw]')?.addEventListener('click', () => {
             const card = drawFateCard({ manual:true });
-            if (card) toast(`命运卡：${FATE_CATEGORY_LABELS[card.category] || card.category} · ${card.text}`, 'info');
+            if (card) toast(`Thẻ định mệnh: ${FATE_CATEGORY_LABELS[card.category] || card.category} · ${card.text}`, 'info');
             refreshControlUi(root);
         });
         root.querySelectorAll('[data-relay-perspective]').forEach(button => button.addEventListener('click', () => {
@@ -1160,7 +1160,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             button?.setAttribute('aria-pressed', pressed ? 'false' : 'true');
             button?.classList.toggle('selected', !pressed);
             const state=button?.querySelector('[data-relay-expand-state]');
-            if(state)state.textContent=pressed?'Đóng · 仅规整':'开启 · 自然扩写';
+            if(state)state.textContent=pressed?'Tắt · chỉ chỉnh câu':'Bật · mở rộng tự nhiên';
         });
         root.querySelector('[data-relay-panel-generate]')?.addEventListener('click', () => {
             const customSelected=runtime.selected.has('custom');
@@ -1170,7 +1170,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             if (customSelected && !userText.trim() && !notes.trim()) {
                 const input=root.querySelector('[data-relay-user-text]');
                 input?.focus();
-                toast('选择“自定义”后，请填写“user需要发送的话”或“补充你的想法”。', 'warning');
+                toast('Sau khi chọn “Tùy chỉnh”, hãy điền “Lời user cần gửi đi” hoặc “Bổ sung ý của bạn”.', 'warning');
                 return;
             }
             setRelayInlineError('');
@@ -1205,8 +1205,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function continuityFloorCount() {
-        // P24：AI接力真正用于“续写现在”的高权重原文只保留最近6层（约3个来回）。
-        // 旧的8/12/16/24/32仅作为长期记忆/检索参考，不再把开场原文与当前chính văn并列喂给模型。
+        // P24: phần nguyên văn trọng số cao mà Tiếp sức AI thật sự dùng để “viết tiếp hiện tại” chỉ giữ 6 tầng gần nhất (khoảng 3 lượt qua lại).
+        // Các mức 8/12/16/24/32 cũ chỉ còn là tham chiếu cho ký ức dài hạn/truy xuất, không còn đưa nguyên văn mở màn ngang hàng với chính văn hiện tại cho mô hình nữa.
         return 6;
     }
 
@@ -1259,30 +1259,30 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
         add(
             'bath',
-            '已经离开浴室/淋浴阶段结束',
-            /(?:走出|离开|出了|抱出|抱着[^。！？]{0,35}(?:走出|离开))[^。！？]{0,16}(?:浴室|卫生间|淋浴间)|从(?:浴室|卫生间|淋浴间|浴缸)[^。！？]{0,45}(?:出来|走出|抱出来)|洗完(?:澡)?|冲完(?:澡)?|洗好(?:澡)?|淋浴(?:结束|完毕)/i,
-            /(?:走出|离开|出了|抱出|抱着[^。！？]{0,35}(?:走出|离开))[^。！？]{0,16}(?:浴室|卫生间|淋浴间)|从(?:浴室|卫生间|淋浴间|浴缸)[^。！？]{0,45}(?:出来|走出|抱出来)|(?:去|先去|准备去|进去|进)[^。！？]{0,12}(?:洗澡|冲澡|淋浴|浴室|卫生间)|(?:洗|冲)个澡/i
+            'Đã rời phòng tắm / giai đoạn tắm rửa đã kết thúc',
+            /(?:bước ra khỏi|đi ra khỏi|rời khỏi|ra khỏi|bế ra khỏi|bế[^.!?]{0,35}(?:ra khỏi|rời khỏi))[^.!?]{0,16}(?:phòng tắm|nhà tắm|buồng tắm|nhà vệ sinh)|từ (?:phòng tắm|nhà tắm|buồng tắm|bồn tắm)[^.!?]{0,45}(?:đi ra|bước ra|bế ra)|tắm xong|tắm rửa xong|tắm gội xong|(?:tắm|gội)[^.!?]{0,10}xong rồi/i,
+            /(?:bước ra khỏi|đi ra khỏi|rời khỏi|ra khỏi|bế ra khỏi|bế[^.!?]{0,35}(?:ra khỏi|rời khỏi))[^.!?]{0,16}(?:phòng tắm|nhà tắm|buồng tắm|nhà vệ sinh)|từ (?:phòng tắm|nhà tắm|buồng tắm|bồn tắm)[^.!?]{0,45}(?:đi ra|bước ra|bế ra)|(?:đi|định đi|chuẩn bị đi|vào|bước vào)[^.!?]{0,12}(?:tắm|phòng tắm|nhà tắm|nhà vệ sinh)|tắm(?: một)? cái/i
         );
         add(
             'sofa',
-            '已经到达客厅/沙发区域并停留',
-            /(?:回到|来到|走到|移到|抱到|放到|坐到|靠到|跪到|抵到)[^。！？]{0,18}(?:沙发|客厅)|(?:坐在|躺在|靠在|跪在|抵着|按在|放在)[^。！？]{0,18}沙发|沙发(?:上|旁|边|垫|靠背)/i,
-            /(?:回到|来到|走到|移到|抱到|放到|坐到|靠到|跪到|抵到)[^。！？]{0,18}(?:沙发|客厅)|(?:抱着|带着)[^。！？]{0,28}(?:走到|回到|来到)[^。！？]{0,18}(?:沙发|客厅)/i
+            'Đã tới khu ghế sofa / phòng khách và còn ở đó',
+            /(?:quay về|trở về|đi tới|bước tới|chuyển tới|bế tới|đặt lên|ngồi xuống|tựa vào|quỳ lên|ép lên)[^.!?]{0,18}(?:ghế sofa|sofa|phòng khách)|(?:ngồi trên|nằm trên|tựa vào|quỳ trên|ép trên|đặt trên)[^.!?]{0,18}(?:ghế sofa|sofa)|(?:trên|cạnh|bên|đệm|lưng) (?:ghế sofa|sofa)/i,
+            /(?:quay về|trở về|đi tới|bước tới|chuyển tới|bế tới|đặt lên|ngồi xuống|tựa vào|quỳ lên|ép lên)[^.!?]{0,18}(?:ghế sofa|sofa|phòng khách)|(?:bế|dắt|kéo)[^.!?]{0,28}(?:đi tới|quay về|bước tới)[^.!?]{0,18}(?:ghế sofa|sofa|phòng khách)/i
         );
         add(
             'condom',
-            '安全套/套已经拆开并戴好',
-            /(?:安全套|避孕套|套套|银色(?:锡箔)?小方块|锡箔小方块)[^。！？]{0,36}(?:撕开|拆开|戴好|戴上|套上)|(?:撕开|拆开)[^。！？]{0,30}(?:安全套|避孕套|包装|银色(?:锡箔)?小方块)[^。！？]{0,30}(?:戴好|戴上|套上)|(?:戴好|戴上|套上)[^。！？]{0,24}(?:安全套|避孕套|套)/i,
-            /(?:拿起|拿出|摸出|取出)[^。！？]{0,24}(?:安全套|避孕套|套套|银色(?:锡箔)?小方块|锡箔小方块)|(?:撕开|拆开)[^。！？]{0,24}(?:包装|安全套|避孕套|银色(?:锡箔)?小方块)|(?:戴好|戴上|套上)[^。！？]{0,24}(?:安全套|避孕套|套)/i
+            'Bao cao su đã bóc và đeo xong',
+            /(?:bao cao su|bao|gói bạc nhỏ|vỏ bạc)[^.!?]{0,36}(?:xé ra|bóc ra|đeo xong|đeo vào|lồng vào)|(?:xé|bóc)[^.!?]{0,30}(?:bao cao su|bao|vỏ|gói bạc nhỏ)[^.!?]{0,30}(?:đeo xong|đeo vào|lồng vào)|(?:đeo xong|đeo vào|lồng vào)[^.!?]{0,24}(?:bao cao su|bao)/i,
+            /(?:cầm lấy|lấy ra|móc ra|rút ra)[^.!?]{0,24}(?:bao cao su|bao|gói bạc nhỏ|vỏ bạc)|(?:xé|bóc)[^.!?]{0,24}(?:vỏ|bao cao su|bao|gói bạc nhỏ)|(?:đeo xong|đeo vào|lồng vào)[^.!?]{0,24}(?:bao cao su|bao)/i
         );
-        add('meal', '吃饭/用餐已经完成', /(?:吃完(?:饭|东西)?|用餐(?:结束|完毕)|饭后|吃饱(?:了)?|放下(?:碗|筷|餐具))/i,
-            /(?:去|先去|准备去|一起|我们)[^。！？]{0,12}(?:吃饭|吃点东西|用餐|餐厅)|(?:吃|弄)点东西/i);
-        add('home', '已经回到家/房间', /(?:已经|终于|随后|接着)?[^。！？]{0,12}(?:回到家|到家(?:了)?|进了家门|回到房间|回到卧室|进了卧室)/i,
-            /(?:回家|回房间|回卧室|准备回去|走回去|先回去)/i);
-        add('bed', '已经上床/躺下', /(?:已经|重新|随后)?[^。！？]{0,10}(?:躺在床上|躺下(?:了)?|上了床|钻进被窝|回到床上)/i,
-            /(?:上床|躺到床上|躺下|钻进被窝|回到床上)/i);
-        add('leave', '已经离开上一地点', /(?:已经|随后|转身)?[^。！？]{0,12}(?:离开(?:了)?|走出(?:了)?|出了门|走远(?:了)?)/i,
-            /(?:准备|打算|起身|转身)?[^。！？]{0,10}(?:离开|出去|出门)/i);
+        add('meal', 'Bữa ăn đã xong', /(?:ăn (?:cơm |xong)?xong|ăn hết|dùng bữa xong|sau bữa (?:ăn|cơm)|no rồi|đặt (?:bát|đũa|chén|thìa) xuống)/i,
+            /(?:đi|định đi|chuẩn bị đi|cùng|chúng ta)[^.!?]{0,12}(?:ăn cơm|ăn gì đó|dùng bữa|nhà hàng|quán ăn)|(?:ăn|kiếm) (?:chút|cái) gì/i);
+        add('home', 'Đã về tới nhà / phòng riêng', /(?:đã|cuối cùng|rồi|sau đó)?[^.!?]{0,12}(?:về (?:tới|đến) nhà|về nhà rồi|bước vào cửa nhà|về (?:tới |đến )?phòng|về (?:tới |đến )?phòng ngủ|vào phòng ngủ)/i,
+            /(?:về nhà|về phòng|về phòng ngủ|chuẩn bị về|đi về|về trước)/i);
+        add('bed', 'Đã lên giường / nằm xuống', /(?:đã|lại|sau đó)?[^.!?]{0,10}(?:nằm trên giường|nằm xuống|lên giường rồi|chui vào chăn|trở lại giường)/i,
+            /(?:lên giường|nằm lên giường|nằm xuống|chui vào chăn|trở lại giường)/i);
+        add('leave', 'Đã rời khỏi địa điểm trước đó', /(?:đã|sau đó|quay người)?[^.!?]{0,12}(?:rời đi|rời khỏi|bước ra|đi ra|ra khỏi cửa|đi xa rồi)/i,
+            /(?:chuẩn bị|định|đứng dậy|quay người)?[^.!?]{0,10}(?:rời đi|đi ra ngoài|ra khỏi cửa)/i);
         return signals;
     }
 
@@ -1294,14 +1294,14 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const signals = detectCompletionSignals(assistant, previous.text);
         const ids = new Set(signals.map(item => item.id));
 
-        if (ids.has('bath')) facts.push('浴室/淋浴阶段已经结束；禁止再次写“刚走出浴室/还在浴室/重新离开浴室”。');
-        if (ids.has('sofa')) facts.push('当前互动已经推进到客厅/沙发区域；沙发是当前场景锚点，浴室只能作为过去。');
-        if (ids.has('condom')) facts.push('安全套相关动作已经完成；禁止再次拿套、拆包装、撕锡箔或重新戴套。');
+        if (ids.has('bath')) facts.push('Giai đoạn phòng tắm/tắm rửa đã kết thúc; cấm viết lại “vừa bước ra khỏi phòng tắm / vẫn còn trong phòng tắm / lại rời phòng tắm”.');
+        if (ids.has('sofa')) facts.push('Tương tác hiện tại đã chuyển tới khu phòng khách/ghế sofa; ghế sofa là mốc neo của cảnh hiện tại, phòng tắm chỉ còn là quá khứ.');
+        if (ids.has('condom')) facts.push('Các thao tác liên quan tới bao cao su đã hoàn tất; cấm viết lại cảnh lấy bao, bóc vỏ, xé lớp bạc hay đeo lại bao.');
 
-        // 对截图这类长chính văn，末尾可能出现“刚才从浴室抱出来”的回顾性台词。
-        // 只要同时出现“离开浴室完成 + 沙发持续互动”，强制把浴室降级为历史地点。
-        if (ids.has('bath') && /沙发(?:上|旁|边|垫|靠背)|(?:坐在|躺在|靠在|跪在|抵着|按在)[^。！？]{0,18}沙发/i.test(combined)) {
-            facts.push('地点优先级：客厅/沙发 > 浴室。即使后文台词提到“刚才从浴室出来”，那也是回顾，不代表Vị trí hiện tại。');
+        // Với những đoạn chính văn dài kiểu chụp màn hình, ở cuối có thể xuất hiện câu hồi tưởng “vừa nãy được bế ra từ phòng tắm”.
+        // Chỉ cần đồng thời có “đã rời phòng tắm + vẫn đang tương tác ở ghế sofa” thì ép hạ phòng tắm xuống thành địa điểm quá khứ.
+        if (ids.has('bath') && /(?:trên|cạnh|bên|đệm|lưng) (?:ghế sofa|sofa)|(?:ngồi trên|nằm trên|tựa vào|quỳ trên|ép trên|đặt trên)[^.!?]{0,18}(?:ghế sofa|sofa)/i.test(combined)) {
+            facts.push('Thứ tự ưu tiên địa điểm: phòng khách/ghế sofa > phòng tắm. Kể cả khi lời thoại phía sau nhắc “vừa nãy đi ra từ phòng tắm” thì đó cũng chỉ là hồi tưởng, không phải vị trí hiện tại.');
         }
         return {
             previousUserFloor: previous.index,
@@ -1321,7 +1321,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             previousUser: previous.text.slice(0, 6000),
             latestAssistantFloor: Number(entry?.index ?? -1),
             latestAssistant: latestText.slice(0, 12000),
-            // P22：除了chính văn结尾，再给四重Flash一份“Đã hoàn thành事实清单”，避免长chính văn里的回顾台词把Trạng thái拉回去。
+            // P22: ngoài phần cuối chính văn, đưa thêm cho Flash bốn tầng một “danh sách sự thật đã hoàn tất”, tránh để lời hồi tưởng trong đoạn văn dài kéo trạng thái lùi lại.
             currentRealityTail: tailText(latestText, 5200),
             completedSignals: reality.completedSignals,
             hardFacts: reality.hardFacts,
@@ -1330,31 +1330,31 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function buildRelayQuery(currentTurn, chosen = []) {
         return [
-            '【当前现实硬事实】', (currentTurn?.hardFacts || []).join('\n'),
-            '【上一条user】', tailText(currentTurn?.previousUser, 2200),
-            '【最新AIchính văn结尾/当前现实】', tailText(currentTurn?.currentRealityTail, 3600),
-            '【本次接力方向】', chosen.join(' + '),
-            '【检索约束】Đã hoàn thành的地点迁移/动作只作为历史，不要把“浴室/拿套/戴套”等Đã hoàn thành阶段重新召回成当前任务。',
+            '【SỰ THẬT CỨNG CỦA HIỆN THỰC HIỆN TẠI】', (currentTurn?.hardFacts || []).join('\n'),
+            '【TIN NHẮN USER TRƯỚC ĐÓ】', tailText(currentTurn?.previousUser, 2200),
+            '【ĐOẠN CUỐI CHÍNH VĂN AI MỚI NHẤT / HIỆN THỰC HIỆN TẠI】', tailText(currentTurn?.currentRealityTail, 3600),
+            '【HƯỚNG TIẾP SỨC LẦN NÀY】', chosen.join(' + '),
+            '【RÀNG BUỘC TRUY XUẤT】Những lần di chuyển địa điểm và hành động đã hoàn tất chỉ là lịch sử; đừng gợi nhớ các giai đoạn đã xong như “phòng tắm / lấy bao / đeo bao” thành nhiệm vụ hiện tại.',
         ].filter(Boolean).join('\n');
     }
 
     function explicitRepeatIntent(custom = '') {
-        return /(?:再来|再一次|重新|又一次|重复|再去|再洗|再吃|再回|再躺|再做一次|再来一遍)/.test(String(custom || ''));
+        return /(?:làm lại|lần nữa|một lần nữa|lặp lại|đi lại|tắm lại|ăn lại|về lại|nằm lại|làm thêm lần nữa|lại từ đầu)/i.test(String(custom || ''));
     }
 
     const CUSTOM_ACTION_FAMILIES = [
-        { label:'吃饭/用餐', request:/吃饭|用餐|吃东西|吃(?:早|午|晚|夜宵)|去吃|找.*吃|餐厅|饭店|食堂/, output:/吃|用餐|饭|餐厅|饭店|食堂|点菜|菜单/ },
-        { label:'睡觉/休息', request:/睡觉|睡一觉|上床|就寝|补觉|休息/, output:/睡|上床|躺|就寝|休息/ },
-        { label:'洗澡', request:/洗澡|冲澡|淋浴|泡澡/, output:/洗澡|冲澡|淋浴|泡澡|浴室/ },
-        { label:'回家', request:/回家|回住所|回住处|回公寓/, output:/回家|住所|住处|公寓|家门/ },
-        { label:'上班/工作', request:/上班|去公司|去单位|开始工作|办公/, output:/上班|公司|单位|工作|办公/ },
-        { label:'购物/买东西', request:/买东西|购物|逛街|去买|下单/, output:/买|购物|商场|店|下单|付款/ },
-        { label:'打电话', request:/打电话|拨号|电话联系/, output:/打电话|拨号|电话|手机/ },
-        { label:'发消息', request:/发消息|发微信|发短信|微信联系/, output:/发消息|微信|短信|输入|发送/ },
-        { label:'转账/付款', request:/转账|付款|付钱|支付/, output:/转账|付款|付钱|支付|金额|收款/ },
-        { label:'点外卖', request:/点外卖|叫外卖|订外卖/, output:/外卖|下单|餐品|配送|店铺/ },
-        { label:'拥抱', request:/抱着|抱住|拥抱|搂着|搂住/, output:/抱着|抱住|拥抱|搂着|搂住/ },
-        { label:'亲吻/请求亲吻', request:/亲(?:吻|一会|一下|一口)|接吻|吻(?:她|他|住|一会|一下)/, output:/亲(?:吻|一会|一下|一口)|接吻|吻(?:她|他|住|一会|一下)/ },
+        { label:'Ăn cơm/dùng bữa', request:/ăn cơm|dùng bữa|ăn gì|ăn (?:sáng|trưa|tối|khuya)|đi ăn|tìm.*ăn|nhà hàng|quán ăn|căng tin/i, output:/ăn|dùng bữa|cơm|nhà hàng|quán ăn|căng tin|gọi món|thực đơn/i },
+        { label:'Ngủ/nghỉ ngơi', request:/đi ngủ|ngủ một giấc|lên giường|đi nằm|ngủ bù|nghỉ ngơi/i, output:/ngủ|lên giường|nằm|đi nằm|nghỉ/i },
+        { label:'Tắm', request:/tắm|tắm rửa|tắm vòi sen|ngâm bồn/i, output:/tắm|tắm rửa|vòi sen|ngâm bồn|phòng tắm/i },
+        { label:'Về nhà', request:/về nhà|về chỗ ở|về nơi ở|về căn hộ/i, output:/về nhà|chỗ ở|nơi ở|căn hộ|cửa nhà/i },
+        { label:'Đi làm/công việc', request:/đi làm|tới công ty|tới cơ quan|bắt đầu làm việc|văn phòng/i, output:/đi làm|công ty|cơ quan|công việc|văn phòng/i },
+        { label:'Mua sắm', request:/mua đồ|mua sắm|đi dạo phố|đi mua|đặt đơn/i, output:/mua|mua sắm|trung tâm thương mại|cửa hàng|đặt đơn|thanh toán/i },
+        { label:'Gọi điện', request:/gọi điện|quay số|liên lạc qua điện thoại/i, output:/gọi điện|quay số|điện thoại|máy/i },
+        { label:'Nhắn tin', request:/nhắn tin|gửi WeChat|gửi tin nhắn|liên lạc qua WeChat/i, output:/nhắn tin|WeChat|tin nhắn|gõ|gửi/i },
+        { label:'Chuyển khoản/thanh toán', request:/chuyển khoản|thanh toán|trả tiền|chi trả/i, output:/chuyển khoản|thanh toán|trả tiền|chi trả|số tiền|nhận tiền/i },
+        { label:'Đặt đồ ăn', request:/đặt đồ ăn|gọi đồ ăn|đặt ship đồ ăn/i, output:/giao đồ ăn|đặt đơn|món ăn|giao hàng|cửa hàng/i },
+        { label:'Ôm', request:/ôm lấy|ôm chặt|ôm|khoác vai|vòng tay/i, output:/ôm lấy|ôm chặt|ôm|khoác vai|vòng tay/i },
+        { label:'Hôn / xin được hôn', request:/hôn(?: một cái| một lát| chút)?|nụ hôn|hôn (?:cô ấy|anh ấy|lấy)/i, output:/hôn(?: một cái| một lát| chút)?|nụ hôn|hôn (?:cô ấy|anh ấy|lấy)/i },
     ];
 
     function directionHasAffirmativeMatch(pattern, value) {
@@ -1362,11 +1362,11 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const flags=pattern.flags.includes('g')?pattern.flags:`${pattern.flags}g`;
         const matcher=new RegExp(pattern.source,flags);
         for(const match of text.matchAll(matcher)){
-            const clauseStart=Math.max(text.lastIndexOf('，',match.index),text.lastIndexOf(',',match.index),text.lastIndexOf('。',match.index),text.lastIndexOf('；',match.index),text.lastIndexOf(';',match.index),text.lastIndexOf('！',match.index),text.lastIndexOf('!',match.index),text.lastIndexOf('？',match.index),text.lastIndexOf('?',match.index),text.lastIndexOf('\n',match.index));
+            const clauseStart=Math.max(text.lastIndexOf(',',match.index),text.lastIndexOf('.',match.index),text.lastIndexOf(';',match.index),text.lastIndexOf('!',match.index),text.lastIndexOf('?',match.index),text.lastIndexOf(':',match.index),text.lastIndexOf('\n',match.index));
             const prefix=text.slice(clauseStart+1,match.index).trim();
             const lastIndex=(regex)=>{let index=-1;for(const item of prefix.matchAll(regex))index=item.index??index;return index;};
-            const negationAt=lastIndex(/不要|别|不准|禁止|不用|无需|不再|不去|不想|拒绝|Hủy/gi);
-            const reversalAt=lastIndex(/但|但是|却|不过|而是|反而|仍然|还是/gi);
+            const negationAt=lastIndex(/đừng|chớ|không được|cấm|không cần|khỏi cần|không còn|không đi|không muốn|từ chối|hủy/gi);
+            const reversalAt=lastIndex(/nhưng|nhưng mà|thế nhưng|có điều|mà là|ngược lại|vẫn|vẫn cứ/gi);
             if(negationAt>reversalAt)continue;
             return true;
         }
@@ -1375,10 +1375,10 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function stripParentheticalStageDirections(value = '') {
         const source=String(value||'');
-        return source.replace(/[（(]([^（）()]{1,800})[）)]/g,(whole,inner)=>{
+        return source.replace(/[(]([^()]{1,800})[)]/g,(whole,inner)=>{
             const text=String(inner||'').trim();
-            // 括号里出现连续动作/时序词时，按舞台动作处理；校验台词时不把它吞进“必须逐字说”的句子。
-            if(/随后|然后|接着|之后|紧接着|(?:^|[，,。；;])\s*(?:我|他|她|自己|user|{{user}})?\s*(?:坐|站|走|起身|躺|骑|抱|搂|亲|吻|拉|推|拿|放|靠|转|回|离开|进入|伸手|低头|抬头|开门|关门)/i.test(text))return '。';
+            // Khi trong ngoặc có chuỗi hành động hoặc từ chỉ trình tự thì coi là chỉ dẫn sân khấu; lúc soát lời thoại không nuốt nó vào câu “bắt buộc nói nguyên văn”.
+            if(/sau đó|rồi thì|tiếp đó|kế đó|ngay sau đó|(?:^|[,.;])\s*(?:tôi|anh ấy|cô ấy|mình|user|{{user}})?\s*(?:ngồi|đứng|đi|đứng dậy|nằm|cưỡi|ôm|khoác|hôn|kéo|đẩy|cầm|đặt|tựa|quay|về|rời|bước vào|đưa tay|cúi đầu|ngẩng đầu|mở cửa|đóng cửa)/i.test(text))return '.';
             return whole;
         });
     }
@@ -1388,25 +1388,25 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if(!source)return [];
         const out=[],seen=new Set();
         const push=value=>{
-            const cleaned=String(value||'').trim().replace(/^[\s：:，,。；;“”"'‘’「」『』]+|[\s“”"'‘’「」『』]+$/g,'').trim();
+            const cleaned=String(value||'').trim().replace(/^[\s:,.;“”"'‘’«»]+|[\s“”"'‘’«»]+$/g,'').trim();
             if(cleaned.length<4)return;
             const key=normalizeRelayEchoText(cleaned);if(key.length<4||seen.has(key))return;
             seen.add(key);out.push(cleaned.slice(0,360));
         };
-        for(const match of source.matchAll(/[“「『"]([^”」』"]{4,360})[”」』"]/g))push(match[1]);
-        const cues=[...source.matchAll(/(?:开口(?:说|问)?|低声(?:说|问)|轻声(?:说|问)|笑着(?:说|问)|告诉(?:她|他|对方)?|对(?:她|他|对方)说|(?:我|自己)(?:开口)?(?:说|问)|(?:^|[。！？!?；;]\s*)问|说)\s*[：:，,。\s]*/g)];
+        for(const match of source.matchAll(/[“«"]([^”»"]{4,360})[”»"]/g))push(match[1]);
+        const cues=[...source.matchAll(/(?:cất tiếng (?:nói|hỏi)|khẽ (?:nói|hỏi)|nhỏ giọng (?:nói|hỏi)|cười (?:nói|hỏi)|bảo (?:cô ấy|anh ấy|đối phương)?|nói với (?:cô ấy|anh ấy|đối phương)|(?:tôi|mình) (?:nói|hỏi)|(?:^|[.!?;]\s*)hỏi|nói)\s*[:,.\s]*/gi)];
         for(let index=0;index<cues.length;index+=1){
             const cue=cues[index],start=(cue.index||0)+cue[0].length,end=cues[index+1]?.index??source.length;
             let speech=source.slice(start,end);
-            // 没有引号时，以明确的第一人称动作作为台词边界。不能把后续整串动作
-            // 并进一句“必须逐字保留”的台词，否则忠实扩写反而必然被误判。
-            const transition=speech.search(/[。！？!?，,；;]\s*(?=(?:(?:然后|随后|接着|之后)\s*)?(?:先(?:把|将|去|回|走|关|开|脱|穿|拿|放|跪)|我(?:把|将|起身|走|回|关|拉|脱|穿|拿|放|跪|坐|站|躺|抱|亲|转|推|打开|Đóng)|我们(?:再)?(?:回|走|去|离开)|两人|大家))/);
+            // Khi không có dấu ngoặc kép, lấy một hành động ngôi thứ nhất rõ ràng làm ranh giới lời thoại. Không được gộp cả chuỗi hành động phía sau
+            // vào một câu “bắt buộc giữ nguyên văn”, nếu không thì bản mở rộng trung thành lại chắc chắn bị chấm sai.
+            const transition=speech.search(/[.!?,;]\s*(?=(?:(?:rồi thì|sau đó|tiếp đó|kế đó)\s*)?(?:(?:trước tiên|trước hết)\s*(?:đem|đi|về|bước|đóng|mở|cởi|mặc|cầm|đặt|quỳ)|tôi\s*(?:đem|đứng dậy|đi|về|đóng|kéo|cởi|mặc|cầm|đặt|quỳ|ngồi|đứng|nằm|ôm|hôn|quay|đẩy|mở|khép)|chúng (?:tôi|ta)\s*(?:lại\s*)?(?:về|đi|rời)|hai người|mọi người))/i);
             if(transition>=0)speech=speech.slice(0,transition);
             push(speech);
         }
-        // 普通扩写模式仍需要识别“整句就是用户想说出的提问/感受”，以免后面的文风锁误删用户原话。
-        // fixed11 的关键变化不在这里，而是在轻度规整路径：轻度规整不再调用逐字表达硬锁，允许正常换词、调语序和断句。
-        if(!out.length&&source.length<=500&&/为什么|怎么|是否|要不要|可不可以|可以吗|能不能|感觉|喜欢|爱|想要|想再|害怕|担心|难过|开心|生气|委屈|[？?]/.test(source))push(source);
+        // Chế độ mở rộng thông thường vẫn phải nhận ra “cả câu chính là câu hỏi/cảm nhận người dùng muốn nói ra”, kẻo khóa văn phong phía sau xóa nhầm lời gốc của người dùng.
+        // Thay đổi then chốt của fixed11 không nằm ở đây mà ở nhánh chỉnh câu nhẹ: nhánh này không còn gọi khóa cứng nguyên văn, cho phép đổi từ, đảo trật tự và ngắt câu bình thường.
+        if(!out.length&&source.length<=500&&/tại sao|vì sao|thế nào|có phải|có nên|có được không|được không|có thể không|cảm thấy|thích|yêu|muốn|muốn lại|sợ|lo|buồn|vui|giận|tủi thân|[?]/i.test(source))push(source);
         return out;
     }
 
@@ -1415,17 +1415,17 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if(!direction||!text)return [];
         const issues=[];
         for(const family of CUSTOM_ACTION_FAMILIES){
-            if(directionHasAffirmativeMatch(family.request,direction)&&!directionHasAffirmativeMatch(family.output,text))issues.push(`没有落实用户指定的核心行动：${family.label}`);
+            if(directionHasAffirmativeMatch(family.request,direction)&&!directionHasAffirmativeMatch(family.output,text))issues.push(`Chưa thực hiện hành động cốt lõi người dùng chỉ định: ${family.label}`);
         }
         for(const required of customExpressionRequirements(direction)){
-            if(!draftPreservesCustomExpression(text,required))issues.push(`生成稿删除了用户指定台词、提问或感受的关键部分：“${required.slice(0,140)}”`);
+            if(!draftPreservesCustomExpression(text,required))issues.push(`Bản sinh ra đã xóa mất phần then chốt trong lời thoại, câu hỏi hoặc cảm nhận người dùng chỉ định: “${required.slice(0,140)}”`);
         }
-        const asksOpenChoice=directionHasAffirmativeMatch(/(?:问|询问|征求)[^。！？!?]{0,80}(?:几个|多少|哪(?:个|些)|要不要|是否|怎么选)|(?:几个|多少|哪(?:个|些))[^。！？!?]{0,50}(?:孔|洞|个|件|次|种)/,direction);
+        const asksOpenChoice=directionHasAffirmativeMatch(/(?:hỏi|hỏi ý|xin ý kiến)[^.!?]{0,80}(?:mấy cái|bao nhiêu|cái nào|những cái nào|có nên|có phải|chọn thế nào)|(?:mấy|bao nhiêu|cái nào)[^.!?]{0,50}(?:lỗ|cái|chiếc|lần|loại)/i,direction);
         if(asksOpenChoice){
-            if(!/(?:问|询问|征求|几个|多少|哪(?:个|些)|选择|意见|回答)/.test(text))issues.push('把用户要求保留的开放问题改成了别的行为');
-            const directionHasFixedAnswer=/(?:只|就|决定|选择|选|要|打|做|买|点)\s*(?:一|二|两|三|四|五|六|七|八|九|十|\d+)\s*(?:个|处|次|件|种|孔|洞)/.test(direction);
-            const draftInventsFixedAnswer=/(?:只|就|决定|选择|选|要|打|做|买|点)\s*(?:一|二|两|三|四|五|六|七|八|九|十|\d+)\s*(?:个|处|次|件|种|孔|洞)/.test(text);
-            if(!directionHasFixedAnswer&&draftInventsFixedAnswer)issues.push('擅自替开放问题决定了具体数量或选项');
+            if(!/(?:hỏi|hỏi ý|xin ý kiến|mấy cái|bao nhiêu|cái nào|lựa chọn|ý kiến|trả lời)/i.test(text))issues.push('Đã đổi câu hỏi mở mà người dùng yêu cầu giữ lại thành một hành vi khác');
+            const directionHasFixedAnswer=/(?:chỉ|thì|quyết định|lựa chọn|chọn|muốn|bấm|làm|mua|gọi)\s*(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|\d+)\s*(?:cái|chỗ|lần|chiếc|loại|lỗ)/i.test(direction);
+            const draftInventsFixedAnswer=/(?:chỉ|thì|quyết định|lựa chọn|chọn|muốn|bấm|làm|mua|gọi)\s*(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|\d+)\s*(?:cái|chỗ|lần|chiếc|loại|lỗ)/i.test(text);
+            if(!directionHasFixedAnswer&&draftInventsFixedAnswer)issues.push('Tự ý quyết hộ số lượng hoặc phương án cụ thể cho một câu hỏi mở');
         }
         return issues;
     }
@@ -1434,17 +1434,17 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const direction=String(custom||'').trim(),text=String(draft||'').trim();
         if(!direction||!text)return [];
         const issues=[];
-        // 轻度规整允许换词、调语序和重做断句，所以绝不能用“原句近乎逐字存在”做硬条件。
-        // 这里只守住真正不能被润色掉的结构事实：核心行动与开放问题的未决Trạng thái。
+        // Chỉnh câu nhẹ được phép đổi từ, đảo trật tự và ngắt câu lại, nên tuyệt đối không lấy “câu gốc gần như còn nguyên văn” làm điều kiện cứng.
+        // Ở đây chỉ giữ những sự thật cấu trúc thật sự không được phép bị gọt mất: hành động cốt lõi và trạng thái còn bỏ ngỏ của câu hỏi mở.
         for(const family of CUSTOM_ACTION_FAMILIES){
-            if(directionHasAffirmativeMatch(family.request,direction)&&!directionHasAffirmativeMatch(family.output,text))issues.push(`没有落实用户指定的核心行动：${family.label}`);
+            if(directionHasAffirmativeMatch(family.request,direction)&&!directionHasAffirmativeMatch(family.output,text))issues.push(`Chưa thực hiện hành động cốt lõi người dùng chỉ định: ${family.label}`);
         }
-        const asksOpenChoice=directionHasAffirmativeMatch(/(?:问|询问|征求)[^。！？!?]{0,80}(?:几个|多少|哪(?:个|些)|要不要|是否|怎么选)|(?:几个|多少|哪(?:个|些))[^。！？!?]{0,50}(?:孔|洞|个|件|次|种)/,direction);
+        const asksOpenChoice=directionHasAffirmativeMatch(/(?:hỏi|hỏi ý|xin ý kiến)[^.!?]{0,80}(?:mấy cái|bao nhiêu|cái nào|những cái nào|có nên|có phải|chọn thế nào)|(?:mấy|bao nhiêu|cái nào)[^.!?]{0,50}(?:lỗ|cái|chiếc|lần|loại)/i,direction);
         if(asksOpenChoice){
-            if(!/(?:问|询问|征求|几个|多少|哪(?:个|些)|选择|意见|回答|要不要|是否)/.test(text))issues.push('把用户要求保留的开放问题改成了别的行为');
-            const directionHasFixedAnswer=/(?:只|就|决定|选择|选|要|打|做|买|点)\s*(?:一|二|两|三|四|五|六|七|八|九|十|\d+)\s*(?:个|处|次|件|种|孔|洞)/.test(direction);
-            const draftInventsFixedAnswer=/(?:只|就|决定|选择|选|要|打|做|买|点)\s*(?:一|二|两|三|四|五|六|七|八|九|十|\d+)\s*(?:个|处|次|件|种|孔|洞)/.test(text);
-            if(!directionHasFixedAnswer&&draftInventsFixedAnswer)issues.push('擅自替开放问题决定了具体数量或选项');
+            if(!/(?:hỏi|hỏi ý|xin ý kiến|mấy cái|bao nhiêu|cái nào|lựa chọn|ý kiến|trả lời|có nên|có phải)/i.test(text))issues.push('Đã đổi câu hỏi mở mà người dùng yêu cầu giữ lại thành một hành vi khác');
+            const directionHasFixedAnswer=/(?:chỉ|thì|quyết định|lựa chọn|chọn|muốn|bấm|làm|mua|gọi)\s*(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|\d+)\s*(?:cái|chỗ|lần|chiếc|loại|lỗ)/i.test(direction);
+            const draftInventsFixedAnswer=/(?:chỉ|thì|quyết định|lựa chọn|chọn|muốn|bấm|làm|mua|gọi)\s*(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|\d+)\s*(?:cái|chỗ|lần|chiếc|loại|lỗ)/i.test(text);
+            if(!directionHasFixedAnswer&&draftInventsFixedAnswer)issues.push('Tự ý quyết hộ số lượng hoặc phương án cụ thể cho một câu hỏi mở');
         }
         return [...new Set(issues)];
     }
@@ -1458,11 +1458,11 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const originalCount=Math.max(1,relayTextCharCount(direction));
         const draftCount=relayTextCharCount(text);
         const ratio=draftCount/originalCount;
-        if(a===b || (b.length>=12 && a.includes(b) && ratio<1.12))issues.push('AI扩写实际上几乎原样返回了用户原文，没有完成真正扩写');
+        if(a===b || (b.length>=12 && a.includes(b) && ratio<1.12))issues.push('AI mở rộng thực chất trả lại gần như nguyên văn của người dùng, chưa thật sự mở rộng');
         const minRatio=originalCount<40?1.18:originalCount<180?1.12:1.06;
-        if(ratio<minRatio && draftCount<originalCount+18)issues.push('AI扩写幅度不足，只有轻微改字或加标点');
+        if(ratio<minRatio && draftCount<originalCount+18)issues.push('AI mở rộng quá ít, mới chỉ đổi vài chữ hoặc thêm dấu câu');
         const stageStripped=stripParentheticalStageDirections(direction);
-        if(stageStripped!==direction && /[（(][^（）()]{1,220}(?:随后|然后|接着|之后|我|他|她|自己)[^（）()]{0,220}[）)]/.test(text))issues.push('括号里的舞台动作仍被原样保留，尚未改写成自然叙事');
+        if(stageStripped!==direction && /[(][^()]{1,220}(?:sau đó|rồi thì|tiếp đó|kế đó|tôi|anh ấy|cô ấy|mình)[^()]{0,220}[)]/i.test(text))issues.push('Chỉ dẫn sân khấu trong ngoặc vẫn được giữ nguyên, chưa viết lại thành tự sự tự nhiên');
         return [...new Set(issues)];
     }
 
@@ -1470,26 +1470,26 @@ import { createServerJsonClient } from '../shared/server-client.js';
     function detectFigurativeLanguageIssues(text, custom = '') {
         const source = String(text || '').trim();
         const direction=String(custom||'').trim();
-        // 用户明确要求说出的原话优先于文风禁词；AI在其他句子里
-        // 自行新增的比喻仍然继续拦截。
+        // Lời gốc mà người dùng yêu cầu nói ra được ưu tiên hơn danh sách từ cấm về văn phong; những
+        // ẩn dụ do AI tự thêm vào các câu khác thì vẫn tiếp tục bị chặn.
         const protectedExpressions=customExpressionRequirements(direction);
         const value=protectedExpressions.length
-            ? source.split(/(?<=[。！？!?])|\n+/).filter(part=>!protectedExpressions.some(required=>draftPreservesCustomExpression(part,required))).join('\n').trim()
+            ? source.split(/(?<=[.!?])|\n+/).filter(part=>!protectedExpressions.some(required=>draftPreservesCustomExpression(part,required))).join('\n').trim()
             : source;
         if (!value) return [];
         const issues = [];
-        // 纯直叙硬锁：宁可误杀，也不允许比喻/类比/拟人/文学化意象进入最终稿。
-        const explicitSimile = /(?:像|像是|好像|仿佛|如同|犹如|宛如|宛若|好似|仿若|恍若|恰似|有如)[^。！？!?\n]{0,56}(?:一样|一般|似的|般)?/i;
-        if (explicitSimile.test(value)) issues.push('检测到比喻/类比标记（像、仿佛、如同、犹如、宛如等）');
-        if (/(?:一样|似的|般地|般的|般\s*[，。！？!?]|一般地|一般的)/i.test(value)) issues.push('检测到比较式修辞结构（一样/似的/般）');
-        const abstractMetaphor = /(?:空气|时间|沉默|夜色|月光|灯光|目光|视线|声音|情绪|心情|心底|胸口|心脏|脑海|思绪|呼吸|气氛)[^。！？!?\n]{0,18}(?:凝固|冻结|炸开|爆开|翻涌|汹涌|漫开|蔓延|燃烧|坠落|砸下|压下|压来|黏住|钉住|灼烧|吞没|淹没|撕开|划破|裹住|席卷|泛滥|发酵|刺穿|低语|呢喃|拥抱|抚摸|亲吻)/i;
-        if (abstractMetaphor.test(value)) issues.push('检测到隐喻/拟人式文学表达');
-        if (/(?:得|地)?像(?:是|在|个|一|只|头|条|团|块|片|某|那|这)/i.test(value)) issues.push('检测到高风险明喻结构');
+        // Khóa cứng lối kể thẳng: thà chặn nhầm còn hơn để ẩn dụ/so sánh/nhân hóa/hình ảnh văn vẻ lọt vào bản cuối.
+        const explicitSimile = /\b(?:như thể|giống như|tựa như|tựa hồ|y như|hệt như|chẳng khác nào|khác nào|dường như|tưởng chừng như|như)\b[^.!?\n]{0,56}/i;
+        if (explicitSimile.test(value)) issues.push('Phát hiện dấu hiệu ví von/so sánh (như, như thể, tựa như, chẳng khác nào…)');
+        if (/\b(?:như vậy|như thế|như in|y hệt|hệt vậy|kiểu như|một cách.{0,12}(?:như|tựa))\b/i.test(value)) issues.push('Phát hiện cấu trúc tu từ so sánh (như vậy / y hệt / kiểu như)');
+        const abstractMetaphor = /(?:không khí|thời gian|sự im lặng|màn đêm|ánh trăng|ánh đèn|ánh mắt|tầm mắt|âm thanh|cảm xúc|tâm trạng|đáy lòng|lồng ngực|trái tim|tâm trí|dòng suy nghĩ|hơi thở|bầu không khí)[^.!?\n]{0,18}(?:đông cứng|đóng băng|nổ tung|bùng lên|trào dâng|cuộn trào|lan ra|lan tỏa|bốc cháy|rơi xuống|đè xuống|ập tới|dính chặt|ghim chặt|thiêu đốt|nuốt chửng|nhấn chìm|xé toạc|cắt ngang|bao bọc|cuốn phăng|tràn ngập|lên men|xuyên thấu|thì thầm|rì rầm|ôm lấy|vuốt ve|hôn lên)/i;
+        if (abstractMetaphor.test(value)) issues.push('Phát hiện lối diễn đạt văn chương kiểu ẩn dụ/nhân hóa');
+        if (/\b(?:như|giống như|tựa như)\s+(?:một|những|cái|con|đám|khối|mảng|thứ|kẻ)\b/i.test(value)) issues.push('Phát hiện cấu trúc ví von rủi ro cao');
         return [...new Set(issues)];
     }
 
     function npcSubjectCandidates(environment = {}, entry = null) {
-        const out = new Set(['她', '他', '对方', '那人', '女孩', '男孩', '女人', '男人', '角色', 'NPC']);
+        const out = new Set(['cô ấy', 'anh ấy', 'chị ấy', 'nàng', 'hắn', 'đối phương', 'người đó', 'cô gái', 'chàng trai', 'người phụ nữ', 'người đàn ông', 'nhân vật', 'NPC']);
         const c = ctx() || {};
         const userName = String(c.name1 || '').trim();
         const add = value => {
@@ -1502,27 +1502,30 @@ import { createServerJsonClient } from '../shared/server-client.js';
         try {
             const people = environment?.r9s1p1?.people || environment?.state?.people || [];
             for (const row of Array.isArray(people) ? people : []) {
-                add(row?.['Họ tên']); add(row?.['名字']); add(row?.name); add(row?.character); add(row?.['人物']);
+                add(row?.['Họ tên']); add(row?.['Tên']); add(row?.name); add(row?.character); add(row?.['Nhân vật']);
             }
         } catch {}
         return [...out].sort((a, b) => b.length - a.length);
     }
 
+    const VIETNAMESE_PRONOUN_ALIASES = ['cô', 'anh', 'chị', 'em', 'ông', 'bà', 'nó', 'tôi', 'bạn', 'ta', 'mình'];
     function npcShortAgencyAliases(subjects = []) {
         const aliases = new Set();
         for (const raw of subjects || []) {
             const name = String(raw || '').trim();
-            if (!/^[\u3400-\u9fff]{2,6}$/.test(name)) continue;
-            const chars = [...name];
-            // 单个汉字与普通动词、物件和语气词碰撞率太高，不能作为可靠的人名。
-            if (chars.length === 3) aliases.add(chars.slice(-2).join(''));
+            if (!/^[A-Za-zÀ-ỹ]+(?:\s+[A-Za-zÀ-ỹ]+){1,4}$/.test(name)) continue;
+            const words = name.split(/\s+/);
+            // Vietnamese calls people by the last element of the name ("Nguyễn Thị Mai" -> "Mai");
+            // a single common word collides with ordinary verbs and particles too often.
+            const last = words[words.length - 1];
+            if (last.length >= 2) aliases.add(last);
         }
-        return [...aliases].filter(x => x && !['她','他','我','你'].includes(x)).sort((a,b)=>b.length-a.length);
+        return [...aliases].filter(x => x && !VIETNAMESE_PRONOUN_ALIASES.includes(x.toLowerCase())).sort((a,b)=>b.length-a.length);
     }
 
     function npcReferenceIsObject(value, index) {
         const prefix=String(value||'').slice(Math.max(0,Number(index||0)-12),Number(index||0));
-        return /(?:把|将|对|向|朝|给|让|跟|同|看着|望着|盯着|抱着|搂着|拉着|牵着|扶着|跪在|站在|坐在|躺在|靠在|贴在|守在|走到|来到|回到|放到|带到|留在)\s*$/.test(prefix);
+        return /(?:với|cho|tới|đến|về phía|nhìn|nhìn về phía|nhìn chằm chằm|ngắm|ôm|khoác|kéo|dắt|đỡ|quỳ trước|đứng cạnh|ngồi cạnh|nằm cạnh|tựa vào|đi tới chỗ|về chỗ|đặt vào|đưa cho|để lại cho)\s+$/i.test(prefix);
     }
 
     function hasEmbeddedNpcAgency(clause, subjects = [], agencyVerb = /$a/) {
@@ -1530,14 +1533,14 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!value) return false;
         const full = (subjects || []).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
         const aliases = npcShortAgencyAliases(subjects).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
-        // 全名/代词允许出现在分句内部，例如“听到她要求……”。静态Trạng thái会在外层先排除。
+        // Tên đầy đủ/đại từ được phép nằm giữa mệnh đề, ví dụ “nghe cô ấy yêu cầu…”. Trạng thái tĩnh đã bị loại ở lớp ngoài.
         if (full.length) {
-            const re = new RegExp(`(?:${full.join('|')})(?:就|已经|终于|慢慢|突然|又|也|还|仍|正|正在|没有|没|开始|继续|随后|接着|便|却|无意识地?|下意识地?)?\\s*${agencyVerb.source}`, 'gi');
+            const re = new RegExp(`(?:${full.join('|')})\\s*(?:liền|đã|rốt cuộc|từ từ|bỗng|đột nhiên|lại|cũng|vẫn|đang|chưa|không|bắt đầu|tiếp tục|sau đó|rồi|thì|vô thức|theo bản năng)?\\s*${agencyVerb.source}`, 'gi');
             for(const match of value.matchAll(re))if(!npcReferenceIsObject(value,match.index))return true;
         }
-        // 两字简称只在独立分句边界识别，避免普通chính văn片段碰撞。
+        // Tên gọi tắt chỉ được nhận diện ở ranh giới mệnh đề, tránh đụng với các mảnh chính văn thông thường.
         if (aliases.length) {
-            const re = new RegExp(`(?:^|[，,；;。！？!?\\s])(?:${aliases.join('|')})(?:(?:就|已经|终于|慢慢|突然|又|也|还|仍|正|正在|没有|没|开始|继续|随后|接着|便|却|无意识地?|下意识地?)\\s*)*${agencyVerb.source}`, 'gi');
+            const re = new RegExp(`(?:^|[,;.!?\\s])(?:${aliases.join('|')})\\s*(?:(?:liền|đã|rốt cuộc|từ từ|bỗng|đột nhiên|lại|cũng|vẫn|đang|chưa|không|bắt đầu|tiếp tục|sau đó|rồi|thì|vô thức|theo bản năng)\\s*)*${agencyVerb.source}`, 'gi');
             for(const match of value.matchAll(re))if(!npcReferenceIsObject(value,match.index))return true;
         }
         return false;
@@ -1552,62 +1555,60 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!escaped.length) return [];
         const subject = `(?:${escaped.join('|')})`;
 
-        // P20 主体语义锁：
-        // “她的头发还湿着 / 她身上还裹着浴巾 / 她的皮肤上有水珠”属于静态观察，允许。
-        // 真正禁止的是 char/NPC 在 user 接力稿里新增动作、对白、回应、选择或主动身体反应。
+        // Khóa ngữ nghĩa chủ thể P20:
+        // “Tóc cô ấy vẫn còn ướt / người cô ấy vẫn quấn khăn tắm / trên da cô ấy còn đọng nước” là quan sát tĩnh, được phép.
+        // Thứ thật sự bị cấm là char/NPC sinh ra hành động, lời thoại, phản hồi, lựa chọn hay phản ứng cơ thể chủ động mới trong bản tiếp sức của user.
         const clauseStart = new RegExp(
-            `^(?:[“”\"'‘’\\s]*(?:而|但|然后|随后|接着|于是|这时|此时)?[“”\"'‘’\\s]*)(${subject})(?=[的把将正正在已还仍又再也却就便没不并或\\s]|[^A-Za-z0-9_])`,
+            `^(?:[“”\"'‘’\\s]*(?:và|nhưng|rồi|sau đó|tiếp đó|thế là|lúc này|khi đó)?[“”\"'‘’\\s]*)(${subject})(?=\\s|$)`,
             'i'
         );
 
-        const agencyVerb = /(?:说|说道|开口|问|反问|回答|答道|回应|喊|叫|嘟囔|低声说|要求|请求|邀请|提议|告诉|提醒|答应|同意|拒绝|点头|摇头|笑|哭|皱眉|挑眉|眨眼|闭眼|睁眼|看向|望向|瞥|移开视线|躲闪|躲开|闪避|挣扎|反抗|配合|迎合|靠近|贴近|贴到|贴在|靠在|后退|退开|转身|翻身|起身|站起|站起来|坐起|坐下|躺下|走向|走过去|走了过来|走过来|走来|走近|跑|迈步|挪动|移动|动了|动起来|抬手|抬起|伸手|伸出|握住|抓住|抱住|搂住|环住|松开|收紧|推开|拉住|扯住|按住|压住|触碰|碰了|摸|抚摸|亲|吻|咬|舔|蹭|踢|踩|跪|蹲|弯腰|俯身|抬腿|夹住|张开|合拢|蜷缩|颤抖|发抖|战栗|瑟缩|抽动|喘息|呼吸加快|心跳加快|脸红起来|涨红|流泪|落泪|哭出声|脱下|脱掉|穿上|套上|解开|扣上|系上|拿起|放下|递给|接过|转过头|偏过头|低下头|抬头)/i;
+        const agencyVerb = /(?:nói|nói rằng|cất tiếng|hỏi|hỏi lại|trả lời|đáp|đáp lại|phản hồi|hét|gọi|lẩm bẩm|khẽ nói|yêu cầu|xin|mời|đề nghị|bảo|nhắc|đồng ý|chấp nhận|từ chối|gật đầu|lắc đầu|cười|khóc|cau mày|nhướn mày|chớp mắt|nhắm mắt|mở mắt|nhìn về phía|nhìn sang|liếc|dời ánh mắt|né tránh|tránh đi|lảng đi|giãy giụa|chống cự|phối hợp|chiều theo|lại gần|áp sát|áp vào|tựa vào|lùi lại|lùi ra|quay người|trở mình|đứng dậy|đứng lên|ngồi dậy|ngồi xuống|nằm xuống|đi về phía|đi qua|đi tới|bước lại gần|chạy|sải bước|xê dịch|di chuyển|cử động|nhấc tay|giơ lên|đưa tay|chìa ra|nắm lấy|túm lấy|ôm lấy|ôm chặt|vòng tay|buông ra|siết chặt|đẩy ra|kéo lại|giữ chặt|đè lên|chạm vào|sờ|vuốt ve|hôn|cắn|liếm|cọ|đá|giẫm|quỳ|ngồi xổm|cúi người|cúi xuống|nhấc chân|kẹp lấy|mở ra|khép lại|co người|run|run rẩy|rùng mình|co rúm|giật giật|thở gấp|thở dốc|tim đập nhanh|đỏ mặt|ửng đỏ|rơi nước mắt|bật khóc|cởi ra|cởi bỏ|mặc vào|khoác lên|tháo ra|cài lại|buộc lại|cầm lên|đặt xuống|đưa cho|nhận lấy|quay đầu|nghiêng đầu|cúi đầu|ngẩng đầu)/i;
 
-        const staticState = /(?:的(?:皮肤|头发|发梢|衣服|上衣|衬衫|裤子|裙子|鞋|袜子|袖口|衣角|脸|脸颊|眼睛|眼眸|嘴唇|手|手腕|手臂|肩|背|腰|腿|膝盖|脚|脚踝|身上|衣领|衣摆)|身上|脸上|头发|衣服|裤子|裙子|鞋子)[^。！？!?\n]{0,26}(?:还|仍|依旧|已经|正)?(?:是|有|带着|沾着|挂着|贴着|穿着|裹着|盖着|湿着|湿透|潮湿|发红|泛红|苍白|冰凉|温热|很冷|很热|很湿|很干|没有|并没有|看起来|显得|保持|处于)/i;
-        const firstPersonClause = /^(?:我|咱|本人)(?![A-Za-z0-9_])/;
+        const staticState = /(?:làn da|mái tóc|tóc|ngọn tóc|quần áo|áo|áo sơ mi|quần|váy|giày|tất|cổ tay áo|vạt áo|khuôn mặt|gương mặt|má|mắt|đôi mắt|môi|bàn tay|cổ tay|cánh tay|vai|lưng|eo|chân|đầu gối|bàn chân|cổ chân|trên người|trên mặt|cổ áo|gấu áo)[^.!?\n]{0,26}(?:vẫn|còn|vẫn còn|đã|đang)?\s*(?:là|có|mang|dính|treo|áp|mặc|quấn|phủ|ướt|ướt sũng|ẩm|đỏ|ửng đỏ|tái nhợt|lạnh ngắt|ấm|rất lạnh|rất nóng|rất ướt|rất khô|không|chưa|trông có vẻ|có vẻ|giữ nguyên|đang ở)/i;
+        const firstPersonClause = /^(?:tôi|mình|tớ|ta)\b/i;
 
-        const clauses = value.match(/[^，,；;。！？!?\n]+[，,；;。！？!?\n]?/g) || [value];
+        const clauses = value.match(/[^,;.!?\n]+[,;.!?\n]?/g) || [value];
         for (const rawClause of clauses) {
-            const clause = String(rawClause || '').replace(/^[，,；;。！？!?\\s]+/, '').trim();
-            // P34：先做“分句内部施事”检查，再判断分句是否以角色开头。
-            // P33把这一步放在 `if (!matched) continue` 之后，导致“听到她要求…”、
-            // “看着梦走过来…”等最常见的隐藏NPC动作直接被跳过。
+            const clause = String(rawClause || '').replace(/^[,;.!?\\s]+/, '').trim();
+            // P34: kiểm tra “chủ thể hành động nằm giữa mệnh đề” trước, rồi mới xét xem mệnh đề có mở đầu bằng tên nhân vật hay không.
+            // P33 đặt bước này sau `if (!matched) continue`, khiến những hành động NPC ẩn phổ biến nhất như
+            // “nghe cô ấy yêu cầu…”, “nhìn Mộng đi tới…” bị bỏ qua thẳng.
             if (hasEmbeddedNpcAgency(clause, names, agencyVerb)) {
-                issues.push(`char/NPC在分句内部产生了新的动作/对白/请求：${clause.slice(0, 58)}`);
+                issues.push(`char/NPC sinh ra hành động/lời thoại/yêu cầu mới ngay giữa mệnh đề: ${clause.slice(0, 58)}`);
                 continue;
             }
 
-            // 明确以 user 第一人称起句时，不能再把后面的宾语人名误判成施事者。
+            // Khi mệnh đề mở đầu rõ ràng bằng ngôi thứ nhất của user thì không được coi tên người ở vị trí tân ngữ phía sau là chủ thể hành động.
             if (firstPersonClause.test(clause)) continue;
 
             const matched = clause.match(clauseStart);
             if (!matched) continue;
 
-            const afterSubject = clause.slice(matched[0].length).replace(/^[的\s]*/, '');
+            const afterSubject = clause.slice(matched[0].length).replace(/^(?:\s*của)?\s*/i, '');
             const isStatic = staticState.test(clause) && !agencyVerb.test(afterSubject);
             if (isStatic) continue;
 
             if (agencyVerb.test(afterSubject)) {
-                issues.push(`char/NPC产生了新的动作/回应/身体反应：${clause.slice(0, 58)}`);
+                issues.push(`char/NPC sinh ra hành động/phản hồi/phản ứng cơ thể mới: ${clause.slice(0, 58)}`);
                 continue;
             }
 
-            // 对明显施事结构仍保守拦截；纯静态观察不再误杀。
-            if (/^(?:把|将|正|正在|开始|继续|突然|又|再|便|就|却|没|没有|不)/i.test(afterSubject)) {
-                issues.push(`char/NPC疑似成为新行为施事者：${clause.slice(0, 58)}`);
+            // Với cấu trúc chủ thể hành động rõ ràng thì vẫn chặn một cách thận trọng; quan sát thuần tĩnh không còn bị chặn nhầm.
+            if (/^(?:đang|bắt đầu|tiếp tục|bỗng|đột nhiên|lại|liền|thì|nhưng|chưa|không|chẳng)\b/i.test(afterSubject)) {
+                issues.push(`Nghi ngờ char/NPC trở thành chủ thể của hành vi mới: ${clause.slice(0, 58)}`);
             }
         }
         return [...new Set(issues)];
     }
 
     function replayNgrams(text) {
-        const value = String(text || '').replace(/[\s，。！？；、,.!?;:“”"'‘’（）()【】\[\]—…]/g, '');
+        const value = String(text || '').toLowerCase().replace(/[\s,.!?;:“”"'‘’()\[\]【】—…]+/g, ' ').trim();
         const grams = new Set();
-        const chunks = value.match(/[\u3400-\u9fff]{2,}|[a-zA-Z0-9_]{3,}/g) || [];
-        for (const chunk of chunks) {
-            if (/^[a-zA-Z0-9_]+$/.test(chunk)) { grams.add(chunk.toLowerCase()); continue; }
-            const chars=[...chunk];
-            for (let n=2;n<=3;n+=1) for(let i=0;i<=chars.length-n;i+=1) grams.add(chars.slice(i,i+n).join(''));
-        }
+        // Vietnamese repetition shows up as repeated word runs, not repeated characters.
+        const words = value.match(/[\p{L}\p{N}_]+/gu) || [];
+        for (const word of words) if (word.length >= 3) grams.add(word);
+        for (let n=2;n<=3;n+=1) for(let i=0;i+n<=words.length;i+=1) grams.add(words.slice(i,i+n).join(' '));
         return grams;
     }
 
@@ -1632,12 +1633,12 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const text = String(draft || '').trim();
         if (!text || !entry) return [];
         const sources = [
-            { label:`最新AI第${Number(entry.index ?? -1)}层`, text:String(entry.text || '') },
-            { label:'上一条user', text:String(previousUserBefore(entry)?.text || '') },
+            { label:`AI mới nhất, tầng ${Number(entry.index ?? -1)}`, text:String(entry.text || '') },
+            { label:'Tin nhắn user trước đó', text:String(previousUserBefore(entry)?.text || '') },
         ].filter(item => item.text.trim());
         if (!sources.length) return [];
 
-        // 只拦“明显复播”，避免因为同一场景里重复出现人名/地点/物件而误杀。
+        // Chỉ chặn những trường hợp “phát lại rõ ràng”, tránh chặn nhầm chỉ vì cùng một cảnh lặp lại tên người/địa điểm/vật phẩm.
         // 整稿 + 24字以上长句段都检查，能抓住“先复述上一轮，再补一句新动作”的情况。
         const segments=[text, ...(text.match(/[^。！？!?\n]{24,}[。！？!?]?/g)||[])];
         let best=null;
@@ -1763,7 +1764,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                     };
                 }
             } catch (error) {
-                console.warn('[AI剧情接力] 读取R9主Trạng thái桥失败，降级到基础上下文', error);
+                console.warn('[Tiếp sức cốt truyện bằng AI] 读取R9主Trạng thái桥失败，降级到基础上下文', error);
             }
         }
         return {
@@ -1837,7 +1838,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     async function buildPrompt(customInput = '', pinnedEntry = null) {
         const entry = pinnedEntry || commandEntry();
-        if (!entry) throw new Error('当前没有可接力的AIchính văn');
+        if (!entry) throw new Error('Hiện chưa có chính văn AI nào để tiếp sức');
         const custom=normalizeRelayCustomInput(customInput);
         const customContract=relayCustomContract(custom);
         const verificationTarget=relayCustomVerificationTarget(custom);
@@ -1872,7 +1873,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         ];
         environment.recentChat = chat;
         environment.recentChatPolicy = { floors: continuityFloorCount(), requestedMemoryWindow: normalizedRecentFloorCount(), note: 'P24连续性隔离：真正用于续写现在的原文固定只携带最近6层，且剧情超过6层后彻底排除开场消息。更早内容只能作为历史事实经R9结构化记忆/检索进入，不得作为当前动作模板。' };
-        environment.director = directorAppliesToRelay() ? { enabled:true, ...stagnationHint(chat) } : { enabled:false, note:'0-32剧情导演未作用于AI剧情接力' };
+        environment.director = directorAppliesToRelay() ? { enabled:true, ...stagnationHint(chat) } : { enabled:false, note:'0-32剧情导演未作用于Tiếp sức cốt truyện bằng AI' };
         environment.controlLayer = controlLayerSnapshot(entry);
         return `你只替 user 写下一条可以直接发送的动作/对白，不继续写 assistant/角色chính văn，不替对方角色做决定。
 方向：${chosen.join(' + ')}
@@ -2103,13 +2104,13 @@ ${notes||'无'}
     }
 
     async function generateWithConfiguredApi(prompt, options = {}) {
-        const owner = String(options.owner || 'AI剧情接力');
+        const owner = String(options.owner || 'Tiếp sức cốt truyện bằng AI');
         if(!runtime.configuredSourceReady)throw new Error('AI接力写作源尚未加载完成');
         if(runtime.activeGeneration){const error=new Error(`${runtime.activeGenerationOwner||'上一条AI接力请求'}仍在后台收尾；为防重复调用，请等它真正结束后再试`);error.name='RelayGenerationInFlightError';throw error;}
         const controller=new AbortController();
         const task=Promise.resolve().then(async()=>{
             const raw=await independent(prompt,{...options,signal:controller.signal});
-            if(!String(raw||'').trim()){const error=new Error('AI剧情接力独立API返回空内容');error.name='RelayEmptyResponseError';throw error;}
+            if(!String(raw||'').trim()){const error=new Error('Tiếp sức cốt truyện bằng AI独立API返回空内容');error.name='RelayEmptyResponseError';throw error;}
             return raw;
         });
         runtime.activeGeneration=task;
@@ -2120,7 +2121,7 @@ ${notes||'无'}
     }
 
     async function generateRaw(prompt) {
-        return generateWithConfiguredApi(prompt, { owner:'AI剧情接力', systemPrompt:RELAY_SYSTEM_PROMPT });
+        return generateWithConfiguredApi(prompt, { owner:'Tiếp sức cốt truyện bằng AI', systemPrompt:RELAY_SYSTEM_PROMPT });
     }
 
 
@@ -2138,7 +2139,7 @@ ${notes||'无'}
                 Promise.resolve(promise),
                 new Promise((_,reject)=>{timer=setTimeout(()=>{
                     try{onTimeout?.();}catch(_error){}
-                    const e=new Error(`AI剧情接力独立API超时（${Math.round(timeoutMs/1000)}秒）；本次不会自动换源`);
+                    const e=new Error(`Tiếp sức cốt truyện bằng AI独立API超时（${Math.round(timeoutMs/1000)}秒）；本次不会自动换源`);
                     e.name='RelayTimeoutError';e.code='relay-chain-timeout';e.permanentForCycle=true;reject(e);
                 },timeoutMs);}),
             ]);
@@ -2176,7 +2177,7 @@ ${notes||'无'}
                 const chainTimeoutMs=Math.min(3600000,timeoutMs*2+15000);
                 const raw=await withRelayTimeout(generateRaw(prompt),chainTimeoutMs,()=>runtime.activeGenerationAbort?.());
                 if(!String(raw||'').trim()){
-                    const e=new Error('AI剧情接力返回空内容');e.name='RelayEmptyResponseError';throw e;
+                    const e=new Error('Tiếp sức cốt truyện bằng AI返回空内容');e.name='RelayEmptyResponseError';throw e;
                 }
                 return raw;
             } catch(error) {
@@ -2184,11 +2185,11 @@ ${notes||'无'}
                 if(!isTransientRelayRequestError(error))throw error;
                 if(attempt>=maxAttempts)break;
                 if(!runtime.retryNoticeShown){runtime.retryNoticeShown=true;toast('网络或接口短暂波动，0-32 正在自动重试；不用再点第二次。','warning');}
-                console.warn(`[AI剧情接力] 请求失败，自动重试 ${attempt}/${maxAttempts}`,error);
+                console.warn(`[Tiếp sức cốt truyện bằng AI] 请求失败，自动重试 ${attempt}/${maxAttempts}`,error);
                 await sleep(relayRetryDelay(attempt));
             }
         }
-        const finalError=new Error(`AI剧情接力连续自动重试仍失败：${String(lastError?.message||lastError||'Chưa rõ错误')}`);
+        const finalError=new Error(`Tiếp sức cốt truyện bằng AI连续自动重试仍失败：${String(lastError?.message||lastError||'Chưa rõ错误')}`);
         finalError.cause=lastError;
         throw finalError;
     }
@@ -2227,12 +2228,12 @@ ${notes||'无'}
             const safePrompt=buildPolicyRecoveryPrompt(request);
             try {
                 const raw=await withRelayTimeout(
-                    generateWithConfiguredApi(safePrompt,{ owner:'AI剧情接力 · 最小上下文恢复', systemPrompt:RELAY_POLICY_RECOVERY_SYSTEM_PROMPT }),
+                    generateWithConfiguredApi(safePrompt,{ owner:'Tiếp sức cốt truyện bằng AI · 最小上下文恢复', systemPrompt:RELAY_POLICY_RECOVERY_SYSTEM_PROMPT }),
                     Math.min(3600000,timeoutMs*2+15000),
                     ()=>runtime.activeGenerationAbort?.(),
                 );
                 if(!String(raw||'').trim()){
-                    const empty=new Error('AI剧情接力最小上下文恢复返回空内容');empty.name='RelayEmptyResponseError';throw empty;
+                    const empty=new Error('Tiếp sức cốt truyện bằng AI最小上下文恢复返回空内容');empty.name='RelayEmptyResponseError';throw empty;
                 }
                 try{ensureCurrent?.();}catch(anchorError){throw anchorError;}
                 return raw;
@@ -2331,7 +2332,7 @@ ${notes||'无'}
                 return local;
             }catch(error){
                 lastFailure=String(error?.message||error||'校验接口不可用').slice(0,180);
-                console.warn(`[AI剧情接力] 行动一致性短校验第${attempt}次失败`,error);
+                console.warn(`[Tiếp sức cốt truyện bằng AI] 行动一致性短校验第${attempt}次失败`,error);
             }
         }
         return [...new Set([...local,`自定义方向校验失败：${lastFailure||'无法确认生成稿是否遵守指定行动'}；为避免行动被偷换，本次不会放行`])];
@@ -2339,7 +2340,7 @@ ${notes||'无'}
 
     async function generateDraft(customInput = '') {
         const queue=globalThis.VVVUnifiedCore?.tasks;
-        if(queue)return queue.run('AI剧情接力',()=>generateDraftUnlocked(customInput),{group:'generation-control'});
+        if(queue)return queue.run('Tiếp sức cốt truyện bằng AI',()=>generateDraftUnlocked(customInput),{group:'generation-control'});
         return generateDraftUnlocked(customInput);
     }
 
@@ -2348,13 +2349,13 @@ ${notes||'无'}
         const custom=relayCustomVerificationTarget(customRequest);
         if(runtime.selected.has('custom')&&!customRequest.userText&&!customRequest.notes)throw new Error('已选择“自定义”，请填写user文字或补充想法');
         if (runtime.busy||runtime.activeGeneration) throw new Error(`${runtime.activeGenerationOwner||'上一条AI接力请求'}仍在处理，请等按钮恢复后再试`);
-        if (await isGenerating()) throw new Error('上一轮chính văn仍在生成，请等它结束后再接力');
+        if (await isGenerating()) throw new Error('Chính văn của lượt trước vẫn đang được sinh, hãy đợi xong rồi mới tiếp sức');
         runtime.busy = true;
         runtime.policyRecoveryNoticeShown=false;
         setBusy(true,'正在使用接力独立API生成…');
         try {
             const entry = commandEntry();
-            if (!entry) throw new Error('当前没有可接力的AIchính văn');
+            if (!entry) throw new Error('Hiện chưa có chính văn AI nào để tiếp sức');
             const operationAnchor=anchorFromEntry(entry);
             const ensureCurrent=()=>{if(!relayAnchorIsCurrent(operationAnchor))throw new Error('AI接力生成期间聊天或最新AITầng已变化，本次草稿已安全丢弃');};
 
@@ -2396,7 +2397,7 @@ ${notes||'无'}
             advisoryIssues=[...new Set(advisoryIssues)];
             runtime.lastAdvisoryIssues=advisoryIssues;
             if(advisoryIssues.length){
-                console.warn('[AI剧情接力] 本地启发式提示（R19非阻断）',advisoryIssues);
+                console.warn('[Tiếp sức cốt truyện bằng AI] 本地启发式提示（R19非阻断）',advisoryIssues);
                 toast(`接力已生成；本地规则有 ${advisoryIssues.length} 条提示，已按旧版模式放行。`,'warning');
             }
             ensureCurrent();
@@ -2404,7 +2405,7 @@ ${notes||'无'}
             runtime.draftAnchor={...operationAnchor};
             runtime.previewCustom={...customRequest};
             if (!runtime.draft) throw new Error('模型没有生成可用chính văn');
-            toast(customRequest.userText ? (customRequest.expand ? '✒ AI已按原意完成自然扩写，不会原文直发。' : '✒ user文字已规整，并合并补充想法完成接力。') : '✒ AI剧情接力完成（独立API）。', 'success');
+            toast(customRequest.userText ? (customRequest.expand ? '✒ AI已按原意完成自然扩写，不会原文直发。' : '✒ user文字已规整，并合并补充想法完成接力。') : '✒ Tiếp sức cốt truyện bằng AI完成（独立API）。', 'success');
             if(runtime.lastContinuationCount)toast(`防截断已自动续写并拼接 ${runtime.lastContinuationCount} 段。`,'success');
             if (runtime.settings.directAfterGenerate) await send(runtime.draft,operationAnchor);
             else openPreview(runtime.draft, customRequest, operationAnchor);
@@ -2438,10 +2439,10 @@ ${notes||'无'}
 
     function showError(error) {
         runtime.busy = false;
-        const message=String(error?.message || error || 'AI剧情接力失败，请检查APITrạng thái');
+        const message=String(error?.message || error || 'Tiếp sức cốt truyện bằng AI失败，请检查APITrạng thái');
         setRelayInlineError(message);
         setBusy(false);
-        console.error('[AI剧情接力] 本轮最终失败', error);
+        console.error('[Tiếp sức cốt truyện bằng AI] 本轮最终失败', error);
         toast(message, 'error');
     }
 
@@ -2503,7 +2504,7 @@ ${notes||'无'}
         try{
             await globalThis.VVVUnifiedCreative?.prepareRelayReply?.({text:message,source:'relay'});
         }catch(error){
-            console.warn('[AI剧情接力] 主回复创作预设预武装失败，将继续走原生发送并由 generate_interceptor 兜底',error);
+            console.warn('[Tiếp sức cốt truyện bằng AI] 主回复创作预设预武装失败，将继续走原生发送并由 generate_interceptor 兜底',error);
         }
         await mod.sendTextareaMessage();
         toast('已按酒馆正常路径发送；下一轮主AI已按手动发送同样方式挂载思维链与当前预设。', 'success');
@@ -2624,7 +2625,7 @@ ${notes||'无'}
         if (!root) {
             root = document.createElement('div');
             root.id = 'vvv-relay-settings-modal';
-            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section><header><b>0-32 · AI剧情接力设置</b><button type="button" data-close>×</button></header>
+            root.innerHTML = `<div class="vvv-relay-backdrop"></div><section><header><b>0-32 · Tiếp sức cốt truyện bằng AI设置</b><button type="button" data-close>×</button></header>
                 <label><input type="checkbox" data-enabled>启用发送键旁“0-32接力”常驻按钮（推荐）</label>
                 <label>写作来源<select data-mode disabled><option value="independent" selected>独立API · 有限剧情资料</option></select></label>
                 <label><input type="checkbox" data-direct>生成后直接发送（默认Đóng）</label>
@@ -2640,7 +2641,7 @@ ${notes||'无'}
                     <div class="vvv-relay-director-scope">
                         <span>剧情导演作用范围：</span>
                         <label><input type="checkbox" data-director-main>酒馆主AI正常回复（推荐）</label>
-                        <label><input type="checkbox" data-director-relay>0-32 AI剧情接力</label>
+                        <label><input type="checkbox" data-director-relay>0-32 Tiếp sức cốt truyện bằng AI</label>
                         <small>两项都勾选=两边都用。主AI导演允许{{char}}/NPC正常行动与回应，但不替user行动；接力导演仍只写user。</small>
                     </div>
                     <label><input type="checkbox" data-fate-enabled>启用命运卡池</label>
@@ -2654,7 +2655,7 @@ ${notes||'无'}
                     <label class="vvv-relay-wide"><span>长期规则（每行一条，持续有效）</span><textarea data-ledger-long placeholder="例如：不要替user原谅任何人"></textarea></label>
                     <label class="vvv-relay-wide"><span>当前章节规则（每行一条，手动Bỏ chọn）</span><textarea data-ledger-chapter placeholder="例如：这一章不允许突然表白，也不要跳时间"></textarea></label>
                     <label class="vvv-relay-wide"><span>临时规则（每行：规则 | 剩余层数）</span><textarea data-ledger-timed placeholder="例如：腿伤不能跑 | 10"></textarea></label>
-                    <small>规则账本不仅用于AI剧情接力，也会由0-32记忆中枢注入普通主剧情；临时规则过期后自动清理。</small>
+                    <small>规则账本不仅用于Tiếp sức cốt truyện bằng AI，也会由0-32记忆中枢注入普通主剧情；临时规则过期后自动清理。</small>
                 </div>
                 <div class="vvv-relay-api-box vvv-relay-singleapi-settings">
                     <h3>🛡 独立来源边界</h3>
@@ -2779,7 +2780,7 @@ ${notes||'无'}
         const box = document.createElement('div');
         box.id = 'vvv-relay-settings-entry';
         box.className = 'inline-drawer';
-        box.innerHTML = `<div class="inline-drawer-toggle inline-drawer-header"><b>✦ AI剧情接力</b></div><div class="inline-drawer-content"><p>U1.7.15：AI接力继续使用单独API；小手机实时API也保持独立，不会混用总结或幕后七条连接。</p><button type="button">打开接力设置</button><small>版本 ${VERSION}</small></div>`;
+        box.innerHTML = `<div class="inline-drawer-toggle inline-drawer-header"><b>✦ Tiếp sức cốt truyện bằng AI</b></div><div class="inline-drawer-content"><p>U1.7.15：AI接力继续使用单独API；小手机实时API也保持独立，不会混用总结或幕后七条连接。</p><button type="button">打开接力设置</button><small>版本 ${VERSION}</small></div>`;
         box.querySelector('button').onclick = () => openSettings().catch(showError);
         host.appendChild(box);
     }
@@ -2905,7 +2906,7 @@ ${notes||'无'}
         if (!ctx()) return;
         loadSettings();
         try { await refreshRelayServerConfig(); }
-        catch (error) { console.warn('[AI剧情接力] 独立API配置暂未读取成功，实际生成时会再次由服务端校验', error); }
+        catch (error) { console.warn('[Tiếp sức cốt truyện bằng AI] 独立API配置暂未读取成功，实际生成时会再次由服务端校验', error); }
         runtime.configuredSourceReady = true;
         ensureEntry();
         globalThis.addEventListener('VVV_TURN_SETTLED', onSettled);
