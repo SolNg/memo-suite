@@ -13921,9 +13921,9 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
     // =====================================================================
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    // R9S1P41：自动重试策略。
-    // 网络抖动、fetch failed、超时、429、5xx、空回复、JSON格式异常等继续尝试；
-    // 只有明确需要人工修配置的错误才停止，避免无意义死循环。
+    // R9S1P41: chiến lược tự thử lại.
+    // Mạng chập chờn, fetch failed, quá hạn, 429, 5xx, phản hồi rỗng, JSON sai định dạng… thì cứ thử tiếp;
+    // chỉ dừng với những lỗi rõ ràng cần người sửa cấu hình, tránh vòng lặp vô nghĩa.
     function retryDelayMs(attempt = 1) {
         const steps = [1500, 2500, 4000, 6500, 10000, 15000, 20000, 30000];
         return steps[Math.min(steps.length - 1, Math.max(0, Number(attempt || 1) - 1))];
@@ -13946,14 +13946,14 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
 
     function isPermanentAiRetryError(error) {
         const message = String(error?.message || error || '');
-        // 独立生成请求达到硬截止后，本轮不能再自动重发，避免重复扣费和队列重叠。
+        // Sau khi yêu cầu sinh nội dung riêng chạm mốc cắt cứng thì lượt này không được tự gửi lại, tránh bị tính phí lặp và chồng hàng đợi.
         if (isPermanentGenerationTimeout(error)) return true;
         if (!message) return false;
         if (String(error?.name||'') === 'ProviderPolicyRefusalError' || String(error?.code||'') === 'provider-policy-refusal') return true;
         if (isProviderPolicyRefusalText(message)) return true;
-        // 429 是可恢复限流，绝不能被 4xx 通配误判成永久错误。
-        if (/\b429\b|rate\s*limit|too\s*many\s*requests|限流|请求过多/i.test(message)) return false;
-        return /当前酒馆不支持(?:统一)?静默生成|AI接力同源生成入口尚未就绪|API riêng của Tiếp sức AI chưa được cấu hình|API riêng của Bảy điều hậu trường chưa được cấu hình|剧情接力独立API尚未配置|记忆中枢API尚未配置|独立总结API未配置|Chưa điền tên mô hình|服务端插件未加载|only-vvv|仅.*vvv|forbidden|unauthorized|invalid\s*(api[-_ ]?)?key|api\s*key.*invalid|密钥.*无效|鉴权|权限不足|permission\s*denied|model.*(?:not found|does not exist|unsupported)|模型.*(?:不存在|不支持)|HTTP\s*(?:400|401|402|403|404|405|413|415|422)\b|context\s*(?:length|window).*exceed|too\s*many\s*tokens|maximum\s*context|prompt\s*too\s*long|上下文.*(?:超限|过长)|insufficient\s*(?:quota|credit)|余额不足|账户欠费|billing/i.test(message);
+        // 429 là giới hạn tốc độ có thể phục hồi, tuyệt đối không để mẫu 4xx chung bắt nhầm thành lỗi vĩnh viễn.
+        if (/\b429\b|rate\s*limit|too\s*many\s*requests|giới hạn tốc độ|quá nhiều yêu cầu/i.test(message)) return false;
+        return /SillyTavern hiện không hỗ trợ sinh nội dung ngầm|Lối vào sinh cùng nguồn của Tiếp sức AI chưa sẵn sàng|API riêng của Tiếp sức AI chưa được cấu hình|API riêng của Bảy điều hậu trường chưa được cấu hình|API riêng của tiếp sức cốt truyện chưa được cấu hình|API của Trung tâm Ký ức chưa được cấu hình|Chưa cấu hình API tổng kết riêng|Chưa điền tên mô hình|Plugin phía máy chủ chưa được nạp|only-vvv|chỉ.*vvv|forbidden|unauthorized|invalid\s*(api[-_ ]?)?key|api\s*key.*invalid|khóa.*không hợp lệ|xác thực|không đủ quyền|permission\s*denied|model.*(?:not found|does not exist|unsupported)|mô hình.*(?:không tồn tại|không hỗ trợ)|HTTP\s*(?:400|401|402|403|404|405|413|415|422)\b|context\s*(?:length|window).*exceed|too\s*many\s*tokens|maximum\s*context|prompt\s*too\s*long|ngữ cảnh.*(?:vượt hạn|quá dài)|insufficient\s*(?:quota|credit)|không đủ số dư|tài khoản nợ cước|billing/i.test(message);
     }
 
     function retryReasonText(error, max = 160) {
@@ -14018,7 +14018,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                 if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)await drainAssistantMemoryQueue();
                 return;
             }
-            // 正在整理只延后当前计时器，不增加失败次数，也不创建第二个同层请求。
+            // Đang sắp xếp thì chỉ hoãn bộ hẹn giờ hiện tại, không tăng số lần thất bại và cũng không tạo yêu cầu thứ hai cho cùng tầng.
             if(stateRuntime.extracting){armExtractRetryTimer(scope,operationState,1200);return;}
             await extractWithAI({manual:false,fromRetry:true,targetFloor:entry.index,targetSignature:entry.signature});
         });
@@ -14047,7 +14047,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         armExtractRetryTimer(scope,operationState,delay);
         saveState({ immediate:true, refresh:false, reason:'extract-retry-scheduled' }).catch(()=>{});
         if(chatScopeIsCurrent(scope)){
-            toast(`第 ${targetFloor} 层整理失败，${Math.round(delay/1000)} 秒后重试 ${attempt}/${extractRetryLimit()}：${retryReasonText(error,120)}`,'warn');
+            toast(`Sắp xếp tầng ${targetFloor} thất bại, ${Math.round(delay/1000)} giây nữa thử lại ${attempt}/${extractRetryLimit()}: ${retryReasonText(error,120)}`,'warn');
             if(stateRuntime.currentTab==='overview')renderCurrentTab();
         }
         console.warn(`[0-32·U1.7.10-R5] 第${targetFloor}层AI记忆重试${attempt}/${extractRetryLimit()}，${Math.round(delay/1000)}秒后继续；同Tầng只允许一个server task`,error);
@@ -14070,7 +14070,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         clearExtractRetryState();
         mergeMemoryAnchors([{
             floor:entry.index,type:'raw-fallback',
-            event:compactText(rawText,1000)||`第${entry.index}层AI回复原文保底`,
+            event:compactText(rawText,1000)||`Chính văn lượt trả lời AI của tầng ${entry.index} làm phương án đáy`,
             details:compactText(rawText,1600),rawFallbackText:rawText,
             tags:['Trích xuất ký ức chính thất bại','AI dùng chính văn làm phương án đáy','Chờ dựng lại có cấu trúc'],importance:'normal',source:'extract-fallback',
         }],entry.index);
@@ -14092,16 +14092,16 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             record.originalStatus=record.originalStatus||record.status;
             record.status='fallback-saved';record.applied=true;record.updatedAt=Date.now();
         }
-        logAudit('Ký ức chính dùng chính văn làm phương án đáy',`第${entry.index}层：${reason}；${retryReasonText(error,240)}`);
+        logAudit('Ký ức chính dùng chính văn làm phương án đáy',`Tầng ${entry.index}: ${reason}; ${retryReasonText(error,240)}`);
         await saveState({immediate:true,refresh:true,reason:`extract-fallback-${entry.index}`});
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)return false;
         scheduleReindex();
-        // 普通瞬时失败在既有重试耗尽后，再做最多2次延迟整层自愈。
-        // 认证/权限/模型不存在/上下文硬超限等 permanent-error 不额外刷请求。
+        // Với lỗi tức thời thông thường, sau khi cạn số lần thử lại thì làm thêm tối đa 2 lần tự chữa cả tầng có độ trễ.
+        // Những permanent-error như xác thực/quyền/mô hình không tồn tại/ngữ cảnh vượt hạn cứng thì không gửi thêm yêu cầu.
         const autoRecoveryScheduled=reason!=='permanent-error'&&schedulePostFallbackCoreRecovery(entry.index,entry.signature,scope,operationState,1,0);
         notifyPipelineDone(autoRecoveryScheduled
-            ? `第 ${entry.index} 层结构化记忆连续失败，已保存AI原文保底并安排后台自动重建；无需手动点击“重建本层”。`
-            : `第 ${entry.index} 层结构化记忆连续失败，已保存AI原文保底并放行；请检查独立整理API配置。`,'error');
+            ? `Ký ức có cấu trúc của tầng ${entry.index} thất bại liên tiếp, đã lưu chính văn AI làm phương án đáy và xếp lịch tự dựng lại ở nền; không cần bấm “Dựng lại tầng này” thủ công.`
+            : `Ký ức có cấu trúc của tầng ${entry.index} thất bại liên tiếp, đã lưu chính văn AI làm phương án đáy và cho đi tiếp; hãy kiểm tra cấu hình API sắp xếp riêng.`,'error');
         runLaterForScope(scope,30,()=>drainAssistantMemoryQueue());
         return true;
     }
@@ -14127,7 +14127,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             const current=context()?.chat?.[index];
             if(!current||current.is_user||current.is_system||messageSignature(index,current)!==signature){clearCompanionRetryForFloor(index);return;}
             const payload=current?.extra?.vvvTheaterCompanion;
-            // 最重要的Exactly-Once闸门：旧任务如果已经晚到并写入成功，重试计时器绝不能再发第二个请求。
+            // Cổng Exactly-Once quan trọng nhất: nếu tác vụ cũ đến muộn nhưng đã ghi thành công thì bộ hẹn giờ thử lại tuyệt đối không được gửi yêu cầu thứ hai.
             if(payload?.signature===signature && ['ok','fallback-ok'].includes(String(payload.parseStatus||''))){clearCompanionRetryForFloor(index);return;}
             if(stateRuntime.companionRunning||stateRuntime.mainCompanionProcessing){armCompanionRetry(index,signature,{waitMs:1200,fallbackReason,silent,force,fromRetry,scope,operationState});return;}
             await generateCompanionOutputForLatest({force:Boolean(force),targetFloor:index,fallbackReason,silent,fromRetry:Boolean(fromRetry)});
@@ -14143,7 +14143,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         message.extra=message.extra&&typeof message.extra==='object'?message.extra:{};
         const shell=message.extra.vvvTheaterCompanion||emptyCompanionShell(index,signature,'retrying-seven-api',companionPayloadSource());
         if(!force&&shell.signature===signature && ['ok','fallback-ok'].includes(String(shell.parseStatus||''))){clearCompanionRetryForFloor(index);return false;}
-        // 合法但缺栏目时，每次主请求内已经额外做过一次定向补写；最多再完整重试1轮，避免按普通网络错误刷满8轮。
+        // Khi kết quả hợp lệ nhưng thiếu mục, mỗi yêu cầu chính đã kèm sẵn một lần bổ sung đúng mục; chỉ thử lại trọn vẹn thêm tối đa 1 lượt, tránh chạy đủ 8 lượt như lỗi mạng thường.
         const qualityError=['CompanionPayloadIncompleteError','CompanionJsonRecoveryError'].includes(String(error?.name||''));
         const maxAttempts=qualityError?Math.min(1,companionRetryLimit()):companionRetryLimit();
         const attempt=resume?Math.max(1,Number(shell.retryAttempt||1)):Math.max(0,Number(shell.retryAttempt||0))+1;
@@ -14151,9 +14151,9 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             clearCompanionRetryForFloor(index);
             shell.signature=signature;shell.source=companionPayloadSource();shell.parseStatus='seven-api-failed';
             shell.retryAttempt=Math.min(maxAttempts,Math.max(1,Number(shell.retryAttempt||maxAttempts)));
-            shell.retryReason='';shell.retryAt=0;shell.retryForce=false;shell.failureKind='retry-limit';shell.fallbackError=`自动重试已达到上限 ${maxAttempts} 次：${retryReasonText(error,400)}`;
+            shell.retryReason='';shell.retryAt=0;shell.retryForce=false;shell.failureKind='retry-limit';shell.fallbackError=`Tự thử lại đã chạm giới hạn ${maxAttempts} lần: ${retryReasonText(error,400)}`;
             message.extra.vvvTheaterCompanion=shell;saveChatExtras(scope).catch(()=>{});if(chatScopeIsCurrent(scope))decorateCompanionOutput(index);
-            console.error(`[0-32·U1.7.2] 幕后七条第${index}层达到${maxAttempts}次重试上限，已停止，禁止继续刷API`,error);
+            console.error(`[0-32·U1.7.2] Bảy điều hậu trường ở tầng ${index} đã chạm giới hạn ${maxAttempts} lần thử lại, đã dừng, cấm gọi API tiếp`,error);
             return false;
         }
         const delay=resume?Math.max(100,Number(shell.retryAt||0)-Date.now()):retryDelayMs(attempt);
@@ -14175,12 +14175,12 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             }
             return id;
         }
-        // 极端兼容兜底：没有metadata API时才退回当前聊天key。
+        // Phương án đáy tương thích cực đoan: chỉ khi không có metadata API mới lùi về dùng key của cuộc trò chuyện hiện tại.
         return `fallback:${getChatKey(ctx)}`;
     }
 
     function serverChatKey(ctx = context()) {
-        // 不再直接用 native chat id。这样改聊天文件名/聊天ID时，完整Trạng thái快照、检索索引和后台任务仍绑定同一档案。
+        // Không dùng thẳng native chat id nữa. Nhờ vậy khi đổi tên tệp/ID cuộc trò chuyện thì ảnh chụp trạng thái đầy đủ, chỉ mục truy hồi và tác vụ nền vẫn gắn với cùng một hồ sơ.
         const raw = safetyArchiveIdentity(ctx);
         let hash = 2166136261;
         for (const char of String(raw)) {
@@ -14201,7 +14201,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
         const contentType = response.headers.get('content-type') || '';
         if (response.status === 404 && (contentType.includes('text/html') || /^\s*<!doctype|^\s*<html/i.test(text))) {
-            throw new Error('服务端插件未加载（404）。请确认 plugins/vvv-theater-memory-server 目录存在并重启 SillyTavern。');
+            throw new Error('Plugin phía máy chủ chưa được nạp (404). Hãy kiểm tra thư mục plugins/vvv-theater-memory-server có tồn tại rồi khởi động lại SillyTavern.');
         }
         if (!response.ok || data?.ok === false) {
             const error=new Error(data?.error || data?.message || data?.raw || `HTTP ${response.status}`);
@@ -14280,19 +14280,19 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const strictResponseRules=[
             'Đáp lại tự nhiên theo tính cách và quan hệ của nhân vật; thường gửi 1-4 tin ngắn.',
             requireMessages?'Sự kiện lần này bắt buộc phải sinh ngay ít nhất 1 messages hợp lệ; không được im lặng kết thúc bằng mảng rỗng.':'Khi không có ai tương tác hợp lý thì messages có thể để trống.',
-            actionChoices.length?`action.type必须明确选择：${actionChoices.join('|')}。`:'',
-            emptyActionChoices.length?`只有action.type为${emptyActionChoices.join('|')}时才允许messages为空，并且必须在action.reason写明贴合场景的具体原因。`:'',
-            mode==='outgoing-call'?'这是用户主动拨出的电话。除非所给场景或记忆明确表明对方无法接听或有意拒接，否则应选择answer-call并立即说出开场白；不得仅因资料不足、时间不明或想等待下一轮而选择miss-call。若未接或拒接，reason必须具体说明对方在做什么或为何没有接到。':'',
+            actionChoices.length?`action.type bắt buộc phải chọn rõ: ${actionChoices.join('|')}.`:'',
+            emptyActionChoices.length?`Chỉ khi action.type là ${emptyActionChoices.join('|')} thì messages mới được để trống, và bắt buộc ghi rõ lý do cụ thể hợp tình huống trong action.reason.`:'',
+            mode==='outgoing-call'?'Đây là cuộc gọi do người dùng chủ động bấm ra. Trừ khi tình huống hoặc ký ức được cung cấp nói rõ đối phương không thể nghe máy hoặc cố ý từ chối, còn lại phải chọn answer-call và nói ngay câu mở đầu; không được chỉ vì thiếu tư liệu, chưa rõ thời gian hay muốn đợi lượt sau mà chọn miss-call. Nếu không nghe hoặc từ chối, reason bắt buộc nói rõ đối phương đang làm gì hoặc vì sao không nghe được.':'',
             'Chỉ xuất JSON.',
         ].filter(Boolean).join('');
         const systemPrompt=`${FALLEN_WRITER_CONTEXT}
-【小手机实时交互引擎】你只扮演当前手机事件中的NPC、群成员或服务人员，不写外层chính văn，不替{{user}}行动。所有回复发生在手机内部并立即生效。
-必须只输出JSON对象：{"messages":[{"sender":"发送者","text":"文字，可为空","stickerId":"已导入表情ID，可为空"}],"reactions":[{"npc":"朋友圈好友","liked":true,"comment":"可为空"}],"action":{"type":"none|accept-transfer|return-transfer|decline-transfer|answer-call|decline-call|miss-call|end-call|confirm-delivery","reason":""}}。只有朋友圈模式使用reactions，其他模式返回空数组。
-表情只能使用本请求“可用表情库”中的原样ID；有合适表情时可以只发表情，禁止输出“（某某表情）”“[表情包]”等文字替代品。
-余额、扣款、订单商品、店铺、路线和配送Trạng thái由程序决定，禁止擅自改金额、换商品、把外卖换成别的餐品。支付宝转账已经自动到账；微信转账才可接收、退还或拒绝。
-手机端与外层chính văn共享同一人物和同一故事线：此前在线上聊过就必须记得，线下见过也必须记得；严禁把同一个NPC当成两个人。recentOuterNarrative是刚刚实际发生的外层chính văn，不是另一套参考故事。金额必须逐分遵守unifiedStoryline中的精确值，不允许18.89写成18/19。数字账户的到账/打款Trạng thái也必须遵守unifiedStoryline，不能把“尚未到账”擅自说成“已经到账”。若unifiedStoryline显示NPC此刻正在线下同场，只在user明确主动使用手机联系TA时回应，不得把线下现实当成另一条平行剧情。
-当请求包含relevantWorldBook时，它是当前联系人/本轮话题定向命中的绑定世界书事实：优先级高于普通旧摘要和手机历史。禁止为了迎合user问题而否认、反转或改写其中明确的固定事实；若只缺“今天具体班次/当前是否在岗”等即时信息，应明确区分“固定设定”和“今日具体Trạng thái”，不要自行把固定设定抹掉。
-模式为nested-tavern时，这是外层人物手机里的虚构二级故事。characterCard是唯一世界设定，playerPersona只是里层玩家Thân phận；只续写二级角色，绝不能宣称二级剧情已经发生在外层现实，也不能读取、引用或猜测外层场景与长期记忆。`;
+【BỘ MÁY TƯƠNG TÁC THỜI GIAN THỰC CỦA ĐIỆN THOẠI NHỎ】Bạn chỉ đóng vai NPC, thành viên nhóm hoặc nhân viên dịch vụ trong sự kiện điện thoại hiện tại; không viết chính văn lớp ngoài, không hành động thay {{user}}. Mọi phản hồi diễn ra bên trong điện thoại và có hiệu lực ngay.
+Bắt buộc chỉ xuất một object JSON: {"messages":[{"sender":"người gửi","text":"nội dung chữ, có thể để trống","stickerId":"ID sticker đã nhập, có thể để trống"}],"reactions":[{"npc":"bạn bè trên Khoảnh khắc","liked":true,"comment":"có thể để trống"}],"action":{"type":"none|accept-transfer|return-transfer|decline-transfer|answer-call|decline-call|miss-call|end-call|confirm-delivery","reason":""}}. Chỉ chế độ Khoảnh khắc mới dùng reactions, các chế độ khác trả về mảng rỗng.
+Sticker chỉ được dùng đúng ID nguyên dạng trong “kho sticker khả dụng” của yêu cầu này; khi có sticker phù hợp thì gửi mỗi sticker cũng được, cấm xuất ra những thứ thay thế bằng chữ như “(sticker gì đó)” hay “[bộ sticker]”.
+Số dư, việc trừ tiền, món hàng trong đơn, cửa hàng, tuyến đường và trạng thái giao hàng đều do chương trình quyết định; cấm tự ý đổi số tiền, đổi món hàng hay biến đơn giao đồ ăn thành món khác. Chuyển khoản Alipay đã tự động vào tài khoản; chỉ chuyển khoản WeChat mới có thể nhận, hoàn lại hay từ chối.
+Phía điện thoại và chính văn lớp ngoài dùng chung một dàn nhân vật và một mạch truyện: đã trò chuyện trực tuyến trước đó thì phải nhớ, đã gặp mặt ngoài đời cũng phải nhớ; nghiêm cấm coi cùng một NPC là hai người. recentOuterNarrative là chính văn lớp ngoài vừa thật sự xảy ra, không phải một câu chuyện tham khảo khác. Số tiền phải theo đúng từng xu giá trị chính xác trong unifiedStoryline, không được viết 18,89 thành 18/19. Trạng thái tiền về/chuyển tiền của tài khoản số cũng phải theo unifiedStoryline, không được tự đổi “chưa vào tài khoản” thành “đã vào tài khoản”. Nếu unifiedStoryline cho thấy NPC lúc này đang có mặt ngoài đời cùng chỗ, thì chỉ phản hồi khi user chủ động dùng điện thoại liên lạc với họ, không được coi hiện thực ngoài đời là một mạch truyện song song khác.
+Khi yêu cầu có relevantWorldBook thì đó là những sự thật ràng buộc từ sách thế giới, được khớp đúng với liên hệ hiện tại/chủ đề của lượt này: ưu tiên cao hơn các bản tóm tắt cũ thông thường và lịch sử điện thoại. Cấm phủ nhận, đảo ngược hay viết lại những sự thật cố định rõ ràng trong đó chỉ để chiều theo câu hỏi của user; nếu chỉ thiếu thông tin tức thời như “ca làm hôm nay/hiện có đang trực không”, hãy phân biệt rõ “thiết lập cố định” và “trạng thái cụ thể hôm nay”, đừng tự xóa mất phần thiết lập cố định.
+Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu nằm trong điện thoại của nhân vật lớp ngoài. characterCard là thiết lập thế giới duy nhất, playerPersona chỉ là thân phận người chơi ở lớp trong; chỉ viết tiếp nhân vật cấp hai, tuyệt đối không được tuyên bố cốt truyện cấp hai đã xảy ra trong hiện thực lớp ngoài, cũng không được đọc, trích dẫn hay đoán bối cảnh và ký ức dài hạn của lớp ngoài.`;
         const nested=mode==='nested-tavern';
         const resultIsValid=result=>{
             const actionType=String(result?.action?.type||'none');
@@ -14323,7 +14323,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         if(resultIsValid(second.result))return second.result;
         const missing=[];
         if(requireMessages&&!second.result.messages.length&&!emptyActionChoices.includes(second.result.action.type))missing.push('Ít nhất một lượt trả lời');
-        if(actionChoices.length&&!actionChoices.includes(second.result.action.type))missing.push(`明确动作（${actionChoices.join('/')}）`);
+        if(actionChoices.length&&!actionChoices.includes(second.result.action.type))missing.push(`hành động rõ ràng (${actionChoices.join('/')})`);
         if(mode==='outgoing-call'&&emptyActionChoices.includes(second.result.action.type)&&!compactText(second.result.action.reason,300))missing.push('Lý do không nghe hoặc từ chối');
         throw new Error(`小手机实时API连续两次返回无效结果：缺少${missing.join('và')||'Nội dung bắt buộc'}`);
     }
@@ -14347,7 +14347,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         else if(groupName)phone.channelGroups.push({id:uid('channel-group-live'),groupName,sender:from,content:message.content,stickerId:message.stickerId,time:clock,createdAt:now,members:thread.members||[],mentionsUser:false,channelType:operationState.communicationProfile?.communicationType||'terminal',direction:'incoming',_interactive:true,_anchorFloor:anchorFloor,_eventSeq:seq,realtimeHandled:true});
         else if(useWechat)phone.wechat.push({id:uid('wechat-live'),author:contact,contact:userName,content:message.content,stickerId:message.stickerId,time:clock,createdAt:now,direction:'incoming',_interactive:true,_anchorFloor:anchorFloor,_eventSeq:seq,realtimeHandled:true});
         else phone.sms.push({id:uid('period-message-live'),author:contact,contact:userName,content:message.content,stickerId:message.stickerId,time:clock,createdAt:now,category:'period-message',direction:'incoming',_interactive:true,_anchorFloor:anchorFloor,_eventSeq:seq,realtimeHandled:true});
-        if(!groupName)s39MarkAcquaintance(from,{channel:useWechat?'WeChat':'Liên lạc điện thoại',floor:anchorFloor,evidence:`收到对方回复:${compactText(message.content||'[Sticker]',220)}`});
+        if(!groupName)s39MarkAcquaintance(from,{channel:useWechat?'WeChat':'Liên lạc điện thoại',floor:anchorFloor,evidence:`Nhận được phản hồi của đối phương: ${compactText(message.content||'[Sticker]',220)}`});
         return message;
     }
 
@@ -14358,7 +14358,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         } catch (error) {
             const message = String(error?.message || error);
             if (/forbidden|403/i.test(message)) return false;
-            // 服务端暂时未加载时不破坏当前账号的本地Trạng thái；正确安装后重启服务端即可恢复联网能力。
+            // Khi phía máy chủ tạm chưa nạp thì không phá trạng thái tại chỗ của tài khoản hiện tại; cài đúng rồi khởi động lại máy chủ là khôi phục được khả năng kết nối.
             return true;
         }
     }
@@ -14452,7 +14452,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                 if(typeof chats.hideChatMessageRange!=='function')throw slashError;
                 await chats.hideChatMessageRange(range.start,range.end,!hidden,'');
                 if(!chatScopeIsCurrent(scope))throw new Error('Đã đổi cuộc trò chuyện, kết quả ẩn tầng không còn được áp dụng');
-            }catch(fallbackError){throw new Error(`执行 ${command} 失败：${fallbackError?.message||slashError?.message||fallbackError}`);}
+            }catch(fallbackError){throw new Error(`Thực thi ${command} thất bại: ${fallbackError?.message||slashError?.message||fallbackError}`);}
         }
         return range;
     }
@@ -14462,7 +14462,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         if(!operationScope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         if(row&&!((operationState.tables?.summaries||[]).includes(row)))throw new Error('Đối tượng tổng kết không thuộc cuộc trò chuyện hiện tại, đã từ chối thao tác tầng xuyên cuộc trò chuyện');
         if(hidden && (row?.['Loại']||row?.['Loại bảng'])==='Tổng kết giai đoạn'){
-            if(!/完成|成功/.test(String(row?.['Trạng thái']||''))||!isFixedStageSummaryText(row?.['Nội dung tổng kết']))throw new Error('该阶段总结尚未通过固定格式质量校验，禁止隐藏原聊天');
+            if(!/hoàn thành|thành công/i.test(String(row?.['Trạng thái']||''))||!isFixedStageSummaryText(row?.['Nội dung tổng kết']))throw new Error('Bản tổng kết giai đoạn này chưa qua kiểm tra chất lượng định dạng cố định, cấm ẩn cuộc trò chuyện gốc');
         }
         const parsed = parseRange(row?.['Tầng bao phủ']);
         if (parsed.start === null || parsed.end === null) throw new Error('Không nhận diện được khoảng tầng của bản tổng kết');
@@ -14477,29 +14477,29 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         row._hiddenRange = hidden ? range.label : '';
         row._hiddenAt = hidden ? nowText() : null;
         logAudit(hidden ? 'Ẩn các tầng đã tổng kết' : 'Khôi phục các tầng đã tổng kết', range.label);
-        if (!silent) toast(`${hidden ? 'Đã ẩn' : 'Đã khôi phục'}第 ${range.label} 层`, 'success');
+        if (!silent) toast(`${hidden ? 'Đã ẩn' : 'Đã khôi phục'} tầng ${range.label}`, 'success');
         return range;
     }
 
     async function reconcilePromptHideStateFromMemory({ silent=true, scope=null, state=null }={}) {
         const operationScope=scope||captureChatScope(),s=state||stateRuntime.state;
         if(!operationScope||!s||!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-        // 恢复快照时先把真实聊天全部unhide，再严格按快照里“已隐藏”的阶段逐段重放。
-        // 这样不会出现快照恢复了、但酒馆真实 /hide Trạng thái仍停留在另一版本的问题。
+        // Khi khôi phục ảnh chụp thì unhide toàn bộ cuộc trò chuyện thật trước, rồi phát lại từng giai đoạn đúng theo phần “đã ẩn” trong ảnh chụp.
+        // Như vậy sẽ không còn cảnh ảnh chụp đã khôi phục mà trạng thái /hide thật của SillyTavern vẫn kẹt ở một phiên bản khác.
         if(!await unhideEntireCurrentChat(operationScope))return false;
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
         let restored=0;
         for(const row of s.tables?.summaries||[]){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
             if((row['Loại']||row['Loại bảng'])!=='Tổng kết giai đoạn')continue;
-            if(!/完成|成功/.test(String(row['Trạng thái']||'')))continue;
+            if(!/hoàn thành|thành công/i.test(String(row['Trạng thái']||'')))continue;
             const wantsHidden=row['Trạng thái ẩn']==='Đã ẩn'||Boolean(String(row._hiddenRange||'').trim());
             if(!wantsHidden){row['Trạng thái ẩn']='Chưa ẩn';row._hiddenRange='';continue;}
             await applySummaryHideState(row,true,{silent:true});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
             restored+=1;
         }
-        logAudit('Đồng bộ trạng thái ẩn sau khi khôi phục ảnh chụp',`重新隐藏 ${restored} 个阶段`);
+        logAudit('Đồng bộ trạng thái ẩn sau khi khôi phục ảnh chụp',`Đã ẩn lại ${restored} giai đoạn`);
         if(!silent)toast(`已同步快照的 /hide Trạng thái：${restored} 个阶段`,'success');
         return true;
     }
