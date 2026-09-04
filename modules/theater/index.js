@@ -8544,13 +8544,13 @@ ${latestReply}`;
     }
 
     function companionRepairPrompt(report, payload, message) {
-        const requirements=(report?.missing||[]).map(item=>`- ${item.label}：至少 ${item.min} 条，当前 ${item.actual} 条`).join('\n');
-        const priorAppearances=(stateRuntime.state?.appearances||[]).slice(-8).map(item=>`${item.character}：${item.outfit}${item.hair?`；发型:${item.hair}`:''}`).join('\n')||'Chưa có旧外观';
-        return `【幕后七条缺失栏目定向补写】
-上一份JSON的上半部分已经有效，但以下栏目缺失，不能把整轮判成成功：
+        const requirements=(report?.missing||[]).map(item=>`- ${item.label}: tối thiểu ${item.min} mục, hiện có ${item.actual} mục`).join('\n');
+        const priorAppearances=(stateRuntime.state?.appearances||[]).slice(-8).map(item=>`${item.character}: ${item.outfit}${item.hair?`; kiểu tóc: ${item.hair}`:''}`).join('\n')||'Chưa có ngoại hình cũ';
+        return `【BỔ SUNG ĐÚNG MỤC CÒN THIẾU CỦA BẢY ĐIỀU HẬU TRƯỜNG】
+Nửa trên của JSON trước đã hợp lệ, nhưng các mục sau còn thiếu, không được coi cả lượt là thành công:
 ${requirements}
 
-请只补写下面这个对象；未被点名的栏目可保持空数组，被点名的栏目必须达到最低数量：
+Chỉ viết bổ sung đúng đối tượng dưới đây; mục không bị gọi tên có thể để mảng rỗng, mục bị gọi tên bắt buộc phải đạt số lượng tối thiểu:
 {
   "appearances":[{"character":"","aliases":[],"identityRevealed":false,"source":"repair","outfit":"","hair":"","accessories":"","shoes":"","condition":"","time":"","location":""}],
   "story":{"moments":[{"author":"","content":"","time":"","attachments":[],"likes":[],"comments":[]}],"reactions":[{"momentId":"","seenBy":[],"likes":[],"comments":[{"author":"","content":"","time":""}],"processed":true}],"diary":[{"author":"","content":"","time":""}],"anniversaries":[{"author":"","content":"","time":""}]},
@@ -8558,26 +8558,26 @@ ${requirements}
   "world":{"write":true,"timeProgress":"","events":[{"character":"","time":"","location":"","activity":"","goal":"","mood":"","social":"","relationToMainPlot":"","visibility":"private"}]}
 }
 
-规则：
-- 外观：本轮没有换装时，沿用最后确认的当前穿着并根据刚完成chính văn更新姿态/Trạng thái，不能因为chính văn没重新逐字描写衣服就返回空。
-- 朋友圈与日记：写低影响、符合人物习惯的真实生活碎片，不必围绕user；纪念日只有明确依据才写。
-- 朋友圈互动：若“朋友圈互动”被点名，必须逐个使用下方待处理动态的原momentId返回reactions补丁；NPC先读chính văn和附件，再决定只看、点赞或留言，不得新建替代动态。
-- 通讯：只生成当前时空与载体确实允许的微信/短信/电话/时代通讯，不替user回复或决定。
-- 彼间私文：优先轮转镜头外NPC的吃饭、上课、工作、通勤、休息、社交等低风险日常，不制造无依据的大事件。
+Quy tắc:
+- Ngoại hình: nếu lượt này không thay đồ thì giữ nguyên trang phục đã xác nhận lần cuối và cập nhật dáng/trạng thái theo chính văn vừa hoàn thành; không được trả về rỗng chỉ vì chính văn không tả lại quần áo từng chữ.
+- Khoảnh khắc và nhật ký: viết những mảnh đời sống thật, ít ảnh hưởng, hợp với thói quen nhân vật, không nhất thiết phải xoay quanh user; ngày kỷ niệm chỉ viết khi có căn cứ rõ ràng.
+- Tương tác Khoảnh khắc: nếu “Tương tác Khoảnh khắc” bị gọi tên thì phải dùng đúng momentId gốc của từng bài đăng chờ xử lý bên dưới để trả về bản vá reactions; NPC đọc chính văn và tệp đính kèm trước, rồi mới quyết định chỉ xem, thích hay bình luận, không được tạo bài đăng mới thay thế.
+- Liên lạc: chỉ sinh ra WeChat/SMS/cuộc gọi/liên lạc thời đại mà không - thời gian và phương tiện hiện tại thật sự cho phép, không trả lời hay quyết định thay user.
+- Bỉ Gian Tư Văn: ưu tiên luân phiên những sinh hoạt ít rủi ro của NPC ngoài ống kính như ăn cơm, lên lớp, làm việc, đi lại, nghỉ ngơi, giao tiếp; không dựng lên sự kiện lớn thiếu căn cứ.
 
-【当前现实】
+【HIỆN THỰC HIỆN TẠI】
 ${JSON.stringify(payload?.setting||{})}
 
-【已知角色】
-${(report?.knownCharacters||[]).join('、')||'Chưa có'}
+【NHÂN VẬT ĐÃ BIẾT】
+${(report?.knownCharacters||[]).join(', ')||'Chưa có'}
 
-【待处理朋友圈动态】
+【BÀI ĐĂNG KHOẢNH KHẮC CHỜ XỬ LÝ】
 ${momentSocialFeedBrief()}
 
-【镜头外候选】
-${(report?.worldCandidates||[]).join('、')||'Chưa có'}
+【ỨNG VIÊN NGOÀI ỐNG KÍNH】
+${(report?.worldCandidates||[]).join(', ')||'Chưa có'}
 
-【已确认外观】
+【NGOẠI HÌNH ĐÃ XÁC NHẬN】
 ${priorAppearances}
 
 【TRÒ CHUYỆN GẦN ĐÂY】
@@ -8589,7 +8589,7 @@ ${messageText(message).slice(0,10000)}`;
 
     function companionIncompleteError(report) {
         const names=(report?.missing||[]).map(item=>`${item.label}${item.actual}/${item.min}`).join('、')||'Chưa rõ栏目';
-        const error=new Error(`幕后七条返回了合法但不完整的JSON：${names}`);
+        const error=new Error(`Bảy điều hậu trường trả về JSON hợp lệ nhưng chưa đầy đủ: ${names}`);
         error.name='CompanionPayloadIncompleteError';
         error.completenessReport=report;
         return error;
@@ -8602,7 +8602,7 @@ ${messageText(message).slice(0,10000)}`;
         const diagnostics={attempted:false,status:'not-needed',before:before.counts,after:before.counts,missingBefore:before.missing,missingAfter:[]};
         if(!before.missing.length){task.completenessRepair=diagnostics;return task;}
         diagnostics.attempted=true;diagnostics.status='running';
-        updateCompanionFallbackProgress(Number(floor),93,'幕后七条部分栏目为空，正在独立API定向补写',before.missing.map(item=>item.label).join('、'));
+        updateCompanionFallbackProgress(Number(floor),93,'Một số mục của Bảy điều hậu trường đang trống, đang bổ sung qua API riêng',before.missing.map(item=>item.label).join(', '));
         const scope=captureChatScope();const generation=stateRuntime.dataGeneration;const stateAtStart=stateRuntime.state;
         const configured=Math.max(1800,Math.min(5000,Number(stateRuntime.serverConfig?.companion?.maxTokens||5000)));
         const repairPrompt=companionRepairPrompt(before,primaryPayload,message);
@@ -8620,7 +8620,7 @@ ${messageText(message).slice(0,10000)}`;
         } catch (error) {
             throw error;
         }
-        if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation||stateRuntime.state!==stateAtStart)throw new Error('聊天已切换：已丢弃幕后七条缺失栏目补写结果');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation||stateRuntime.state!==stateAtStart)throw new Error('Đã đổi cuộc trò chuyện: đã loại bỏ kết quả bổ sung mục thiếu của Bảy điều hậu trường');
         const repairRaw=parseGeneratedJson(repairData?.text||'{}');
         const combinedRaw=mergeCompanionRepairRaw(primaryRaw,repairRaw,before);
         const combinedPayload=normalizeCompanionPayload(combinedRaw,Number(floor),String(signature||''));
@@ -8677,8 +8677,8 @@ ${messageText(message).slice(0,10000)}`;
         const s = stateRuntime.state;
         const userName = compactText(context()?.name1 || '{{user}}', 80) || '{{user}}';
         const payloadCreatedAt=Number.isFinite(Date.parse(String(payload?.generatedAt||'')))?Date.parse(String(payload.generatedAt)):Date.now();
-        // P29：第二道现实守卫。即使旧缓存/手工导入的sidecar绕过normalize，
-        // 也绝不允许幕后七条直接覆盖时间/地点/世界/时代。
+        // P29: hàng rào hiện thực thứ hai. Kể cả khi sidecar từ cache cũ/nhập tay đi vòng qua normalize,
+        // vẫn tuyệt đối không cho Bảy điều hậu trường ghi đè trực tiếp lên thời gian/địa điểm/thế giới/thời đại.
         const guarded = sanitizeCompanionReality(payload.setting || {}, payload.scene || {});
         payload.setting = guarded.setting;
         payload.scene = guarded.scene;
@@ -8689,9 +8689,9 @@ ${messageText(message).slice(0,10000)}`;
         if(s39VisibleNarrative)s39RecordStoryEvent({type:'narrative',relatedId:`assistant-floor:${Number(payload?.floor)}`,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...s39Present],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...s39Present],userKnows:true,channel:'Hiện thực chính văn',status:'Đã xảy ra',summary:compactText(sanitizeRetrievalDocumentText(s39VisibleNarrative),900),floor:Number(payload?.floor),time:compactText(s.scene?.time||'',120),location:compactText(s.scene?.location||'',180),source:'main-narrative'});
         updateWorldTransit(s.communicationProfile, Number(payload.floor));
         if (payload.realityAudit?.length) {
-            console.warn('[0-32·P29] 幕后七条现实改写已拦截', payload.realityAudit);
-            const severe=payload.realityAudit.find(item=>/年份|地点/.test(item));
-            if(severe) toast(`🛡 当前现实锁：${severe}`, 'warning');
+            console.warn('[0-32·P29] Đã chặn Bảy điều hậu trường sửa hiện thực', payload.realityAudit);
+            const severe=payload.realityAudit.find(item=>/năm|địa điểm/i.test(item));
+            if(severe) toast(`🛡 Khóa hiện thực hiện tại: ${severe}`, 'warning');
         }
 
         // Lời hẹn/秘密属于“当前Trạng thái实体”，使用稳定实体键覆盖更新；旧Trạng thái进入_history，禁止每轮换词就新增一行。
@@ -8701,7 +8701,7 @@ ${messageText(message).slice(0,10000)}`;
         compactCurrentStateCollections(s);
         reconcilePromiseLifecycleForState(s, Math.max(Number(payload.floor), (context()?.chat?.length || 1) - 1));
 
-        // P41-S1：幕后七条不再写 core memory，避免同一AI回复被“七条API + 主记忆流水线”双写。
+        // P41-S1: Bảy điều hậu trường không ghi core memory nữa, tránh để cùng một lượt trả lời của AI bị ghi hai lần bởi “API bảy điều + luồng ký ức chính”.
         // 七条仍保留通讯/彼间私文/顶层Lời hẹn秘密/人物外观。
         for (const item of payload.appearances || []) upsertAppearanceSnapshot(item, payload.id, payload.floor);
 
@@ -8711,7 +8711,7 @@ ${messageText(message).slice(0,10000)}`;
             for (const item of payload.story?.[key] || []) {
                 const stored={ ...item, _sidecarId:payload.id, _floor:payload.floor };s.storyExtras[key].push(stored);
                 const author=relationPartyName(item?.author),userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}';
-                if(key==='diary'&&author)s39RecordStoryEvent({type:'private-diary',relatedId:stored.id||`${payload.id}:diary:${author}`,participants:[author],knownBy:[author],userKnows:npcNameKey(author)===npcNameKey(userName),channel:'私人日记',status:'已写下',summary:`${author}日记：${compactText(item?.content,700)}`,floor:payload.floor,time:item?.time,source:'companion-diary'});
+                if(key==='diary'&&author)s39RecordStoryEvent({type:'private-diary',relatedId:stored.id||`${payload.id}:diary:${author}`,participants:[author],knownBy:[author],userKnows:npcNameKey(author)===npcNameKey(userName),channel:'Nhật ký riêng',status:'Đã viết',summary:`Nhật ký của ${author}: ${compactText(item?.content,700)}`,floor:payload.floor,time:item?.time,source:'companion-diary'});
                 if(key==='moments'&&author)s39RecordStoryEvent({type:'moment',relatedId:stored.id||`${payload.id}:moment:${author}`,participants:[author],knownBy:[author,...(item?.seenBy||[])],userKnows:Boolean((item?.seenBy||[]).some(name=>npcNameKey(name)===npcNameKey(userName))),channel:'Khoảnh khắc',status:'已发布',summary:`${author}：${compactText(item?.content,700)}`,floor:payload.floor,time:item?.time,source:'companion-moment'});
             }
         }
@@ -8784,7 +8784,7 @@ ${messageText(message).slice(0,10000)}`;
                         }
                     }
                 }
-                // S9.4：手机账本不做自动容量裁剪。
+                // S9.4: sổ ghi điện thoại không tự cắt bớt theo dung lượng.
             }
         }
         if (payload.phone.write) {
@@ -8795,7 +8795,7 @@ ${messageText(message).slice(0,10000)}`;
                 if (knownProfile?.scope==='origin' && !payload.setting?.originReachable) continue;
                 if (knownProfile?.scope==='local' && knownProfile.homeWorldKey && knownProfile.homeWorldKey!==payload.setting?.worldKey && !currentWorldMatchesOrigin(payload.setting)) continue;
                 // R9S1P30：本轮既然已经合法收到该微信群消息，就同步恢复对应群聊的可达Trạng thái。
-                // 避免历史上曾被标成 offline-origin 的群继续被微信列表过滤掉。
+                // Tránh để những nhóm từng bị đánh dấu offline-origin tiếp tục bị lọc khỏi danh sách WeChat.
                 if (knownProfile) {
                     if (knownProfile.scope === 'origin' && payload.setting?.originReachable) knownProfile.availability = 'active';
                     else if (knownProfile.scope !== 'origin' && (!knownProfile.homeWorldKey || knownProfile.homeWorldKey === payload.setting?.worldKey) && payload.setting?.available !== false) knownProfile.availability = 'active';
@@ -8823,14 +8823,14 @@ ${messageText(message).slice(0,10000)}`;
                 }
                 const stored = stampPhoneEvent({ ...item, _sidecarId:payload.id, _floor:payload.floor, _homeWorldKey:messageHomeKey, _groupScope:messageScope },{floor:payload.floor,sidecarId:payload.id,createdAt:payloadCreatedAt});
                 if(stored.sender){
-                    s39MarkAcquaintance(stored.sender,{channel:`微信群:${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
-                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`微信群:${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                    s39MarkAcquaintance(stored.sender,{channel:`Nhóm WeChat: ${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
+                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`Nhóm WeChat: ${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                 }
                 const duplicate = (s.phone.wechatGroups || []).slice(-80).some(row => compactText(row?.groupName,120) === compactText(stored.groupName,120) && compactText(row?.sender,100) === compactText(stored.sender,100) && compactText(row?.content,1800) === compactText(stored.content,1800));
                 const gpForThread = messageProfile || phoneGroupProfile(item.groupName);
                 const thread = ensurePhoneGroupThread(item.groupName, item.members || [], gpForThread?.homeWorldKey || messageHomeKey || payload.setting?.worldKey || '');
                 if (duplicate) {
-                    // 即使消息重复，也必须继续完成 profile/thread 自愈；旧版正是被这里的 continue 卡住。
+                    // Dù tin nhắn bị trùng vẫn phải hoàn tất việc tự chữa profile/thread; bản cũ chính là bị kẹt ở lệnh continue chỗ này.
                     const old=(s.phone.wechatGroups||[]).slice().reverse().find(row=>compactText(row?.groupName,120)===compactText(stored.groupName,120)&&compactText(row?.sender,100)===compactText(stored.sender,100)&&compactText(row?.content,1800)===compactText(stored.content,1800));
                     if(old){if(!old._homeWorldKey)old._homeWorldKey=messageHomeKey;if(!old._groupScope)old._groupScope=messageScope;}
                 } else s.phone.wechatGroups.push(stored);
@@ -8844,7 +8844,7 @@ ${messageText(message).slice(0,10000)}`;
                     normalizePhoneThreadChronology(thread,item.groupName||'');
                 }
             }
-            // S9.4：微信群历史只增不减，不做自动容量裁剪。
+            // S9.4: lịch sử nhóm WeChat chỉ thêm chứ không bớt, không tự cắt theo dung lượng.
         }
         if (payload.phone.write) {
             s.phone.channelGroups ||= []; s.phone.groupThreads ||= [];
@@ -8857,16 +8857,16 @@ ${messageText(message).slice(0,10000)}`;
                 const membersRegistered=(rawItem.members||[]).map(name=>registerNpcIdentity({name,source:`channel-group:${rawItem.groupName||''}`,floor:payload.floor},payload.floor)||canonicalNpcName(name)||name);
                 const item={...rawItem,sender:senderRegistered,members:membersRegistered}; const stored=stampPhoneEvent({...item,_sidecarId:payload.id,_floor:payload.floor},{floor:payload.floor,sidecarId:payload.id,createdAt:payloadCreatedAt});
                 if(stored.sender){
-                    s39MarkAcquaintance(stored.sender,{channel:`群通讯:${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
-                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`群通讯:${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                    s39MarkAcquaintance(stored.sender,{channel:`Liên lạc nhóm: ${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
+                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`Liên lạc nhóm: ${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                 }
                 const duplicate=(s.phone.channelGroups||[]).slice(-80).some(row=>compactText(row?.groupName,120)===compactText(stored.groupName,120)&&compactText(row?.sender,100)===compactText(stored.sender,100)&&compactText(row?.content,1800)===compactText(stored.content,1800));
                 if(duplicate)continue; s.phone.channelGroups.push(stored);
                 let gp=s.phone.groupProfiles.find(row=>compactText(row?.groupName,120)===compactText(item.groupName,120)&&compactText(row?.homeWorldKey,120)===compactText(payload.setting?.worldKey,120));
-                if(!gp){gp={id:uid('group-profile'),groupName:item.groupName,type:'other',members:[...(item.members||[])],topic:'',activityLevel:'medium',source:'时代群通讯自动建立',scope:'local',homeWorldKey:payload.setting?.worldKey||'',channelType:item.channelType||payload.setting?.communicationType||'terminal',availability:'active',createdAt:Date.now(),updatedAt:Date.now(),_floor:payload.floor};s.phone.groupProfiles.push(gp)}
+                if(!gp){gp={id:uid('group-profile'),groupName:item.groupName,type:'other',members:[...(item.members||[])],topic:'',activityLevel:'medium',source:'Tự lập từ liên lạc nhóm thời đại',scope:'local',homeWorldKey:payload.setting?.worldKey||'',channelType:item.channelType||payload.setting?.communicationType||'terminal',availability:'active',createdAt:Date.now(),updatedAt:Date.now(),_floor:payload.floor};s.phone.groupProfiles.push(gp)}
                 const gpForThread=phoneGroupProfile(item.groupName); const thread=ensurePhoneGroupThread(item.groupName,item.members||[],gpForThread?.homeWorldKey||payload.setting?.worldKey||''); if(!thread.messages.some(row=>row._sidecarId===payload.id&&row.sender===item.sender&&row.content===item.content)){thread.messages.push({id:uid('channel-ai'),role:'character',sender:item.sender||'Thành viên',content:item.content,time:item.time||phoneClock().time,createdAt:stored.createdAt,_eventSeq:stored._eventSeq,mentionsUser:Boolean(item.mentionsUser),channelType:item.channelType||payload.setting?.communicationType||'terminal',_sidecarId:payload.id,_floor:payload.floor});thread.updatedAt=Date.now()}
             }
-            // S9.4：时代群通讯历史只增不减。
+            // S9.4: lịch sử liên lạc nhóm thời đại chỉ thêm chứ không bớt.
         }
         s8ApplyFinanceEvents(payload.phone?.financeEvents || [], payload);
         s39NarrativeShoppingOrders(payload);
@@ -8880,7 +8880,7 @@ ${messageText(message).slice(0,10000)}`;
         s8TickPhoneEcosystem(payload.floor);
 
         const handled = new Set(payload.phone?.handledPendingIds || []);
-        // S6：即使模型忘了回填 handledPendingIds，只要输出里已经出现了对应联系人/群/通话结果，也自动视为已处理，避免“私聊永远待回复”。
+        // S6: kể cả khi mô hình quên điền lại handledPendingIds, chỉ cần kết quả liên hệ/nhóm/cuộc gọi tương ứng đã xuất hiện trong đầu ra thì vẫn tự coi là đã xử lý, tránh cảnh “tin nhắn riêng chờ trả lời mãi mãi”.
         for (const pendingItem of s.phone.pendingOutgoing || []) {
             const target = compactText(pendingItem?.contact || pendingItem?.groupName, 120);
             if (!target) continue;
@@ -8961,10 +8961,10 @@ ${messageText(message).slice(0,10000)}`;
             const module=await import('/script.js');
             if(!chatScopeIsCurrent(scope))return false;
             if(typeof module.saveChatConditional==='function'){await module.saveChatConditional();return chatScopeIsCurrent(scope);}
-        } catch (error) { if(chatScopeIsCurrent(scope))console.warn('[vvv小剧场] 导入 saveChatConditional 失败',error); }
+        } catch (error) { if(chatScopeIsCurrent(scope))console.warn('[vvv Sân Khấu Nhỏ] Nhập saveChatConditional thất bại',error); }
         if(!chatScopeIsCurrent(scope))return false;
         try { await context()?.saveChat?.(); return chatScopeIsCurrent(scope); }
-        catch (error) { if(chatScopeIsCurrent(scope))console.warn('[vvv小剧场] 保存消息扩展数据失败',error);return false; }
+        catch (error) { if(chatScopeIsCurrent(scope))console.warn('[vvv Sân Khấu Nhỏ] Lưu dữ liệu mở rộng của tin nhắn thất bại',error);return false; }
     }
 
     function sidecarPayloadForFloor(floor) {
@@ -8973,8 +8973,8 @@ ${messageText(message).slice(0,10000)}`;
 
     function phoneItems(payload) {
         // r4：chính văn下方“通讯终端”必须与完整手机看到的是同一批本轮数据。
-        // r3 已经能把微信群写入 iPhone17Promax，但这里旧代码只枚举 wechat/sms/calls，
-        // 导致群消息只在手机里可见、七条折叠却显示“本轮无更新”。这里把 wechatGroups 正式纳入。
+        // r3 đã ghi được nhóm WeChat vào iPhone17Promax, nhưng đoạn mã cũ ở đây chỉ liệt kê wechat/sms/calls,
+        // khiến tin nhắn nhóm chỉ thấy trong điện thoại còn thẻ gập bảy điều lại hiện “Lượt này không có cập nhật”. Ở đây đưa wechatGroups vào chính thức.
         const result = [];
         for (const item of payload.phone?.wechat || []) {
             result.push({ ...item, type:'wechat', label:'WeChat', icon:'💚' });
@@ -8982,11 +8982,11 @@ ${messageText(message).slice(0,10000)}`;
         for (const item of payload.phone?.wechatGroups || []) {
             result.push({
                 ...item,
-                // 折叠卡第一行优先显示群名，第二行再标出群成员发言者。
+                // Dòng đầu của thẻ gập ưu tiên hiện tên nhóm, dòng thứ hai mới ghi thành viên đã phát biểu.
                 author: item.groupName || item.author || 'Nhóm WeChat',
                 contact: item.sender || item.contact || '',
                 type:'wechatGroups',
-                label:`微信群${item.sender ? ` · ${item.sender}` : ''}`,
+                label:`Nhóm WeChat${item.sender ? ` · ${item.sender}` : ''}`,
                 icon:'👥',
             });
         }
@@ -9060,15 +9060,15 @@ ${messageText(message).slice(0,10000)}`;
     function foldBlock(title, meta, body, key, floor) {
         const ui = companionUiState(floor);
         const open = Boolean(ui.sections?.[key]);
-        return `<section class="vvvtm-info-fold" data-vvvtm-fold-key="${esc(key)}"><div class="vvvtm-world-fold-toggle"><span>${title}</span><em>${esc(meta || '')}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-section="${esc(key)}" data-vvvtm-floor="${esc(floor)}" aria-expanded="${open}" aria-label="${open ? '收起' : '展开'}${esc(String(title).replace(/^\S+\s*/, ''))}">${open ? '－' : '＋'}</button></div><div class="vvvtm-info-fold-body" ${open ? '' : 'hidden'}>${body}</div></section>`;
+        return `<section class="vvvtm-info-fold" data-vvvtm-fold-key="${esc(key)}"><div class="vvvtm-world-fold-toggle"><span>${title}</span><em>${esc(meta || '')}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-section="${esc(key)}" data-vvvtm-floor="${esc(floor)}" aria-expanded="${open}" aria-label="${open ? 'Thu gọn' : 'Mở'}${esc(String(title).replace(/^\S+\s*/, ''))}">${open ? '－' : '＋'}</button></div><div class="vvvtm-info-fold-body" ${open ? '' : 'hidden'}>${body}</div></section>`;
     }
 
     function companionDisplayProfile(payload) {
         const stored=payload?.setting || stateRuntime.state?.communicationProfile || inferCurrentWorldContext();
         const latest=Math.max(0,(context()?.chat?.length||1)-1);
         const floor=Number(payload?.floor);
-        // 最新八层属于当前现实：先自愈 state，再用 canonical profile 渲染，避免旧 sidecar 的
-        // “前现代/1000年/书信往来”字段覆盖chính văn刚确认的现代年份与通讯方式。
+        // Tám tầng mới nhất thuộc về hiện thực hiện tại: tự chữa state trước, rồi mới dựng bằng canonical profile, tránh để sidecar cũ
+        // ghi đè các trường “tiền hiện đại/năm 1000/thư từ qua lại” lên năm và phương thức liên lạc hiện đại mà chính văn vừa xác nhận.
         if (Number.isFinite(floor) && floor>=Math.max(0,latest-8)) {
             selfHealCommunicationReality({floor});
             return stateRuntime.state?.communicationProfile || stored;
@@ -9101,7 +9101,7 @@ ${messageText(message).slice(0,10000)}`;
                     ? `${callStatus[item.status] || 'Cuộc gọi'}${item.requiresAnswer ? ' · đang chờ bạn bắt máy' : ''}`
                     : item.label;
                 const actions = item.type === 'calls' && item.requiresAnswer
-                    ? `<div class="vvvtm-call-actions"><button type="button" data-vvvtm-call-action="answer" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">接听</button><button type="button" class="danger-soft" data-vvvtm-call-action="decline" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">挂断</button></div>`
+                    ? `<div class="vvvtm-call-actions"><button type="button" data-vvvtm-call-action="answer" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">Nghe máy</button><button type="button" class="danger-soft" data-vvvtm-call-action="decline" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">Cúp máy</button></div>`
                     : '';
                 return `<article class="vvvtm-inline-phone-item ${item.type === 'calls' ? 'call' : ''}"><span>${esc(item.icon)}</span><div><b>${esc(item.author || item.contact || item.label)}</b><small>${esc([callMeta,displayGeneratedEventTime(item,payload.floor)].filter(Boolean).join(' · '))}</small><p>${esc(item.content)}</p>${actions}</div></article>`;
             }).join('')
@@ -9109,12 +9109,12 @@ ${messageText(message).slice(0,10000)}`;
 
         const worldBody = world.length
             ? `${payload.world.timeProgress ? `<div class="vvvtm-world-progress">⏱ ${esc(payload.world.timeProgress)}</div>` : ''}${world.map(item => `<article class="vvvtm-inline-world-item"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.activity)}</p><dl>${item.goal ? `<div><dt>目标</dt><dd>${esc(item.goal)}</dd></div>` : ''}${item.mood ? `<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>` : ''}${item.social ? `<div><dt>社交</dt><dd>${esc(item.social)}</dd></div>` : ''}${item.relationToMainPlot ? `<div><dt>主线关系</dt><dd>${esc(item.relationToMainPlot)}</dd></div>` : ''}</dl></article>`).join('')}`
-            : '<div class="vvvtm-inline-empty">本轮没有需要记录的镜头外角色变化。</div>';
+            : '<div class="vvvtm-inline-empty">Lượt này không có thay đổi nhân vật ngoài ống kính cần ghi lại.</div>';
 
         const sceneLabels = {time:'Thời gian',location:'Địa điểm',weather:'Thời tiết',mood:'Không khí',pace:'Nhịp',goal:'Mục tiêu lượt này'};
         const sceneBody = Object.entries(scene).length
             ? `<dl class="vvvtm-inline-kv">${Object.entries(scene).map(([key,value]) => `<div><dt>${esc(sceneLabels[key] || key)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>`
-            : '<div class="vvvtm-inline-empty">本轮未识别到新的场景信息。</div>';
+            : '<div class="vvvtm-inline-empty">Lượt này chưa nhận diện được thông tin bối cảnh mới.</div>';
 
         const promiseBody = promises.length
             ? promises.map(item => {
@@ -9135,27 +9135,27 @@ ${messageText(message).slice(0,10000)}`;
 
         const appearanceBody = appearances.length
             ? appearances.map(item => `<article class="vvvtm-inline-appearance"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.outfit)}</p><dl>${item.hair ? `<div><dt>发型</dt><dd>${esc(item.hair)}</dd></div>` : ''}${item.accessories ? `<div><dt>配饰</dt><dd>${esc(item.accessories)}</dd></div>` : ''}${item.shoes ? `<div><dt>鞋履</dt><dd>${esc(item.shoes)}</dd></div>` : ''}${item.condition ? `<div><dt>Trạng thái</dt><dd>${esc(item.condition)}</dd></div>` : ''}</dl></article>`).join('')
-            : '<div class="vvvtm-inline-empty">本轮没有新的着装信息。</div>';
+            : '<div class="vvvtm-inline-empty">Lượt này không có thông tin trang phục mới.</div>';
 
         const storyBody = (items, emptyText) => items?.length
             ? items.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.author || item.contact || '')}</b><p>${esc(item.content || '')}</p><small>${esc(displayGeneratedEventTime(item,payload.floor))}</small></article>`).join('')
             : `<div class="vvvtm-inline-empty">${esc(emptyText)}</div>`;
 
-        const policySourceName = ['tavern-current-preset','companion-independent-then-tavern'].includes(payload.source) ? '旧版历史请求的酒馆主API供应商' : '独立API供应商';
+        const policySourceName = ['tavern-current-preset','companion-independent-then-tavern'].includes(payload.source) ? 'Nhà cung cấp API chính của SillyTavern từ yêu cầu bản cũ' : 'Nhà cung cấp API riêng';
         const status = payload.parseStatus === 'ok' || payload.parseStatus === 'fallback-ok'
-            ? '<div class="vvvtm-inline-success">已生成完毕！♡</div>'
+            ? '<div class="vvvtm-inline-success">Đã tạo xong! ♡</div>'
             : payload.parseStatus === 'retrying-seven-api'
-                ? `<div class="vvvtm-inline-warning">幕后七条临时失败，正在自动重试（第 ${Math.max(1, Number(payload.retryAttempt || 1))} 次）；原因：${esc(payload.retryReason || '临时网络或格式错误')}。成功后会自动写入。</div>`
+                ? `<div class="vvvtm-inline-warning">Bảy điều hậu trường tạm thời thất bại, đang tự động thử lại (lần ${Math.max(1, Number(payload.retryAttempt || 1))}) ; lý do: ${esc(payload.retryReason || 'lỗi mạng hoặc định dạng tạm thời')}. Thành công sẽ tự động ghi vào.</div>`
                 : ['seven-api-failed','fallback-failed'].includes(payload.parseStatus)
                     ? payload.failureKind === 'provider-policy-refusal'
-                        ? `<div class="vvvtm-inline-warning">${esc(policySourceName)}政策拒绝，本轮已立即停止且不会自动换线：${esc(payload.fallbackError || '请求被供应商内容政策拒绝')}。可在“API与模型”手动选择另一写作来源。</div>`
-                        : `<div class="vvvtm-inline-warning">幕后七条自动重试已停止：${esc(payload.fallbackError || '检测到需要人工修复的配置错误')}。</div>`
+                        ? `<div class="vvvtm-inline-warning">${esc(policySourceName)} từ chối theo chính sách, lượt này đã dừng ngay và sẽ không tự đổi tuyến: ${esc(payload.fallbackError || 'Yêu cầu bị chính sách nội dung của nhà cung cấp từ chối')}. Bạn có thể vào “API và mô hình” để chọn thủ công một nguồn viết khác.</div>`
+                        : `<div class="vvvtm-inline-warning">Bảy điều hậu trường đã dừng tự thử lại: ${esc(payload.fallbackError || 'Phát hiện lỗi cấu hình cần sửa thủ công')}.</div>`
                     : ['waiting-seven-api','missing'].includes(payload.parseStatus)
                         ? '<div class="vvvtm-inline-warning">本轮正在后台生成幕后七条；可见chính văn不受影响。</div>'
                         : payload.parseStatus === 'seven-api-unconfigured'
                             ? `<div class="vvvtm-inline-warning">${esc(payload.fallbackError || '幕后七条写作源不可用')}；可见chính văn正常，但本轮幕后模块不会更新。请到“API与模型”检查当前写作来源。</div>`
                             : payload.parseStatus === 'invalid'
-                                ? '<div class="vvvtm-inline-warning">幕后七条API返回格式异常；R9S1P41 会在重新生成时自动续试。</div>'
+                                ? '<div class="vvvtm-inline-warning">API Bảy điều hậu trường trả về định dạng bất thường; R9S1P41 sẽ tự thử tiếp khi tạo lại.</div>'
                                 : '';
 
         const ecologyStatus = payload.ecologyRepairStatus === 'ok'
@@ -9164,17 +9164,17 @@ ${messageText(message).slice(0,10000)}`;
                 ? `<div class="vvvtm-inline-warning">📡 社交生态补活失败：${esc(payload.ecologyRepairError || '七条API未完成')}；chính văn与已有记忆不受影响。</div>`
                 : '';
         const completenessStatus = payload.completenessRepair?.attempted && payload.completenessRepair?.status === 'ok'
-            ? `<div class="vvvtm-inline-success">🧩 已自动补齐缺失栏目：${esc((payload.completenessRepair.missingBefore || []).map(item=>item?.label).filter(Boolean).join('、') || '幕后生活栏目')}。</div>`
+            ? `<div class="vvvtm-inline-success">🧩 Đã tự bổ sung các mục còn thiếu: ${esc((payload.completenessRepair.missingBefore || []).map(item=>item?.label).filter(Boolean).join(', ') || 'mục đời sống hậu trường')}.</div>`
             : '';
         const memoryGap=companionCoreMemoryGaps({limit:120}).find(item=>Number(item.floor)===Number(payload.floor)&&item.signature&&payload.signature&&item.signature===payload.signature);
         const memoryStatus=memoryGap
-            ? `<div class="vvvtm-inline-warning vvvtm-memory-gap">🧠 幕后七条已生成，但本层主记忆尚未整理。<button type="button" data-vvvtm-memory-reextract="${esc(payload.floor)}">重建本层主记忆</button></div>`
+            ? `<div class="vvvtm-inline-warning vvvtm-memory-gap">🧠 Bảy điều hậu trường đã tạo xong, nhưng ký ức chính của tầng này chưa được sắp xếp.<button type="button" data-vvvtm-memory-reextract="${esc(payload.floor)}">Dựng lại ký ức chính của tầng này</button></div>`
             : '';
         const calibration=activeTimeCalibration();
         const latestSidecarFloor=(context()?.chat||[]).reduce((last,message,index)=>message?.extra?.vvvTheaterCompanion?index:last,-1);
         const canCalibrate=Number(payload.floor)===latestSidecarFloor;
-        const timeLabel=calibration?.value || profile.era || '时代未标注';
-        const reasonLabel=calibration?'已手动校准':profile.reason;
+        const timeLabel=calibration?.value || profile.era || 'Chưa ghi chú thời đại';
+        const reasonLabel=calibration?'Đã hiệu chỉnh thủ công':profile.reason;
         const settingNote = `<div class="vvvtm-setting-chip"><span>🌐 ${esc(profile.worldType || '自动识别')} · ${esc(timeLabel)} · ${esc(device)}${reasonLabel ? ` · ${esc(reasonLabel)}` : ''}</span>${canCalibrate?'<button type="button" data-vvvtm-time-calibrate title="自定义校准剧情时间">🕒 校准时间</button>':''}</div>`;
         return `<section class="vvvtm-inline-extra" data-vvvtm-sidecar="${esc(payload.id)}" data-vvvtm-floor="${esc(payload.floor)}">
             <header><span>✒️ 0-32 · 永不落幕的剧场</span><div><button type="button" data-vvvtm-open-tab="worldlife">彼间私文管理</button><button type="button" data-vvvtm-regenerate="${payload.floor}">单独重写（额外请求）</button></div></header>
@@ -10473,21 +10473,21 @@ ${messageText(message).slice(0,10000)}`;
         'Lẩu tô Tứ Xuyên': {icon:'🍲', price:[8,68], stores:['Viện Lẩu Tô','Lẩu Tô Vị Thục','Nồi Đỏ Lẩu Tô','Quán Lẩu Tô Dung Thành','Lẩu Tô Cay Tê Đầu Ngõ','Tiệm Lẩu Tô Cay Nóng','Lẩu tô bát nhỏ','Quán Lẩu Tô Hương Xuyên'], menu:['Lẩu tô bò','Lẩu tô ba chỉ bò','Lẩu tô lòng bò','Lẩu tô mặn chay hai phần','Lẩu tô thịt hộp','Lẩu tô tiết vịt tàu hũ ky','Lẩu tô cải cần miến bản','Lẩu tô khoai tây củ sen','Lẩu tô nấm rau theo mùa','Thịt chiên giòn','Combo lẩu tô 1 người','Combo lẩu tô 2 người']},
         'Quán mì': {icon:'🍜', price:[10,42], stores:['Quán Mì Phố Cổ','Mì Bò Trần Ký','Một Bát Mì','Nhà Mì Đầu Ngõ','Quán Mì Phương Bắc','Tiệm Mì Nhỏ','Mì Nào Cũng Có','Quán Mì Nước Dùng Lâu'], menu:['Mì bò kho tàu','Mì trứng cà chua','Mì tương đen','Mì sốt thịt nấm hương','Mì thịt sợi chua cay','Mì sườn','Mì lòng già','Mì lòng gà','Mì trộn hành phi','Mì Đam Đam','Mì nhỏ Trùng Khánh','Mì thịt sợi cải muối']},
         'Bún & phở gạo': {icon:'🥢', price:[9,38], stores:['Bún Ốc Liễu Châu','Tiệm Bún Quế Lâm','Bún Vân Nam','Kiểu Bún A Hương','Kiểu Kiều Hương Viên','Bún gạo nồi nhỏ','Tiệm Bún Hồ Nam','Một tô bún'], menu:['Bún ốc nguyên vị','Bún ốc lòng già','Bún bò kho tàu','Bún măng chua cay','Bún qua cầu','Bún cà chua','Bún cay tê','Bún gạo nồi nhỏ','Bún bò','Bún tam tiên','Bún thịt bằm đậu đũa chua','Miến tiết vịt']},
-        'Món Nhật & sushi': {icon:'🍣', price:[12,128], stores:['Quán Wasabi','Sushi Anh Đào','Nhất Tịch Món Nhật','Quán Nhỏ Cá Sống','Ẩm Thực Pháo Hoa','Sushi Machiya','海街食堂','Ẩm Thực Otaru'], menu:['Sushi cá hồi','Sushi cá ngừ','Cơm lươn','Cơm gà teriyaki','Sashimi cá hồi cắt dày','Sashimi sò đỏ','Lẩu sukiyaki bò','Ramen tonkotsu','Đĩa tempura','Trứng cuộn Tamago','Cuộn tay thanh cua','Cơm hải sản donburi']},
+        'Món Nhật & sushi': {icon:'🍣', price:[12,128], stores:['Quán Wasabi','Sushi Anh Đào','Nhất Tịch Món Nhật','Quán Nhỏ Cá Sống','Ẩm Thực Pháo Hoa','Sushi Machiya','Quán Phố Biển','Ẩm Thực Otaru'], menu:['Sushi cá hồi','Sushi cá ngừ','Cơm lươn','Cơm gà teriyaki','Sashimi cá hồi cắt dày','Sashimi sò đỏ','Lẩu sukiyaki bò','Ramen tonkotsu','Đĩa tempura','Trứng cuộn Tamago','Cuộn tay thanh cua','Cơm hải sản donburi']},
         'Món Hàn': {icon:'🍱', price:[15,88], stores:['Quán Nhỏ Seoul','Quán Vị Hàn','Nhà Nồi Đá','Món Hàn Yeonnam','Quán Jeju','Nhà Cơm Trộn Hàn','Tiểu Xuân Xuyên','Bếp Myeongdong'], menu:['Cơm trộn nồi đá','Gà rán kiểu Hàn','Lẩu quân đội','Ba chỉ kim chi','Bánh gạo xào cay','Canh đậu phụ hải sản','Gà miếng phô mai','Cơm trộn bò nướng','Mì lạnh','Cơm cuộn rong biển','Gà hầm sâm','Bánh kim chi']},
         'Món Âu': {icon:'🍝', price:[22,138], stores:['Nhà Hàng Âu Góc Phố','Bếp Âu Mộc Cẩn','Món Âu Đảo Nhỏ','Nhà Hàng Nhà Trắng','Món Âu Cây Ô Liu','Nhà Hàng Hoàng Hôn','Bếp Brown','Món Âu Bờ Sông'], menu:['Bò bít tết tiêu đen','Mì Ý kem nấm','Mì Ý sốt bò bằm','Gà miếng áp chảo','Salad Caesar','Cơm nướng hải sản','Pizza phô mai','Đĩa xúc xích nướng','Súp bí đỏ','Cá hồi áp chảo','Mì Ý thịt xông khói','Khoai tây múi cau nướng phô mai']},
-        'Burger & gà rán': {icon:'🍔', price:[8,68], stores:['Burger Cắn Lớn','Viện Gà Rán','Nhà Burger Kiểu Mỹ','Bản Doanh Gà','Gà rán da giòn','Burger Góc Phố','Hội Burger Hai Tầng','Gà Rán Vui Vẻ'], menu:['Burger bò cổ điển','Burger bò phô mai 2 tầng','Burger đùi gà cay','Burger đùi gà Orleans','Gà rán nguyên vị','Cánh gà cay','Khoai tây chiên','Hành tây chiên vòng','Gà popcorn','Coca','Combo gà rán','汉堡双人餐']},
-        'Trà sữa & nước ép': {icon:'🧋', price:[6,32], stores:['Trà Dữ','Chuyện Một Tách Trà','Viện Chanh','Nhật Ký Trà Trái Cây','Tiệm Trà Ô Long','Trạm Trà Sữa','Phòng Trà Berry','Trà Có Chuyện'], menu:['Trà sữa trân châu','Chè bưởi xoài','Nho mọng sữa','Ly bưởi đỏ đầy','Trà xanh sữa nhài','Trà sữa khoai môn trân châu','Chè dừa hạt trân châu','Trà đen chanh','桃桃乌龙','Sữa chua lắc dâu','Trà sữa thạch dừa','Nho xanh hoa nhài']},
-        'Cà phê & tráng miệng': {icon:'☕', price:[8,46], stores:['Cà Phê Đầu Ngõ','Cà Phê Ngọn Đồi','Cà Phê Mộng Ban Ngày','Cà Phê Đảo Nhỏ','Cà Phê Chậm Nửa Nhịp','Cà Phê Đĩa Than','Phòng Cà Phê Góc Phố','Cà Phê Mộc Miên'], menu:['Americano cổ điển','Americano đá','拿铁','Latte yến mạch','Latte dừa tươi','Cappuccino','Caramel Macchiato','Mocha','Cà phê pha tay','Bánh Basque','Tiramisu','Croissant']},
+        'Burger & gà rán': {icon:'🍔', price:[8,68], stores:['Burger Cắn Lớn','Viện Gà Rán','Nhà Burger Kiểu Mỹ','Bản Doanh Gà','Gà rán da giòn','Burger Góc Phố','Hội Burger Hai Tầng','Gà Rán Vui Vẻ'], menu:['Burger bò cổ điển','Burger bò phô mai 2 tầng','Burger đùi gà cay','Burger đùi gà Orleans','Gà rán nguyên vị','Cánh gà cay','Khoai tây chiên','Hành tây chiên vòng','Gà popcorn','Coca','Combo gà rán','Combo burger 2 người']},
+        'Trà sữa & nước ép': {icon:'🧋', price:[6,32], stores:['Trà Dữ','Chuyện Một Tách Trà','Viện Chanh','Nhật Ký Trà Trái Cây','Tiệm Trà Ô Long','Trạm Trà Sữa','Phòng Trà Berry','Trà Có Chuyện'], menu:['Trà sữa trân châu','Chè bưởi xoài','Nho mọng sữa','Ly bưởi đỏ đầy','Trà xanh sữa nhài','Trà sữa khoai môn trân châu','Chè dừa hạt trân châu','Trà đen chanh','Trà ô long đào','Sữa chua lắc dâu','Trà sữa thạch dừa','Nho xanh hoa nhài']},
+        'Cà phê & tráng miệng': {icon:'☕', price:[8,46], stores:['Cà Phê Đầu Ngõ','Cà Phê Ngọn Đồi','Cà Phê Mộng Ban Ngày','Cà Phê Đảo Nhỏ','Cà Phê Chậm Nửa Nhịp','Cà Phê Đĩa Than','Phòng Cà Phê Góc Phố','Cà Phê Mộc Miên'], menu:['Americano cổ điển','Americano đá','Latte','Latte yến mạch','Latte dừa tươi','Cappuccino','Caramel Macchiato','Mocha','Cà phê pha tay','Bánh Basque','Tiramisu','Croissant']},
         'Bữa sáng': {icon:'🥟', price:[2,28], stores:['Tiệm Sáng An','Tiệm Bánh Bao Phố Cũ','Tiệm Sữa Đậu Quẩy','Bữa Sáng Bình Minh','Gặp Ở Điểm Tâm','Một Xửng Một Bát','Quán Sớm Mai','Điểm Tâm Đầu Ngõ'], menu:['Bánh bao nhân thịt','Bánh bao cải muối','Sữa đậu nành','Quẩy','Trứng trà','Cháo kê','Cháo trứng bắc thảo thịt bằm','Bánh tráng chảo','Bánh trứng cuốn','Xíu mại','Hoành thánh','Bánh bao chiên']},
         'Ăn khuya': {icon:'🌙', price:[8,68], stores:['Quán Ăn Đêm','Quán Nhỏ Cú Đêm','Bếp Rạng Sáng','Viện Ăn Khuya','Quà Vặt Nửa Đêm','Quán Không Đóng Cửa','Ký Sự Đêm Ăn','Ăn Trễ Chút'], menu:['Phở xào','Bún gạo xào','Cơm rang','Tôm hùm đất','Bún nghêu','Mì lạnh nướng','Đĩa xiên chiên','Bún chua cay','Đĩa món kho thập cẩm','Trộn cay tê','Cháo nồi đất','Mì xào bò']},
         'Đồ ăn nhẹ & salad': {icon:'🥗', price:[16,58], stores:['Phòng Thí Nghiệm Đồ Ăn Nhẹ','Một tô salad','Đồ Ăn Nhẹ Mỗi Ngày','Bếp Năng Lượng','Đồ Ăn Nhẹ Lá Xanh','Quán Ít Calo','Rau Tỉnh Giấc','Nhật Ký Đồ Ăn Nhẹ'], menu:['Salad ức gà','Tô năng lượng bò','Salad cá hồi','Sandwich cá ngừ nguyên cám','Tô gà quinoa','Salad gà Caesar','Sandwich trứng nguyên cám','Cuộn thịt bò ít béo','Ly sữa chua trái cây','Cơm ức gà bí đỏ','Salad tôm','Combo ít calo']},
         'Cửa hàng tiện lợi': {icon:'🏪', price:[2,68], stores:['Cửa hàng tiện lợi 24H','Tiện Lợi Nhà Bên','Tiện Lợi Mỗi Ngày','Cửa Hàng Tiện Lợi Góc Phố','Tiện Lợi Tiểu Mãn','Tiện Lợi Thành Phố','Tiện Lợi Cú Đêm','Cửa Hàng Tiện Lợi Khu Phố'], menu:['Nước khoáng','Coca không đường','Cơm nắm','Oden','Sandwich','Cơm hộp','Sữa chua','Snack khoai tây','Socola','Khăn giấy','Cáp sạc','Ô']},
         'Trái cây & đồ tươi': {icon:'🍎', price:[5,128], stores:['Giờ Trái Cây Tươi','Trái Cây Tươi Mỗi Ngày','Giỏ Trái Cây','Rau Tươi Giỏ Chợ','Thực Phẩm Tươi Xóm Giềng','Tươi Đến Nhà','Trạm Rau Quả','Tuyển chọn tươi theo mùa'], menu:['Cam Cám Nam','Táo Fuji đỏ','Nho mẫu đơn','Việt quất','Chuối','Dâu tây','Dưa hấu','Cà chua bi','Xà lách','Cà chua','Trứng gà tươi','Sữa tươi']},
         'Bánh nướng & bánh ngọt': {icon:'🍰', price:[8,188], stores:['Bánh Thơm Lúa Mạch','Nhật Ký Lúa Mì','Viện Kem Sữa','Một miếng bánh','Nhà Bánh Mì','Xưởng Tráng Miệng','Bơ Và Muối','Bánh Gấu Trắng'], menu:['Croissant nguyên vị','Bánh cuộn muối biển','Bánh bông lan chà bông','Bánh Basque','Tiramisu','Bánh kem dâu','Bánh socola','Bánh mì gối','Bagel','Bánh trứng','Bánh cuộn Thụy Sĩ','Bánh sinh nhật']},
-        'Nhà thuốc & sức khỏe': {icon:'💊', price:[3,98], stores:['Đại Dược Phòng Xóm Giềng','Nhà Thuốc An Tâm','Nhà Thuốc Tiện Dân','Nhà Thuốc Sức Khỏe','Đại Dược Phòng Bình An','Nhà Thuốc Bách Tính','Nhà Thuốc 24H','Nhà Thuốc Sức Khỏe Khu Phố'], menu:['Khẩu trang y tế','Băng cá nhân','Tăm bông iốt sát khuẩn','Khăn ướt cồn','Nhiệt kế điện tử','Miếng dán hạ sốt','Viên vitamin C','Glucose','Túi đá dùng một lần','暖宝宝','Gạc y tế','Nước muối sinh lý']},
+        'Nhà thuốc & sức khỏe': {icon:'💊', price:[3,98], stores:['Đại Dược Phòng Xóm Giềng','Nhà Thuốc An Tâm','Nhà Thuốc Tiện Dân','Nhà Thuốc Sức Khỏe','Đại Dược Phòng Bình An','Nhà Thuốc Bách Tính','Nhà Thuốc 24H','Nhà Thuốc Sức Khỏe Khu Phố'], menu:['Khẩu trang y tế','Băng cá nhân','Tăm bông iốt sát khuẩn','Khăn ướt cồn','Nhiệt kế điện tử','Miếng dán hạ sốt','Viên vitamin C','Glucose','Túi đá dùng một lần','Miếng dán giữ nhiệt','Gạc y tế','Nước muối sinh lý']},
     };
-    const S9_BRANDS = ['Bắc Thần','Thanh Hòa','Vân Đóa','Mộ Sắc','Lâm Gian','Vi Quang','Tinh Dã','Bạch Trú','Muối biển','木棉','Thập Quang','Chanh xanh','Mộc Trạch','Tri Hạ','Tễ Nguyệt','Sơn Xuyên','Phù Quang','Vân Lam','Tùng Gian','Trường Phong','Noãn Đảo','Hắc Diệu','Đào trắng','Kình Dữ','Sơ Tễ','Viễn Sơn','Thanh Không','Zero','Sương Tự','Đào Yêu'];
+    const S9_BRANDS = ['Bắc Thần','Thanh Hòa','Vân Đóa','Mộ Sắc','Lâm Gian','Vi Quang','Tinh Dã','Bạch Trú','Muối biển','Mộc Miên','Thập Quang','Chanh xanh','Mộc Trạch','Tri Hạ','Tễ Nguyệt','Sơn Xuyên','Phù Quang','Vân Lam','Tùng Gian','Trường Phong','Noãn Đảo','Hắc Diệu','Đào trắng','Kình Dữ','Sơ Tễ','Viễn Sơn','Thanh Không','Zero','Sương Tự','Đào Yêu'];
 
     // S13：常见日用品不能依赖随机生成的12个SKU。独立的可寻址索引让“酱油/老抽”等
     // 任意生活用品在淘宝和京东都能稳定搜到、打开详情、加入购物车并在重载后继续结算。
@@ -10508,19 +10508,19 @@ ${messageText(message).slice(0,10000)}`;
         {key:'noodles',category:'Thực phẩm & đồ tươi',name:'Mì khô',aliases:['Mì khô','Mì sợi','Mì cán tay','Mì ramen'],brands:['Chenkeming','Jinshahe','Xiangnian','Shoutao'],icon:'🍜',price:[8.9,39.9],variants:['900g','Gói gia đình 1.5kg','Mì trứng','Loại dai']},
         {key:'tissue',category:'Nhà cửa & nội thất',name:'Khăn giấy rút',aliases:['Khăn giấy rút','Khăn giấy','Khăn giấy mặt','Khăn ăn'],brands:['Vinda','Mind Act Upon Mind','Breeze','C&S'],icon:'🧻',price:[9.9,69.9],variants:['3 lớp 24 gói','Gói tích trữ gia đình','Không mùi','Loại dày']},
         {key:'toilet-paper',category:'Nhà cửa & nội thất',name:'Giấy vệ sinh cuộn',aliases:['Giấy vệ sinh cuộn','Giấy vệ sinh','Giấy toilet'],brands:['Vinda','Mind Act Upon Mind','Breeze','C&S'],icon:'🧻',price:[19.9,89.9],variants:['4 lớp 12 cuộn','Gói gia đình','Bột gỗ nguyên chất','Loại dày']},
-        {key:'dish-soap',category:'Nhà cửa & nội thất',name:'Nước rửa chén',aliases:['Nước rửa chén','洗碗液','餐具清洁剂'],brands:['Liby','Blue Moon','白猫','雕牌'],icon:'🧴',price:[9.9,39.9],variants:['500g','1kg家庭装','柠檬香','去油加强']},
-        {key:'laundry-detergent',category:'Nhà cửa & nội thất',name:'Nước giặt',aliases:['Nước giặt','洗衣凝珠','洗衣粉'],brands:['Blue Moon','超能','汰渍','Liby'],icon:'🧺',price:[19.9,119],variants:['1kg','3kg家庭装','Hương oải hương','浓缩款']},
-        {key:'shampoo',category:'Nhà cửa & nội thất',name:'Dầu gội',aliases:['Dầu gội','洗头膏','护发素'],brands:['海飞丝','潘婷','沙宣','清扬'],icon:'🧴',price:[19.9,129],variants:['500ml','控油款','去屑款','滋润款']},
-        {key:'toothpaste',category:'Nhà cửa & nội thất',name:'Kem đánh răng',aliases:['Kem đánh răng','美白牙膏','儿童牙膏'],brands:['Yunnan Baiyao','佳洁士','黑人','舒适达'],icon:'🪥',price:[12.9,69.9],variants:['120g','家庭3支装','抗敏感','清新薄荷']},
-        {key:'trash-bags',category:'Nhà cửa & nội thất',name:'Túi rác',aliases:['Túi rác','塑料袋','家用垃圾袋'],brands:['Miaojie','Deli','Chahua','百露'],icon:'🗑️',price:[8.9,39.9],variants:['加厚45只','大号100只','抽绳款','自动收口']},
-        {key:'cling-film',category:'Nhà cửa & nội thất',name:'Màng bọc thực phẩm',aliases:['Màng bọc thực phẩm','保鲜袋','厨房保鲜'],brands:['Miaojie','克林莱','Chahua','禧天龙'],icon:'🍱',price:[8.9,35.9],variants:['30cm×20m','大卷装','耐热款','带切割器']},
-        {key:'batteries',category:'Nhà cửa & nội thất',name:'碱性电池',aliases:['电池','五号电池','七号电池','南孚电池'],brands:['南孚','金霸王','Panasonic','双鹿'],icon:'🔋',price:[9.9,59.9],variants:['5号8粒','7号8粒','混合装','聚能环']},
-        {key:'umbrella',category:'Nhà cửa & nội thất',name:'折叠雨伞',aliases:['Ô','伞','折叠伞','遮阳伞'],brands:['天堂','Beneunder','黑柠檬','左都'],icon:'☂️',price:[19.9,89.9],variants:['黑胶防晒','自动开收','晴雨两用','加大伞面']},
-        {key:'mask',category:'Thuốc & sức khỏe',name:'医用外科口罩',aliases:['口罩','Khẩu trang y tế','外科口罩','N95'],brands:['Winner Medical','朝美','振德','Hainuo'],icon:'😷',price:[9.9,59.9],variants:['50只独立装','成人白色','N95防护','Gói mang theo']},
-        {key:'bandage',category:'Thuốc & sức khỏe',name:'防水创可贴',aliases:['Băng cá nhân','创口贴','止血贴'],brands:['Yunnan Baiyao','Hainuo','Winner Medical','Cofoe'],icon:'🩹',price:[5.9,29.9],variants:['Gói gia đình 100 miếng','防水款','弹力款','Hộp mang theo']},
-        {key:'hand-sanitizer',category:'Thuốc & sức khỏe',name:'Nước rửa tay khô',aliases:['洗手液','Nước rửa tay khô','消毒液'],brands:['Blue Moon','威露士','滴露','舒肤佳'],icon:'🧴',price:[12.9,49.9],variants:['300ml','Gói mang theo','Loại thoáng nhẹ','家庭双瓶装']},
-        {key:'usb-cable',category:'Điện thoại & đồ số',name:'Type-C数据线',aliases:['数据线','Cáp sạc','手机线','Type-C线'],brands:['UGREEN','Baseus','Anker','Pisen'],icon:'🔌',price:[12.9,69.9],variants:['1m','2m','双头快充','耐弯折款']},
-        {key:'power-strip',category:'Điện gia dụng',name:'家用插线板',aliases:['插线板','排插','插座','拖线板'],brands:['公牛','Xiaomi','Deli','Philips'],icon:'🔌',price:[29.9,129],variants:['3位1.8m','6位3m','带USB','防过载款']},
+        {key:'dish-soap',category:'Nhà cửa & nội thất',name:'Nước rửa chén',aliases:['Nước rửa chén','Nước rửa bát','Nước rửa dụng cụ ăn'],brands:['Liby','Blue Moon','White Cat','Diao'],icon:'🧴',price:[9.9,39.9],variants:['500g','Gói gia đình 1kg','Hương chanh','Tăng cường tẩy dầu']},
+        {key:'laundry-detergent',category:'Nhà cửa & nội thất',name:'Nước giặt',aliases:['Nước giặt','Viên giặt','Bột giặt'],brands:['Blue Moon','Chaoneng','Tide','Liby'],icon:'🧺',price:[19.9,119],variants:['1kg','Gói gia đình 3kg','Hương oải hương','Loại đậm đặc']},
+        {key:'shampoo',category:'Nhà cửa & nội thất',name:'Dầu gội',aliases:['Dầu gội','Dầu gội đầu','Dầu xả'],brands:['Head & Shoulders','Pantene','VS Sassoon','CLEAR'],icon:'🧴',price:[19.9,129],variants:['500ml','Loại kiềm dầu','Loại trị gàu','Loại dưỡng']},
+        {key:'toothpaste',category:'Nhà cửa & nội thất',name:'Kem đánh răng',aliases:['Kem đánh răng','Kem đánh răng làm trắng','Kem đánh răng trẻ em'],brands:['Yunnan Baiyao','Crest','DARLIE','Sensodyne'],icon:'🪥',price:[12.9,69.9],variants:['120g','Gói gia đình 3 tuýp','Chống ê buốt','Bạc hà the mát']},
+        {key:'trash-bags',category:'Nhà cửa & nội thất',name:'Túi rác',aliases:['Túi rác','Túi nilon','Túi rác gia đình'],brands:['Miaojie','Deli','Chahua','Bailu'],icon:'🗑️',price:[8.9,39.9],variants:['Dày 45 cái','Cỡ lớn 100 cái','Loại có dây rút','Tự thắt miệng']},
+        {key:'cling-film',category:'Nhà cửa & nội thất',name:'Màng bọc thực phẩm',aliases:['Màng bọc thực phẩm','Túi bảo quản','Bảo quản nhà bếp'],brands:['Miaojie','Clean Wrap','Chahua','Citylong'],icon:'🍱',price:[8.9,35.9],variants:['30cm×20m','Cuộn lớn','Loại chịu nhiệt','Có dao cắt']},
+        {key:'batteries',category:'Nhà cửa & nội thất',name:'Pin kiềm',aliases:['Pin','Pin AA','Pin AAA','Pin NANFU'],brands:['NANFU','Duracell','Panasonic','Shuanglu'],icon:'🔋',price:[9.9,59.9],variants:['Cỡ AA 8 viên','Cỡ AAA 8 viên','Gói hỗn hợp','Vòng tụ năng']},
+        {key:'umbrella',category:'Nhà cửa & nội thất',name:'Ô gấp che mưa',aliases:['Ô','Ô','Ô gấp','Ô che nắng'],brands:['Paradise','Beneunder','Chanh đen','ZUODU'],icon:'☂️',price:[19.9,89.9],variants:['Chống nắng phủ đen','Tự mở tự thu','Dùng cả nắng lẫn mưa','Mặt ô lớn']},
+        {key:'mask',category:'Thuốc & sức khỏe',name:'Khẩu trang y tế phẫu thuật',aliases:['Khẩu trang','Khẩu trang y tế','Khẩu trang phẫu thuật','N95'],brands:['Winner Medical','Chaomei','Zhende','Hainuo'],icon:'😷',price:[9.9,59.9],variants:['50 cái gói riêng','Người lớn màu trắng','Bảo hộ N95','Gói mang theo']},
+        {key:'bandage',category:'Thuốc & sức khỏe',name:'Băng cá nhân chống nước',aliases:['Băng cá nhân','Băng dán vết thương','Băng cầm máu'],brands:['Yunnan Baiyao','Hainuo','Winner Medical','Cofoe'],icon:'🩹',price:[5.9,29.9],variants:['Gói gia đình 100 miếng','Loại chống nước','Loại co giãn','Hộp mang theo']},
+        {key:'hand-sanitizer',category:'Thuốc & sức khỏe',name:'Nước rửa tay khô',aliases:['Nước rửa tay','Nước rửa tay khô','Dung dịch sát khuẩn'],brands:['Blue Moon','Walch','Dettol','Safeguard'],icon:'🧴',price:[12.9,49.9],variants:['300ml','Gói mang theo','Loại thoáng nhẹ','Gói gia đình 2 chai']},
+        {key:'usb-cable',category:'Điện thoại & đồ số',name:'Cáp Type-C',aliases:['Cáp dữ liệu','Cáp sạc','Dây điện thoại','Dây Type-C'],brands:['UGREEN','Baseus','Anker','Pisen'],icon:'🔌',price:[12.9,69.9],variants:['1m','2m','Sạc nhanh hai đầu','Loại chịu gập']},
+        {key:'power-strip',category:'Điện gia dụng',name:'Ổ cắm điện gia dụng',aliases:['Ổ cắm điện','Ổ cắm nối dài','Ổ điện','Ổ cắm kéo dài'],brands:['BULL','Xiaomi','Deli','Philips'],icon:'🔌',price:[29.9,129],variants:['3 ổ 1.8m','6 ổ 3m','Có cổng USB','Loại chống quá tải']},
     ]);
     function s93NormalizeQuery(value='') { return String(value??'').toLowerCase().trim().replace(/[\s\u3000,，、。；;|\/\\_]+/g,''); }
     function s93QueryParts(value='') { return String(value??'').toLowerCase().trim().split(/[\s\u3000,，、。；;|\/\\_]+/).map(part=>part.trim()).filter(Boolean).slice(0,12); }
@@ -10568,11 +10568,11 @@ ${messageText(message).slice(0,10000)}`;
     }
     function s93CommonProduct(platform,good,ordinal=0) {
         const seed=s9Hash(`${platform}|common-good|${good.key}|${ordinal}`), brand=s9Pick(good.brands||S9_BRANDS,seed>>>3), variant=s9Pick(good.variants||['Mẫu tiêu chuẩn','Gói gia đình'],seed>>>7);
-        const storeWord=good.category==='Thực phẩm & đồ tươi'?'粮油调味':good.category==='Thuốc & sức khỏe'?'Đồ dùng sức khỏe':(S92_ECOM_DEPT[good.category]||'生活用品');
+        const storeWord=good.category==='Thực phẩm & đồ tươi'?'Gạo dầu gia vị':good.category==='Thuốc & sức khỏe'?'Đồ dùng sức khỏe':(S92_ECOM_DEPT[good.category]||'Đồ dùng sinh hoạt');
         const store=`${brand}${storeWord}${platform==='jd'?'Flagship JD tự vận hành':'Flagship chính hãng'}`;
         const range=good.price||[9.9,99]; const price=Math.round((range[0]+(seed%10000)/9999*(range[1]-range[0]))*100)/100;
         const sku=s92SkuCode(platform,good.category,900000+(seed%100000));
-        return {id:`${platform}-common-${good.key}-${ordinal}`,platform,storeId:`${platform}-common-shop-${good.key}`,store,storeName:store,brand,name:`${brand} ${good.name} ${variant} 规格${sku}`,baseName:good.name,price,category:good.category,icon:good.icon||'📦',sold:`${300+(seed%9700)}+`,rating:(4.65+(seed%30)/100).toFixed(2),shipping:platform==='jd'?'JD Logistics · giao hôm sau':'Giao trong 24 giờ',tags:['常见日用品',good.category,variant,'Đổi trả 7 ngày'],aliases:[good.name,...(good.aliases||[])],commonKey:good.key,skuCode:sku};
+        return {id:`${platform}-common-${good.key}-${ordinal}`,platform,storeId:`${platform}-common-shop-${good.key}`,store,storeName:store,brand,name:`${brand} ${good.name} ${variant} 规格${sku}`,baseName:good.name,price,category:good.category,icon:good.icon||'📦',sold:`${300+(seed%9700)}+`,rating:(4.65+(seed%30)/100).toFixed(2),shipping:platform==='jd'?'JD Logistics · giao hôm sau':'Giao trong 24 giờ',tags:['Đồ dùng hằng ngày phổ biến',good.category,variant,'Đổi trả 7 ngày'],aliases:[good.name,...(good.aliases||[])],commonKey:good.key,skuCode:sku};
     }
     function s93AdHocProduct(platform,query,category='Tất cả') {
         const clean=compactText(String(query||'').replace(/[\s\u3000]+/g,' '),48).trim(); if(!clean)return null;
@@ -10580,9 +10580,9 @@ ${messageText(message).slice(0,10000)}`;
         const hash=s9Hash(clean).toString(36);
         const hint=[['Điện thoại & đồ số',/手机|苹果|华为|小米|充电|耳机|数据线|键盘|鼠标|电脑/],['Điện gia dụng',/冰箱|空调|洗衣机|电饭煲|空气炸锅|插座|排插|电器/],['Nhà cửa & nội thất',/纸巾|抽纸|卷纸|洗洁精|洗衣液|垃圾袋|保鲜|拖把|清洁|收纳/],['Thực phẩm & đồ tươi',/酱油|生抽|老抽|蚝油|醋|大米|面粉|食用油|零食|牛奶|鸡蛋|水果|食品/],['Thuốc & sức khỏe',/口罩|创可贴|体温计|药|消毒|洗手液/],['Trang phục & đồ lót',/衣服|卫衣|裤子|鞋|袜|外套|羽绒/]].find(([,re])=>re.test(clean))?.[0];
         const inferred=s93CommonMatches(clean).at(0)?.category||hint;
-            const productCategory=category&&category!=='Tất cả'?category:(inferred||'Thực phẩm & đồ tươi'); const seed=s9Hash(`${platform}|adhoc|${clean}`),brand=s9Pick(['精选','优选','家庭好物','严选'],seed); const store=`${brand}${S92_ECOM_DEPT[productCategory]||'生活'}${platform==='jd'?'JD tự vận hành':'Cửa hàng Flagship'}`;
+            const productCategory=category&&category!=='Tất cả'?category:(inferred||'Thực phẩm & đồ tươi'); const seed=s9Hash(`${platform}|adhoc|${clean}`),brand=s9Pick(['Tuyển chọn','Ưu tuyển','Đồ tốt cho gia đình','Tuyển chọn kỹ'],seed); const store=`${brand}${S92_ECOM_DEPT[productCategory]||'Đời sống'}${platform==='jd'?'JD tự vận hành':'Cửa hàng Flagship'}`;
         const price=Math.round((9.9+(seed%9000)/100)*100)/100, id=`${platform}-adhoc-${slug}-${hash}`;
-        return {id,platform,storeId:`${platform}-adhoc-shop-${hash}`,store,storeName:store,brand,name:`${clean} 精选家庭装 规格${hash.toUpperCase()}`,baseName:clean,price,category:productCategory,icon:'📦',sold:`${100+(seed%5000)}+`,rating:'4.70',shipping:platform==='jd'?'JD Logistics · dự kiến giao ngày mai':'Dự kiến giao trong 48 giờ',tags:['按关键词匹配',productCategory,'Đổi trả 7 ngày'],aliases:[clean],adhocQuery:clean,skuCode:`AD-${hash.toUpperCase()}`};
+        return {id,platform,storeId:`${platform}-adhoc-shop-${hash}`,store,storeName:store,brand,name:`${clean} 精选家庭装 规格${hash.toUpperCase()}`,baseName:clean,price,category:productCategory,icon:'📦',sold:`${100+(seed%5000)}+`,rating:'4.70',shipping:platform==='jd'?'JD Logistics · dự kiến giao ngày mai':'Dự kiến giao trong 48 giờ',tags:['Khớp theo từ khóa',productCategory,'Đổi trả 7 ngày'],aliases:[clean],adhocQuery:clean,skuCode:`AD-${hash.toUpperCase()}`};
     }
 
     function s9Hash(text='') { let h=2166136261; for(const ch of String(text)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);} return h>>>0; }
@@ -10600,8 +10600,8 @@ ${messageText(message).slice(0,10000)}`;
         const dept=S92_ECOM_DEPT[category]||profile.storeWord||category;
         let name;
         if(!multiBrand){
-            if(platform==='jd') name=`${brand}${dept}${ordinal%2===0?'Flagship JD tự vận hành':'京东自营专区'}`;
-            else name=`${brand}${dept}${ordinal%2===0?'Flagship chính hãng':'品牌旗舰店'}`;
+            if(platform==='jd') name=`${brand}${dept}${ordinal%2===0?'Flagship JD tự vận hành':'Khu JD tự vận hành'}`;
+            else name=`${brand}${dept}${ordinal%2===0?'Flagship chính hãng':'Cửa hàng chính hãng thương hiệu'}`;
         }else{
             const local=ordinal-profile.brands.length;
             let a=S91_STORE_ROOTS[(local+categoryIndex*5)%S91_STORE_ROOTS.length];
@@ -10610,7 +10610,7 @@ ${messageText(message).slice(0,10000)}`;
             const suffix=S91_STORE_SUFFIXES[(local+categoryIndex)%S91_STORE_SUFFIXES.length];
             name=platform==='jd'?`${a}${b}${dept}京东专营店`:`${a}${b}${dept}${suffix}`;
         }
-        return {id:`${platform}-shop-${storeIndex}`,name,brand,multiBrand,category,score:(4.6+(seed%38)/100).toFixed(2),fans:`${1+(seed%76)}.${seed%10}万`,experience:seed%4===0?'发货很快':seed%4===1?'客服响应快':seed%4===2?'回头客很多':'好评率高'};
+        return {id:`${platform}-shop-${storeIndex}`,name,brand,multiBrand,category,score:(4.6+(seed%38)/100).toFixed(2),fans:`${1+(seed%76)}.${seed%10}万`,experience:seed%4===0?'Giao hàng rất nhanh':seed%4===1?'CSKH phản hồi nhanh':seed%4===2?'Rất nhiều khách quay lại':'Tỷ lệ đánh giá tốt cao'};
     }
     function s91PriceRange(category,item,profile){
         const rules=[
