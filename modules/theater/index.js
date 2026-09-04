@@ -7711,7 +7711,7 @@ ${phoneExistingGroupBrief()}`;
         for (const item of phone.wechat || []) add('text', item, item.author || item.contact, {service:false});
         for (const item of phone.wechatGroups || []) add('text', item, item.sender || item.groupName, {service:false});
         for (const item of phone.channelGroups || []) add('text', item, item.sender || item.groupName, {service:false});
-        for (const item of phone.sms || []) add('text', item, item.author || item.contact, {service:/service|system|code|ad|pickup|logistics|food|ride|bank|payment|travel|hotel|order|carrier|subscription|medical|government|campus|spam|scam|mã xác minh|quảng cáo|thông báo|chuyển phát nhanh|vận chuyển|lấy hàng|giao đồ ăn|tài xế|đặt xe|ngân hàng|thanh付|票务|酒店|运营商|订阅|医疗|政务|校园|垃圾|诈骗/i.test(String(item?.category || ''))});
+        for (const item of phone.sms || []) add('text', item, item.author || item.contact, {service:/service|system|code|ad|pickup|logistics|food|ride|bank|payment|travel|hotel|order|carrier|subscription|medical|government|campus|spam|scam|mã xác minh|quảng cáo|thông báo|chuyển phát nhanh|vận chuyển|lấy hàng|giao đồ ăn|tài xế|đặt xe|ngân hàng|thanh toán|vé|khách sạn|nhà mạng|đăng ký|y tế|hành chính|trường học|rác|lừa đảo/i.test(String(item?.category || ''))});
         for (const item of phone.calls || []) add('call', item, item.author || item.contact, {service:false});
         return rows.filter(row => row.who && row.who !== userName && row.who !== '{{user}}')
             .sort((a,b) => (a.floor-b.floor) || (a.createdAt-b.createdAt) || (a.order-b.order)).slice(-limit);
@@ -7952,7 +7952,7 @@ ${phoneKnowledgeBrief()}
 【TRÒ CHUYỆN GẦN ĐÂY】
 ${recent}
 
-【刚完成的第${index}层chính văn】
+【CHÍNH VĂN TẦNG ${index} VỪA HOÀN THÀNH】
 ${latestReply}`;
     }
 
@@ -8104,7 +8104,7 @@ ${latestReply}`;
         return out;
     }
 
-    // v0.9.3-r2：人物/Quan hệ nhân vật是长期记忆骨架。模型偶尔漏字段时，不额外调用API，
+    // v0.9.3-r2: nhân vật/quan hệ nhân vật là bộ khung của ký ức dài hạn. Khi mô hình thỉnh thoảng thiếu trường, không gọi thêm API,
     // Chỉ dùng “dữ liệu đã được xác nhận + hai bên của cuộc trò chuyện hiện tại” để dự phòng thận trọng, tránh để trang nhân vật/quan hệ trống trơn.
     function relationPartyName(value) {
         const raw = compactText(value, 120);
@@ -8195,7 +8195,7 @@ ${latestReply}`;
         return true;
     }
 
-    // 人物/Quan hệ nhân vật是长期记忆骨架。模型漏字段、键名漂移时，不额外调用API，
+    // Nhân vật/quan hệ nhân vật là bộ khung của ký ức dài hạn. Khi mô hình thiếu trường hay tên khóa bị trôi, không gọi thêm API,
     // Dùng “dữ liệu đã được xác nhận + hai bên của cuộc trò chuyện hiện tại” để dự phòng thận trọng, và luôn bảo đảm cặp char↔user tồn tại.
     function ensurePeopleRelationSnapshots(memory) {
         const m = normalizeCompanionMemory(memory);
@@ -8307,10 +8307,10 @@ ${latestReply}`;
         for(const row of s.npcRegistry||[]){
             const provenance=`${row?.source||''} ${row?.identity||''}`;
             // fixed27: bản cũ từng đăng ký tiêu đề/cụm từ của sách thế giới thành NPC. Nguồn từ sách thế giới chỉ đáng tin khi vẫn còn trong “nhóm nhân vật vừa quét lại lần này”.
-            // 真正在chính văn/主记忆/结构化剧情里出现过的NPC继续保留。
+            // NPC thật sự từng xuất hiện trong chính văn/ký ức chính/cốt truyện có cấu trúc thì vẫn được giữ lại.
             const key=npcNameKey(cleanSourceRosterName(row?.currentName));
             const fromRoster=/(?:thẻ nhân vật|sách thế giới)/i.test(provenance);
-            const fromStory=/(?:chính văn|主记忆|结构化|剧情)/i.test(provenance);
+            const fromStory=/(?:chính văn|ký ức chính|có cấu trúc|cốt truyện)/i.test(provenance);
             if(fromRoster&&!fromStory&&key&&!rosterKeys.has(key))continue;
             if(!fromRoster&&!fromStory)continue;
             add(row?.currentName);for(const alias of row?.aliases||[])add(alias);
@@ -8583,7 +8583,7 @@ ${priorAppearances}
 【TRÒ CHUYỆN GẦN ĐÂY】
 ${recentTranscript(6).slice(0,10000)}
 
-【刚完成chính văn】
+【CHÍNH VĂN VỪA HOÀN THÀNH】
 ${messageText(message).slice(0,10000)}`;
     }
 
@@ -8608,7 +8608,7 @@ ${messageText(message).slice(0,10000)}`;
         const repairPrompt=companionRepairPrompt(before,primaryPayload,message);
         const repairOptions={
             responseLength:configured,
-            systemPrompt:`${FALLEN_WRITER_CONTEXT}\n\n你只负责补齐幕后七条上一份JSON中缺失的生活栏目，不重写chính văn和Đã hoàn thành的上半部分。`,
+            systemPrompt:`${FALLEN_WRITER_CONTEXT}\n\nBạn chỉ có nhiệm vụ bù đủ những mục đời sống còn thiếu trong bản JSON trước của Bảy điều hậu trường, không viết lại chính văn và phần trên đã hoàn thành.`,
             jsonMode:true,
             generationType:'companion-scoped',
             finalInstruction:COMPANION_REPAIR_FINAL_CONTRACT,
@@ -8643,7 +8643,7 @@ ${messageText(message).slice(0,10000)}`;
             reactionStatus:moment.reactionStatus||'',reactionProcessedAt:moment.reactionProcessedAt||'',reactionFloor:moment.reactionFloor,
         });
         moment.seenBy = [...new Set([...(moment.seenBy||[]), ...(reaction.seenBy||[]), ...(reaction.likes||[]), ...(reaction.comments||[]).map(item=>item.author)].map(name=>relationPartyName(name)).filter(Boolean))].slice(0,120);
-        for(const npc of moment.seenBy)if(!priorSeen.has(npcNameKey(npc)))s12RecordKnowledge({eventId:moment.id,relatedId:moment.id,subject:'Bài đăng Khoảnh khắc',summary:`${moment.content||'[không có chữ]'}${phoneAttachmentSummary(moment.attachments)?` · 附件:${phoneAttachmentSummary(moment.attachments)}`:''}`,npc,method:'moment',channel:'Khoảnh khắc',floor:payload?.floor??-1,source:'moment'});
+        for(const npc of moment.seenBy)if(!priorSeen.has(npcNameKey(npc)))s12RecordKnowledge({eventId:moment.id,relatedId:moment.id,subject:'Bài đăng Khoảnh khắc',summary:`${moment.content||'[không có chữ]'}${phoneAttachmentSummary(moment.attachments)?` · tệp đính kèm: ${phoneAttachmentSummary(moment.attachments)}`:''}`,npc,method:'moment',channel:'Khoảnh khắc',floor:payload?.floor??-1,source:'moment'});
         moment.likes = [...new Set([...(moment.likes||[]), ...(reaction.likes||[])].map(name=>relationPartyName(name)).filter(Boolean))].slice(0,80);
         moment.comments = Array.isArray(moment.comments) ? moment.comments : [];
         const seen = new Set(moment.comments.map(item=>`${npcNameKey(item?.author)}|${compactText(item?.content,500)}`));
@@ -8694,7 +8694,7 @@ ${messageText(message).slice(0,10000)}`;
             if(severe) toast(`🛡 Khóa hiện thực hiện tại: ${severe}`, 'warning');
         }
 
-        // Lời hẹn/秘密属于“当前Trạng thái实体”，使用稳定实体键覆盖更新；旧Trạng thái进入_history，禁止每轮换词就新增一行。
+        // Lời hẹn/bí mật thuộc loại “thực thể trạng thái hiện tại”, dùng khóa thực thể ổn định để ghi đè cập nhật; trạng thái cũ vào _history, cấm cứ mỗi lượt đổi chữ lại thêm một dòng mới.
         const payloadMessageKey=messageStableKey(context()?.chat?.[Number(payload.floor)]);
         for (const item of payload.promises || []) upsertPromiseSnapshot(item, Number(payload.floor), payloadMessageKey, {_sidecarId:payload.id});
         for (const item of payload.secrets || []) upsertSecretSnapshot(item, Number(payload.floor), payloadMessageKey, {_sidecarId:payload.id});
@@ -8702,7 +8702,7 @@ ${messageText(message).slice(0,10000)}`;
         reconcilePromiseLifecycleForState(s, Math.max(Number(payload.floor), (context()?.chat?.length || 1) - 1));
 
         // P41-S1: Bảy điều hậu trường không ghi core memory nữa, tránh để cùng một lượt trả lời của AI bị ghi hai lần bởi “API bảy điều + luồng ký ức chính”.
-        // 七条仍保留通讯/彼间私文/顶层Lời hẹn秘密/人物外观。
+        // Bảy điều vẫn giữ liên lạc/Bỉ Gian Tư Văn/lời hẹn và bí mật ở tầng trên/ngoại hình nhân vật.
         for (const item of payload.appearances || []) upsertAppearanceSnapshot(item, payload.id, payload.floor);
 
         s.storyExtras ||= { moments:[], diary:[], anniversaries:[] };
@@ -8775,7 +8775,7 @@ ${messageText(message).slice(0,10000)}`;
                         const authorIsUser = item.author === userName || item.author === '{{user}}';
                         const contact = compactText(authorIsUser ? item.contact : item.author, 100);
                         if (contact) {
-                            s39MarkAcquaintance(contact,{channel:'WeChat',floor:payload.floor,evidence:`幕后同步微信:${compactText(item.content,220)}`});
+                            s39MarkAcquaintance(contact,{channel:'WeChat',floor:payload.floor,evidence:`Hậu trường đồng bộ WeChat: ${compactText(item.content,220)}`});
                             s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,contact],channel:'WeChat',status:'Đã xảy ra',summary:`${contact}：${compactText(item.content||'[Sticker]',700)}`,floor:payload.floor,time:item.time,source:'companion-phone'});
                             const thread = ensurePhoneThread(contact);
                             pushPhoneThreadMessageUnique(thread,{ id:uid(authorIsUser?'phone-user':'phone-ai'), role:authorIsUser?'user':'character', sender:authorIsUser?userName:contact,
@@ -8794,7 +8794,7 @@ ${messageText(message).slice(0,10000)}`;
                 const knownProfile=phoneGroupProfile(rawItem.groupName);
                 if (knownProfile?.scope==='origin' && !payload.setting?.originReachable) continue;
                 if (knownProfile?.scope==='local' && knownProfile.homeWorldKey && knownProfile.homeWorldKey!==payload.setting?.worldKey && !currentWorldMatchesOrigin(payload.setting)) continue;
-                // R9S1P30：本轮既然已经合法收到该微信群消息，就同步恢复对应群聊的可达Trạng thái。
+                // R9S1P30: lượt này đã nhận hợp lệ tin nhắn của nhóm WeChat đó thì đồng thời khôi phục trạng thái với tới được của nhóm chat tương ứng.
                 // Tránh để những nhóm từng bị đánh dấu offline-origin tiếp tục bị lọc khỏi danh sách WeChat.
                 if (knownProfile) {
                     if (knownProfile.scope === 'origin' && payload.setting?.originReachable) knownProfile.availability = 'active';
@@ -8903,7 +8903,7 @@ ${messageText(message).slice(0,10000)}`;
                 const participants=[...new Set([canonical,...(event.participants||[])].map(value=>relationPartyName(value)).filter(Boolean))].slice(0,12),knownBy=[...new Set([...(event.knownBy||[]),...participants].map(value=>relationPartyName(value)).filter(Boolean))].slice(0,24);
                 const storedEvent = { ...event, character:canonical, participants, knownBy, userKnows:Boolean(event.userKnows), _sidecarId:payload.id, _floor:payload.floor };
                 world.events.push(storedEvent);
-                s39RecordStoryEvent({type:'offscreen-world',relatedId:storedEvent.id,participants,knownBy,userKnows:storedEvent.userKnows,channel:'Bỉ Gian Tư Văn/hiện thực ngoài ống kính',status:'Đã xảy ra',summary:`${canonical}｜${storedEvent.activity}${storedEvent.social?`｜社交:${storedEvent.social}`:''}${storedEvent.goal?`｜目标:${storedEvent.goal}`:''}`,floor:payload.floor,time:storedEvent.time,location:storedEvent.location,source:'companion-world'});
+                s39RecordStoryEvent({type:'offscreen-world',relatedId:storedEvent.id,participants,knownBy,userKnows:storedEvent.userKnows,channel:'Bỉ Gian Tư Văn/hiện thực ngoài ống kính',status:'Đã xảy ra',summary:`${canonical} | ${storedEvent.activity}${storedEvent.social?` | Giao tiếp: ${storedEvent.social}`:''}${storedEvent.goal?` | Mục tiêu: ${storedEvent.goal}`:''}`,floor:payload.floor,time:storedEvent.time,location:storedEvent.location,source:'companion-world'});
                 let character = world.characters.find(item => item.name === storedEvent.character);
                 if (!character) { character={ id:uid('character'), name:storedEvent.character, location:'', activity:'', goal:'', mood:'', social:'', updatedAt:'', time:'', lastFloor:-1, updates:0 }; world.characters.push(character); }
                 character.location=storedEvent.location||character.location; character.activity=storedEvent.activity||character.activity; character.goal=storedEvent.goal||character.goal;
@@ -8944,9 +8944,9 @@ ${messageText(message).slice(0,10000)}`;
 
     function removeCompanionPayload(payload) {
         if (!payload?.id) return;
-        // S9.4：手机历史一旦进入手机，就与chính văn sidecar 解耦成为永久通讯记录。
-        // 重生成、重复Tầng整理、开场白sidecar清理、chính văn删除都不得再自动删除微信/群聊/短信/电话/支付记录。
-        // 只有用户在手机里明确执行删除/Bỏ chọn，或明确“一键Bỏ chọn本聊天活动数据”时才允许删除。
+        // S9.4: một khi lịch sử đã vào điện thoại thì nó tách khỏi sidecar của chính văn và trở thành bản ghi liên lạc vĩnh viễn.
+        // Việc tạo lại, sắp xếp tầng trùng, dọn sidecar của lời mở đầu hay xóa chính văn đều không được tự xóa bản ghi WeChat/chat nhóm/SMS/cuộc gọi/thanh toán nữa.
+        // Chỉ khi người dùng chủ động xóa/dọn trong điện thoại, hoặc chọn rõ “xóa một chạm dữ liệu hoạt động của cuộc trò chuyện này” thì mới được phép xóa.
         stateRuntime.state.storyExtras ||= { moments:[], diary:[], anniversaries:[] };
         rollbackMomentReactionPayload(payload.id);
         for (const key of ['moments','diary','anniversaries']) stateRuntime.state.storyExtras[key] = (stateRuntime.state.storyExtras[key] || []).filter(item => item?._sidecarId !== payload.id);
@@ -8972,7 +8972,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function phoneItems(payload) {
-        // r4：chính văn下方“通讯终端”必须与完整手机看到的是同一批本轮数据。
+        // r4: phần “thiết bị liên lạc” dưới chính văn bắt buộc phải là cùng một mớ dữ liệu của lượt này mà điện thoại đầy đủ đang thấy.
         // r3 đã ghi được nhóm WeChat vào iPhone17Promax, nhưng đoạn mã cũ ở đây chỉ liệt kê wechat/sms/calls,
         // khiến tin nhắn nhóm chỉ thấy trong điện thoại còn thẻ gập bảy điều lại hiện “Lượt này không có cập nhật”. Ở đây đưa wechatGroups vào chính thức.
         const result = [];
