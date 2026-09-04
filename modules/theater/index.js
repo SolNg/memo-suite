@@ -9105,7 +9105,7 @@ ${messageText(message).slice(0,10000)}`;
                     : '';
                 return `<article class="vvvtm-inline-phone-item ${item.type === 'calls' ? 'call' : ''}"><span>${esc(item.icon)}</span><div><b>${esc(item.author || item.contact || item.label)}</b><small>${esc([callMeta,displayGeneratedEventTime(item,payload.floor)].filter(Boolean).join(' · '))}</small><p>${esc(item.content)}</p>${actions}</div></article>`;
             }).join('')
-            : `<div class="vvvtm-inline-empty">${profile.available === false && profile.communicationType === 'smartphone' ? `当前网络离线：${esc(device)}仍可打开查看本机内容；微信、短信、通话等远程通讯暂不可用。` : profile.available === false ? `当前时空判定：${esc(device)}Chưa có可用远程通讯；不会强塞不符合时代的内容。` : `本轮没有合理的${esc(device)}新内容。`}</div>`;
+            : `<div class="vvvtm-inline-empty">${profile.available === false && profile.communicationType === 'smartphone' ? `Mạng hiện đang ngoại tuyến: vẫn mở được ${esc(device)} để xem nội dung trong máy; WeChat, SMS, cuộc gọi và các cách liên lạc từ xa tạm thời không dùng được.` : profile.available === false ? `Phán định của không - thời gian hiện tại: ${esc(device)} chưa có phương tiện liên lạc từ xa khả dụng; sẽ không nhồi nội dung lệch thời đại.` : `Lượt này không có nội dung mới hợp lý cho ${esc(device)}.`}</div>`;
 
         const worldBody = world.length
             ? `${payload.world.timeProgress ? `<div class="vvvtm-world-progress">⏱ ${esc(payload.world.timeProgress)}</div>` : ''}${world.map(item => `<article class="vvvtm-inline-world-item"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.activity)}</p><dl>${item.goal ? `<div><dt>Mục tiêu</dt><dd>${esc(item.goal)}</dd></div>` : ''}${item.mood ? `<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>` : ''}${item.social ? `<div><dt>Giao tiếp</dt><dd>${esc(item.social)}</dd></div>` : ''}${item.relationToMainPlot ? `<div><dt>Quan hệ mạch chính</dt><dd>${esc(item.relationToMainPlot)}</dd></div>` : ''}</dl></article>`).join('')}`
@@ -9130,7 +9130,7 @@ ${messageText(message).slice(0,10000)}`;
             : '<div class="vvvtm-inline-empty">Hiện không có lời hẹn nào chờ thực hiện.</div>';
 
         const secretBody = secrets.length
-            ? secrets.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.subject || 'Bí mật')}</b><p>${esc(item.content || '')}</p>${item.knowers ? `<small>知道者：${esc(item.knowers)}</small>` : ''}${item.suspects ? `<small>怀疑者：${esc(item.suspects)}</small>` : ''}</article>`).join('')
+            ? secrets.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.subject || 'Bí mật')}</b><p>${esc(item.content || '')}</p>${item.knowers ? `<small>Người biết: ${esc(item.knowers)}</small>` : ''}${item.suspects ? `<small>Người nghi ngờ: ${esc(item.suspects)}</small>` : ''}</article>`).join('')
             : '<div class="vvvtm-inline-empty">Hiện không có lời hẹn và bí mật nào cần hiển thị.</div>';
 
         const appearanceBody = appearances.length
@@ -9153,15 +9153,15 @@ ${messageText(message).slice(0,10000)}`;
                     : ['waiting-seven-api','missing'].includes(payload.parseStatus)
                         ? '<div class="vvvtm-inline-warning">Lượt này đang tạo Bảy điều hậu trường ở nền; chính văn hiển thị không bị ảnh hưởng.</div>'
                         : payload.parseStatus === 'seven-api-unconfigured'
-                            ? `<div class="vvvtm-inline-warning">${esc(payload.fallbackError || 'Nguồn viết của Bảy điều hậu trường không dùng được')}；可见chính văn正常，但本轮幕后模块不会更新。请到“API与模型”检查当前写作来源。</div>`
+                            ? `<div class="vvvtm-inline-warning">${esc(payload.fallbackError || 'Nguồn viết của Bảy điều hậu trường không dùng được')}; chính văn hiển thị vẫn bình thường, nhưng mô-đun hậu trường của lượt này sẽ không cập nhật. Hãy vào “API và mô hình” để kiểm tra nguồn viết hiện tại.</div>`
                             : payload.parseStatus === 'invalid'
                                 ? '<div class="vvvtm-inline-warning">API Bảy điều hậu trường trả về định dạng bất thường; R9S1P41 sẽ tự thử tiếp khi tạo lại.</div>'
                                 : '';
 
         const ecologyStatus = payload.ecologyRepairStatus === 'ok'
-            ? `<div class="vvvtm-inline-success">📡 社交生态补活Đã hoàn thành：${esc(payload.ecologyRepairReason || 'Điện thoại/Bỉ Gian Tư Văn đã chạm ngưỡng im lặng')}。</div>`
+            ? `<div class="vvvtm-inline-success">📡 Đã hồi sinh hệ sinh thái xã hội: ${esc(payload.ecologyRepairReason || 'Điện thoại/Bỉ Gian Tư Văn đã chạm ngưỡng im lặng')}。</div>`
             : payload.ecologyRepairStatus === 'failed'
-                ? `<div class="vvvtm-inline-warning">📡 社交生态补活失败：${esc(payload.ecologyRepairError || 'API bảy điều chưa hoàn tất')}；chính văn与已有记忆不受影响。</div>`
+                ? `<div class="vvvtm-inline-warning">📡 Hồi sinh hệ sinh thái xã hội thất bại: ${esc(payload.ecologyRepairError || 'API bảy điều chưa hoàn tất')}; chính văn và ký ức hiện có không bị ảnh hưởng.</div>`
                 : '';
         const completenessStatus = payload.completenessRepair?.attempted && payload.completenessRepair?.status === 'ok'
             ? `<div class="vvvtm-inline-success">🧩 Đã tự bổ sung các mục còn thiếu: ${esc((payload.completenessRepair.missingBefore || []).map(item=>item?.label).filter(Boolean).join(', ') || 'mục đời sống hậu trường')}.</div>`
@@ -9414,7 +9414,7 @@ ${messageText(message).slice(0,10000)}`;
         const generation = stateRuntime.dataGeneration;
         const stateAtStart = stateRuntime.state;
         const finalPrompt = jsonMode
-            ? `${prompt}\n\n【最终输出硬要求】只输出一个可被 JSON.parse 直接解析的 JSON 对象；不要 Markdown 代码块，不要解释，不要续写chính văn。`
+            ? `${prompt}\n\n【YÊU CẦU CỨNG VỀ ĐẦU RA】Chỉ xuất đúng một object JSON mà JSON.parse đọc được ngay; không dùng khối mã Markdown, không giải thích, không viết tiếp chính văn.`
             : prompt;
         const data = await callCompanionJsonWithRecovery(finalPrompt, { systemPrompt, jsonMode, generationType, finalInstruction, progressFloor:Number(record?.floor), source:writingSource });
         if (!chatScopeIsCurrent(scope) || stateRuntime.dataGeneration !== generation || stateRuntime.state !== stateAtStart) {
@@ -9465,7 +9465,7 @@ ${messageText(message).slice(0,10000)}`;
         await ensureCompanionWritingSourceReady();
         if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation)throw new Error('Đã đổi cuộc trò chuyện: đã hủy việc ghi Bảy điều hậu trường của cuộc cũ');
         if (feature === 'companion') {
-            updateCompanionFallbackProgress(Number(record?.floor), null, `${companionWritingSourceLabel()}正在生成`, 'Chỉ gửi chính văn hiện tại và một lượng tư liệu ký ức có hạn');
+            updateCompanionFallbackProgress(Number(record?.floor), null, `${companionWritingSourceLabel()} đang tạo`, 'Chỉ gửi chính văn hiện tại và một lượng tư liệu ký ức có hạn');
         }
         const generationType = feature === 'companion' ? 'companion-scoped' : 'memory-scoped';
         const finalInstruction = feature === 'companion' ? COMPANION_FINAL_CONTRACT : '';
@@ -9514,14 +9514,14 @@ ${messageText(message).slice(0,10000)}`;
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const prompt = await companionPrompt(index, message);
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            // 每次重写/重试都是当前所选写作源的新请求；成功结果仍由Tầng签名Exactly-Once保护。
+            // Mỗi lần viết lại/thử lại đều là một yêu cầu mới tới nguồn viết đang chọn; kết quả thành công vẫn được chữ ký tầng bảo vệ theo cơ chế Exactly-Once.
             const record = { kind: 'companion', floor: index, signature, force: Boolean(force), fallbackReason: compactText(fallbackReason, 80), retryRevision:Math.max(0,Number(existing?.retryAttempt||0)), companionSource:companionPayloadSource() };
             companionTaskRecord=record;
             let task = await runPluginLlm({
                 feature: 'companion',
                 prompt,
                 systemPrompt: `${FALLEN_WRITER_CONTEXT}
-【幕后七条任务】你是0-32幕后七条内容引擎。只使用本请求提供的当前chính văn、有限记忆、已确认角色资料和程序给出的当前现实；禁止读取酒馆预设、角色世界书、Persona或Prompt Manager编译结果。只输出合法JSON；不得续写chính văn；不得替user做决定。时代/世界/通讯载体由程序Trạng thái机最终锁定，你只能据此生成手机、彼间私文、人物外观、朋友圈/日记/纪念日、场景/Lời hẹn/秘密等幕后内容，不得自行改时代。`,
+【NHIỆM VỤ BẢY ĐIỀU HẬU TRƯỜNG】Bạn là bộ máy nội dung Bảy điều hậu trường của 0-32. Chỉ dùng chính văn hiện tại, ký ức có hạn, hồ sơ nhân vật đã xác nhận và hiện thực hiện tại do chương trình cung cấp trong yêu cầu này; cấm đọc preset của SillyTavern, sách thế giới của nhân vật, Persona hay kết quả biên dịch của Prompt Manager. Chỉ xuất JSON hợp lệ; không được viết tiếp chính văn; không được quyết định thay user. Thời đại/thế giới/phương tiện liên lạc do máy trạng thái của chương trình khóa lại lần cuối, bạn chỉ được dựa vào đó để tạo nội dung hậu trường như điện thoại, Bỉ Gian Tư Văn, ngoại hình nhân vật, Khoảnh khắc/nhật ký/ngày kỷ niệm, cảnh/lời hẹn/bí mật; không được tự đổi thời đại.`,
                 jsonMode: true,
                 record,
                 writingSource: 'configured',
@@ -9566,7 +9566,7 @@ ${messageText(message).slice(0,10000)}`;
             }
             decorateCompanionOutput(index);
             if (['phone','worldlife','appearance'].includes(stateRuntime.currentTab)) renderCurrentTab();
-            // fixed37：父母主动微信作为独立生活脉冲异步运行；失败绝不拖垮当前chính văn/幕后七条。
+            // fixed37: tin WeChat chủ động của bố mẹ chạy bất đồng bộ như một nhịp đời sống riêng; thất bại thì tuyệt đối không kéo sập chính văn/Bảy điều hậu trường hiện tại.
             runLaterForScope(operationScope,220,()=>{void maybeRunParentWechatPulse(index).catch(error=>console.warn('[0-32 · Nhịp WeChat của bố mẹ] Tác vụ bất đồng bộ thất bại',error));});
             return record.status !== 'error' && record.status !== 'skipped' && record.status !== 'stale';
         } catch (error) {
@@ -9628,7 +9628,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function phoneContactRemark() {
-        // fixed38：通讯录Ghi chú功能停用。旧Ghi chú会在Trạng thái载入/联系人刷新时清理。
+        // fixed38: tính năng ghi chú trong danh bạ đã ngừng. Ghi chú cũ sẽ được dọn khi nạp trạng thái/làm mới danh bạ.
         return '';
     }
 
@@ -9854,7 +9854,7 @@ ${messageText(message).slice(0,10000)}`;
         }
         if(kept.length!==thread.messages.length){thread.messages=kept;changed=true;}
 
-        // 系统“已发送”提示继承相邻 pendingId 用户消息的Tầng，避免恢复后漂到最前/最后。
+        // Thông báo “đã gửi” của hệ thống kế thừa tầng của tin người dùng có pendingId liền kề, tránh việc sau khi khôi phục bị trôi lên đầu/xuống cuối.
         const pendingFloor=new Map();
         for(const row of thread.messages)if(row?.pendingId&&Number.isFinite(Number(row?._floor)))pendingFloor.set(row.pendingId,Number(row._floor));
         for(const row of thread.messages)if(row?.pendingId&&!Number.isFinite(Number(row?._floor))&&pendingFloor.has(row.pendingId)){row._floor=pendingFloor.get(row.pendingId);changed=true;}
@@ -9866,7 +9866,7 @@ ${messageText(message).slice(0,10000)}`;
             return Number.POSITIVE_INFINITY;
         };
         const sorted=original.slice().sort((a,b)=>{
-            // U1.4：新消息由永久 _eventSeq 精确排序；旧消息优先依赖剧情Tầng/历史快照首次出现证据。
+            // U1.4: tin mới được sắp xếp chính xác bằng _eventSeq vĩnh viễn; tin cũ ưu tiên dựa vào tầng cốt truyện/bằng chứng xuất hiện lần đầu trong ảnh chụp lịch sử.
             const as=Number(a.row?._eventSeq||0), bs=Number(b.row?._eventSeq||0);
             if(as&&bs&&as!==bs)return as-bs;
             const aRank=Number(a.row?._recoveryOrderRank), bRank=Number(b.row?._recoveryOrderRank);
@@ -10232,10 +10232,10 @@ ${messageText(message).slice(0,10000)}`;
         });
     }
 
-    // R9S1P31：把“已经存在的微信群消息”当作群聊存在的强证据，自动修复旧Trạng thái。
+    // R9S1P31: coi “tin nhắn nhóm WeChat đã tồn tại” là bằng chứng mạnh cho việc nhóm chat có thật, và tự sửa trạng thái cũ.
     // P30 chỉ khôi phục active/offline cho những groupProfiles đã có; nếu profile trong bản lưu cũ vốn đã thiếu, scope/homeWorldKey
     // lệch chỗ, hoặc channelType vẫn là giá trị cũ smartphone thì danh sách vẫn có thể hiện 0 nhóm chat.
-    // 本函数只整理本地Trạng thái，不调用 API，也不删除任何历史消息。
+    // Hàm này chỉ sắp xếp trạng thái tại chỗ, không gọi API và cũng không xóa bất kỳ tin nhắn lịch sử nào.
     function reconcileWechatGroupState() {
         const s = stateRuntime.state;
         const phone = s?.phone;
@@ -10305,8 +10305,8 @@ ${messageText(message).slice(0,10000)}`;
 
     // R9S1P30: khả năng với tới nhóm chat phải khôi phục theo thời gian thực cùng “mạng của thế giới hiện tại/thế giới gốc”, y như với danh bạ.
     // Bản cũ chỉ làm mới contactProfiles chứ không làm mới groupProfiles: sau khi người dùng từ dị giới/tuyến lịch sử quay về thế giới gốc,
-    // 联系人已经重新 active，但群聊仍可能卡在 offline-origin。于是chính văn下方能看到新的微信群消息，
-    // 打开完整微信却显示“0 个群聊”。这里只修Trạng thái，不删历史、不额外调用 API。
+    // Liên hệ đã active trở lại, nhưng nhóm chat vẫn có thể kẹt ở offline-origin. Thành ra dưới chính văn thì thấy tin nhóm WeChat mới,
+    // mà mở WeChat đầy đủ lại hiện “0 nhóm chat”. Ở đây chỉ sửa trạng thái, không xóa lịch sử và không gọi thêm API.
     function refreshPhoneGroupAvailability() {
         const phone = stateRuntime.state?.phone;
         if (!phone) return;
@@ -10572,17 +10572,17 @@ ${messageText(message).slice(0,10000)}`;
         const store=`${brand}${storeWord}${platform==='jd'?'Flagship JD tự vận hành':'Flagship chính hãng'}`;
         const range=good.price||[9.9,99]; const price=Math.round((range[0]+(seed%10000)/9999*(range[1]-range[0]))*100)/100;
         const sku=s92SkuCode(platform,good.category,900000+(seed%100000));
-        return {id:`${platform}-common-${good.key}-${ordinal}`,platform,storeId:`${platform}-common-shop-${good.key}`,store,storeName:store,brand,name:`${brand} ${good.name} ${variant} 规格${sku}`,baseName:good.name,price,category:good.category,icon:good.icon||'📦',sold:`${300+(seed%9700)}+`,rating:(4.65+(seed%30)/100).toFixed(2),shipping:platform==='jd'?'JD Logistics · giao hôm sau':'Giao trong 24 giờ',tags:['Đồ dùng hằng ngày phổ biến',good.category,variant,'Đổi trả 7 ngày'],aliases:[good.name,...(good.aliases||[])],commonKey:good.key,skuCode:sku};
+        return {id:`${platform}-common-${good.key}-${ordinal}`,platform,storeId:`${platform}-common-shop-${good.key}`,store,storeName:store,brand,name:`${brand} ${good.name} ${variant} quy cách ${sku}`,baseName:good.name,price,category:good.category,icon:good.icon||'📦',sold:`${300+(seed%9700)}+`,rating:(4.65+(seed%30)/100).toFixed(2),shipping:platform==='jd'?'JD Logistics · giao hôm sau':'Giao trong 24 giờ',tags:['Đồ dùng hằng ngày phổ biến',good.category,variant,'Đổi trả 7 ngày'],aliases:[good.name,...(good.aliases||[])],commonKey:good.key,skuCode:sku};
     }
     function s93AdHocProduct(platform,query,category='Tất cả') {
         const clean=compactText(String(query||'').replace(/[\s\u3000]+/g,' '),48).trim(); if(!clean)return null;
         const slug=clean.replace(/[^0-9a-zA-Z\u3400-\u9fff]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'Sản phẩm';
         const hash=s9Hash(clean).toString(36);
-        const hint=[['Điện thoại & đồ số',/手机|苹果|华为|小米|充电|耳机|数据线|键盘|鼠标|电脑/],['Điện gia dụng',/冰箱|空调|洗衣机|电饭煲|空气炸锅|插座|排插|电器/],['Nhà cửa & nội thất',/纸巾|抽纸|卷纸|洗洁精|洗衣液|垃圾袋|保鲜|拖把|清洁|收纳/],['Thực phẩm & đồ tươi',/酱油|生抽|老抽|蚝油|醋|大米|面粉|食用油|零食|牛奶|鸡蛋|水果|食品/],['Thuốc & sức khỏe',/口罩|创可贴|体温计|药|消毒|洗手液/],['Trang phục & đồ lót',/衣服|卫衣|裤子|鞋|袜|外套|羽绒/]].find(([,re])=>re.test(clean))?.[0];
+        const hint=[['Điện thoại & đồ số',/điện thoại|iPhone|Huawei|Xiaomi|sạc|tai nghe|cáp|bàn phím|chuột|máy tính/i],['Điện gia dụng',/tủ lạnh|điều hòa|máy giặt|nồi cơm|nồi chiên|ổ điện|ổ cắm|điện máy/i],['Nhà cửa & nội thất',/khăn giấy|giấy rút|giấy cuộn|nước rửa chén|nước giặt|túi rác|bảo quản|cây lau|vệ sinh|đựng đồ/i],['Thực phẩm & đồ tươi',/nước tương|xì dầu|dầu hào|giấm|gạo|bột mì|dầu ăn|đồ ăn vặt|sữa|trứng|trái cây|thực phẩm/i],['Thuốc & sức khỏe',/khẩu trang|băng cá nhân|nhiệt kế|thuốc|sát khuẩn|rửa tay/i],['Trang phục & đồ lót',/quần áo|hoodie|quần|giày|tất|áo khoác|áo phao/i]].find(([,re])=>re.test(clean))?.[0];
         const inferred=s93CommonMatches(clean).at(0)?.category||hint;
             const productCategory=category&&category!=='Tất cả'?category:(inferred||'Thực phẩm & đồ tươi'); const seed=s9Hash(`${platform}|adhoc|${clean}`),brand=s9Pick(['Tuyển chọn','Ưu tuyển','Đồ tốt cho gia đình','Tuyển chọn kỹ'],seed); const store=`${brand}${S92_ECOM_DEPT[productCategory]||'Đời sống'}${platform==='jd'?'JD tự vận hành':'Cửa hàng Flagship'}`;
         const price=Math.round((9.9+(seed%9000)/100)*100)/100, id=`${platform}-adhoc-${slug}-${hash}`;
-        return {id,platform,storeId:`${platform}-adhoc-shop-${hash}`,store,storeName:store,brand,name:`${clean} 精选家庭装 规格${hash.toUpperCase()}`,baseName:clean,price,category:productCategory,icon:'📦',sold:`${100+(seed%5000)}+`,rating:'4.70',shipping:platform==='jd'?'JD Logistics · dự kiến giao ngày mai':'Dự kiến giao trong 48 giờ',tags:['Khớp theo từ khóa',productCategory,'Đổi trả 7 ngày'],aliases:[clean],adhocQuery:clean,skuCode:`AD-${hash.toUpperCase()}`};
+        return {id,platform,storeId:`${platform}-adhoc-shop-${hash}`,store,storeName:store,brand,name:`${clean} gói gia đình tuyển chọn quy cách ${hash.toUpperCase()}`,baseName:clean,price,category:productCategory,icon:'📦',sold:`${100+(seed%5000)}+`,rating:'4.70',shipping:platform==='jd'?'JD Logistics · dự kiến giao ngày mai':'Dự kiến giao trong 48 giờ',tags:['Khớp theo từ khóa',productCategory,'Đổi trả 7 ngày'],aliases:[clean],adhocQuery:clean,skuCode:`AD-${hash.toUpperCase()}`};
     }
 
     function s9Hash(text='') { let h=2166136261; for(const ch of String(text)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);} return h>>>0; }
@@ -10902,7 +10902,7 @@ ${messageText(message).slice(0,10000)}`;
         return {items:pageIds.map(i=>s9FoodStore(platform,i)),page,totalPages,totalItems};
     }
     function s9Pager(platform,page,totalPages,totalItems){
-        return `<div class="vvvtm-mega-pager"><button data-phone-catalog-page="${platform}" data-phone-page-delta="-1" ${page<=1?'disabled':''}>‹ Trang trước</button><span><b>${page}</b> / ${totalPages} 页<small>共 ${totalItems} 条</small></span><button data-phone-catalog-page="${platform}" data-phone-page-delta="1" ${page>=totalPages?'disabled':''}>Trang sau ›</button></div>`;
+        return `<div class="vvvtm-mega-pager"><button data-phone-catalog-page="${platform}" data-phone-page-delta="-1" ${page<=1?'disabled':''}>‹ Trang trước</button><span><b>${page}</b> / ${totalPages} trang<small>tổng ${totalItems} mục</small></span><button data-phone-catalog-page="${platform}" data-phone-page-delta="1" ${page>=totalPages?'disabled':''}>Trang sau ›</button></div>`;
     }
     function isWechatPaymentSms(item={}) {
         const sender=compactText(item?.author||item?.contact||item?.smsAuthor,120);
@@ -10932,7 +10932,7 @@ ${messageText(message).slice(0,10000)}`;
         return phone;
     }
     function s9BankBalance(){ const p=s9EnsureExtendedApps(); return Math.round((s8Money(p.bank.openingBalance)+(p.bank.transactions||[]).reduce((a,b)=>a+s8Money(b.amount),0))*100)/100; }
-    function s9AddBankTx(amount,title){const p=s9EnsureExtendedApps();const row={id:uid('bank-tx'),amount:s8Money(amount),title:compactText(title,120),time:phoneClock().time,createdAt:Date.now()};p.bank.transactions.push(row);s8AddNotification('Ngân hàng',amount>=0?'Nhắc tiền vào tài khoản':'Nhắc khoản chi',`${title} · ${s8MoneyText(Math.abs(amount))} · 余额 ${s8MoneyText(s9BankBalance())}`);s8RecordPhoneActivity('bank',amount>=0?'Tiền vào thẻ ngân hàng':'Chi từ thẻ ngân hàng',`${title} · ${s8MoneyText(Math.abs(amount))}`,{relatedId:row.id});return row;}
+    function s9AddBankTx(amount,title){const p=s9EnsureExtendedApps();const row={id:uid('bank-tx'),amount:s8Money(amount),title:compactText(title,120),time:phoneClock().time,createdAt:Date.now()};p.bank.transactions.push(row);s8AddNotification('Ngân hàng',amount>=0?'Nhắc tiền vào tài khoản':'Nhắc khoản chi',`${title} · ${s8MoneyText(Math.abs(amount))} · số dư ${s8MoneyText(s9BankBalance())}`);s8RecordPhoneActivity('bank',amount>=0?'Tiền vào thẻ ngân hàng':'Chi từ thẻ ngân hàng',`${title} · ${s8MoneyText(Math.abs(amount))}`,{relatedId:row.id});return row;}
     function s8Money(value) {
         const n = Number(value || 0);
         return Number.isFinite(n) ? n : 0;
@@ -11045,10 +11045,10 @@ ${messageText(message).slice(0,10000)}`;
     }
     function phoneKnowledgeBrief(limit=24){
         const rows=(ensurePhoneEcosystem()?.knowledgeLedger||[]).slice(-Math.max(1,Number(limit||24)));
-        return rows.length?rows.map(row=>`- ${row.npc}｜${S12_KNOWLEDGE_METHODS[row.method]||row.method}｜事件:${row.eventId||row.relatedId||'Chưa ghi nhận'}｜${row.subject||'Sự kiện điện thoại'}${row.summary?`：${row.summary}`:''}｜地点:${row.location||'Chưa ghi nhận'}｜Tầng:${row.floor}`).join('\n'):'- Chưa có任何NPC被确认知道手机事件；不得据此让NPC读心。';
+        return rows.length?rows.map(row=>`- ${row.npc}｜${S12_KNOWLEDGE_METHODS[row.method]||row.method} | Sự kiện: ${row.eventId||row.relatedId||'Chưa ghi nhận'} | ${row.subject||'Sự kiện điện thoại'}${row.summary?`: ${row.summary}`:''} | Địa điểm: ${row.location||'Chưa ghi nhận'} | Tầng: ${row.floor}`).join('\n'):'- Chưa NPC nào được xác nhận biết sự kiện điện thoại; không được dựa vào đó cho NPC đọc được ý nghĩ.';
     }
 
-    // fixed39：手机与chính văn不再是两条松散剧情。所有跨媒介关键事件统一写入同一故事账本，
+    // fixed39: điện thoại và chính văn không còn là hai mạch truyện rời rạc. Mọi sự kiện then chốt xuyên phương tiện đều ghi chung vào một sổ truyện,
     // Số tiền, việc hai bên có quen nhau chưa, lịch sử trò chuyện trực tuyến và lịch sử gặp mặt ngoài đời đều được đưa vào AI chính và AI điện thoại như những sự thật không được sửa.
     const S39_SERVICE_CONTACT_RE=/(?:WeChat Pay|Alipay|nhà mạng|hệ thống|chăm sóc khách hàng|chính thức|thông báo|ngân hàng|chuyển phát nhanh|vận chuyển|giao đồ ăn|tài xế|xe công nghệ|Didi|Taobao|JD|Meituan|Ele\.me|hàng không|trường học|ban quản lý|lễ tân|thành viên nhóm|thành viên khác|ẩn danh|người lạ|một người nào đó)/i;
     function s39StoryFloor(value=-1){const n=Number(value);return Number.isFinite(n)&&n>=0?n:Math.max(0,(context()?.chat?.length||1)-1);}
@@ -11095,7 +11095,7 @@ ${messageText(message).slice(0,10000)}`;
             s39MarkAcquaintance(contact,{channel:'WeChat/lịch sử điện thoại',floor,evidence:'Hội thoại điện thoại lịch sử đã tồn tại'});
             const sampled=[...messages.slice(0,4),...messages.slice(-4)].filter((item,index,arr)=>arr.findIndex(x=>(x?.id&&item?.id?x.id===item.id:x===item))===index);
             const history=sampled.map(item=>`${compactText(item?.sender||item?.role,60)||'Tin nhắn'}：${compactText(item?.content||phoneStickerById(item?.stickerId)?.name||'[Sticker]',140)}`).filter(Boolean).join(' / ');
-            s39RecordStoryEvent({type:'communication-history',relatedId:`thread:${npcNameKey(contact)}`,participants:[userName,contact],channel:'Lịch sử điện thoại',status:'Đã xảy ra',summary:`既往手机聊天：${history}`,floor,time:last?.time||'',source:'fixed39-migration'});
+            s39RecordStoryEvent({type:'communication-history',relatedId:`thread:${npcNameKey(contact)}`,participants:[userName,contact],channel:'Lịch sử điện thoại',status:'Đã xảy ra',summary:`Trò chuyện điện thoại trước đây: ${history}`,floor,time:last?.time||'',source:'fixed39-migration'});
         }
         for(const transfer of phone.walletTools?.transfers||[]){const to=s39StoryParticipantName(transfer?.to);if(!to)continue;s39MarkAcquaintance(to,{channel:transfer.account==='wechat'?'Chuyển khoản WeChat':'Chuyển khoản Alipay',floor:transfer.floor,evidence:`历史转账 ${s8MoneyText(transfer.amount)}`});s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],knownBy:[userName,to],userKnows:true,channel:transfer.channel||transfer.account,amount:transfer.amount,status:transfer.status,summary:`${userName}向${to}${transfer.channel||'Chuyển khoản'} ${s8MoneyText(transfer.amount)}；Trạng thái:${transfer.status||'Chưa ghi nhận'}`,floor:transfer.floor,time:transfer.time,source:'fixed39-migration'});}
         for(const event of stateRuntime.state?.characterWorld?.events||[]){
@@ -11145,23 +11145,23 @@ ${messageText(message).slice(0,10000)}`;
     function s39AcquaintanceBrief(limit=24,viewer='main'){
         const target=viewer==='main'?'':npcNameKey(viewer),all=(stateRuntime.state?.phone?.acquaintanceLedger||[]).slice().sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
         const rows=(target?all.filter(row=>npcNameKey(row?.npc)===target):all).slice(0,Math.max(1,Number(limit||24)));
-        return rows.length?rows.map(row=>`- ${row.npc}｜已通过:${(row.channels||[]).join('、')||'Điện thoại'}｜手机联系:${row.phoneContactCount||0}次｜线下见面:${row.offlineMet?'Có':'Không'}${row.firstOfflineFloor>=0?`（首次第${row.firstOfflineFloor}层）`:''}｜当前同场:${row.coPresent?'Có':'Không'}｜结论:双方不是“无历史陌生人”`).join('\n'):'- Chưa có当前人物可用的跨媒介接触记录。';
+        return rows.length?rows.map(row=>`- ${row.npc} | Đã qua: ${(row.channels||[]).join(', ')||'điện thoại'} | Liên lạc qua điện thoại: ${row.phoneContactCount||0} lần | Gặp mặt ngoài đời: ${row.offlineMet?'Có':'Không'}${row.firstOfflineFloor>=0?` (lần đầu ở tầng ${row.firstOfflineFloor})`:''} | Hiện có mặt cùng nhau: ${row.coPresent?'Có':'Không'} | Kết luận: hai bên không phải “người lạ không có lịch sử”`).join('\n'):'- Chưa có bản ghi tiếp xúc xuyên phương tiện nào dùng được cho nhân vật hiện tại.';
     }
     function s39UnifiedStorylineBrief(limit=24,narrativeText='',viewer='main'){
         const phone=stateRuntime.state?.phone||{},all=(phone.storyLedger||[]).slice().sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)),cap=Math.max(1,Number(limit||24));
         const money=all.filter(row=>['transfer','finance'].includes(String(row?.type||''))||Number(row?.amount)>0).slice(0,12),recent=all.slice(0,cap+12);
         const rows=[...money,...recent].filter((row,index,arr)=>arr.findIndex(x=>(x?.id&&row?.id?x.id===row.id:`${x?.type}|${x?.relatedId}`===`${row?.type}|${row?.relatedId}`))===index).slice(0,cap+14);
         const userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}',viewerName=viewer==='main'?userName:compactText(viewer,100);
-        const fmt=row=>`- ${row.type}｜事件ID:${row.relatedId||row.id}｜人物:${(row.participants||[]).join('↔')||'Chưa ghi nhận'}｜渠道:${row.channel||'Hiện thực'}${Number(row.amount)>0?`｜精确金额:${s8MoneyText(row.amount)}（禁止取整/近似/改写）`:''}${row.status?`｜Trạng thái:${row.status}`:''}${row.location?`｜地点:${row.location}`:''}｜${row.summary||''}｜Tầng:${row.floor}`;
+        const fmt=row=>`- ${row.type} | ID sự kiện: ${row.relatedId||row.id} | Nhân vật: ${(row.participants||[]).join('↔')||'Chưa ghi nhận'} | Kênh: ${row.channel||'Hiện thực'}${Number(row.amount)>0?` | Số tiền chính xác: ${s8MoneyText(row.amount)} (cấm làm tròn/xấp xỉ/sửa lại)`:''}${row.status?` | Trạng thái: ${row.status}`:''}${row.location?` | Địa điểm: ${row.location}`:''} | ${row.summary||''} | Tầng: ${row.floor}`;
         const known=rows.filter(row=>viewer==='main'?Boolean(row.userKnows):s39StoryEventKnownTo(row,viewerName));
         const hidden=rows.filter(row=>!known.includes(row));
         const knownText=known.map(fmt).join('\n')||'- Chưa có sự kiện then chốt xuyên phương tiện nào mới được biết.';
-        const hiddenText=hidden.map(row=>`${fmt(row)}｜知情者:${(row.knownBy||row.participants||[]).join('、')||'Chỉ người tham gia sự kiện'}`).join('\n')||'- Chưa có sự kiện thế giới ngoài ống kính nào mới.';
+        const hiddenText=hidden.map(row=>`${fmt(row)} | Người biết: ${(row.knownBy||row.participants||[]).join(', ')||'chỉ người tham gia sự kiện'}`).join('\n')||'- Chưa có sự kiện thế giới ngoài ống kính nào mới.';
         const text=narrativeText||messageText([...(context()?.chat||[])].reverse().find(m=>!m?.is_user&&!m?.is_system)||{}),present=s39CurrentCoPresentNames(text);
-        return `【fixed39 单一世界总账｜只有一个Dòng thời gian】
-【${viewer==='main'?'Sự thật {{user}} đã biết/tự trải qua':`${viewerName||'NPC hiện tại'}可知事实`}】
+        return `【SỔ TỔNG CỦA THẾ GIỚI ĐƠN NHẤT fixed39 | CHỈ CÓ MỘT DÒNG THỜI GIAN】
+【${viewer==='main'?'Sự thật {{user}} đã biết/tự trải qua':`Sự thật mà ${viewerName||'NPC hiện tại'} có thể biết`}】
 ${knownText}
-【同一世界中Đã xảy ra、但${viewer==='main'?'{{user}} hiện chưa biết':`${viewerName||'NPC hiện tại'}当前不知道`}的事实】
+【NHỮNG SỰ THẬT ĐÃ XẢY RA TRONG CÙNG THẾ GIỚI, NHƯNG ${viewer==='main'?'{{user}} hiện chưa biết':`${viewerName||'NPC hiện tại'} hiện chưa biết`}】
 ${hiddenText}
 【LỊCH SỬ QUEN BIẾT NHÂN VẬT XUYÊN PHƯƠNG TIỆN】
 ${s39AcquaintanceBrief(20,viewer==='main'?'main':viewerName)}
@@ -11250,8 +11250,8 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         for(const item of events||[])s12RecordKnowledge({...item,floor:payload?.floor??-1,source:item.source||'phone'});
     }
 
-    // fixed37：chính văn里已经明确“买了/点了/下单了外卖”时，Đơn hàng điện thoại必须同步出现。
-    // 这条是本地事实提取兜底，不依赖幕后七条是否记得输出 orderCreates；Chưa rõ店铺/Chưa rõ餐品也保留原文名称。
+    // fixed37: khi chính văn đã nói rõ “đã mua/đã gọi/đã đặt đơn giao đồ ăn” thì đơn hàng trong điện thoại bắt buộc phải xuất hiện theo.
+    // Đây là phương án đáy trích sự thật tại chỗ, không phụ thuộc việc Bảy điều hậu trường có nhớ xuất orderCreates hay không; quán chưa rõ/món chưa rõ cũng giữ nguyên tên trong chính văn.
     function s37NarrativeFoodOrderCreates(payload={}) {
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
         const sourceTexts=[message?.mes??message?.content??'',previous?.is_user?(previous?.mes??previous?.content??''):''].filter(Boolean);
