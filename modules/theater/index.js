@@ -14894,18 +14894,18 @@ ${parts[0].text}`;
                 setBusy(true,`Đọc trọn tầng ${start}-${end} · mảnh ${i+1}/${parts.length}`);
                 const result=await runValidatedTransientLlm('stageSummary',rangePartSummaryPrompt(parts[i].startFloor,parts[i].endFloor,parts[i].text),{
                     workflowMeta:{workflow:'stageSummary-part',startFloor:start,endFloor:end,partIndex:i,partStart:parts[i].startFloor,partEnd:parts[i].endFloor},
-                    validate:value=>requireSummaryQuality(value,`阶段分片${i+1}`,70),maxAttempts:3,label:`阶段分片${i+1}`
+                    validate:value=>requireSummaryQuality(value,`Mảnh giai đoạn ${i+1}`,70),maxAttempts:3,label:`Mảnh giai đoạn ${i+1}`
                 });
-                model=result.model||model; digests.push(`【原文分片${i+1}｜${parts[i].startFloor}-${parts[i].endFloor}】
+                model=result.model||model; digests.push(`【MẢNH CHÍNH VĂN ${i+1} | ${parts[i].startFloor}-${parts[i].endFloor}】
 ${result.text}`);
             }
-            setBusy(true,`正在合并 ${start}-${end} 层阶段总结…`);
-            const merged=await runValidatedTransientLlm('stageSummary',`你正在合并同一个阶段第${start}-${end}层的全部原文分片摘要。按时间顺序去重，不得遗漏时间、地点、人物心理和关系变化、Lời hẹn当前Trạng thái、秘密知情边界、物品流转、亲密/冲突/Thân phận揭示及未解决伏笔。即使某栏目只有一条，也必须保留；没有内容才返回空数组。
+            setBusy(true,`Đang gộp tổng kết giai đoạn tầng ${start}-${end}…`);
+            const merged=await runValidatedTransientLlm('stageSummary',`Bạn đang gộp toàn bộ bản tóm tắt các mảnh chính văn của cùng một giai đoạn, tầng ${start}-${end}. Hãy khử trùng theo trình tự thời gian, không được bỏ sót thời gian, địa điểm, tâm lý nhân vật và thay đổi quan hệ, trạng thái hiện tại của lời hẹn, ranh giới người biết bí mật, sự luân chuyển vật phẩm, những lần thân mật/xung đột/lộ thân phận và các manh mối chưa được giải. Kể cả một mục chỉ có một dòng cũng phải giữ; chỉ khi không có nội dung mới trả về mảng rỗng.
 
 ${stageSummaryJsonInstruction(start,end)}
 
 ${digests.join('\n\n')}`,{
-                jsonMode:true,workflowMeta:{workflow:'stageSummary-merge',startFloor:start,endFloor:end},validate:validateFinal,maxAttempts:3,label:`第${start}-${end}层阶段总结合并`
+                jsonMode:true,workflowMeta:{workflow:'stageSummary-merge',startFloor:start,endFloor:end},validate:validateFinal,maxAttempts:3,label:`Gộp tổng kết giai đoạn tầng ${start}-${end}`
             });
             return { ...merged, model:merged.model||model };
         } finally {
@@ -14917,7 +14917,7 @@ ${digests.join('\n\n')}`,{
         const rows=stateRuntime.state.tables.summaries.filter(row => {
             const rowType = row['Loại'] || row['Loại bảng'];
             const status = row['Trạng thái'] || 'Đã hoàn thành';
-            return (!type || rowType === type) && /完成|成功/.test(status) && String(row['Nội dung tổng kết'] || '').trim();
+            return (!type || rowType === type) && /hoàn thành|thành công/i.test(status) && String(row['Nội dung tổng kết'] || '').trim();
         });
         const latest=new Map();for(const row of rows){const rowType=row['Loại']||row['Loại bảng'];const range=parseRange(row['Tầng bao phủ']);const key=`${rowType}|${range.start}-${range.end}`;const prior=latest.get(key);if(!prior||Number(row._updatedAt||row.updatedAt||0)>=Number(prior._updatedAt||prior.updatedAt||0))latest.set(key,row);}
         return [...latest.values()].sort((a,b)=>{const ar=parseRange(a['Tầng bao phủ']),br=parseRange(b['Tầng bao phủ']);return Number(ar.start??Infinity)-Number(br.start??Infinity)||Number(ar.end??Infinity)-Number(br.end??Infinity);});
@@ -15000,9 +15000,9 @@ ${digests.join('\n\n')}`,{
                 if(!result.row)throw new Error('Ghi tóm tắt sự kiện thất bại');
                 result.row._rerunAt=nowText();
                 result.row._rerunModel=task.model||record.model||'';
-                logAudit('Trích xuất lại sự kiện gần đây',`第${floor}层事件已原位更新；其他记忆未改动。`);
+                logAudit('Trích xuất lại sự kiện gần đây',`Sự kiện tầng ${floor} đã cập nhật tại chỗ; các ký ức khác không thay đổi.`);
             }catch(error){
-                record.status='quality-rejected';record.applied=true;record.error=`Sự kiện gần đây重跑结果未通过校验：${error?.message||error}`;record.updatedAt=Date.now();
+                record.status='quality-rejected';record.applied=true;record.error=`Kết quả chạy lại sự kiện gần đây không qua kiểm tra: ${error?.message||error}`;record.updatedAt=Date.now();
                 await saveState({immediate:true,refresh:false,reason:'recent-event-rerun-quality-rejected'});
                 throw error;
             }
@@ -15022,7 +15022,7 @@ ${digests.join('\n\n')}`,{
                 }
                 try{mergeExtraction(parseExtractionResult(task.result?.text || ''), floor);}
                 catch(error){
-                    record.status='quality-rejected';record.applied=true;record.error=`提取结果不是可写入的完整JSON：${error?.message||error}`;record.updatedAt=Date.now();
+                    record.status='quality-rejected';record.applied=true;record.error=`Kết quả trích xuất không phải JSON đầy đủ có thể ghi vào: ${error?.message||error}`;record.updatedAt=Date.now();
                     bumpExtractDedupeGeneration(floor,entry.signature);
                     await saveState({immediate:true,refresh:false,reason:'extract-json-quality-rejected'});
                     throw error;
@@ -15043,12 +15043,12 @@ ${digests.join('\n\n')}`,{
                 }
             } else mergeExtraction(parseExtractionResult(task.result?.text || ''));
         } else if (record.kind === 'stageSummary') {
-            // U1.6.1：升级前遗留的自由文本 stageSummary 任务不能再冒充“完成”。
+            // U1.6.1: những tác vụ stageSummary dạng văn bản tự do còn sót từ trước khi nâng cấp không được giả làm “đã hoàn thành” nữa.
             let parsed;
             try{
                 parsed=requireSummaryQuality(parseStageSummaryResult({text:task.result?.text||'',model:task.model,usage:task.usage},Number(record.startFloor||0),Number(record.endFloor??record.startFloor??0)),'Tổng kết giai đoạn',120);
             }catch(error){
-                record.status='quality-rejected';record.applied=true;record.error=`旧阶段总结结果未通过固定格式校验：${error.message}`;record.updatedAt=Date.now();
+                record.status='quality-rejected';record.applied=true;record.error=`Kết quả tổng kết giai đoạn cũ không qua kiểm tra định dạng cố định: ${error.message}`;record.updatedAt=Date.now();
                 await saveState({immediate:true,refresh:false,reason:'legacy-stage-summary-quality-rejected'});
                 if(!stillCurrent())return false;
                 return false;
@@ -15060,7 +15060,7 @@ ${digests.join('\n\n')}`,{
                 stateRuntime.state.tables.summaries.push(summaryRow);
             }
             recalculateSummaryProgress();
-            // R9S1P1：先把总结本体持久化，再执行 /hide。即使App在hide瞬间被杀，至少总结已经安全落盘。
+            // R9S1P1: lưu bản tổng kết xuống trước rồi mới chạy /hide. Kể cả khi ứng dụng bị tắt ngay lúc hide thì ít nhất bản tổng kết đã nằm an toàn trên đĩa.
             await saveState({ immediate:true, refresh:false, reason:'stage-summary-before-hide' });
             if(!stillCurrent())return false;
             if (operationState.settings.autoHideSummarized) {
@@ -15071,7 +15071,7 @@ ${digests.join('\n\n')}`,{
                     if(!stillCurrent())return false;
                 } catch (error) {
                     if(!stillCurrent())return false;
-                    summaryRow['Trạng thái ẩn'] = `隐藏失败：${error.message}`;
+                    summaryRow['Trạng thái ẩn'] = `Ẩn thất bại: ${error.message}`;
                     await saveState({ immediate:true, refresh:false, reason:'stage-summary-hide-failed' });
                     if(stillCurrent())console.warn('[vvv Trung tâm Ký ức] Tự động /hide thất bại', error);
                 }
@@ -15102,7 +15102,7 @@ ${digests.join('\n\n')}`,{
             if(fullStage && summaryRow){await saveState({immediate:true,refresh:false,reason:'takeover-stage-before-hide'});if(!stillCurrent())return false;}
             if (fullStage && summaryRow && operationState.settings.autoHideSummarized) {
                 try { await applySummaryHideState(summaryRow, true, { silent:true }); if(!stillCurrent())return false; await saveState({immediate:true,refresh:false,reason:'takeover-stage-after-hide'}); if(!stillCurrent())return false; }
-                catch (error) { if(!stillCurrent())return false;summaryRow['Trạng thái ẩn'] = `隐藏失败：${error.message}`; await saveState({immediate:true,refresh:false,reason:'takeover-stage-hide-failed'});if(!stillCurrent())return false; }
+                catch (error) { if(!stillCurrent())return false;summaryRow['Trạng thái ẩn'] = `Ẩn thất bại: ${error.message}`; await saveState({immediate:true,refresh:false,reason:'takeover-stage-hide-failed'});if(!stillCurrent())return false; }
             }
             const t = operationState.takeover || {};
             t.lastProcessedFloor = Math.max(Number(t.lastProcessedFloor ?? -1), end);
@@ -15124,8 +15124,8 @@ ${digests.join('\n\n')}`,{
                     record.status = 'stale';
                     record.error = 'Lượt trả lời mục tiêu đã bị sửa hoặc roll lại, kết quả cũ chưa được áp dụng';
                 } else {
-                    // U1.7.2升级兼容：U1.7.1若已经为同一Tầng错误创建了多个在途七条任务，安装新版后只允许第一个成功结果落地。
-                    // 后续旧任务即使晚到completed，也只标记为duplicate-skipped，绝不能再合并手机/朋友圈/彼间私文。
+                    // Tương thích khi nâng lên U1.7.2: nếu U1.7.1 đã lỡ tạo nhiều tác vụ bảy điều đang chạy cho cùng một tầng thì sau khi cài bản mới chỉ cho phép kết quả thành công đầu tiên được ghi.
+                    // Các tác vụ cũ về sau dù đến muộn ở trạng thái completed cũng chỉ bị đánh dấu duplicate-skipped, tuyệt đối không được gộp thêm điện thoại/Khoảnh khắc/Bỉ Gian Tư Văn.
                     const alreadyComplete = message?.extra?.vvvTheaterCompanion;
                     if (!record.force && alreadyComplete?.signature === currentSignature && ['ok','fallback-ok'].includes(String(alreadyComplete?.parseStatus||''))) {
                         record.status='duplicate-skipped';record.applied=true;record.error='Cùng tầng cùng lượt trả lời đã có kết quả bảy điều thành công, tác vụ cũ này bị loại bỏ để tránh lặp lại sự kiện điện thoại/thế giới';record.updatedAt=Date.now();
@@ -15153,9 +15153,9 @@ ${digests.join('\n\n')}`,{
                     }
                     message.extra = message.extra && typeof message.extra === 'object' ? message.extra : {};
                     const previousPayload = message.extra.vvvTheaterCompanion;
-                    // U1.7.2：七条最终落地必须是“先完整合并成功，再把sidecar标成ok”。
-                    // 旧版先写 message.extra=ok 再调用合并器，一旦合并器缺失/抛错，就会出现
-                    // “卡片已经显示，但后台仍判失败/Trạng thái错乱”的半提交。这里用Trạng thái快照做失败回滚。
+                    // U1.7.2: bảy điều muốn ghi xuống thì phải theo thứ tự “gộp trọn vẹn thành công trước, rồi mới đánh dấu sidecar là ok”.
+                    // Bản cũ ghi message.extra=ok trước rồi mới gọi bộ gộp, nên chỉ cần bộ gộp thiếu/ném lỗi là xuất hiện
+                    // tình trạng nửa vời “thẻ đã hiện nhưng phía nền vẫn coi là thất bại/trạng thái lộn xộn”. Ở đây dùng ảnh chụp trạng thái để hoàn tác khi thất bại.
                     const liveStateBeforeCompanionMerge = stateRuntime.state;
                     const companionMergeRollback = clone(liveStateBeforeCompanionMerge);
                     try {
@@ -15166,17 +15166,17 @@ ${digests.join('\n\n')}`,{
                         for (const key of Object.keys(liveStateBeforeCompanionMerge)) delete liveStateBeforeCompanionMerge[key];
                         Object.assign(liveStateBeforeCompanionMerge, companionMergeRollback);
                         record.status = 'merge-error';
-                        record.error = `幕后七条最终合并失败：${mergeError?.message || mergeError}`;
+                        record.error = `Gộp cuối cùng của Bảy điều hậu trường thất bại: ${mergeError?.message || mergeError}`;
                         record.updatedAt = Date.now();
                         throw mergeError;
                     }
-                    // 只有所有结构化数据、手机/世界/外观等都合并完毕后，才公开成功sidecar。
+                    // Chỉ khi mọi dữ liệu có cấu trúc, điện thoại/thế giới/ngoại hình… đã gộp xong mới công bố sidecar thành công.
                     message.extra.vvvTheaterCompanion = payload;
                     stateRuntime.state.progress.lastCompanionFloor = floor;
                     stateRuntime.state.progress.lastCompanionSignature = currentSignature;
-                    // U1.7.2：旧任务晚到并成功应用时，必须立刻掐掉此前因轮询超时创建的重试计时器。
+                    // U1.7.2: khi tác vụ cũ đến muộn mà áp dụng thành công thì phải tắt ngay bộ hẹn giờ thử lại đã tạo trước đó do hết hạn thăm dò.
                     clearCompanionRetryForFloor(floor);
-                     logAudit('Bảy điều hậu trường viết', `第${floor}层：${payload.sourceLabel || 'API riêng của Bảy điều hậu trường'}生成完成；通讯${payload.phone.write ? '有' : 'Không'}，彼间私文${payload.world.events.length}条`);
+                     logAudit('Bảy điều hậu trường viết', `Tầng ${floor}: ${payload.sourceLabel || 'API riêng của Bảy điều hậu trường'} đã tạo xong; liên lạc ${payload.phone.write ? 'có' : 'không'}, Bỉ Gian Tư Văn ${payload.world.events.length} mục`);
                      await saveChatExtras(operationScope);
                      if(!stillCurrent())return false;
                      bridgeCompanionToMainline(floor, currentSignature, operationScope);
@@ -15192,8 +15192,8 @@ ${digests.join('\n\n')}`,{
             phone.contacts ||= []; phone.contactProfiles ||= []; phone.threads ||= []; phone.groupProfiles ||= []; phone.groupThreads ||= [];
             phone.wechat ||= []; phone.wechatGroups ||= []; phone.channelGroups ||= []; phone.sms ||= []; phone.calls ||= [];
 
-            // P26：手动“手机AI”也必须先通过与主尾包完全相同的时空通讯归一化，
-            // 禁止1900/异世界的手动生成绕开规则偷偷写微信/现代服务通知。
+            // P26: “AI điện thoại” chạy thủ công cũng phải đi qua đúng cùng một bước chuẩn hóa liên lạc theo không - thời gian như gói cuối chính,
+            // cấm việc sinh thủ công ở năm 1900/dị giới lách luật để lén ghi WeChat/thông báo dịch vụ hiện đại.
             const normalized = normalizeCompanionPayload({
                 setting: stateRuntime.state?.communicationProfile || inferCurrentWorldContext(),
                 phone: { ...data, write:true },
@@ -15211,7 +15211,7 @@ ${digests.join('\n\n')}`,{
                 const name = compactText(typeof item === 'string' ? item : item?.name, 80);
                 if (!name) continue;
                 const old = phoneContactProfile(name);
-                // 已知原世界联系人穿越后保持离线，不能因AI再次返回名字就被改造成当地联系人。
+                // Những liên hệ đã biết của thế giới gốc vẫn giữ ngoại tuyến sau khi xuyên không, không được chỉ vì AI trả về lại cái tên mà biến họ thành liên hệ bản địa.
                 if (old?.scope === 'origin' && !currentProfile.originReachable) continue;
                 ensurePhoneContactProfile(name,{scope:localScope,homeWorldKey:localHomeKey,availability:currentProfile.available?'active':(localScope==='origin'?'offline-origin':'offline-local'),source:'manual-ai-contact'});
             }
@@ -15280,7 +15280,7 @@ ${digests.join('\n\n')}`,{
             const chapters = Array.isArray(data) ? data : data.chapters || [];
             chapters.forEach(item => uniquePush(stateRuntime.state.chapters, {
                 id: globalThis.crypto?.randomUUID?.() || String(Date.now()),
-                title: item.title || `第${stateRuntime.state.chapters.length + 1}章`,
+                title: item.title || `Chương ${stateRuntime.state.chapters.length + 1}`,
                 startFloor: item.startFloor ?? 0,
                 endFloor: item.endFloor ?? 0,
                 summary: item.summary || '',
@@ -15372,7 +15372,7 @@ ${digests.join('\n\n')}`,{
     async function restoreCompletedMemoryJobsOnLoad() {
         const scope=captureChatScope();
         const operationState=stateRuntime.state;
-        // fixed40：空白新存档绝不恢复/应用任何历史提取任务。第一次真实user消息出现后再进入正常流水线。
+        // fixed40: bản lưu mới trống trơn thì tuyệt đối không khôi phục/áp dụng bất kỳ tác vụ trích xuất lịch sử nào. Chỉ sau khi có tin nhắn user thật đầu tiên mới vào luồng bình thường.
         if(!scope||!operationState||!latestUserEntry())return false;
         const records=(operationState.summaryJobs||[]).filter(record=>record?.id&&!record.applied&&record.kind==='extract');
         if(!records.length)return false;
@@ -15409,7 +15409,7 @@ ${digests.join('\n\n')}`,{
         const format=jsonMode
             ? 'Chỉ xuất đúng một object JSON hoàn chỉnh mà JSON.parse đọc được ngay; cấm Markdown, giải thích, viết tiếp chính văn và mọi chữ nằm ngoài object.'
             : 'Chỉ xuất phần nội dung tổng kết chạy nền mà lượt này yêu cầu; cấm viết tiếp cốt truyện, viết thay user, thêm tiêu đề diễn giải hay in ra quá trình phân tích.';
-        return `${MEMORY_IMPERSONATE_FINAL_CONTRACT}\n【当前功能】${String(feature||'memory')}\n${format}`;
+        return `${MEMORY_IMPERSONATE_FINAL_CONTRACT}\n【TÍNH NĂNG HIỆN TẠI】${String(feature||'memory')}\n${format}`;
     }
 
     function memoryFeatureTimeoutSeconds(feature, pollTimeoutMs=0) {
@@ -15423,8 +15423,8 @@ ${digests.join('\n\n')}`,{
         const finalInstruction=memoryFeatureFinalInstruction(feature,jsonMode);
         const taskText=String(prompt||'').trim();
         if(!taskText)throw new Error('Việc sắp xếp ký ức thiếu tư liệu của lượt này');
-        // 记忆整理只需要调用方提供的目标回复、有限记忆和验收规则。
-        // 完整角色卡、世界书、Persona和聊天历史属于chính văn写作上下文，不应随后台记忆请求重复外发。
+        // Việc sắp xếp ký ức chỉ cần lượt trả lời mục tiêu, ký ức có hạn và bộ quy tắc nghiệm thu do bên gọi cung cấp.
+        // Thẻ nhân vật đầy đủ, sách thế giới, Persona và lịch sử trò chuyện thuộc về ngữ cảnh viết chính văn, không nên gửi lặp lại kèm các yêu cầu ký ức chạy nền.
         const messages=[
             {role:'system',content:'Bạn là bộ sắp xếp hồ sơ tiểu thuyết hư cấu có cấu trúc. Chỉ xử lý tư liệu được cung cấp rõ ràng trong yêu cầu này; không viết tiếp cốt truyện, không thực hiện thao tác ngoài đời, không coi những gì chưa được cung cấp là sự thật.'},
             {role:'user',content:taskText},
@@ -15453,13 +15453,13 @@ ${digests.join('\n\n')}`,{
         const stateAtStart=stateRuntime.state;
         let task=null;
         let record=reusableExtractTaskRecord(meta,stateAtStart);
-        // 兼容升级前已在服务器运行、但没有dedupeKey的同层任务：优先继续等待原任务。
+        // Tương thích với các tác vụ cùng tầng đã chạy trên máy chủ trước khi nâng cấp nhưng không có dedupeKey: ưu tiên chờ tiếp tác vụ gốc.
         if(record){
             try{
                 const existing=(await serverFetch(`/tasks/${encodeURIComponent(record.id)}`)).task;
                 if(['queued','running','completed'].includes(String(existing?.status||'')))task=existing;
                 else{record.status=existing?.status||'error';record.error=existing?.error||'Tác vụ cũ phía máy chủ đã kết thúc';record.applied=true;record.updatedAt=Date.now();record=null;}
-            }catch(error){record.status='orphaned';record.error=`原服务端任务不可恢复：${error?.message||error}`;record.applied=true;record.updatedAt=Date.now();record=null;}
+            }catch(error){record.status='orphaned';record.error=`Tác vụ gốc phía máy chủ không khôi phục được: ${error?.message||error}`;record.applied=true;record.updatedAt=Date.now();record=null;}
         }
         if(!task){
             const compiled=await compileMemoryFeatureMessages(feature,prompt,{jsonMode});
@@ -15498,8 +15498,8 @@ ${digests.join('\n\n')}`,{
     }
 
     function extractionPrompt(targetFloor=null) {
-        // 保持提示词构造器可被旧版诊断夹具独立调用；运行时使用同语义的
-        // 外层 helper，避免测试/兼容工具因闭包缺失而误报。
+        // Giữ cho bộ dựng prompt vẫn gọi độc lập được từ bộ đồ gá chẩn đoán bản cũ; lúc chạy thì dùng helper bên ngoài
+        // có cùng ngữ nghĩa, tránh để công cụ kiểm thử/tương thích báo lỗi giả vì thiếu closure.
         const hasExplicitFloorTarget = value => value !== null && value !== undefined && String(value).trim() !== '';
         const entry=hasExplicitFloorTarget(targetFloor)
             ? assistantEntryAtFloor(Number(targetFloor))
@@ -15507,28 +15507,28 @@ ${digests.join('\n\n')}`,{
         if(!entry)throw new Error('Không có lượt trả lời AI nào để sắp xếp; tin của user không tự chạy luồng ký ức');
         const requiredFacts=detectTurnLifeDetailCandidates(entry.index);
         const coverageList=requiredFacts.length
-            ? requiredFacts.map((item,index)=>`${index+1}. [${item.category}]【统一落在第${entry.index}层】${item.text}`).join('\n')
+            ? requiredFacts.map((item,index)=>`${index+1}. [${item.category}]【ĐỀU THUỘC VỀ TẦNG ${entry.index}】${item.text}`).join('\n')
             : 'Lượt này không phát hiện sự thật nguyên tử nào cần ghi đè bắt buộc.';
-        const transcript=`【本轮原子事实覆盖清单｜必须逐项写入anchors，commitment同时写入promises】\n${coverageList}\n\n${assistantTurnTranscript(entry.index)}`;
-        return `你是长篇角色扮演剧情的结构化记忆记录员。当前采用“每条AI回复一次”的严格模式。\n\n【规则】\n1. 本次唯一记忆目标是第${entry.index}层AI/角色回复。\n2. 前一条user输入只用于理解上下文，绝不能作为独立事件、独立Dòng thời gian或独立Tầng记录。\n3. mainline最多输出1条；没有值得进入Dòng thời gian的新事件则mainline=[]。\n4. 所有带floor的新增记录必须写${entry.index}，禁止写userTầng。\n5. 不猜测，不替{{user}}补动作；若AI回复明确确认/承接了user行为，可以记录这个已被AI回复确认的事实，但归属第${entry.index}层。\n6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n\n输出严格JSON，不要Markdown：\n{\n"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},\n"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}],\n"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"${entry.index}"}],\n"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"${entry.index}"}],\n"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"${entry.index}"}],\n"relations":[{"a":"","b":"","description":"","attitude":"","time":""}],\n"world":[{"name":"","type":"","description":"","scope":""}],\n"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],\n"promises":[{"time":"","content":"","characters":"","status":"","floor":"${entry.index}"}],\n"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}],\n"chapters":[{"title":"","startFloor":"${entry.index}","endFloor":"${entry.index}","summary":"","time":""}],\n"anchors":[{"date":"","time":"","floor":"${entry.index}","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],\n"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"${entry.index}"}]\n}\n没有新增就返回空数组。Chưa rõ字段留空。一次行为不得脑补成永久喜好。\n\n本次唯一资料与目标：\n${transcript}`;
+        const transcript=`【DANH SÁCH SỰ THẬT NGUYÊN TỬ CẦN BAO PHỦ CỦA LƯỢT NÀY | PHẢI GHI TỪNG MỤC VÀO anchors, RIÊNG commitment GHI THÊM VÀO promises】\n${coverageList}\n\n${assistantTurnTranscript(entry.index)}`;
+        return `Bạn là người ghi chép ký ức có cấu trúc cho một câu chuyện nhập vai dài kỳ. Hiện đang dùng chế độ nghiêm ngặt “mỗi lượt trả lời của AI chạy một lần”.\n\n【QUY TẮC】\n1. Mục tiêu ghi nhớ duy nhất lần này là lượt trả lời của AI/nhân vật ở tầng ${entry.index}.\n2. Tin nhập của user ngay trước đó chỉ dùng để hiểu ngữ cảnh, tuyệt đối không được ghi thành sự kiện riêng, dòng thời gian riêng hay tầng riêng.\n3. mainline最多输出1条；没有值得进入Dòng thời gian的新事件则mainline=[]。\n4. Mọi bản ghi mới có floor bắt buộc ghi ${entry.index}, cấm ghi tầng của user.\n5. Không đoán, không thêm hành động thay {{user}}; nếu lượt trả lời của AI xác nhận/tiếp nhận rõ ràng hành vi của user thì có thể ghi lại sự thật đã được lượt trả lời đó xác nhận, nhưng vẫn quy về tầng ${entry.index}.\n6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n\nXuất JSON nghiêm ngặt, không dùng Markdown:\n{\n"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},\n"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}],\n"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"${entry.index}"}],\n"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"${entry.index}"}],\n"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"${entry.index}"}],\n"relations":[{"a":"","b":"","description":"","attitude":"","time":""}],\n"world":[{"name":"","type":"","description":"","scope":""}],\n"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],\n"promises":[{"time":"","content":"","characters":"","status":"","floor":"${entry.index}"}],\n"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}],\n"chapters":[{"title":"","startFloor":"${entry.index}","endFloor":"${entry.index}","summary":"","time":""}],\n"anchors":[{"date":"","time":"","floor":"${entry.index}","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],\n"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"${entry.index}"}]\n}\nKhông có mục mới thì trả về mảng rỗng. Trường chưa rõ thì để trống. Một hành vi đơn lẻ không được suy diễn thành sở thích lâu dài.\n\nTư liệu và mục tiêu duy nhất của lần này:\n${transcript}`;
     }
 
     function extractionPromptV16(targetFloor=null) {
         const prompt = extractionPrompt(targetFloor)
-            .replace('3. mainline xuất tối đa 1 mục; nếu không có sự kiện mới nào đáng vào dòng thời gian thì mainline=[].','3. 目标AI回复只要包含实质剧情、动作、对话结果或Trạng thái变化，mainline必须且只能输出1条60至260字概括；只有纯问候、纯占位或确实没有任何剧情事实时才可mainline=[]。')
-            .replace('6. Các trạng thái như địa điểm/tư thế/trang phục/vật mang theo được ghi theo khoảnh khắc cuối cùng của lượt trả lời AI này.','6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n7. 所有输出字段都必须直接取证于本次目标AI回复；不得把较早Tầng、已有Lời hẹn或其他记忆改写成本层事件。')
-            .replace('"relations":[{"a":"","b":"","description":"","attitude":"","time":""}]','"relations":[{"a":"","b":"","description":"","attitude":"写清当前心理态度","psychologyChange":"本轮心理变化","time":""}]')
+            .replace('3. mainline xuất tối đa 1 mục; nếu không có sự kiện mới nào đáng vào dòng thời gian thì mainline=[].','3. Chỉ cần lượt trả lời AI mục tiêu có cốt truyện thực chất, hành động, kết quả đối thoại hay thay đổi trạng thái thì mainline bắt buộc và chỉ được xuất đúng 1 mục tóm lược dài 60 đến 260 chữ; chỉ khi thuần chào hỏi, thuần giữ chỗ hoặc thật sự không có sự thật cốt truyện nào thì mới được mainline=[].')
+            .replace('6. Các trạng thái như địa điểm/tư thế/trang phục/vật mang theo được ghi theo khoảnh khắc cuối cùng của lượt trả lời AI này.','6. Các trạng thái như địa điểm/tư thế/trang phục/vật mang theo được ghi theo khoảnh khắc cuối cùng của lượt trả lời AI này.\n7. Mọi trường đầu ra đều phải lấy bằng chứng trực tiếp từ lượt trả lời AI mục tiêu lần này; không được viết lại tầng cũ hơn, lời hẹn đã có hay ký ức khác thành sự kiện của tầng này.')
+            .replace('"relations":[{"a":"","b":"","description":"","attitude":"","time":""}]','"relations":[{"a":"","b":"","description":"","attitude":"ghi rõ thái độ tâm lý hiện tại","psychologyChange":"biến đổi tâm lý trong lượt này","time":""}]')
             .replace('"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}]','"items":[{"itemId":"","name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}]')
             .replace('"promises":[{"time":"","content":"","characters":"","status":"","floor":','"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"Chờ thực hiện|Đang diễn ra|Mặc định đã thực hiện|Đã thực hiện|Có hiệu lực lâu dài|Điều kiện chưa kích hoạt|Quá hạn chưa xác nhận|Hủy","floor":')
             .replace('"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}]','"secrets":[{"secretId":"","subject":"","content":"","knowers":"","suspects":"","unknown":""}]')
-            .replace('Một hành vi đơn lẻ không được suy diễn thành sở thích lâu dài.','一次行为不得脑补成永久喜好。promises只写明确成立且仍Chờ thực hiện或Đang diễn ra的Lời hẹn；动作摘录、人物反应、台词提示、<user_input>/共创者确认、写作任务和仅仅提到“答应/Lời hẹn”的叙述一律不得写入promises。Quan hệ nhân vật返回截至本轮末的当前关系与心理态度；相同人物对只更新，不重复建卡。物品、Lời hẹn、秘密优先沿用已有ID并更新当前Trạng thái。日常短期Lời hẹn跨过执行窗口且后文无反证时可标“默认已履行”，长期承诺绝不能自动完成。');
+            .replace('Một hành vi đơn lẻ không được suy diễn thành sở thích lâu dài.','Một hành vi đơn lẻ không được suy diễn thành sở thích lâu dài. promises chỉ ghi những lời hẹn rõ ràng đã thành lập và vẫn đang chờ thực hiện hoặc đang diễn ra; các trích đoạn hành động, phản ứng nhân vật, gợi ý thoại, phần <user_input>/xác nhận của người đồng sáng tác, nhiệm vụ viết lách và những câu chỉ nhắc tới “đồng ý/lời hẹn” đều không được đưa vào promises. Quan hệ nhân vật trả về quan hệ và thái độ tâm lý hiện tại tính tới cuối lượt này; cùng một cặp nhân vật thì chỉ cập nhật, không lập thẻ mới. Vật phẩm, lời hẹn, bí mật ưu tiên giữ ID đã có và cập nhật trạng thái hiện tại. Lời hẹn ngắn hạn thường ngày đã qua cửa sổ thực hiện mà phần sau không có bằng chứng ngược lại thì có thể ghi “Mặc định đã thực hiện”, còn lời hứa dài hạn tuyệt đối không được tự động hoàn tất.');
         return `${prompt}\n\n【fixed22 Dòng thời gian精度】mainline.date 与 mainline.start 是一级记忆键：目标AI回复的 <time> 或明确剧情时间里只要存在Ngày/时分，就必须逐字提取，不得留空；事件概括必须说明“发生了什么”，不要只写情绪判断。promises.time/due 表示Lời hẹn兑现时间，不等于创建时间；创建时间由程序按本层 <time> 自动绑定。跨过午夜时必须以目标AI回复当前 <time> 的Ngày为准，不能沿用上一层旧Ngày。`;
     }
 
     function recentEventRerunPrompt(targetFloor) {
         const entry=assistantEntryAtFloor(targetFloor);
         if(!entry)throw new Error('Tầng mục tiêu không phải là lượt trả lời AI trích xuất được');
-        return `你只负责重新提取第${entry.index}层AI回复的“Sự kiện gần đây”摘要，不更新场景、人物、关系、Lời hẹn、物品或任何其他记忆。\n\n规则：\n1. 忽略目标文本中的模式检测、输入强调、叙事视角、头部分析、STEP、共创者指令、提示词、写作规划与分析过程；它们不是剧情事件。\n2. 只概括角色在虚构剧情中已经实际发生的动作、对白结果和Trạng thái变化。\n3. 摘要60至260字，必须直接取证于目标AI回复，不读取也不改写其他Tầng。\n4. 只输出合法JSON对象，不要Markdown或解释：{"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}]}。\n5. 若目标回复确实没有剧情事实，返回{"mainline":[]}。\n\n唯一资料：\n${assistantTurnTranscript(entry.index)}`;
+        return `Bạn chỉ có nhiệm vụ trích xuất lại bản tóm tắt “sự kiện gần đây” của lượt trả lời AI ở tầng ${entry.index}, không cập nhật bối cảnh, nhân vật, quan hệ, lời hẹn, vật phẩm hay bất kỳ ký ức nào khác.\n\nQuy tắc:\n1. Bỏ qua phần nhận diện chế độ, nhấn mạnh đầu vào, góc nhìn tự sự, phân tích phần đầu, STEP, chỉ thị của người đồng sáng tác, prompt, kế hoạch viết và quá trình phân tích trong văn bản mục tiêu; đó không phải sự kiện cốt truyện.\n2. Chỉ tóm lược những hành động, kết quả đối thoại và thay đổi trạng thái đã thật sự xảy ra với nhân vật trong cốt truyện hư cấu.\n3. Bản tóm tắt dài 60 đến 260 chữ, phải lấy bằng chứng trực tiếp từ lượt trả lời AI mục tiêu, không đọc và cũng không sửa các tầng khác.\n4. Chỉ xuất một object JSON hợp lệ, không dùng Markdown hay giải thích: {"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}]}.\n5. Nếu lượt trả lời mục tiêu thật sự không có sự thật cốt truyện nào thì trả về {"mainline":[]}.\n\nTư liệu duy nhất:\n${assistantTurnTranscript(entry.index)}`;
     }
 
     function parseRecentEventRerunResult(text, entry) {
@@ -15547,14 +15547,14 @@ ${digests.join('\n\n')}`,{
         const operationScope=captureChatScope();
         const operationState=stateRuntime.state;
         const entry=assistantEntryAtFloor(floor);
-        if(!entry){toast(`第 ${floor} 层不是可提取的AI回复`,'warn');return false;}
+        if(!entry){toast(`Tầng ${floor} không phải lượt trả lời AI trích xuất được`,'warn');return false;}
         const existing=assistantMainlineRows(operationState,floor,messageStableKey(entry.message)).find(row=>row?._assistantOnce===true);
         if(!existing){toast('Mục này là sự kiện thủ công hoặc đã không còn, không được để AI ghi đè','warn');return false;}
         if(!independentApiReady()){toast('Hãy cấu hình API sắp xếp/tổng kết riêng trước.','info');return false;}
         const pending=(operationState.summaryJobs||[]).some(record=>record?.kind==='recentEventRerun'&&Number(record.floor)===floor&&!record.applied&&['queued','running','completed'].includes(String(record.status||'')));
         if(stateRuntime.recentEventRerunFloor>=0||pending){toast('Sự kiện gần đây đang được trích xuất lại, hãy đợi hoàn tất','info');return false;}
         stateRuntime.recentEventRerunFloor=floor;
-        setBusy(true,`正在重新提取第 ${floor} 层Sự kiện gần đây…`);
+        setBusy(true,`Đang trích xuất lại sự kiện gần đây của tầng ${floor}…`);
         try{
             const dedupeKey=`recent-event-rerun:${getChatKey()}:${floor}:${entry.signature}:${Date.now()}:${uid('rerun')}`;
             const result=await runFeature('extract',recentEventRerunPrompt(floor),{kind:'recentEventRerun',floor,sourceMessageSignature:entry.signature,dedupeKey},{jsonMode:true,timeoutMs:95000});
@@ -15562,10 +15562,10 @@ ${digests.join('\n\n')}`,{
             const applied=result.record&&result.task?await applyCompletedJob(result.record,result.task):false;
             if(!applied)throw new Error(result.record?.error||'Kết quả sự kiện gần đây chưa ghi vào thành công');
             renderCurrentTab();
-            toast(`第 ${floor} 层Sự kiện gần đây已重新提取`,'success');
+            toast(`Đã trích xuất lại sự kiện gần đây của tầng ${floor}`,'success');
             return true;
         }catch(error){
-            if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState)toast(`重新提取失败：${error.message}`,'error');
+            if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState)toast(`Trích xuất lại thất bại: ${error.message}`,'error');
             return false;
         }finally{
             if(stateRuntime.recentEventRerunFloor===floor)stateRuntime.recentEventRerunFloor=-1;
@@ -15585,7 +15585,7 @@ ${digests.join('\n\n')}`,{
             || assistantMainlineNeedsModelRepair(operationState,entry.index,entry.message);
         if(!force&&isAssistantMemoryDone(entry.index,entry.signature)
             &&assistantMainlineHasValidRow(operationState,entry.index,entry.message)
-            &&!(manual&&fallbackRepair)){clearExtractRetryState();if(manual)toast(`第 ${entry.index} 层AI回复已经整理过，不重复运行`,'info');return true;}
+            &&!(manual&&fallbackRepair)){clearExtractRetryState();if(manual)toast(`Lượt trả lời AI ở tầng ${entry.index} đã được sắp xếp rồi, không chạy lại`,'info');return true;}
         if(!independentApiReady()){stateRuntime.memoryPipelineNotice='Chưa cấu hình API sắp xếp/tổng kết riêng; hãy lưu trong “API và mô hình” rồi mới dựng lại tầng này';clearExtractRetryState();if(manual||fromRetry)toast('Hãy cấu hình API sắp xếp/tổng kết riêng trước.','info');return false;}
         const operationToken={scope:operationScope,floor:entry.index,at:Date.now()};stateRuntime.extractOperationToken=operationToken;stateRuntime.extracting=true;
         const retryAttempt=Math.max(0,Number(operationState.progress?.extractRetryAttempt||0));
