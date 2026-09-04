@@ -16734,8 +16734,8 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
         const ctx = context();
         if (!ctx || typeof ctx.setExtensionPrompt !== 'function') return;
         try {
-            // 记忆放在普通提示词区；尾包协议单独放在 In-Chat depth 0 的 system 消息。
-            // depth 0 位于最后一条聊天消息之后，可显著降低被预设中的 summary/XML 结尾规则覆盖的概率。
+            // Ký ức đặt ở khu prompt thông thường; giao thức gói đuôi để riêng trong tin nhắn system ở In-Chat depth 0.
+            // depth 0 nằm sau tin nhắn cuối cùng nên giảm đáng kể khả năng bị các quy tắc summary/XML ở cuối preset ghi đè.
             ctx.setExtensionPrompt(PROMPT_KEY, buildMemoryPrompt(), 0, 0, false, 0);
             ctx.setExtensionPrompt(REALITY_PROMPT_KEY, currentRealityGuardInstruction(), 1, 0, false, 0);
             ctx.setExtensionPrompt(AGENCY_PROMPT_KEY, userAgencyGuardInstruction(), 1, 0, false, 0);
@@ -16781,7 +16781,7 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
             const queuedSignature=String(targetSignature||'');
             if(Number.isInteger(queuedFloor)&&queuedFloor>=0&&queuedSignature&&queuedMessage&&!queuedMessage.is_user&&!queuedMessage.is_system&&messageSignature(queuedFloor,queuedMessage)===queuedSignature){
                 armCompanionRetry(queuedFloor,queuedSignature,{waitMs:600,silent:true,force:Boolean(force),fromRetry:false,scope:operationScope,operationState});
-                console.debug(`[vvv小剧场] 幕后七条忙，第${queuedFloor}层已按锁定签名排队`);
+                console.debug(`[vvv Sân Khấu Nhỏ] Bảy điều hậu trường đang bận, tầng ${queuedFloor} đã vào hàng đợi theo chữ ký khóa`);
             }
             return false;
         }
@@ -16822,7 +16822,7 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
             await saveChatExtras(operationScope);
             if(!stillCurrent())return false;
             decorateCompanionOutput(index);
-            if (!silent) toast(`${shell.fallbackError}；chính văn不会受影响。`,'warn');
+            if (!silent) toast(`${shell.fallbackError}; chính văn sẽ không bị ảnh hưởng.`,'warn');
             return false;
         }
         const token={scope:operationScope,floor:index,at:Date.now()};stateRuntime.mainCompanionToken=token;stateRuntime.mainCompanionProcessing = true;
@@ -16832,15 +16832,15 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
             const written = context()?.chat?.[index]?.extra?.vvvTheaterCompanion;
             if (written) {
                 if (!isCompanionPayloadSource(written.source)) written.source = companionPayloadSource();
-                // generate函数自己负责最终Trạng thái；这里禁止把retrying/fallback-ok误写成ok。
+                // Hàm generate tự lo trạng thái cuối cùng; ở đây cấm ghi nhầm retrying/fallback-ok thành ok.
                 if(ok && !['ok','fallback-ok','retrying-seven-api'].includes(String(written.parseStatus||''))) written.parseStatus='ok';
                 if(!ok && !written.parseStatus) written.parseStatus='seven-api-failed';
                 await saveChatExtras(operationScope);
                 if(!stillCurrent())return false;
                 decorateCompanionOutput(index);
             }
-            // R9S1P41：临时失败如果已经进入自动重试队列，就视为七条管线已接管本轮，
-            // 不再立刻额外调用总结API兜底，避免七条稍后成功后重复扣请求。
+            // R9S1P41: nếu lỗi tạm thời đã vào hàng đợi tự thử lại thì coi như luồng bảy điều đã tiếp quản lượt này,
+            // không gọi thêm API tổng kết để dự phòng ngay nữa, tránh bị tính phí lặp khi bảy điều thành công sau đó.
             const retrying = context()?.chat?.[index]?.extra?.vvvTheaterCompanion?.parseStatus === 'retrying-seven-api';
             return ok || retrying;
         } finally { if(stateRuntime.mainCompanionToken===token){stateRuntime.mainCompanionToken=null;stateRuntime.mainCompanionProcessing=false;} }
@@ -16870,7 +16870,7 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
         if (hidden.length) {
             const marker = document.createElement('button');
             marker.id = 'vvvtm-collapse-marker'; marker.type = 'button';
-            marker.textContent = `📚 已总结并折叠 ${hidden.length} 层 · 点击临时展开`;
+            marker.textContent = `📚 Đã tổng kết và thu gọn ${hidden.length} tầng · bấm để mở tạm`;
             marker.addEventListener('click', () => { stateRuntime.uiExpanded = true; applyUiCollapse(); });
             hidden[0].before(marker);
         }
@@ -16878,13 +16878,13 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
 
     const MEMORY_REVIEW_RAW_TYPES=new Set(['chat-floor','important-message']);
     const MEMORY_REVIEW_STATUS_ORDER={context_only:0,remembered:1,partial:2,missing:3,contradictory:4};
-    const MEMORY_REVIEW_STATUS_LABEL={context_only:'Chỉ làm ngữ cảnh',remembered:'Nhớ',partial:'Nhớ một phần',missing:'Bỏ sót',contradictory:'记错'};
+    const MEMORY_REVIEW_STATUS_LABEL={context_only:'Chỉ làm ngữ cảnh',remembered:'Nhớ',partial:'Nhớ một phần',missing:'Bỏ sót',contradictory:'Nhớ sai'};
     const MEMORY_REVIEW_SOURCE_LABEL={structured:'Ký ức có cấu trúc',summary:'Ký ức tổng kết',anchor:'Mốc neo sự kiện',raw_fallback:'Dùng chính văn làm phương án đáy',mixed:'Nhiều loại ký ức',none:'Không có kết quả'};
 
     function memoryReviewSourceQuality(document){
         const type=String(document?.type||'');
         if(['stage-summary','big-summary','era-summary','chapter'].includes(type))return'summary';
-        if(type==='episode-anchor')return /原文保底[:：]/.test(String(document?.text||''))?'raw_fallback':'anchor';
+        if(type==='episode-anchor')return /chính văn phương án đáy\s*:/i.test(String(document?.text||''))?'raw_fallback':'anchor';
         return'structured';
     }
 
@@ -16917,19 +16917,19 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
     }
 
     function memoryReviewBlindPrompt(part,index,total){
-        return `你是长篇剧情的“记忆盲测读取员”。这是第${index+1}/${total}片【插件平时可检索的记忆资料】，不是原聊天。你现在只能依据本片回忆，禁止猜测、续写或把常识当剧情。
+        return `Bạn là “người đọc kiểm mù ký ức” của một câu chuyện dài. Đây là mảnh thứ ${index+1}/${total} của 【tư liệu ký ức mà tiện ích thường truy hồi được】, không phải cuộc trò chuyện gốc. Bây giờ bạn chỉ được nhớ lại dựa trên mảnh này; cấm đoán, cấm viết tiếp và cấm coi kiến thức chung là cốt truyện.
 
-任务：把本片能明确支持的事实全部整理成紧凑的原子回忆，尤其不能漏掉人物Thân phận/关系、小事件、吃喝购物、金额、物品、Lời hẹn、出行、通讯、外观变化和秘密知情边界。相同事实可合并，但不得为了简短丢掉具体食物、商品、金额、Họ tên或Trạng thái。
+Nhiệm vụ: gom mọi sự thật mà mảnh này chứng minh rõ ràng thành những mẩu hồi ức nguyên tử, súc tích; đặc biệt không được bỏ sót thân phận/quan hệ nhân vật, sự kiện nhỏ, chuyện ăn uống mua sắm, số tiền, vật phẩm, lời hẹn, đi lại, liên lạc, thay đổi ngoại hình và ranh giới người biết bí mật. Sự thật giống nhau có thể gộp, nhưng không được vì ngắn gọn mà bỏ mất món ăn, món hàng, số tiền, họ tên hay trạng thái cụ thể.
 
-sourceIds必须引用资料中的真实id；floorStart/floorEndChưa rõ时为null。sourceQuality只能是structured、summary、anchor、raw_fallback或mixed；若多个来源共同支持则mixed。只输出JSON：
+sourceIds bắt buộc trỏ tới id thật trong tư liệu; floorStart/floorEnd chưa rõ thì để null. sourceQuality chỉ được là structured, summary, anchor, raw_fallback hoặc mixed; nếu nhiều nguồn cùng chứng minh thì dùng mixed. Chỉ xuất JSON:
 {"partSummary":"","recollections":[{"category":"event|identity|relationship|promise|item|small_event|money|food|shopping|travel|communication|appearance|secret|other","claim":"","floorStart":0,"floorEnd":0,"people":[],"confidence":"high|medium|low","sourceQuality":"structured|summary|anchor|raw_fallback|mixed","sourceIds":["M1"]}],"conflicts":[{"topic":"","versions":[],"sourceIds":[]}],"weakSignals":[{"claim":"","reason":"","sourceIds":[]}]}
 
-记忆资料：
+Tư liệu ký ức:
 ${part.text}`;
     }
 
     function parseMemoryReviewBlindResult(result,allowedIds=[]){
-        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`记忆盲测JSON解析失败：${error.message}`);}
+        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`Phân tích JSON của bài kiểm mù ký ức thất bại: ${error.message}`);}
         if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.recollections))throw new Error('Bài kiểm mù ký ức thiếu mảng recollections');
         const allowed=new Set(allowedIds),quality=new Set(['structured','summary','anchor','raw_fallback','mixed']);
         const recollections=raw.recollections.slice(0,1200).map((row,index)=>{
@@ -16958,28 +16958,28 @@ ${part.text}`;
     }
 
     function memoryReviewAuditPrompt(part,floors,recollections,index,total){
-        return `你是长篇剧情的“原文核验员”。这是第${index+1}/${total}片核验。上方【盲测回忆】来自AI先读插件记忆库得到的答案；下方【原聊天】现在才作为标准答案出现。严禁用原文补写盲测答案后冒充“已记住”。
+        return `Bạn là “người đối chiếu chính văn” của một câu chuyện dài. Đây là lần đối chiếu thứ ${index+1}/${total}. Phần 【hồi ức kiểm mù】 ở trên là đáp án AI đưa ra sau khi chỉ đọc kho ký ức của tiện ích; phần 【cuộc trò chuyện gốc】 bên dưới đến bây giờ mới xuất hiện với vai trò đáp án chuẩn. Nghiêm cấm dùng chính văn để bù vào đáp án kiểm mù rồi giả vờ là “đã nhớ”.
 
-逐层判断：
-1. user/system层status固定为context_only，只说明其作用，不计记忆分数。
-2. assistant层必须各返回一项：盲测回忆完整覆盖该层关键事实=remembered；覆盖主干但漏细节=partial；没有对应回忆=missing；人物Thân phận、关系、物品、金额或事件说错=contradictory。
-3. foods、购买物、金额、Lời hẹnTrạng thái、人物Thân phận/关系都算应记细节，不能因“剧情不重要”忽略。
-4. memorySource只能是structured、summary、anchor、raw_fallback、mixed、none。原文保底命中必须标raw_fallback，不能算结构化命中。
-5. rememberedAs只写盲测原本记住的内容；missing和contradiction只写原文核验发现的问题。不得输出思维过程。
+Phán định theo từng tầng:
+1. Tầng user/system thì status luôn là context_only, chỉ nêu vai trò của nó và không tính vào điểm ký ức.
+2. Mỗi tầng assistant bắt buộc trả về một mục: hồi ức kiểm mù bao phủ trọn sự thật then chốt của tầng đó = remembered; bao phủ phần chính nhưng sót chi tiết = partial; không có hồi ức tương ứng = missing; nói sai thân phận nhân vật, quan hệ, vật phẩm, số tiền hay sự kiện = contradictory.
+3. Món ăn, món đã mua, số tiền, trạng thái lời hẹn, thân phận/quan hệ nhân vật đều là chi tiết phải nhớ, không được bỏ qua vì “cốt truyện không quan trọng”.
+4. memorySource chỉ được là structured, summary, anchor, raw_fallback, mixed, none. Trúng nhờ chính văn phương án đáy thì bắt buộc ghi raw_fallback, không được tính là trúng có cấu trúc.
+5. rememberedAs chỉ ghi nội dung mà bài kiểm mù vốn đã nhớ; missing và contradiction chỉ ghi những vấn đề phát hiện khi đối chiếu chính văn. Không được xuất ra quá trình suy nghĩ.
 
-必须覆盖这些Tầng：${floors.map(row=>`${row.floor}:${row.role}`).join('、')}
-只输出JSON：
-{"partSummary":"","floors":[{"floor":0,"role":"assistant|user|system","summary":"本层原文发生了什么","status":"remembered|partial|missing|contradictory|context_only","memorySource":"structured|summary|anchor|raw_fallback|mixed|none","rememberedAs":"","missing":"","contradiction":"","evidenceClaimIds":[]}],"findings":[{"category":"identity|relationship|promise|item|small_event|money|food|shopping|travel|communication|appearance|secret|event|other","truth":"","status":"remembered|partial|missing|contradictory","rememberedAs":"","floorStart":0,"floorEnd":0,"people":[],"importance":"core|detail"}]}
+Bắt buộc bao phủ các tầng sau: ${floors.map(row=>`${row.floor}:${row.role}`).join(', ')}
+Chỉ xuất JSON:
+{"partSummary":"","floors":[{"floor":0,"role":"assistant|user|system","summary":"chính văn của tầng này đã xảy ra chuyện gì","status":"remembered|partial|missing|contradictory|context_only","memorySource":"structured|summary|anchor|raw_fallback|mixed|none","rememberedAs":"","missing":"","contradiction":"","evidenceClaimIds":[]}],"findings":[{"category":"identity|relationship|promise|item|small_event|money|food|shopping|travel|communication|appearance|secret|event|other","truth":"","status":"remembered|partial|missing|contradictory","rememberedAs":"","floorStart":0,"floorEnd":0,"people":[],"importance":"core|detail"}]}
 
-【盲测回忆】
+【HỒI ỨC KIỂM MÙ】
 ${JSON.stringify(recollections)}
 
-【原聊天标准答案】
+【ĐÁP ÁN CHUẨN TỪ CUỘC TRÒ CHUYỆN GỐC】
 ${part.text}`;
     }
 
     function parseMemoryReviewAuditResult(result,expectedFloors=[]){
-        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`原文核验JSON解析失败：${error.message}`);}
+        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`Phân tích JSON của bước đối chiếu chính văn thất bại: ${error.message}`);}
         if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.floors))throw new Error('Phần đối chiếu chính văn thiếu mảng floors');
         const expected=new Map(expectedFloors.map(row=>[Number(row.floor),row.role])),allowedStatus=new Set(Object.keys(MEMORY_REVIEW_STATUS_ORDER)),allowedSources=new Set(Object.keys(MEMORY_REVIEW_SOURCE_LABEL)),seen=new Set(),floors=[];
         for(const row of raw.floors){const floor=Number(row?.floor);if(!Number.isInteger(floor)||!expected.has(floor)||seen.has(floor))continue;const role=expected.get(floor),required=role==='assistant'?null:'context_only',status=required||String(row?.status||'missing');floors.push({floor,role,status:allowedStatus.has(status)?status:(role==='assistant'?'missing':'context_only'),memorySource:allowedSources.has(row?.memorySource)?row.memorySource:'none',summary:compactText(sanitizeRetrievalDocumentText(row?.summary),700)||'AI chưa đưa ra tóm lược cho tầng này',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),700),missing:compactText(sanitizeRetrievalDocumentText(row?.missing),700),contradiction:compactText(sanitizeRetrievalDocumentText(row?.contradiction),700),evidenceClaimIds:(Array.isArray(row?.evidenceClaimIds)?row.evidenceClaimIds:[]).map(String).slice(0,30)});seen.add(floor);}
@@ -17007,19 +17007,19 @@ ${part.text}`;
         const evidence={stats,category,problems:[],remembered:[],blindConflicts:blindConflicts.slice(0,30),memoryDocuments:meta.memoryDocuments,totalFloors:meta.totalFloors,excludedRawDocuments:meta.excludedRaw};let chars=JSON.stringify(evidence).length;
         for(const row of findings.filter(item=>['contradictory','missing','partial'].includes(item.status)).map(compactRow)){const size=JSON.stringify(row).length;if(chars+size>30000)break;evidence.problems.push(row);chars+=size;}
         for(const row of findings.filter(item=>item.status==='remembered').map(compactRow)){const size=JSON.stringify(row).length;if(chars+size>36000)break;evidence.remembered.push(row);chars+=size;}
-        return `你是“AI记忆体检总评员”。前面的AI已先盲读插件记忆库，再用原聊天核验；下面是核验结果。请用普通用户能看懂的中文给出诚实结论，不安慰、不夸大。
+        return `Bạn là “người nhận xét chung của bài khám ký ức AI”. AI trước đó đã đọc mù kho ký ức của tiện ích rồi đối chiếu với cuộc trò chuyện gốc; dưới đây là kết quả đối chiếu. Hãy đưa ra kết luận trung thực bằng tiếng Việt dễ hiểu với người dùng thường, không an ủi và cũng không thổi phồng.
 
-必须明确区分：记忆库存储覆盖、AI读库后的复述能力、平时chính văn能否被检索命中。raw_fallback只能说明原文保底还在，不等于结构化记忆好；本体检也不能证明主chính văn模型在任何提问下都会自动命中，因为日常召回仍取决于用户问题和检索TopK。
+Bắt buộc phân biệt rõ: độ phủ lưu trữ của kho ký ức, khả năng thuật lại của AI sau khi đọc kho, và việc chính văn thường ngày có được truy hồi trúng hay không. raw_fallback chỉ cho thấy chính văn phương án đáy vẫn còn, không đồng nghĩa ký ức có cấu trúc tốt; bài khám này cũng không chứng minh được mô hình viết chính văn sẽ tự trúng với mọi câu hỏi, vì việc gọi lại hằng ngày còn phụ thuộc câu hỏi của người dùng và TopK khi truy hồi.
 
-scores.coverage必须参考给定stats.score，不得凭空给高分。重点说明人物Thân phận/关系串档、虚构物品、金额、吃喝购买等小事件。只输出JSON：
-{"verdict":"一句话结论","overview":"详细总评","scores":{"coverage":0,"detail":0,"consistency":0,"retrievalReadiness":0},"strengths":[{"title":"","detail":"","floors":[]}],"weaknesses":[{"title":"","detail":"","floors":[]}],"rememberedExamples":[""],"partialExamples":[""],"missingExamples":[""],"contradictions":[""],"relationships":[""],"promisesItems":[""],"recommendations":[""],"caveat":""}
+scores.coverage bắt buộc tham chiếu stats.score được cung cấp, không được tự cho điểm cao. Hãy nói rõ về việc lẫn hồ sơ thân phận/quan hệ nhân vật, vật phẩm bịa ra, số tiền, chuyện ăn uống mua sắm và các sự kiện nhỏ. Chỉ xuất JSON:
+{"verdict":"kết luận trong một câu","overview":"nhận xét chi tiết","scores":{"coverage":0,"detail":0,"consistency":0,"retrievalReadiness":0},"strengths":[{"title":"","detail":"","floors":[]}],"weaknesses":[{"title":"","detail":"","floors":[]}],"rememberedExamples":[""],"partialExamples":[""],"missingExamples":[""],"contradictions":[""],"relationships":[""],"promisesItems":[""],"recommendations":[""],"caveat":""}
 
-核验资料：
+Tư liệu đối chiếu:
 ${JSON.stringify(evidence)}`;
     }
 
     function parseMemoryReviewFinalResult(result,stats){
-        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`记忆总评JSON解析失败：${error.message}`);}
+        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`Phân tích JSON của phần nhận xét chung về ký ức thất bại: ${error.message}`);}
         if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Nhận xét chung về ký ức không phải là object JSON');
         const list=(value,max=30)=>Array.isArray(value)?value.map(row=>typeof row==='object'?compactText(row?.detail||row?.title||JSON.stringify(row),1000):compactText(row,1000)).filter(Boolean).slice(0,max):[];
         const cards=(value,max=20)=>Array.isArray(value)?value.map(row=>({title:compactText(row?.title,200),detail:compactText(row?.detail,1000),floors:(Array.isArray(row?.floors)?row.floors:[]).map(Number).filter(Number.isFinite).slice(0,30)})).filter(row=>row.title||row.detail).slice(0,max):[];
@@ -17042,12 +17042,12 @@ ${JSON.stringify(evidence)}`;
         const result=stateRuntime.memoryReviewResult;if(!result||result.chatKey!==getChatKey())return memoryReviewProgressMarkup({label:'Chờ bắt đầu khám bằng AI'});
         const floors=result.floors||[],stats=result.stats||memoryReviewStats(floors),summary=result.final||{},pageSize=80,totalPages=Math.max(1,Math.ceil(floors.length/pageSize)),current=Math.max(0,Math.min(totalPages-1,Number(page)||0)),start=current*pageSize,rows=floors.slice(start,start+pageSize);
         const tone=row=>row.status==='remembered'?'covered':row.status==='partial'?'partial':row.status==='contradictory'?'contradictory':row.status==='missing'?'fallback':'context';
-        return `<header><div><small>0-32 · Kiểm tra ký ức AI</small><h2>回顾 · 第 0-${Math.max(0,result.totalFloors-1)} 层</h2><p>${esc(summary.verdict||'AI đã hoàn tất kiểm mù và đối chiếu chính văn.')} 本报告不是聊天消息，不进入下一轮上下文。</p></div><div><button data-memory-review-refresh>Kiểm tra lại</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-stats"><span><b>${stats.score}%</b>Độ phủ ký ức</span><span><b>${stats.counts.remembered}</b>Nhớ đầy đủ</span><span class="${stats.counts.partial?'warn':''}"><b>${stats.counts.partial}</b>Nhớ một phần</span><span class="${stats.counts.missing?'warn':''}"><b>${stats.counts.missing}</b>Bỏ sót</span><span class="${stats.counts.contradictory?'danger':''}"><b>${stats.counts.contradictory}</b>Nhớ sai</span><span><b>${result.apiCalls}</b>Lượt gọi API</span></section><section class="vvvtm-memory-review-overview"><h3>Nhận xét chung của AI</h3><p>${esc(summary.overview||'')}</p><div>${Object.entries(summary.scores||{}).map(([key,value])=>`<span><b>${esc(value)}%</b>${esc({coverage:'记忆覆盖',detail:'Ký ức chi tiết',consistency:'Tính nhất quán',retrievalReadiness:'Mức sẵn sàng truy hồi thường ngày'}[key]||key)}</span>`).join('')}</div><small>${esc(summary.caveat||'')}</small></section><nav><button data-memory-review-page="${current-1}" ${current<=0?'disabled':''}>Đoạn trước</button><span>AI逐层核验 · 第 ${current+1}/${totalPages} 页</span><button data-memory-review-page="${current+1}" ${current>=totalPages-1?'disabled':''}>Đoạn sau</button></nav><section class="vvvtm-memory-review-timeline">${rows.map(row=>`<button data-memory-review-jump="${row.floor}" class="${tone(row)}"><span>第 ${row.floor} 层</span><b>${esc(MEMORY_REVIEW_STATUS_LABEL[row.status]||row.status)}</b><em>${esc(MEMORY_REVIEW_SOURCE_LABEL[row.memorySource]||row.memorySource)}</em><p>${esc(row.summary)}</p>${row.rememberedAs?`<small>原本记住：${esc(row.rememberedAs)}</small>`:''}${row.missing?`<small class="missing">漏掉：${esc(row.missing)}</small>`:''}${row.contradiction?`<small class="contradiction">记错：${esc(row.contradiction)}</small>`:''}</button>`).join('')}</section><section class="vvvtm-memory-review-ledgers">${memoryReviewList('Phần nhớ tốt',summary.rememberedExamples)}${memoryReviewList('Chỉ nhớ một phần',summary.partialExamples)}${memoryReviewList('Sót rõ ràng',summary.missingExamples)}${memoryReviewList('Mâu thuẫn và lẫn hồ sơ',summary.contradictions)}${memoryReviewList('Đối chiếu nhân vật và quan hệ',summary.relationships)}${memoryReviewList('Đối chiếu lời hẹn và vật phẩm',summary.promisesItems)}${memoryReviewList('Hướng cải thiện AI đề xuất',summary.recommendations)}</section>`;
+        return `<header><div><small>0-32 · Kiểm tra ký ức AI</small><h2>Nhìn lại · tầng 0-${Math.max(0,result.totalFloors-1)}</h2><p>${esc(summary.verdict||'AI đã hoàn tất kiểm mù và đối chiếu chính văn.')} Báo cáo này không phải tin nhắn trò chuyện và không vào ngữ cảnh của lượt sau.</p></div><div><button data-memory-review-refresh>Kiểm tra lại</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-stats"><span><b>${stats.score}%</b>Độ phủ ký ức</span><span><b>${stats.counts.remembered}</b>Nhớ đầy đủ</span><span class="${stats.counts.partial?'warn':''}"><b>${stats.counts.partial}</b>Nhớ một phần</span><span class="${stats.counts.missing?'warn':''}"><b>${stats.counts.missing}</b>Bỏ sót</span><span class="${stats.counts.contradictory?'danger':''}"><b>${stats.counts.contradictory}</b>Nhớ sai</span><span><b>${result.apiCalls}</b>Lượt gọi API</span></section><section class="vvvtm-memory-review-overview"><h3>Nhận xét chung của AI</h3><p>${esc(summary.overview||'')}</p><div>${Object.entries(summary.scores||{}).map(([key,value])=>`<span><b>${esc(value)}%</b>${esc({coverage:'记忆覆盖',detail:'Ký ức chi tiết',consistency:'Tính nhất quán',retrievalReadiness:'Mức sẵn sàng truy hồi thường ngày'}[key]||key)}</span>`).join('')}</div><small>${esc(summary.caveat||'')}</small></section><nav><button data-memory-review-page="${current-1}" ${current<=0?'disabled':''}>Đoạn trước</button><span>AI逐层核验 · 第 ${current+1}/${totalPages} 页</span><button data-memory-review-page="${current+1}" ${current>=totalPages-1?'disabled':''}>Đoạn sau</button></nav><section class="vvvtm-memory-review-timeline">${rows.map(row=>`<button data-memory-review-jump="${row.floor}" class="${tone(row)}"><span>第 ${row.floor} 层</span><b>${esc(MEMORY_REVIEW_STATUS_LABEL[row.status]||row.status)}</b><em>${esc(MEMORY_REVIEW_SOURCE_LABEL[row.memorySource]||row.memorySource)}</em><p>${esc(row.summary)}</p>${row.rememberedAs?`<small>原本记住：${esc(row.rememberedAs)}</small>`:''}${row.missing?`<small class="missing">漏掉：${esc(row.missing)}</small>`:''}${row.contradiction?`<small class="contradiction">记错：${esc(row.contradiction)}</small>`:''}</button>`).join('')}</section><section class="vvvtm-memory-review-ledgers">${memoryReviewList('Phần nhớ tốt',summary.rememberedExamples)}${memoryReviewList('Chỉ nhớ một phần',summary.partialExamples)}${memoryReviewList('Sót rõ ràng',summary.missingExamples)}${memoryReviewList('Mâu thuẫn và lẫn hồ sơ',summary.contradictions)}${memoryReviewList('Đối chiếu nhân vật và quan hệ',summary.relationships)}${memoryReviewList('Đối chiếu lời hẹn và vật phẩm',summary.promisesItems)}${memoryReviewList('Hướng cải thiện AI đề xuất',summary.recommendations)}</section>`;
     }
 
     function bindMemoryReviewReport(report,page=0){
         report.querySelector('[data-memory-review-close]')?.addEventListener('click',()=>{if(stateRuntime.memoryReviewRunning){stateRuntime.memoryReviewAbort=true;stateRuntime.memoryReviewReportClosed=true;}report.remove();});
-        report.querySelector('[data-memory-review-abort]')?.addEventListener('click',event=>{if(event.currentTarget.textContent==='Thử lại'){openMemoryReviewInChat(0,{force:true}).catch(error=>toast(`重试失败：${error.message}`,'error'));return;}stateRuntime.memoryReviewAbort=true;event.currentTarget.disabled=true;event.currentTarget.textContent='Sẽ dừng sau khi yêu cầu hiện tại hoàn tất';});
+        report.querySelector('[data-memory-review-abort]')?.addEventListener('click',event=>{if(event.currentTarget.textContent==='Thử lại'){openMemoryReviewInChat(0,{force:true}).catch(error=>toast(`Thử lại thất bại: ${error.message}`,'error'));return;}stateRuntime.memoryReviewAbort=true;event.currentTarget.disabled=true;event.currentTarget.textContent='Sẽ dừng sau khi yêu cầu hiện tại hoàn tất';});
         report.querySelector('[data-memory-review-refresh]')?.addEventListener('click',()=>openMemoryReviewInChat(0,{force:true}));
         report.querySelectorAll('[data-memory-review-page]').forEach(button=>button.addEventListener('click',()=>renderMemoryReviewInChat(Number(button.dataset.memoryReviewPage)||0)));
         report.querySelectorAll('[data-memory-review-jump]').forEach(button=>button.addEventListener('click',()=>jumpToFloor(button.dataset.memoryReviewJump)));
@@ -17072,18 +17072,18 @@ ${JSON.stringify(evidence)}`;
         const scope=captureChatScope(),operationState=stateRuntime.state;if(!scope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         const source=buildMemoryReviewData(),memoryParts=memoryReviewDocumentParts(source.documents),transcriptParts=transcriptRangeParts(0,Math.max(0,source.totalFloors-1),18000);if(!transcriptParts.length){toast('Cuộc trò chuyện hiện tại không có nội dung nào để khám','warn');return false;}
         const estimate=memoryParts.length+transcriptParts.length+1;
-        if(!confirm(`开始AI记忆体检吗？\n\n第一阶段：${memoryParts.length} 次容量接力，只读 ${source.documents.length} 条实际记忆资料，不给原聊天。\n第二阶段：${transcriptParts.length} 次逐段读取原聊天，核验哪些记住、漏记或记错。\n第三阶段：1 次AI总评。\n\n预计 ${estimate} 次API请求；质量校验失败时单项最多重试3次。报告不会写进聊天历史。`))return false;
+        if(!confirm(`Bắt đầu khám ký ức bằng AI chứ?\n\nGiai đoạn một: ${memoryParts.length} lượt tiếp sức theo dung lượng, chỉ đọc ${source.documents.length} mục tư liệu ký ức thật, không đưa cuộc trò chuyện gốc.\nGiai đoạn hai: ${transcriptParts.length} lượt đọc cuộc trò chuyện gốc theo từng đoạn, đối chiếu xem chỗ nào nhớ, chỗ nào sót hay nhớ sai.\nGiai đoạn ba: 1 lượt AI nhận xét chung.\n\nDự kiến ${estimate} lượt gọi API; mỗi mục không đạt chất lượng thì thử lại tối đa 3 lần. Báo cáo sẽ không ghi vào lịch sử trò chuyện.`))return false;
         const token={scope,state:operationState,at:Date.now()};stateRuntime.memoryReviewRunning=true;stateRuntime.memoryReviewAbort=false;stateRuntime.memoryReviewReportClosed=false;stateRuntime.memoryReviewOperationToken=token;stateRuntime.memoryReviewResult=null;
         document.getElementById('vvvtm-modal')?.setAttribute('hidden','');let apiCalls=0,cached=0,completed=0;
         const progress=(label,total=estimate)=>updateMemoryReviewProgress(token,{label,current:completed,total,percent:total?completed/total*100:0,apiCalls,cached});
         try{
             progress('Giai đoạn một: chuẩn bị cho AI đọc mù kho ký ức');const blind=[];
-            for(let index=0;index<memoryParts.length;index+=1){if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');progress(`第一阶段：AI盲读记忆资料 ${index+1}/${memoryParts.length}`);const part=memoryParts[index];const result=await runValidatedTransientLlm('diagnostics',memoryReviewBlindPrompt(part,index,memoryParts.length),{jsonMode:true,workflowMeta:{workflow:'memoryReviewBlind',chatKey:scope.chatKey,startFloor:part.startFloor,endFloor:part.endFloor,partIndex:index,totalParts:memoryParts.length},validate:value=>parseMemoryReviewBlindResult(value,part.documentIds),maxAttempts:3,label:`记忆盲读${index+1}`});if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');apiCalls+=Number(result._apiCalls||0);cached+=Number(result._cachedReads||0);completed+=1;blind.push(result);}
+            for(let index=0;index<memoryParts.length;index+=1){if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');progress(`Giai đoạn một: AI đọc mù tư liệu ký ức ${index+1}/${memoryParts.length}`);const part=memoryParts[index];const result=await runValidatedTransientLlm('diagnostics',memoryReviewBlindPrompt(part,index,memoryParts.length),{jsonMode:true,workflowMeta:{workflow:'memoryReviewBlind',chatKey:scope.chatKey,startFloor:part.startFloor,endFloor:part.endFloor,partIndex:index,totalParts:memoryParts.length},validate:value=>parseMemoryReviewBlindResult(value,part.documentIds),maxAttempts:3,label:`记忆盲读${index+1}`});if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');apiCalls+=Number(result._apiCalls||0);cached+=Number(result._cachedReads||0);completed+=1;blind.push(result);}
             const recollections=blind.flatMap(result=>result.parsed.recollections).map((row,index)=>({...row,id:`R${index+1}`})),blindConflicts=blind.flatMap(result=>result.parsed.conflicts||[]),audits=[];
             for(let index=0;index<transcriptParts.length;index+=1){if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');const part=transcriptParts[index],floors=memoryReviewPartFloors(part),relevant=memoryReviewRelevantRecall(recollections,part);progress(`第二阶段：AI用原聊天核验 ${index+1}/${transcriptParts.length}`);const result=await runValidatedTransientLlm('diagnostics',memoryReviewAuditPrompt(part,floors,relevant,index,transcriptParts.length),{jsonMode:true,workflowMeta:{workflow:'memoryReviewAuditPart',chatKey:scope.chatKey,startFloor:part.startFloor,endFloor:part.endFloor,partIndex:index,totalParts:transcriptParts.length},validate:value=>parseMemoryReviewAuditResult(value,floors),maxAttempts:3,label:`原文核验${index+1}`});if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');apiCalls+=Number(result._apiCalls||0);cached+=Number(result._cachedReads||0);completed+=1;audits.push(result);}
             const floors=mergeMemoryReviewFloors(audits),findings=audits.flatMap(result=>result.parsed.findings||[]),stats=memoryReviewStats(floors);progress('Giai đoạn ba: AI tổng hợp độ mạnh yếu của ký ức thật');
             const finalResult=await runValidatedTransientLlm('diagnostics',memoryReviewFinalPrompt(floors,findings,blindConflicts,{memoryDocuments:source.documents.length,totalFloors:source.totalFloors,excludedRaw:source.excludedRaw}),{jsonMode:true,workflowMeta:{workflow:'memoryReviewFinal',chatKey:scope.chatKey,startFloor:0,endFloor:Math.max(0,source.totalFloors-1)},validate:value=>parseMemoryReviewFinalResult(value,stats),maxAttempts:3,label:'Nhận xét chung của lần khám ký ức'});if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');apiCalls+=Number(finalResult._apiCalls||0);cached+=Number(finalResult._cachedReads||0);completed+=1;
-            stateRuntime.memoryReviewResult={chatKey:scope.chatKey,createdAt:Date.now(),totalFloors:source.totalFloors,memoryDocuments:source.documents.length,excludedRaw:source.excludedRaw,apiCalls,cached,floors,stats,findings,final:finalResult.parsed};renderMemoryReviewInChat(0);toast(`AI记忆体检完成：覆盖 ${stats.score}% · 漏记 ${stats.counts.missing} 层 · 记错 ${stats.counts.contradictory} 层`,'success');return true;
+            stateRuntime.memoryReviewResult={chatKey:scope.chatKey,createdAt:Date.now(),totalFloors:source.totalFloors,memoryDocuments:source.documents.length,excludedRaw:source.excludedRaw,apiCalls,cached,floors,stats,findings,final:finalResult.parsed};renderMemoryReviewInChat(0);toast(`Khám ký ức bằng AI đã xong: độ phủ  ${stats.score}% · 漏记 ${stats.counts.missing} 层 · 记错 ${stats.counts.contradictory} 层`,'success');return true;
         }catch(error){
             if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState&&!stateRuntime.memoryReviewReportClosed){ensureMemoryReviewReport(memoryReviewProgressMarkup({failed:true,error:error?.message||String(error),label:'Việc khám ký ức bằng AI chưa xong',current:completed,total:estimate,percent:completed/estimate*100,apiCalls,cached}));toast(`AI记忆体检停止：${error.message}`,'error');}return false;
         }finally{if(stateRuntime.memoryReviewOperationToken===token){stateRuntime.memoryReviewOperationToken=null;stateRuntime.memoryReviewRunning=false;stateRuntime.memoryReviewAbort=false;}}
@@ -17100,22 +17100,22 @@ ${JSON.stringify(evidence)}`;
         const index = stateRuntime.indexStatus || {};
         return `<section class="vvvtm-grid stats">
             ${statCard('Mục ký ức', countRows(s), 'Số sự thật có cấu trúc, không phải số lượt trò chuyện')}
-            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length, `进度至 ${maxSummarizedFloor()} 层`)}
+            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length, `Tiến độ tới tầng ${maxSummarizedFloor()}`)}
             ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length, 'Bối cảnh dài hạn cỡ nghìn tầng')}
-            ${statCard('Chỉ mục truy hồi', index.count ?? '—', index.vectorCount ? `检索文档 · 向量 ${index.vectorCount}` : 'Số tài liệu truy hồi, không phải số lượt trò chuyện')}
+            ${statCard('Chỉ mục truy hồi', index.count ?? '—', index.vectorCount ? `Tài liệu truy hồi · vector ${index.vectorCount}` : 'Số tài liệu truy hồi, không phải số lượt trò chuyện')}
             ${statCard('Tác vụ chạy nền', running, stateRuntime.serverHealth?.ok === false ? 'Chưa kết nối phía máy chủ' : 'Khóa màn hình vẫn chạy tiếp được')}
         </section>
         <p class="vvvtm-counter-note">“记忆条目”统计的是主线、Trạng thái、人物、关系、Lời hẹn、秘密、人物外观等结构化记录；一轮对话可能拆成多条，所以跑1轮显示3条、长期聊天显示几十条都可能正常。“检索索引”统计的是可Tìm文档片段，也不是Tầng数。</p>
-        ${(()=>{const p=s.progress||{};if(!p.extractRetryPending)return'';const remain=Math.max(0,Math.ceil((Number(p.extractRetryAt||0)-Date.now())/1000));return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏳ 第 ${Number(p.extractRetryFloor)} 层整理等待重试 ${Number(p.extractRetryAttempt||0)}/${extractRetryLimit()}</h3></div><p class="vvvtm-note">${remain?`${remain} 秒后启动下一次。`:'Đang khởi động lượt tiếp theo.'} 上次错误：${esc(p.extractRetryReason||'Không trả về lỗi cụ thể')}</p><p class="vvvtm-note">Ký ức tức thời chỉ gửi lượt trả lời mục tiêu và một lượng tư liệu có hạn; khi thất bại chỉ thử lại trên đúng API riêng đó. Đạt tới giới hạn thì lưu chính văn làm phương án đáy và cho đi tiếp một cách rõ ràng.</p></section>`;})()}
+        ${(()=>{const p=s.progress||{};if(!p.extractRetryPending)return'';const remain=Math.max(0,Math.ceil((Number(p.extractRetryAt||0)-Date.now())/1000));return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏳ Tầng ${Number(p.extractRetryFloor)} đang chờ thử lại việc sắp xếp ${Number(p.extractRetryAttempt||0)}/${extractRetryLimit()}</h3></div><p class="vvvtm-note">${remain?`${remain} 秒后启动下一次。`:'Đang khởi động lượt tiếp theo.'} 上次错误：${esc(p.extractRetryReason||'Không trả về lỗi cụ thể')}</p><p class="vvvtm-note">Ký ức tức thời chỉ gửi lượt trả lời mục tiêu và một lượng tư liệu có hạn; khi thất bại chỉ thử lại trên đúng API riêng đó. Đạt tới giới hạn thì lưu chính văn làm phương án đáy và cho đi tiếp một cách rõ ràng.</p></section>`;})()}
                 <section class="vvvtm-dashboard-grid">
-            <article class="vvvtm-card scene-card"><div class="vvvtm-section-title"><h3>🎬 当前场景</h3><div><button data-overview-action="calibrate-time">🕒 校准时间</button><button data-overview-action="save-scene">Lưu</button></div></div><div class="vvvtm-form-grid">${sceneInput('time','Thời gian')}${sceneInput('location','Địa điểm')}${sceneInput('weather','Thời tiết')}${sceneInput('mood','Không khí')}${sceneInput('pace','Nhịp')}${sceneInput('goal','Mục tiêu lượt này')}</div></article>
+            <article class="vvvtm-card scene-card"><div class="vvvtm-section-title"><h3>🎬 Cảnh hiện tại</h3><div><button data-overview-action="calibrate-time">🕒 校准时间</button><button data-overview-action="save-scene">Lưu</button></div></div><div class="vvvtm-form-grid">${sceneInput('time','Thời gian')}${sceneInput('location','Địa điểm')}${sceneInput('weather','Thời tiết')}${sceneInput('mood','Không khí')}${sceneInput('pace','Nhịp')}${sceneInput('goal','Mục tiêu lượt này')}</div></article>
             <article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🧠 Luồng ký ức</h3><div><button data-memory-review-open>Nhìn lại 0 - hiện tại</button><button data-go-tab="summary">Trung tâm tổng kết</button></div></div>
                 <div class="vvvtm-pipeline"><span>结构化记忆至 <b>${Number(s.progress.lastExtractedMessage)>=0?`第${s.progress.lastExtractedMessage}层`:'Chưa bắt đầu'}</b></span><i>→</i><span>阶段总结 <b>${completedSummaryRows('Tổng kết giai đoạn').length}</b></span><i>→</i><span>大总结 <b>${completedSummaryRows('Tổng kết lớn').length}</b></span><i>→</i><span>时代总结 <b>${completedSummaryRows('Tổng kết thời đại').length}</b></span><i>→</i><span>冷热检索 <b>${stateRuntime.retrievalHits.length}</b></span></div>
                 <p class="vvvtm-note">整理/总结：${stateRuntime.serverConfig?.llm?.model || 'Chưa cấu hình'} · 独立API · 有限资料；${esc(memoryPipelineAvailability().note)}；七条写作源：${esc(companionWritingSourceLabel())}；向量：${stateRuntime.serverConfig?.embedding?.enabled ? stateRuntime.serverConfig.embedding.model : 'Chưa bật, tự dùng BM25'}。</p>
             </article>
         </section>
         ${(()=>{const health=memoryHealthSummary(),pipeline=memoryPipelineAvailability();const pct=health.candidateCount?Math.round(health.covered/health.candidateCount*100):100;return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🩺 P13 Sức khỏe ký ức</h3><p class="vvvtm-note">U1.7.2：先剔除建议/假设/否定句等伪遗漏；同Tầng多个锚点可共同覆盖一条事实。后台补抓最多重试3次，仍失败则直接用原文证据做确定性detail保底；快速切聊天时旧任务不会写入新聊天。${esc(pipeline.note)}${health.sidecarGaps?` 当前有 ${health.sidecarGaps} 个“幕后七条Đã hoàn thành、主记忆未整理”的Tầng。`:''}</p></div><div><button data-memory-repair-all ${health.repairableCount?'':'disabled'}>🩹 一键修复全部遗漏${health.repairableCount?` (${health.repairableCount})`:''}</button></div></div><div class="vvvtm-grid stats">${statCard('20 lượt gần nhất đầy đủ',health.total?`${health.ok}/${health.total}`:'—',health.total?'Yêu cầu mọi chi tiết đời sống phát hiện được trong lượt đó đều đã được ghi nhận':'Chờ lượt truyện thật')}${statCard('Độ phủ chi tiết đời sống',health.candidateCount?`${health.covered}/${health.candidateCount}`:'—',health.candidateCount?`${pct}% · 候选已去重并实时复检`:'Chưa thấy chi tiết đời sống rõ ràng')}${statCard('Tự bổ sung',health.pending?`${health.rescued} / 等待${health.pending}`:health.rescued,health.pending?'Đang bổ sung ở nền, không chặn phần tiếp sức':(health.rescued?'Sau khi tự phát hiện chỗ sót đã bù lại':'Gần đây không cần tự bổ sung'))}${statCard('Nhận thức đời sống ổn định',health.stableFacts,health.manualRescued?`明确偏好/多证据沉淀 · 手动修复成功${health.manualRescued}轮`:'Sở thích rõ ràng hoặc bằng chứng lặp lại nhiều lần')}</div>${health.failures.length?`<div class="vvvtm-list">${health.failures.map(item=>`<div class="vvvtm-list-item"><span>第 ${item.floor} 层 · ${item.status==='memory-missing'?'Ký ức có cấu trúc của cả lượt chưa được xác nhận':item.status==='pending-rescue'?'Đã phát hiện chỗ sót, đang bổ sung ở nền':'Chi tiết đời sống vẫn còn chỗ sót'}</span><small>${esc((item.missingAfter||[]).map(x=>x.text).join(' / ').slice(0,260))}</small><div class="vvvtm-row-actions"><button data-memory-reextract-floor="${item.floor}">${item.status==='memory-missing'?'Dựng lại tầng này':'Sửa chính xác'}</button></div></div>`).join('')}</div>`:(health.sidecarGaps?'<div class="vvvtm-empty">Bảy điều hậu trường đã tạo xong nhưng ký ức chính chưa được sắp xếp; hãy bấm “Sửa một chạm” ở trên để bù đủ tầng này.</div>':'<div class="vvvtm-empty">Gần đây không phát hiện chỗ nào bị bỏ sót.</div>')}<p class="vvvtm-note">“Sửa toàn bộ chỗ sót một chạm” trước tiên dọn tại chỗ những mục sót giả trong lịch sử, rồi sửa tuần tự những mục thiếu thật; khi AI thất bại liên tiếp thì dùng bằng chứng chính văn để bù máy móc làm phương án đáy, nhờ vậy quá trình hội tụ chứ không sửa vô hạn. Chi tiết đời sống không làm thay đổi cảnh hiện tại, quan hệ nhân vật, mạch chính và các bản tổng kết; yêu cầu sửa luôn dùng API sắp xếp riêng.</p></section>`;})()}
-        <section class="vvvtm-grid two"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>📌 Sự kiện gần đây</h3><button data-go-tab="timeline">全部</button></div>${listRecent('mainline','Tóm tắt sự kiện','Tầng')}</article><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏰ Lời hẹn chờ thực hiện</h3><button data-go-tab="tables" data-table="promises">Quản lý</button></div>${listRecentPromises()}</article></section>
+        <section class="vvvtm-grid two"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>📌 Sự kiện gần đây</h3><button data-go-tab="timeline">Tất cả</button></div>${listRecent('mainline','Tóm tắt sự kiện','Tầng')}</article><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏰ Lời hẹn chờ thực hiện</h3><button data-go-tab="tables" data-table="promises">Quản lý</button></div>${listRecentPromises()}</article></section>
         <section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🎲 Can thiệp đạo diễn</h3><button data-overview-action="roll">Sự kiện ngẫu nhiên</button></div><textarea id="vvvtm-director" placeholder="Chỉ có hiệu lực cho lượt sau, không quyết định thay {{user}}.">${esc(s.directorInstruction)}</textarea><div class="vvvtm-row-actions"><button data-overview-action="save-director">Đưa vào lượt sau</button><button data-overview-action="clear-director" class="danger-soft">Xóa hết</button></div></section>`;
     }
 
@@ -17137,13 +17137,13 @@ ${JSON.stringify(evidence)}`;
         const collectionTone=collectionStatus==='failed'?'Thất bại, có thể chạy tiếp từ điểm dừng':collectionStatus==='paused'?'Đã tạm dừng, có thể chạy tiếp từ điểm dừng':collectionStatus==='running'?'Đang tiếp sức theo dung lượng':collectionStatus==='completed'?'Lần gần nhất đã hoàn tất':'Chưa chạy';
         return `<section class="vvvtm-summary-head vvvtm-grid stats">
             ${statCard('Chỗ hổng/khoảng lần tới', `${nextStart}-${nextStart + interval - 1}`, canNext ? 'Có thể tổng kết' : 'Chờ thêm tầng')}
-            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length, `每 ${s.settings.summaryEvery} 层`)}
-            ${statCard('Tổng kết lớn', completedSummaryRows('Tổng kết lớn').length, `每 ${s.settings.stageSummariesPerBig} 次阶段总结`)}
-            ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length, `每 ${s.settings.bigSummariesPerEra || 10} 次大总结`)}
+            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length, `Mỗi ${s.settings.summaryEvery} tầng`)}
+            ${statCard('Tổng kết lớn', completedSummaryRows('Tổng kết lớn').length, `Mỗi ${s.settings.stageSummariesPerBig} lần tổng kết giai đoạn`)}
+            ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length, `Mỗi ${s.settings.bigSummariesPerEra || 10} lần tổng kết lớn`)}
             ${statCard('Ảnh chụp an toàn', s.settings.safetySnapshots?'Bật':'Đóng', 'Máy chủ giữ vĩnh viễn, không tự cắt bớt')}${statCard('Thùng rác tổng kết', (s.summaryRecycleBin||[]).length, 'Sau khi xóa, việc dựng lại cùng khoảng sẽ tự nối lại các ID phụ thuộc')}
         </section>
         <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>Thao tác tổng kết · U1.7 định dạng cố định + P13 tự chữa/chống lẫn hồ sơ</h3><p class="vvvtm-note">Tổng kết giai đoạn được trình bày thống nhất bằng JSON có cấu trúc, cố định theo “thời gian và bối cảnh + năm khu nội dung”; nếu chất lượng không đạt, quá ngắn, JSON hỏng hay cache cũ bất thường thì hủy cache đó và tự gửi lại yêu cầu, tối đa 3 lần. Chỉ khi kiểm tra đạt mới ghi vào và ẩn chính văn. Nếu quá dài thì vẫn đọc trọn vẹn theo từng mảnh.</p></div><div><button data-summary-action="memory-collection" ${stateRuntime.memoryCollectionRunning?'disabled':''}>${stateRuntime.memoryCollectionRunning?'记忆集合运行中':collectionLabel}</button><button data-summary-action="next" ${canNext ? '' : 'disabled'}>Tổng kết đoạn tiếp theo</button><button data-summary-action="catchup">Bù đủ tất cả</button><button data-summary-action="big">Tổng kết lớn ngay</button><button data-summary-action="era">Tổng kết thời đại ngay</button><button data-summary-action="refresh">Đồng bộ tác vụ</button></div></div>${archiveGuard}
-        <div class="vvvtm-memory-collection-status"><b>记忆集合：${esc(collectionTone)}</b><span>${collectionTotal?`${collectionDone}/${collectionTotal} 次API · ${Number(collection.assistantFloors||0)} 个AITầng`:'Sau khi bỏ toàn bộ phần ẩn, đọc lại theo kiểu tiếp sức vô hạn với dung lượng ngữ cảnh tới hạn của mỗi lượt'}</span>${collection.error?`<small>${esc(collection.error)}</small>`:''}</div>
+        <div class="vvvtm-memory-collection-status"><b>Gom ký ức: ${esc(collectionTone)}</b><span>${collectionTotal?`${collectionDone}/${collectionTotal} lượt API · ${Number(collection.assistantFloors||0)} tầng AI`:'Sau khi bỏ toàn bộ phần ẩn, đọc lại theo kiểu tiếp sức vô hạn với dung lượng ngữ cảnh tới hạn của mỗi lượt'}</span>${collection.error?`<small>${esc(collection.error)}</small>`:''}</div>
         <div class="summary-custom-range"><label>Tầng bắt đầu<input id="summary-custom-start" type="number" min="0" value="${nextStart}"></label><label>Tầng kết thúc<input id="summary-custom-end" type="number" min="0" value="${Math.max(nextStart, (context()?.chat?.length || 1) - 1)}"></label><button data-summary-action="custom">Tổng kết khoảng đã chọn</button></div>
         <p class="vvvtm-note">“Gom ký ức” không xóa hay ghi đè ký ức cũ: trước tiên nó chụp ảnh an toàn, khôi phục toàn bộ /hide, rồi xếp đầy dung lượng an toàn của một lượt theo trọn các tầng AI; chạm ngưỡng thì khởi động lượt API kế tiếp, số lần gọi không giới hạn. Mỗi mảnh nghiệm thu xong là lưu tăng dần theo tầng thật ngay, thất bại vẫn chạy tiếp được. Khoảng chuẩn 20 tầng nếu đã có tổng kết thì làm lại tại chỗ; khoảng không chuẩn thì lưu dưới dạng bổ sung cục bộ.</p></section>
         ${pagerMarkup(page)}
@@ -17157,7 +17157,7 @@ ${JSON.stringify(evidence)}`;
             const restoreVersion = Array.isArray(row._history) && row._history.length ? `<button data-summary-restore-version="${originalIndex}">↩ Bản trước</button>` : '';
             const stale=row._staleReason?`<small class="vvvtm-warn">⚠ ${esc(row._staleReason)}</small>`:'';
             const legacyFormat=isStage&&!isFixedStageSummaryText(row['Nội dung tổng kết'])?'<small class="vvvtm-warn">⚠ Định dạng tự do của bản cũ; bấm “Làm lại đoạn này” để chuyển sang định dạng cố định U1.6.2.</small>':'';
-            return `<article class="vvvtm-card summary-card ${/失败|需重算/.test(status)?'failed':''} ${rowType==='Tổng kết thời đại'?'era-summary-card':''}"><header><div><span class="summary-type">${esc(rowType)}</span><b>${esc(row['Tầng bao phủ'])} 层</b></div><span class="summary-status">${esc(status)}</span></header>${stale}${legacyFormat}<textarea data-summary-content="${originalIndex}" ${row['Khóa']==='Có'?'readonly':''}>${esc(row['Nội dung tổng kết'])}</textarea><footer><small>${esc(row['Mô hình'] || '')} · ${esc(row['Thời điểm tạo'] || '')} · ${esc(row['Trạng thái ẩn'] || 'Chưa ẩn')}</small><div><button data-jump="${esc(parseRange(row['Tầng bao phủ']).start)}">Chuyển tới</button>${rangeToggle}${redo}${restoreVersion}<button data-summary-save="${originalIndex}">Lưu</button><button data-summary-lock="${originalIndex}">${row['Khóa']==='Có'?'Mở khóa':'Khóa'}</button>${/失败/.test(status)?`<button data-summary-retry="${originalIndex}">重试</button>`:''}<button data-summary-hide="${originalIndex}">Ẩn thẻ</button><button class="danger-soft" data-summary-delete="${originalIndex}">Xóa</button></div></footer></article>`;
+            return `<article class="vvvtm-card summary-card ${/thất bại|cần tính lại/i.test(status)?'failed':''} ${rowType==='Tổng kết thời đại'?'era-summary-card':''}"><header><div><span class="summary-type">${esc(rowType)}</span><b>${esc(row['Tầng bao phủ'])} 层</b></div><span class="summary-status">${esc(status)}</span></header>${stale}${legacyFormat}<textarea data-summary-content="${originalIndex}" ${row['Khóa']==='Có'?'readonly':''}>${esc(row['Nội dung tổng kết'])}</textarea><footer><small>${esc(row['Mô hình'] || '')} · ${esc(row['Thời điểm tạo'] || '')} · ${esc(row['Trạng thái ẩn'] || 'Chưa ẩn')}</small><div><button data-jump="${esc(parseRange(row['Tầng bao phủ']).start)}">Chuyển tới</button>${rangeToggle}${redo}${restoreVersion}<button data-summary-save="${originalIndex}">Lưu</button><button data-summary-lock="${originalIndex}">${row['Khóa']==='Có'?'Mở khóa':'Khóa'}</button>${/失败/.test(status)?`<button data-summary-retry="${originalIndex}">重试</button>`:''}<button data-summary-hide="${originalIndex}">Ẩn thẻ</button><button class="danger-soft" data-summary-delete="${originalIndex}">Xóa</button></div></footer></article>`;
         }).join('') : '<div class="vvvtm-empty big">Chưa có bản tổng kết.</div>'}</div><aside class="vvvtm-card task-rail"><h3>Hàng đợi tác vụ</h3>${tasks.length ? tasks.map(job => `<div class="task-row"><b>${esc(job.kind)}</b><span>${esc(job.status)}</span><small>${esc(job.startFloor ?? '')}${job.endFloor!==undefined?`-${esc(job.endFloor)}`:''} ${esc(job.error || '')}</small></div>`).join('') : '<div class="vvvtm-empty">Chưa có tác vụ</div>'}</aside></section>
         ${pagerMarkup(page)}`;
     }
@@ -17176,7 +17176,7 @@ ${JSON.stringify(evidence)}`;
             const start = Number(content.querySelector('#summary-custom-start')?.value || 0);
             const end = Number(content.querySelector('#summary-custom-end')?.value || start);
             if (end < start) return toast('Tầng kết thúc không được nhỏ hơn tầng bắt đầu', 'warn');
-            const chatMax=(context()?.chat?.length||1)-1;if(end>chatMax)return toast(`当前最高只有第 ${chatMax} 层`,'warn');
+            const chatMax=(context()?.chat?.length||1)-1;if(end>chatMax)return toast(`Hiện cao nhất chỉ tới tầng ${chatMax}`,'warn');
             if(standardStageRange(start,end)){
                 const existing=findStageSummaryByRange(start,end);
                 if(existing){if(!confirm(`第 ${start}-${end} 层已经有阶段总结。\n\n是否只重做这一段，并自动同步受影响的大总结/时代总结？\n不会改变其它阶段的进度。`))return;await redoStageSummary(existing);}
