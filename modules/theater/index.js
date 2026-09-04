@@ -11222,7 +11222,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         return list.slice(0,maxItems).map(item=>{
             const eventId=compactText(item?.eventId||item?.relatedId,140),source=compactText(item?.source||item?.channel||'phone',60).toLowerCase();
             return {eventId,relatedId:compactText(item?.relatedId||eventId,140),subject:compactText(item?.subject,180),summary:compactText(item?.summary,700),npc:relationPartyName(item?.npc),method:Object.prototype.hasOwnProperty.call(S12_KNOWLEDGE_METHODS,item?.method)?item.method:'witnessed',channel:compactText(item?.channel,80),location:compactText(item?.location,180),source};
-        }).filter(item=>item.eventId&&valid.has(item.eventId)&&item.npc&&!/diary|world|彼间私文|日记/.test(item.source));
+        }).filter(item=>item.eventId&&valid.has(item.eventId)&&item.npc&&!/diary|world|Bỉ Gian Tư Văn|Nhật ký/i.test(item.source));
     }
     function s12CleanOrderCreates(list,maxItems=4){
         if(!Array.isArray(list))return [];
@@ -11255,28 +11255,28 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
     function s37NarrativeFoodOrderCreates(payload={}) {
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
         const sourceTexts=[message?.mes??message?.content??'',previous?.is_user?(previous?.mes??previous?.content??''):''].filter(Boolean);
-        let text=sourceTexts.join('。').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/\s+/g,' ').trim();
-        if(!text||!/(?:外卖|美团|饿了么|点餐|下单)/.test(text))return [];
-        const segments=text.split(/(?<=[。！？!?；;])|\n+/).map(x=>x.trim()).filter(Boolean),rows=[];
-        const negative=/(?:没(?:有)?|还没|并未|没有|不(?:要|想|会)|别|Hủy|算了|只是(?:问|看|说|讨论)|要不要|想不想|能不能|可不可以).{0,12}(?:买|点|订|叫|下单|外卖)/;
-        const done=/(?:给[^，。！？；]{0,16}(?:买了|点了|订了|叫了|下单了|买好|点好|订好)|(?:已经|刚刚|刚才|顺手|直接)?[^，。！？；]{0,12}(?:买了|点了|订了|叫了|下单了|点好|买好|订好)[^，。！？；]{0,18}(?:外卖|美团|饿了么)?|(?:美团|饿了么)[^，。！？；]{0,18}(?:下单|点了|买了|订了|叫了))/;
+        let text=sourceTexts.join('. ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/\s+/g,' ').trim();
+        if(!text||!/(?:giao đồ ăn|Meituan|Ele\.me|gọi món|đặt đơn)/i.test(text))return [];
+        const segments=text.split(/(?<=[.!?;])|\n+/).map(x=>x.trim()).filter(Boolean),rows=[];
+        const negative=/(?:không|chưa|chẳng|đừng|hủy|thôi khỏi|chỉ (?:hỏi|xem|nói|bàn)|có nên|có muốn|có thể).{0,12}(?:mua|gọi|đặt|đặt đơn|giao đồ ăn)/i;
+        const done=/(?:(?:đã|vừa|mới)\s*(?:mua|gọi|đặt)(?: món| đơn| đồ ăn)?[^,.!?;]{0,18}(?:giao đồ ăn|Meituan|Ele\.me)?|(?:Meituan|Ele\.me)[^,.!?;]{0,18}(?:đặt đơn|đã gọi|đã mua|đã đặt|gọi món))/i;
         for(let i=0;i<segments.length&&rows.length<3;i++){
-            const seg=segments[i];if(!/(?:外卖|美团|饿了么|点餐)/.test(seg)||negative.test(seg)||!done.test(seg))continue;
-            let platform=/饿了么/.test(seg)?'eleme':/美团/.test(seg)?'meituan':'auto';
+            const seg=segments[i];if(!/(?:giao đồ ăn|Meituan|Ele\.me|gọi món)/i.test(seg)||negative.test(seg)||!done.test(seg))continue;
+            let platform=/Ele\.me/i.test(seg)?'eleme':/Meituan/i.test(seg)?'meituan':'auto';
             let merchant='';
-            const merchantMatch=seg.match(/(?:从|在)「?([^，。！？；]{2,28}?(?:店|馆|坊|屋|堂|餐厅|饭店|面馆|小馆|食堂|厨房))」?(?:里|上)?/);
-            if(merchantMatch&&!/(?:美团|饿了么)/.test(merchantMatch[1]))merchant=compactText(merchantMatch[1],120);
+            const merchantMatch=seg.match(/(?:từ|ở|tại)\s*«?([^,.!?;]{2,28}?(?:quán|tiệm|nhà hàng|bếp|xưởng|căng tin|hàng))»?/i);
+            if(merchantMatch&&!/(?:Meituan|Ele\.me)/i.test(merchantMatch[1]))merchant=compactText(merchantMatch[1],120);
             let itemText='';
-            let m=seg.match(/外卖[：:，,、\s]*([^。！？；]{1,90})/);
+            let m=seg.match(/giao đồ ăn[:,\s]*([^.!?;]{1,90})/i);
             if(m)itemText=m[1];
-            if(!itemText){m=seg.match(/(?:美团|饿了么)[^。！？；]{0,18}(?:下单(?:了)?|点了|买了|订了|叫了)[：:，,、\s]*([^。！？；]{1,90})/);if(m)itemText=m[1];}
-            if(!itemText){m=seg.match(/(?:买了|点了|订了|叫了|下单了)[^。！？；]{0,8}(?:一份|份|个)?[：:，,、\s]*([^，。！？；]{2,70})/);if(m)itemText=m[1];}
-            itemText=compactText(itemText,120).replace(/^(?:一份|份|一个|个|给你|给她|给他|给我|的)+/,'').replace(/(?:，|,)?(?:已经|现在|等会|待会|一会|送到|给你送|你先|她先|他先|我先).*/,'').trim();
-            if(!itemText||/^(?:外卖|点餐|美团|饿了么)$/.test(itemText))continue;
-            const items=itemText.split(/[、]|(?:以及)|(?:还有)/).map(x=>compactText(x,100).trim()).filter(Boolean).slice(0,8).map(name=>({name,quantity:1,flavor:''}));
+            if(!itemText){m=seg.match(/(?:Meituan|Ele\.me)[^.!?;]{0,18}(?:đặt đơn|đã đặt|đã gọi|đã mua|gọi món)[:,\s]*([^.!?;]{1,90})/i);if(m)itemText=m[1];}
+            if(!itemText){m=seg.match(/(?:đã mua|đã gọi|đã đặt|gọi món|đặt đơn)[^.!?;]{0,8}(?:một phần|phần|suất)?[:,\s]*([^,.!?;]{2,70})/i);if(m)itemText=m[1];}
+            itemText=compactText(itemText,120).replace(/^(?:một phần|phần|một suất|suất|cho bạn|cho cô ấy|cho anh ấy|cho tôi|của)+\s*/i,'').replace(/,?\s*(?:đã|bây giờ|lát nữa|chốc nữa|một lát|giao tới|giao cho bạn|bạn cứ|cô ấy cứ|anh ấy cứ|tôi cứ).*/i,'').trim();
+            if(!itemText||/^(?:giao đồ ăn|gọi món|Meituan|Ele\.me)$/i.test(itemText))continue;
+            const items=itemText.split(/,|(?:\svà\s)|(?:\scùng với\s)/).map(x=>compactText(x,100).trim()).filter(Boolean).slice(0,8).map(name=>({name,quantity:1,flavor:''}));
             if(!items.length)continue;
             const key=compactText(`${floor}|${platform}|${merchant}|${items.map(x=>x.name).join('|')}`,180);
-            rows.push({clientRef:`narrative-food-${s9Hash(key).toString(36)}`,platform,query:items.map(x=>x.name).join('、'),merchantHint:merchant,items,amount:0,payAccount:'auto',observers:[],knowledgeMethod:'witnessed',externalPayer:true,storyDetected:true});
+            rows.push({clientRef:`narrative-food-${s9Hash(key).toString(36)}`,platform,query:items.map(x=>x.name).join(', '),merchantHint:merchant,items,amount:0,payAccount:'auto',observers:[],knowledgeMethod:'witnessed',externalPayer:true,storyDetected:true});
         }
         return rows;
     }
@@ -11288,22 +11288,22 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
 
     function s39NarrativeShoppingOrders(payload={}){
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
-        const raw=[messageText(message||{}),previous?.is_user?messageText(previous):''].filter(Boolean).join('。'),text=compactText(raw,16000);if(!text||!/(?:淘宝|京东|网购|网上|下单|买了|购买了|付款了)/.test(text))return [];
-        const negative=/(?:没(?:有)?|还没|并未|不(?:打算|想|要)|Hủy|退掉|只是(?:看|问|讨论)|准备|打算|计划|想买|考虑).{0,20}(?:下单|购买|买|付款)/;
-        const segments=text.split(/(?<=[。！？；;])|\n+/).map(v=>compactText(v,1000)).filter(Boolean),rows=[];
+        const raw=[messageText(message||{}),previous?.is_user?messageText(previous):''].filter(Boolean).join('. '),text=compactText(raw,16000);if(!text||!/(?:Taobao|JD|mua sắm online|trên mạng|đặt đơn|đã mua|đã thanh toán)/i.test(text))return [];
+        const negative=/(?:không|chưa|chẳng|đừng|hủy|trả lại|chỉ (?:xem|hỏi|bàn)|chuẩn bị|định|kế hoạch|muốn mua|đang cân nhắc).{0,20}(?:đặt đơn|mua sắm|mua|thanh toán)/i;
+        const segments=text.split(/(?<=[.!?;])|\n+/).map(v=>compactText(v,1000)).filter(Boolean),rows=[];
         for(const seg of segments){
-            if(rows.length>=3||negative.test(seg)||!/(?:下单(?:了|成功)?|买了|购买了|付款(?:了|成功)|订单(?:已)?提交)/.test(seg))continue;
-            let platform=/京东/.test(seg)?'jd':/淘宝/.test(seg)?'taobao':'';if(!platform&&/(?:网购|网上)/.test(seg))platform='taobao';if(!platform)continue;
-            let product='';for(const re of [/(?:下单(?:了)?|买了|购买了)[：:，,、\s]*(?:一(?:个|件|台|套|份|双|盒|包|瓶|本|张))?([^，。！？；]{2,90})/,/(?:淘宝|京东)[^。！？；]{0,20}(?:下单|买了|购买)[：:，,、\s]*([^，。！？；]{2,90})/]){const m=seg.match(re);if(m?.[1]){product=compactText(m[1],120);break;}}
-            product=product.replace(/(?:，|,)?(?:花了|实付|支付|付款|价格|金额|一共|总共).*/,'').trim();if(!product)continue;
-            const money=promiseMoneyAmounts(seg).find(v=>Number(v)>0)||0,amount=Math.round(Number(money||0)*100)/100,explicitAccount=/微信/.test(seg)?'wechat':/支付宝/.test(seg)?'alipay':'';
+            if(rows.length>=3||negative.test(seg)||!/(?:đặt đơn(?: thành công)?|đã mua|đã mua sắm|thanh toán(?: xong| thành công)?|đã gửi đơn hàng)/i.test(seg))continue;
+            let platform=/JD/i.test(seg)?'jd':/Taobao/i.test(seg)?'taobao':'';if(!platform&&/(?:mua sắm online|trên mạng)/i.test(seg))platform='taobao';if(!platform)continue;
+            let product='';for(const re of [/(?:đặt đơn|đã mua|đã mua sắm)[:,\s]*(?:một\s*(?:cái|chiếc|chậu|bộ|phần|đôi|hộp|gói|chai|quyển|tờ))?\s*([^,.!?;]{2,90})/i,/(?:Taobao|JD)[^.!?;]{0,20}(?:đặt đơn|đã mua|mua)[:,\s]*([^,.!?;]{2,90})/i]){const m=seg.match(re);if(m?.[1]){product=compactText(m[1],120);break;}}
+            product=product.replace(/,?\s*(?:tiêu hết|thực trả|thanh toán|trả tiền|giá|số tiền|tổng cộng|tất cả).*/i,'').trim();if(!product)continue;
+            const money=promiseMoneyAmounts(seg).find(v=>Number(v)>0)||0,amount=Math.round(Number(money||0)*100)/100,explicitAccount=/WeChat/i.test(seg)?'wechat':/Alipay/i.test(seg)?'alipay':'';
             const key=`narrative-shopping-${floor}-${platform}-${s9Hash(product).toString(36)}`;if(s8AllPhoneOrders().some(o=>o._storyOrderKey===key||compactText(o.storyIntent,140)===product&&Number(o.sourceFloor)===floor))continue;
             const payment={kind:platform,platform,account:explicitAccount||'alipay',amount,subtotal:amount,deliveryFee:0,discount:0,title:`${s8OrderPlatformLabel(platform)} · ${product}`,storeName:platform==='jd'?'JD':'Người bán Taobao',items:[{itemId:`story-${s9Hash(product).toString(36)}`,name:product,price:amount,qty:1,storeName:platform==='jd'?'JD':'Người bán Taobao'}]};
-            const order=s8CreateOrder(payment,{id:`story-${platform}-order-${s9Hash(key).toString(36)}`,platform,kind:'shopping',merchant:payment.storeName,storeName:payment.storeName,status:amount>0?'paid':'订单已提交'});order._storyOrderKey=key;order.orderOrigin='narrative-shopping';order.storyIntent=product;order.sourceFloor=floor;order.amount=amount;order.subtotal=amount;order.payAccount=amount>0?payment.account:'unknown';
+            const order=s8CreateOrder(payment,{id:`story-${platform}-order-${s9Hash(key).toString(36)}`,platform,kind:'shopping',merchant:payment.storeName,storeName:payment.storeName,status:amount>0?'paid':'Đã gửi đơn hàng'});order._storyOrderKey=key;order.orderOrigin='narrative-shopping';order.storyIntent=product;order.sourceFloor=floor;order.amount=amount;order.subtotal=amount;order.payAccount=amount>0?payment.account:'unknown';
             ensurePhoneEcosystem().commerce[platform].orders.push(order);
-            if(amount>0&&explicitAccount)s8RecordTransaction({account:explicitAccount,amount:-amount,title:`${s8OrderPlatformLabel(platform)}购物 · ${product}`,counterparty:payment.storeName,category:'shopping',source:`${platform}-narrative-sync`,sidecarId:payload?.id||'',floor});
-            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount,status:order.status,summary:`${payment.storeName}｜${product} ×1｜${amount>0?`实付 ${s8MoneyText(amount)}`:'金额未在chính văn明确'}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor,time:order.time,location:order.sceneLocation,source:'narrative-shopping-sync'});
-            s8AddCommerceNotice('剧情网购已同步',`${product} · ${amount>0?`实付 ${s8MoneyText(amount)}`:'金额Chưa ghi nhận'}。`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`narrative-shopping-${order.id}`});rows.push(order);
+            if(amount>0&&explicitAccount)s8RecordTransaction({account:explicitAccount,amount:-amount,title:`${s8OrderPlatformLabel(platform)} mua sắm · ${product}`,counterparty:payment.storeName,category:'shopping',source:`${platform}-narrative-sync`,sidecarId:payload?.id||'',floor});
+            s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount,status:order.status,summary:`${payment.storeName} | ${product} ×1 | ${amount>0?`thực trả ${s8MoneyText(amount)}`:'chính văn chưa nêu rõ số tiền'} | Trạng thái: ${s8OrderStatusLabel(order)}`,floor,time:order.time,location:order.sceneLocation,source:'narrative-shopping-sync'});
+            s8AddCommerceNotice('Đã đồng bộ đơn mua online trong truyện',`${product} · ${amount>0?`thực trả ${s8MoneyText(amount)}`:'chưa ghi số tiền'}.`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`narrative-shopping-${order.id}`});rows.push(order);
         }
         return rows;
     }
@@ -11333,7 +11333,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         const profile=S91_FOOD_PROFILES[store.category]||{},bases=[...(profile.menu||[])].sort((a,b)=>String(b).length-String(a).length);
         return requested.map((row,index)=>{
             const requestText=compactText(`${row.name}${row.flavor?`（${row.flavor}）`:''}`,160),flat=requestText.replace(/[\s，。、“”'"()（）]/g,''),base=bases.find(name=>flat.includes(String(name).replace(/\s+/g,'')));
-            const generic=/^(?:点|叫|订|来|要|想吃|吃)?(?:一|个|份|一份|一些|点)?(?:外卖|点餐|套餐|烧烤|烤串|火锅|冒菜|快餐|夜宵|早餐|午餐|晚餐)$/.test(flat);
+            const generic=/^(?:gọi|đặt|mua|lấy|muốn ăn|ăn)?\s*(?:một|một phần|phần|vài|chút)?\s*(?:giao đồ ăn|gọi món|combo|nướng|xiên nướng|lẩu|lẩu tô|cơm nhanh|ăn khuya|bữa sáng|bữa trưa|bữa tối)$/i.test(flat);
             const matched=base?store.menu.find(item=>String(item.name).includes(base)):generic?store.menu[s9Hash(`${storyKey}|${flat}|${index}`)%store.menu.length]:store.menu.find(item=>flat.includes(String(item.name).replace(/[\s（）()]/g,''))||String(item.name).replace(/[\s（）()]/g,'').includes(flat));
             const fallback=store.menu[s9Hash(`${storyKey}|fallback|${index}`)%store.menu.length];
             const exactStoryName=create.storyDetected&&requestText?requestText:'';
@@ -11368,25 +11368,25 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
             const payment=s8NormalizePaymentAction({kind:platform,platform,account,amount,subtotal,deliveryFee,discount,title:`${s8OrderPlatformLabel(platform)} · ${store.name}`,storeId:store.id,storeName:store.name,items});
             const order=s8CreateOrder(payment,{id:`story-${platform}-order-${s9Hash(storyKey).toString(36)}`,platform,kind:'food',storeId:store.id,storeName:store.name,merchant:store.name,status:'paid'});
             order._storyOrderKey=storyKey;order._sidecarId=payload?.id||'';order.orderOrigin='story-auto';order.storyIntent=intent;order.sourceFloor=Number(payload?.floor??order.sourceFloor);order.awareness={...(order.awareness||{}),sceneLocation:compactText(stateRuntime.state?.scene?.location||'',180),sourceFloor:Number(payload?.floor??order.sourceFloor),directlyInformed:[...(order.awareness?.directlyInformed||[])]};
-            if(create.externalPayer){order.externalPayer=true;order.paidBy='剧情中的他人';order.payAccount='external';order.orderOrigin=create.storyDetected?'story-text-auto':'story-auto-external';}
+            if(create.externalPayer){order.externalPayer=true;order.paidBy='Người khác trong cốt truyện';order.payAccount='external';order.orderOrigin=create.storyDetected?'story-text-auto':'story-auto-external';}
             phone.commerce[platform].orders.push(order);
             s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(create.observers||[])],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${store.name}｜${s8OrderItemSummary(order,700)}｜${create.externalPayer?'剧情他人代付':`支付:${s8PaymentAccountLabel(account)}`}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor:payload?.floor??-1,time:order.time,location:order.awareness?.sceneLocation||'',source:'narrative-order-sync'});
-            if(!create.externalPayer)s8RecordTransaction({account,amount:-amount,title:`${s8OrderPlatformLabel(platform)}外卖 · ${store.name} · ${s8OrderItemSummary(order,100)}`,counterparty:store.name,category:'food',source:`${platform}-story-auto`,sidecarId:payload?.id||'',floor:payload?.floor??-1});
-            s8AddCommerceNotice('剧情外卖已同步',`${store.name} · ${s8OrderItemSummary(order)}；${create.externalPayer?'剧情中由他人代付':`实付 ${s8MoneyText(amount)}`}。`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`story-order-${order.id}`});
-            for(const npc of create.observers||[])s12RecordKnowledge({eventId:order.id,relatedId:order.id,subject:`${s8OrderPlatformLabel(platform)}外卖订单`,summary:`${store.name} · ${s8OrderItemSummary(order,240)}`,npc,method:create.knowledgeMethod,location:order.awareness.sceneLocation,floor:payload?.floor??-1,source:'order'});
+            if(!create.externalPayer)s8RecordTransaction({account,amount:-amount,title:`${s8OrderPlatformLabel(platform)} giao đồ ăn · ${store.name} · ${s8OrderItemSummary(order,100)}`,counterparty:store.name,category:'food',source:`${platform}-story-auto`,sidecarId:payload?.id||'',floor:payload?.floor??-1});
+            s8AddCommerceNotice('Đã đồng bộ đơn giao đồ ăn trong truyện',`${store.name} · ${s8OrderItemSummary(order)}; ${create.externalPayer?'trong cốt truyện do người khác trả hộ':`thực trả ${s8MoneyText(amount)}`}.`,s8OrderPlatformLabel(platform),{relatedId:order.id,dedupeKey:`story-order-${order.id}`});
+            for(const npc of create.observers||[])s12RecordKnowledge({eventId:order.id,relatedId:order.id,subject:`Đơn giao đồ ăn ${s8OrderPlatformLabel(platform)}`,summary:`${store.name} · ${s8OrderItemSummary(order,240)}`,npc,method:create.knowledgeMethod,location:order.awareness.sceneLocation,floor:payload?.floor??-1,source:'order'});
         });
     }
     function s12ApplyOrderUpdates(updates,payload){
         for(const update of updates||[]){
             const order=s8AllPhoneOrders().find(item=>item.id===update.orderId);if(!order)continue;
-            if(update.status==='exception')s12SetOrderIssue(order,'other',update.issue||update.detail||'配送或履约出现异常');
-            else if(update.status==='refund-pending')s12RequestOrderRefund(order,update.detail||update.issue||'剧情中已申请退款');
+            if(update.status==='exception')s12SetOrderIssue(order,'other',update.issue||update.detail||'Giao hàng hoặc thực hiện đơn có sự cố');
+            else if(update.status==='refund-pending')s12RequestOrderRefund(order,update.detail||update.issue||'Trong cốt truyện đã yêu cầu hoàn tiền');
             else if(update.status==='refunded')s12CompleteOrderRefund(order);
             else if(update.status==='delivered'){
                 order.status='delivered';order.deliveredFloor=Number(payload?.floor??Math.max(0,(context()?.chat?.length||1)-1));if(update.receiver)order.receiver=update.receiver;
                 s8OrderTimeline(order,'delivered',update.receiver?'Đã có người khác nhận hộ':'Đã giao',update.detail||`${update.receiver||'收件人'}收到：${s8OrderItemSummary(order,220)}`);
             }
-            for(const npc of update.observers||[])s12RecordKnowledge({eventId:order.id,relatedId:order.id,subject:`${s8OrderPlatformLabel(order.platform)}订单`,summary:`${s8OrderItemSummary(order,240)} · ${s8OrderStatusLabel(order)}`,npc,method:update.receiver&&npcNameKey(npc)===npcNameKey(update.receiver)?'received':'witnessed',location:order.awareness?.sceneLocation||'',floor:payload?.floor??-1,source:'order'});
+            for(const npc of update.observers||[])s12RecordKnowledge({eventId:order.id,relatedId:order.id,subject:`Đơn hàng ${s8OrderPlatformLabel(order.platform)}`,summary:`${s8OrderItemSummary(order,240)} · ${s8OrderStatusLabel(order)}`,npc,method:update.receiver&&npcNameKey(npc)===npcNameKey(update.receiver)?'received':'witnessed',location:order.awareness?.sceneLocation||'',floor:payload?.floor??-1,source:'order'});
             s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(update.observers||[])],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',...(update.observers||[])],userKnows:true,channel:s8OrderPlatformLabel(order.platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'Đơn hàng'}｜${s8OrderItemSummary(order,700)}｜Trạng thái:${s8OrderStatusLabel(order)}${update.receiver?`｜代收:${update.receiver}`:''}`,floor:payload?.floor??-1,time:phoneClock().time,location:order.awareness?.sceneLocation||'',source:'companion-order-update'});
         }
     }
@@ -11476,7 +11476,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         phone.finance.transactions.push(row);
         if(row.amount>0)reconcilePromiseEvidenceForState(stateRuntime.state,{kind:'finance-transaction',...row},Number.isFinite(row._floor)&&row._floor>=0?row._floor:Math.max(0,(context()?.chat?.length||1)-1));
         const label = row.account==='wechat'?'WeChat Pay':'Alipay';
-        const verb = row.amount >= 0 ? '收入' : '支出';
+        const verb = row.amount >= 0 ? 'thu vào' : 'chi ra';
         s8AddNotification(label, `${verb} ${s8MoneyText(Math.abs(row.amount))}`, `${row.title || row.counterparty || 'Hóa đơn'} · 余额 ${s8MoneyText(s8WalletBalance(row.account))}`, {type:'finance',transactionId:row.id,_sidecarId:sidecarId||''});
         if (row.account==='wechat') {
             stateRuntime.state.phone.wechat ||= [];
@@ -11488,7 +11488,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
             stateRuntime.state.phone.sms ||= [];
             stateRuntime.state.phone.sms.push({id:uid('alipay-sms'),author:'Alipay',contact:compactText(context()?.name1||'{{user}}',80)||'{{user}}',content:`${verb}${s8MoneyText(Math.abs(row.amount))}：${row.title||row.counterparty||'Giao dịch'}；账户余额 ${s8MoneyText(s8WalletBalance('alipay'))}`,time:phoneClock().time,category:'payment',direction:'incoming',_financeNotice:true,_sidecarId:sidecarId||''});
         }
-        s8RecordPhoneActivity('finance',`${label}${verb} ${s8MoneyText(Math.abs(row.amount))}`,row.title||row.counterparty||'账变',{floor:Number(floor)>=0?Number(floor):undefined,relatedId:row.id});
+        s8RecordPhoneActivity('finance',`${label}${verb} ${s8MoneyText(Math.abs(row.amount))}`,row.title||row.counterparty||'Biến động tài khoản',{floor:Number(floor)>=0?Number(floor):undefined,relatedId:row.id});
         return row;
     }
     function s8AddCommerceNotice(title, content, app='Taobao', options={}) {
@@ -11511,7 +11511,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
     function s8OrderPlatformLabel(platform='') { return S8_ORDER_PLATFORM_LABELS[platform] || compactText(platform,40) || 'Đơn hàng'; }
     function s8OrderStatusLabel(order={}) {
         const platform=String(order.platform||''); const status=String(order.status||'paid');
-        return S8_ORDER_STATUS_LABELS[platform]?.[status] || status || '处理中';
+        return S8_ORDER_STATUS_LABELS[platform]?.[status] || status || 'Đang xử lý';
     }
     function s8OrderItems(order={}) {
         const rows=Array.isArray(order.items)?order.items:[];
@@ -11576,7 +11576,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
     function s12OrderActionMarkup(order){
         const terminal=['refunded','cancelled','Đã hủy'].includes(order.status),delivered=['delivered','Đã hoàn thành','Đã dùng'].includes(order.status);
         if(terminal)return `<span>${esc(s8OrderStatusLabel(order))}</span>`;
-        if(order.status==='refund-pending')return '<button disabled>退款处理中</button>';
+        if(order.status==='refund-pending')return '<button disabled>Đang xử lý hoàn tiền</button>';
         if(order.status==='exception')return `<button data-phone-order-action="resume" data-phone-order-id="${esc(order.id)}">继续处理</button><button class="danger-soft" data-phone-order-action="refund" data-phone-order-id="${esc(order.id)}">申请退款</button>`;
         if(delivered)return `<button data-phone-order-action="receiver" data-phone-order-id="${esc(order.id)}">代收人</button><button data-phone-order-action="aftersale" data-phone-order-id="${esc(order.id)}">申请售后</button>`;
         const rider=order.kind==='food'&&order.status==='delivering'?`<button data-phone-order-action="rider" data-phone-order-id="${esc(order.id)}">联系骑手</button>`:'';
