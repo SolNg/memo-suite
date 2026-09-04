@@ -16380,28 +16380,28 @@ ${digests.join('\n\n')}`,{
         const currentTime = compactText(storedScene.time || '', 120);
         const currentMood = compactText(storedScene.mood || '', 160);
         const ledger = controlLayerMemoryText();
-        return `【0-32 · 剧情导演｜酒馆主AI正常回复｜本地提示·0额外API】
-你现在写的是 {{char}} / NPC / 环境对“最新 {{user}} 消息”的正常 assistant 回复。剧情导演只负责节奏、连续性和本轮重点，不改变角色卡人格，不替 {{user}} 行动。
+        return `【0-32 · ĐẠO DIỄN CỐT TRUYỆN | LƯỢT TRẢ LỜI BÌNH THƯỜNG CỦA AI CHÍNH SILLYTAVERN | GỢI Ý TẠI CHỖ · 0 API PHỤ】
+Bây giờ bạn đang viết lượt trả lời assistant bình thường của {{char}} / NPC / môi trường trước “tin nhắn {{user}} mới nhất”. Đạo diễn cốt truyện chỉ lo nhịp điệu, tính liền mạch và trọng tâm của lượt này; không thay đổi tính cách trong thẻ nhân vật, không hành động thay {{user}}.
 
-【当前导演判定】
-- 阶段：${snap.stage}
-- 当前地点：${currentLocation || 'Lấy phần cuối của cuộc trò chuyện mới nhất làm chuẩn'}
-- 当前时间：${currentTime || 'Chưa xác định'}
-- 当前氛围：${currentMood || 'Lấy cuộc trò chuyện mới nhất làm chuẩn'}
-- 最新user：${snap.latestUserText || 'Chưa đọc được'}
+【PHÁN ĐỊNH CỦA ĐẠO DIỄN LÚC NÀY】
+- Giai đoạn: ${snap.stage}
+- Địa điểm hiện tại: ${currentLocation || 'Lấy phần cuối của cuộc trò chuyện mới nhất làm chuẩn'}
+- Thời gian hiện tại: ${currentTime || 'Chưa xác định'}
+- Không khí hiện tại: ${currentMood || 'Lấy cuộc trò chuyện mới nhất làm chuẩn'}
+- Tin user mới nhất: ${snap.latestUserText || 'Chưa đọc được'}
 
-【本轮导演要求】
-1. 第一优先级：真正回应最新user刚刚说的话、问的问题、做的动作或给出的选择；不要绕开它另起一段。
-2. 承接“现在”，再自然推进一个有意义的小节拍。可以完整写 {{char}}/NPC 的对白、动作、表情、主动性和世界反馈；但不要一次跳过多个场景或把几轮才能完成的事一口气写完。
-3. Đã hoàn thành事件不得重演。旧总结、旧检索、旧地点只可当历史；与最新user/最新assistant冲突时，永远选择最新现实。
-4. {{char}}/NPC 可以主动，不要像木偶等user喂指令；但主动必须符合人物Tính cách、关系阶段、当前时代/世界、距离和知情边界。
-5. USER主权锁始终更高：不得替user新增对白、决定、主动动作、心理结论或主动身体反应；需要user回应的位置就停下。
+【YÊU CẦU ĐẠO DIỄN CHO LƯỢT NÀY】
+1. Ưu tiên số một: thật sự đáp lại điều user vừa nói, câu vừa hỏi, hành động vừa làm hay lựa chọn vừa đưa ra; đừng né nó để mở một đoạn khác.
+2. Tiếp nối “hiện tại”, rồi đẩy thêm một nhịp nhỏ có ý nghĩa một cách tự nhiên. Có thể viết trọn thoại, hành động, biểu cảm, sự chủ động của {{char}}/NPC và phản hồi của thế giới; nhưng đừng nhảy qua nhiều cảnh một lúc hay viết gọn trong một lượt những việc cần vài lượt mới xong.
+3. Sự kiện đã hoàn thành thì không được diễn lại. Tổng kết cũ, truy hồi cũ, địa điểm cũ chỉ được coi là lịch sử; khi mâu thuẫn với user/assistant mới nhất thì luôn chọn hiện thực mới nhất.
+4. {{char}}/NPC được phép chủ động, đừng như con rối chờ user mớm lệnh; nhưng sự chủ động phải hợp tính cách nhân vật, giai đoạn quan hệ, thời đại/thế giới hiện tại, khoảng cách và ranh giới người biết.
+5. Khóa chủ quyền USER luôn cao hơn: không được thêm thoại, quyết định, hành động chủ động, kết luận tâm lý hay phản ứng cơ thể chủ động thay user; tới chỗ cần user đáp lại thì dừng.
 6. ${snap.explicitJump ? 'Tin mới nhất của user đã yêu cầu rõ ràng/gây ra thay đổi địa điểm hoặc thời gian: cho phép hoàn tất lần chuyển cảnh rõ ràng này và tiếp tục từ trạng thái mới.' : 'Tin mới nhất của user không yêu cầu rõ ràng một lần chuyển cảnh lớn: hãy giữ nguyên thời gian/địa điểm/nhân vật cốt lõi hiện tại, không tự dưng đổi cảnh.'}
 7. ${snap.directNeed ? 'Lượt này có tín hiệu hỏi rõ ràng/đang chờ hồi đáp: hãy đưa ra phản ứng thật của nhân vật trước, rồi mới cân nhắc thêm một bước tiến nhỏ.' : 'Nếu tương tác hiện tại đã giậm chân nhiều lượt liền, có thể thêm một biến số nhỏ ít ảnh hưởng và hợp thiết lập, hoặc một hành động chủ động của NPC; cấm nhồi tai nạn lớn chỉ để gây kích thích.'}
-8. 不要解释“导演规则”，不要输出分析/计划/标签，直接输出角色chính văn。
-${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
+8. Đừng giải thích “quy tắc đạo diễn”, đừng xuất ra phân tích/kế hoạch/nhãn, hãy viết thẳng chính văn của nhân vật.
+${ledger ? `\n【RÀNG BUỘC MỀM/CỨNG ĐÃ CÓ Ở TẦNG ĐIỀU KHIỂN 0-32】\n${ledger}` : ''}
 
-如果本导演提示与最新user明确意图、角色卡、世界书硬设定、当前现实锁冲突，以那些更具体、更高优先级事实为准。`;
+Nếu gợi ý đạo diễn này mâu thuẫn với ý định rõ ràng của user mới nhất, thẻ nhân vật, thiết lập cứng của sách thế giới hay khóa hiện thực hiện tại thì lấy những sự thật cụ thể hơn, ưu tiên cao hơn đó làm chuẩn.`;
     }
 
     function latestRealityTurn() {
@@ -16425,12 +16425,12 @@ ${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
     function scenePlaceCandidate(raw) {
         const value = String(raw || '')
             .replace(/^[“”"'‘’\s]+|[“”"'‘’\s]+$/g, '')
-            .replace(/^(?:了|到|往|向|进|回|重新|再次|那个|那张|这张|这个|那间|这间)\s*/g, '')
-            .replace(/(?:坐下|躺下|站住|停下|坐好|站好|坐定|蹲下|跪下|靠下|停住|坐了下来|躺了下来)$/g, '')
+            .replace(/^(?:tới|về|hướng|vào|lại|một lần nữa|cái đó|cái này|căn đó|căn này)\s+/gi, '')
+            .replace(/\s*(?:ngồi xuống|nằm xuống|đứng lại|dừng lại|ngồi yên|đứng yên|ngồi vững|ngồi xổm|quỳ xuống|tựa xuống|đã ngồi xuống|đã nằm xuống)$/gi, '')
             .trim();
         if (!value || value.length > 28) return '';
-        // 只把明显是地点/位置的短语当作地点，避免“离开她/走到最后”等误判。
-        const locationHint = /(?:室|房|厅|间|旁|边|门口|门边|床|沙发|椅|桌|玄关|厨房|客厅|卧室|浴室|卫生间|淋浴|走廊|阳台|楼|层|街|路|店|站|台|院|家|学校|教室|宿舍|办公室|公园|车内|车里|座位|码头|机场|车站|广场|庭院|屋|洞|营地|酒馆|旅馆|酒店|医院|诊所|商场|超市|餐厅|咖啡馆|图书馆|门外|屋外|室外|楼下|楼上)$/;
+        // Chỉ coi những cụm rõ ràng là địa điểm/vị trí mới là địa điểm, tránh nhận nhầm kiểu “rời khỏi cô ấy/đi tới cuối cùng”.
+        const locationHint = /(?:phòng|sảnh|gian|bên|cạnh|cửa|giường|sofa|ghế|bàn|lối vào|bếp|phòng khách|phòng ngủ|nhà tắm|nhà vệ sinh|vòi sen|hành lang|ban công|lầu|tầng|phố|đường|quán|tiệm|trạm|sân|nhà|trường|lớp học|ký túc xá|văn phòng|công viên|trong xe|chỗ ngồi|bến|sân bay|nhà ga|quảng trường|sân vườn|hang|trại|khách sạn|nhà nghỉ|bệnh viện|phòng khám|trung tâm thương mại|siêu thị|nhà hàng|quán cà phê|thư viện|ngoài cửa|ngoài nhà|ngoài trời|dưới nhà|trên lầu)\s*\S*$/i;
         return locationHint.test(value) ? value : '';
     }
 
@@ -16446,20 +16446,20 @@ ${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
         };
         const isCompletedMovement = match => {
             const before = value.slice(Math.max(0, Number(match.index || 0) - 12), Number(match.index || 0));
-            // “想/准备/打算/计划/试图/别/不要/没有/没能”属于计划、否定或未完成，不得当成当前地点真值。
-            return !/(?:想(?:要)?|准备|打算|计划|试图|尝试|希望|等会|待会|稍后|不要|别|没有|没能|尚未|还没|不想)\s*(?:去|再|重新|直接)?\s*$/.test(before);
+            // “muốn/chuẩn bị/định/kế hoạch/thử/đừng/không/chưa” thuộc về dự định, phủ định hoặc chưa hoàn tất, không được coi là sự thật về địa điểm hiện tại.
+            return !/(?:muốn|định|chuẩn bị|kế hoạch|thử|hy vọng|lát nữa|chốc nữa|sau đó|đừng|không|chưa|chưa thể|chẳng muốn)\s*(?:đi|lại|một lần nữa|thẳng)?\s*$/i.test(before);
         };
 
-        // “从浴室走出来 / 从卧室离开”
-        for (const match of value.matchAll(/从\s*([^，。！？；;]{1,24}?)(?:里|内)?\s*(?:走出|出来|离开|退出|走开)/g)) if (isCompletedMovement(match)) addUnique(left, match[1]);
-        // “离开浴室 / 走出浴室”
-        for (const match of value.matchAll(/(?:离开|走出|退出)\s*(?:了\s*)?([^，。！？；;]{1,24})/g)) if (isCompletedMovement(match)) addUnique(left, match[1]);
-        // “回到旧沙发旁 / 来到客厅 / 走到床边 / 进入卧室”
-        for (const match of value.matchAll(/(?:回到|返回到|来到|走到|移到|移动到|进入|进到|抵达|到达|到了|坐到|躺到|站到|靠到)\s*(?:了\s*)?([^，。！？；;]{1,28})/g)) if (isCompletedMovement(match)) addUnique(arrived, match[1]);
+        // “từ nhà tắm bước ra / rời khỏi phòng ngủ”
+        for (const match of value.matchAll(/từ\s+([^,.!?;]{1,24}?)\s*(?:bước ra|đi ra|rời đi|rút khỏi|bỏ đi)/gi)) if (isCompletedMovement(match)) addUnique(left, match[1]);
+        // “rời nhà tắm / bước ra khỏi nhà tắm”
+        for (const match of value.matchAll(/(?:rời khỏi|rời|bước ra khỏi|đi ra khỏi|rút khỏi)\s+([^,.!?;]{1,24})/gi)) if (isCompletedMovement(match)) addUnique(left, match[1]);
+        // “quay lại bên chiếc sofa cũ / đi tới phòng khách / bước tới bên giường / vào phòng ngủ”
+        for (const match of value.matchAll(/(?:quay lại|trở về|đi tới|bước tới|di chuyển tới|vào|bước vào|đến nơi|tới|ngồi vào|nằm xuống|đứng vào|tựa vào)\s+([^,.!?;]{1,28})/gi)) if (isCompletedMovement(match)) addUnique(arrived, match[1]);
 
         const donePatterns = [
-            [/(?:穿好|换好|脱下|脱掉|戴好|系好|包好|裹好)[^，。！？；;]{0,24}/g, 'Thay đổi trang phục/trang bị đã hoàn tất'],
-            [/(?:坐下|躺下|站起|起身|关上|打开|放下|拿起|收好|穿过)[^，。！？；;]{0,24}/g, 'Hành động đã hoàn tất'],
+            [/(?:mặc xong|thay xong|cởi ra|cởi bỏ|đeo xong|thắt xong|bọc xong|quấn xong)[^,.!?;]{0,24}/gi, 'Thay đổi trang phục/trang bị đã hoàn tất'],
+            [/(?:ngồi xuống|nằm xuống|đứng dậy|trở dậy|đóng lại|mở ra|đặt xuống|cầm lên|cất đi|đi xuyên qua)[^,.!?;]{0,24}/gi, 'Hành động đã hoàn tất'],
         ];
         for (const [rx, label] of donePatterns) {
             if (rx.test(value) && !completed.includes(label)) completed.push(label);
@@ -16480,38 +16480,38 @@ ${ledger ? `\n【0-32控制层已有软/硬约束】\n${ledger}` : ''}
         const signals = deriveLatestUserSceneSignals(latestUser.text);
         const storedScene = stateRuntime.state?.scene || {};
         const inferred = [
-            signals.left.length ? `最新user已明确离开：${signals.left.join('、')}` : '',
-            signals.currentLocation ? `最新user已明确到达/处于：${signals.currentLocation}` : '',
-            signals.completed.length ? `最新userĐã hoàn thành：${signals.completed.join('、')}` : '',
+            signals.left.length ? `User mới nhất đã nói rõ là rời khỏi: ${signals.left.join(', ')}` : '',
+            signals.currentLocation ? `User mới nhất đã nói rõ là tới/đang ở: ${signals.currentLocation}` : '',
+            signals.completed.length ? `User mới nhất đã hoàn thành: ${signals.completed.join(', ')}` : '',
         ].filter(Boolean).join('\n');
 
-        return `【0-32 · 当前现实防回滚锁｜最高优先级】
-你即将回复的是“最新 user 消息之后”的下一刻。最新 user 消息描述的动作、移动、换衣、拿放物品、姿势变化，只要语法上是已经做出的陈述，就全部视为已经完成，而不是“待执行计划”。
+        return `【0-32 · KHÓA CHỐNG LÙI HIỆN THỰC HIỆN TẠI | ƯU TIÊN CAO NHẤT】
+Bạn sắp viết khoảnh khắc ngay “sau tin nhắn user mới nhất”. Mọi hành động, di chuyển, thay đồ, cầm/đặt đồ vật, đổi tư thế được mô tả trong tin user mới nhất, chỉ cần về mặt ngữ pháp là câu trần thuật đã làm rồi, thì đều coi là đã hoàn tất, chứ không phải “kế hoạch chờ thực hiện”.
 
-【最新 user｜当前现实真值】
+【USER MỚI NHẤT | SỰ THẬT CỦA HIỆN THỰC HIỆN TẠI】
 ${String(latestUser.text).slice(-5200)}
 
-【上一条 assistant 结尾｜仅用于理解这次 user 是从哪里接过来的】
+【PHẦN CUỐI CỦA LƯỢT ASSISTANT TRƯỚC | CHỈ ĐỂ HIỂU LẦN NÀY USER TIẾP NỐI TỪ ĐÂU】
 ${String(previousAssistant?.text || '').slice(-1800)}
 
-${inferred ? `【代码识别到的明确Trạng thái迁移】\n${inferred}\n` : ''}【单一世界真值｜手机/chính văn/彼间私文同为现实，按知情边界使用】
+${inferred ? `【CHUYỂN TRẠNG THÁI RÕ RÀNG MÀ MÃ NGUỒN NHẬN RA】\n${inferred}\n` : ''}【SỰ THẬT CỦA THẾ GIỚI ĐƠN NHẤT | ĐIỆN THOẠI/CHÍNH VĂN/BỈ GIAN TƯ VĂN ĐỀU LÀ HIỆN THỰC, DÙNG THEO RANH GIỚI NGƯỜI BIẾT】
 ${s39UnifiedStorylineBrief(20, previousAssistant?.text || '')}
 
-【旧 scene 仅作历史参考】
+【SCENE CŨ CHỈ ĐỂ THAM KHẢO LỊCH SỬ】
 time=${storedScene.time || ''}
 location=${storedScene.location || ''}
 mood=${storedScene.mood || ''}
 
-【不可违反】
-1. 最新 user > 最新 assistant > 0-32旧scene > 检索旧记忆 > 总结/世界书中的历史场景。
-2. 如果最新 user 已经“离开A并到达B”，从你chính văn第一句开始，当前地点就是B；A只属于上一阶段历史。禁止再次把人物写回A，除非最新 user 明确说“返回A”。
-3. 禁止重演最新 user 已经做完的动作。比如 user 已写“走出浴室回到沙发旁”，你不能再写“浴室里……/你还在淋浴区……/你再次走出浴室”。
-4. 旧记忆中“浴室、卧室、餐厅”等高相关关键词只能解释过去，不能覆盖最新 user 已经改变的地点、衣着、姿势、物品Trạng thái。
-5. 回应开始前，先在内部确定：当前地点、人物位置、衣着/身体Trạng thái、手里物品、刚完成动作。若与旧scene冲突，以最新 user 为准。
-6. 角色可以基于“现在”的Trạng thái继续行动，但不得为了方便剧情把Trạng thái倒退。
-7. 本锁与 USER主权锁同时生效：不能通过“场景连续性”之名替user新增动作或对白。
+【KHÔNG ĐƯỢC VI PHẠM】
+1. user mới nhất > assistant mới nhất > scene cũ của 0-32 > ký ức cũ truy hồi được > bối cảnh lịch sử trong tổng kết/sách thế giới.
+2. Nếu user mới nhất đã “rời A và tới B” thì ngay từ câu đầu tiên của chính văn, địa điểm hiện tại là B; A chỉ thuộc về lịch sử giai đoạn trước. Cấm viết nhân vật quay lại A, trừ khi user mới nhất nói rõ “quay về A”.
+3. Cấm diễn lại những hành động user mới nhất đã làm xong. Ví dụ user đã viết “bước ra khỏi nhà tắm và quay lại bên sofa” thì bạn không được viết “trong nhà tắm…/bạn vẫn ở khu vòi sen…/bạn lại bước ra khỏi nhà tắm”.
+4. Những từ khóa liên quan cao trong ký ức cũ như “nhà tắm, phòng ngủ, phòng ăn” chỉ dùng để giải thích quá khứ, không được ghi đè lên địa điểm, trang phục, tư thế, trạng thái đồ vật mà user mới nhất đã thay đổi.
+5. Trước khi bắt đầu đáp lời, hãy tự xác định trong đầu: địa điểm hiện tại, vị trí nhân vật, trang phục/trạng thái cơ thể, vật đang cầm, hành động vừa hoàn tất. Nếu mâu thuẫn với scene cũ thì lấy user mới nhất làm chuẩn.
+6. Nhân vật có thể tiếp tục hành động dựa trên trạng thái “hiện tại”, nhưng không được vì tiện cho cốt truyện mà cho trạng thái lùi lại.
+7. Khóa này có hiệu lực đồng thời với khóa chủ quyền USER: không được nhân danh “tính liền mạch của cảnh” để thêm hành động hay thoại thay user.
 
-除非最新 user 自己明确要求回到旧地点/重做旧动作，否则“Đã hoàn thành事件不可回滚”。`;
+Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm cũ/làm lại hành động cũ, còn lại “sự kiện đã hoàn thành thì không thể lùi”.`;
     }
 
     function userAgencyGuardInstruction() {
