@@ -263,7 +263,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     };
 
     const clone = value => JSON.parse(JSON.stringify(value));
-    const nowText = () => new Date().toLocaleString('zh-CN', { hour12: false });
+    const nowText = () => new Date().toLocaleString('vi-VN', { hour12: false });
     const esc = value => String(value ?? '')
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
@@ -4481,7 +4481,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             }
         }
         if(!candidates.length)return '';
-        candidates.sort((a,b)=>b.score-a.score||Number(b.constant)-Number(a.constant)||String(a.book.name).localeCompare(String(b.book.name),'zh-CN'));
+        candidates.sort((a,b)=>b.score-a.score||Number(b.constant)-Number(a.constant)||String(a.book.name).localeCompare(String(b.book.name),'vi-VN'));
         const lines=['【SÁCH THẾ GIỚI ĐỌC BẮT BUỘC 0-32｜thiết định cứng, ưu tiên cao】','Nội dung dưới đây lấy từ những sách thế giới đang thực sự gắn với nhân vật hiện tại / cuộc trò chuyện hiện tại / cấu hình toàn cục hiện tại. Hãy chủ động đọc và tuân thủ; thiết định tĩnh trong sách thế giới được ưu tiên hơn ký ức cũ hay quán tính của mô hình, nhưng hành động rõ ràng mới nhất của user và những tình tiết đã xảy ra ở lượt này vẫn là hiện thực hiện tại. Đừng kể lại sách thế giới, hãy theo thiết định mà viết tiếp mạch truyện.'];
         let used=lines.join('\n').length,accepted=0;
         for(const item of candidates){
@@ -5171,7 +5171,7 @@ ${scene.mood||''}`,12000);
         }else{
             for(const [key,row] of fallbackMap)finalMap.set(key,row);
         }
-        const rows=[...finalMap.values()].filter(row=>row.confidence>=.84&&sourceRosterCandidateTrusted(row)).sort((a,b)=>b.confidence-a.confidence||a.name.localeCompare(b.name,'zh-CN')).slice(0,240);
+        const rows=[...finalMap.values()].filter(row=>row.confidence>=.84&&sourceRosterCandidateTrusted(row)).sort((a,b)=>b.confidence-a.confidence||a.name.localeCompare(b.name,'vi-VN')).slice(0,240);
         stateRuntime.sourceCharacterRoster=rows;stateRuntime.sourceCharacterRosterUpdatedAt=now;
         const floor=Math.max(-1,(context()?.chat?.length||0)-1);
         for(const row of rows){registerNpcIdentity({name:row.name,source:row.source||'Thẻ nhân vật/sách thế giới',identity:row.role?`Nhân vật từ thẻ/sách thế giới; nhãn quan hệ: ${row.role}`:'Nhân vật từ thẻ/sách thế giới',floor},floor);}
@@ -9175,19 +9175,19 @@ ${messageText(message).slice(0,10000)}`;
         const canCalibrate=Number(payload.floor)===latestSidecarFloor;
         const timeLabel=calibration?.value || profile.era || 'Chưa ghi chú thời đại';
         const reasonLabel=calibration?'Đã hiệu chỉnh thủ công':profile.reason;
-        const settingNote = `<div class="vvvtm-setting-chip"><span>🌐 ${esc(profile.worldType || '自动识别')} · ${esc(timeLabel)} · ${esc(device)}${reasonLabel ? ` · ${esc(reasonLabel)}` : ''}</span>${canCalibrate?'<button type="button" data-vvvtm-time-calibrate title="自定义校准剧情时间">🕒 校准时间</button>':''}</div>`;
+        const settingNote = `<div class="vvvtm-setting-chip"><span>🌐 ${esc(profile.worldType || 'Tự nhận diện')} · ${esc(timeLabel)} · ${esc(device)}${reasonLabel ? ` · ${esc(reasonLabel)}` : ''}</span>${canCalibrate?'<button type="button" data-vvvtm-time-calibrate title="Tự chỉnh thời gian cốt truyện">🕒 Chỉnh giờ</button>':''}</div>`;
         return `<section class="vvvtm-inline-extra" data-vvvtm-sidecar="${esc(payload.id)}" data-vvvtm-floor="${esc(payload.floor)}">
-            <header><span>✒️ 0-32 · 永不落幕的剧场</span><div><button type="button" data-vvvtm-open-tab="worldlife">彼间私文管理</button><button type="button" data-vvvtm-regenerate="${payload.floor}">单独重写（额外请求）</button></div></header>
+            <header><span>✒️ 0-32 · 永不落幕的剧场</span><div><button type="button" data-vvvtm-open-tab="worldlife">Quản lý Bỉ Gian Tư Văn</button><button type="button" data-vvvtm-regenerate="${payload.floor}">Viết lại riêng (thêm một yêu cầu)</button></div></header>
             ${status}${memoryStatus}${completenessStatus}${ecologyStatus}${settingNote}
-            ${foldBlock('🎬 当前场景', Object.keys(scene).length ? `${Object.keys(scene).length} 项` : '无更新', sceneBody, 'scene', payload.floor)}
-            ${foldBlock('⏰ Lời hẹn chờ thực hiện', promises.length ? `${promises.length} 项` : 'Chưa có', promiseBody, 'promises', payload.floor)}
-            ${foldBlock('🔐 Lời hẹn与秘密', secrets.length ? `${secrets.length} 项` : 'Chưa có', secretBody, 'secrets', payload.floor)}
-            ${foldBlock('👗 人物外观', appearances.length ? `${appearances.length} 人` : 'Lượt này không có cập nhật', appearanceBody, 'appearance', payload.floor)}
-            ${foldBlock('🌐 朋友圈', story.moments?.length ? `${story.moments.length} 条` : 'Chưa có', storyBody(story.moments, '本轮没有朋友圈动态。'), 'moments', payload.floor)}
-            ${foldBlock('📔 日记', story.diary?.length ? `${story.diary.length} 条` : 'Chưa có', storyBody(story.diary, '本轮没有需要记录的日记。'), 'diary', payload.floor)}
-            ${foldBlock('🗓️ 纪念日', story.anniversaries?.length ? `${story.anniversaries.length} 条` : 'Chưa có', storyBody(story.anniversaries, '本轮没有新的纪念日信息。'), 'anniversaries', payload.floor)}
-            <section class="vvvtm-phone-fold"><div class="vvvtm-world-fold-toggle"><span>${communicationIcon(profile)} ${esc(device)}</span><em>${phone.length ? `${phone.length} 条新内容` : 'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-phone="${payload.floor}" aria-expanded="${phoneOpen}" aria-label="${phoneOpen ? `收起${esc(device)}` : `展开${esc(device)}`}">${phoneOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${phoneOpen ? '' : 'hidden'}>${phoneBody}<button type="button" class="vvvtm-open-device-inline" data-vvvtm-open-phone="${payload.floor}">打开完整${esc(device)}</button></div></section>
-            <section class="vvvtm-world-fold"><div class="vvvtm-world-fold-toggle"><span>🌍 彼间私文</span><em>${world.length ? `${world.length} 个动态` : 'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-world="${payload.floor}" aria-expanded="${worldOpen}" aria-label="${worldOpen ? 'Thu gọn Bỉ Gian Tư Văn' : 'Mở Bỉ Gian Tư Văn'}">${worldOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${worldOpen ? '' : 'hidden'}>${worldBody}</div></section>
+            ${foldBlock('🎬 Cảnh hiện tại', Object.keys(scene).length ? `${Object.keys(scene).length} mục` : 'Không có cập nhật', sceneBody, 'scene', payload.floor)}
+            ${foldBlock('⏰ Lời hẹn chờ thực hiện', promises.length ? `${promises.length} mục` : 'Chưa có', promiseBody, 'promises', payload.floor)}
+            ${foldBlock('🔐 Lời hẹn và bí mật', secrets.length ? `${secrets.length} mục` : 'Chưa có', secretBody, 'secrets', payload.floor)}
+            ${foldBlock('👗 Ngoại hình nhân vật', appearances.length ? `${appearances.length} người` : 'Lượt này không có cập nhật', appearanceBody, 'appearance', payload.floor)}
+            ${foldBlock('🌐 Khoảnh khắc', story.moments?.length ? `${story.moments.length} mục` : 'Chưa có', storyBody(story.moments, 'Lượt này không có bài đăng Khoảnh khắc.'), 'moments', payload.floor)}
+            ${foldBlock('📔 Nhật ký', story.diary?.length ? `${story.diary.length} mục` : 'Chưa có', storyBody(story.diary, 'Lượt này không có nhật ký cần ghi lại.'), 'diary', payload.floor)}
+            ${foldBlock('🗓️ Ngày kỷ niệm', story.anniversaries?.length ? `${story.anniversaries.length} mục` : 'Chưa có', storyBody(story.anniversaries, 'Lượt này không có thông tin ngày kỷ niệm mới.'), 'anniversaries', payload.floor)}
+            <section class="vvvtm-phone-fold"><div class="vvvtm-world-fold-toggle"><span>${communicationIcon(profile)} ${esc(device)}</span><em>${phone.length ? `${phone.length} nội dung mới` : 'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-phone="${payload.floor}" aria-expanded="${phoneOpen}" aria-label="${phoneOpen ? `Thu gọn ${esc(device)}` : `Mở ${esc(device)}`}">${phoneOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${phoneOpen ? '' : 'hidden'}>${phoneBody}<button type="button" class="vvvtm-open-device-inline" data-vvvtm-open-phone="${payload.floor}">Mở đầy đủ ${esc(device)}</button></div></section>
+            <section class="vvvtm-world-fold"><div class="vvvtm-world-fold-toggle"><span>🌍 Bỉ Gian Tư Văn</span><em>${world.length ? `${world.length} bài đăng` : 'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-world="${payload.floor}" aria-expanded="${worldOpen}" aria-label="${worldOpen ? 'Thu gọn Bỉ Gian Tư Văn' : 'Mở Bỉ Gian Tư Văn'}">${worldOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${worldOpen ? '' : 'hidden'}>${worldBody}</div></section>
         </section>`;
     }
 
@@ -9195,7 +9195,7 @@ ${messageText(message).slice(0,10000)}`;
         return document.querySelector(`#chat .mes[mesid="${floor}"],#chat .mes[data-mesid="${floor}"]`);
     }
 
-    function showCompanionLoading(floor, { label='0-32正在处理…', progress=null, detail='' } = {}) {
+    function showCompanionLoading(floor, { label='0-32 đang xử lý…', progress=null, detail='' } = {}) {
         if (!stateRuntime.state?.settings?.companionShowLoading) return;
         const node = messageNodeForFloor(floor); const text = node?.querySelector('.mes_text'); if (!text) return;
         let loading = text.querySelector('.vvvtm-inline-loading');
@@ -9204,14 +9204,14 @@ ${messageText(message).slice(0,10000)}`;
         const determinate = Number.isFinite(numeric) && numeric >= 0 && numeric <= 100;
         const pct = determinate ? Math.max(0,Math.min(100,numeric)) : 0;
         loading.classList.toggle('indeterminate', !determinate);
-        loading.innerHTML = `<div class="vvvtm-fallback-progress-head"><b>${esc(label)}</b>${determinate?`<em>${pct}%</em>`:'<em>处理中</em>'}</div><div class="vvvtm-fallback-progress-track"><i${determinate?` style="width:${Math.max(2,pct)}%"`:''}></i></div>${detail?`<small>${esc(detail)}</small>`:''}`;
+        loading.innerHTML = `<div class="vvvtm-fallback-progress-head"><b>${esc(label)}</b>${determinate?`<em>${pct}%</em>`:'<em>Đang xử lý</em>'}</div><div class="vvvtm-fallback-progress-track"><i${determinate?` style="width:${Math.max(2,pct)}%"`:''}></i></div>${detail?`<small>${esc(detail)}</small>`:''}`;
     }
     function companionProgressPhase(value) {
         if (value < 18) return '正在整理本轮chính văn与角色资料';
-        if (value < 42) return '正在读取有限记忆与当前现实';
+        if (value < 42) return 'Đang đọc ký ức có hạn và hiện thực hiện tại';
         if (value < 70) return '正在生成手机、Lời hẹn与人物动态';
-        if (value < 90) return '正在核对格式与跨时空规则';
-        return '正在写入本轮幕后内容';
+        if (value < 90) return 'Đang đối chiếu định dạng và quy tắc xuyên không - thời gian';
+        return 'Đang ghi nội dung hậu trường của lượt này';
     }
     function stopCompanionProgress(floor) {
         const timer=stateRuntime.fallbackProgressTimers.get(Number(floor));
@@ -9220,9 +9220,9 @@ ${messageText(message).slice(0,10000)}`;
         stateRuntime.fallbackProgressValues.delete(Number(floor));
     }
     function companionWaitingDetail(elapsedSeconds) {
-        if (elapsedSeconds < 3) return '请求已提交，等待模型响应';
-        if (elapsedSeconds < 15) return '模型处理中，正在等待结构化结果';
-        return '响应时间较长，仍在等待模型返回；这不是服务端百分比进度';
+        if (elapsedSeconds < 3) return 'Đã gửi yêu cầu, đang chờ mô hình phản hồi';
+        if (elapsedSeconds < 15) return 'Mô hình đang xử lý, đang chờ kết quả có cấu trúc';
+        return 'Thời gian phản hồi hơi lâu, vẫn đang chờ mô hình trả về; đây không phải phần trăm tiến độ từ máy chủ';
     }
     function startCompanionProgress(floor, label, detail='') {
         const key=Number(floor); stopCompanionProgress(key);
@@ -9250,7 +9250,7 @@ ${messageText(message).slice(0,10000)}`;
     function decorateCompanionActions(card) {
         const actions=card?.querySelector('header>div');
         const configuredButton=actions?.querySelector('[data-vvvtm-regenerate]');
-        if(configuredButton)configuredButton.title='使用幕后七条独立API重写';
+        if(configuredButton)configuredButton.title='Viết lại bằng API riêng của Bảy điều hậu trường';
         actions?.querySelectorAll('[data-vvvtm-regenerate-tavern]').forEach(button=>button.remove());
     }
 
@@ -9282,7 +9282,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function decorateAllCompanionOutputs() {
-        // 仅用于“打开/切换聊天”这类明确的一次性全量恢复；不再由周期定时器反复调用。
+        // Chỉ dùng cho những lần khôi phục toàn bộ một lần rõ ràng như “mở/đổi cuộc trò chuyện”; không còn được bộ hẹn giờ định kỳ gọi lặp lại.
         const chat=context()?.chat||[];
         chat.forEach((message,floor)=>{if(message?.extra?.vvvTheaterCompanion)ensureCompanionOutput(floor);});
     }
@@ -9319,7 +9319,7 @@ ${messageText(message).slice(0,10000)}`;
         companionDomObserver=new MutationObserver(mutations=>{
             const floors=new Set();
             for(const mutation of mutations){
-                // 我们自己插入的sidecar/loading不再触发二次装饰。
+                // Sidecar/loading do chính chúng ta chèn vào sẽ không kích hoạt lần trang trí thứ hai.
                 if(mutation.target?.closest?.('.vvvtm-inline-extra,.vvvtm-inline-loading'))continue;
                 const targetFloor=floorFromMessageNode(mutation.target);
                 if(targetFloor!==null)floors.add(targetFloor);
@@ -9346,11 +9346,11 @@ ${messageText(message).slice(0,10000)}`;
 
     function companionWritingSourceLabel(mode = companionWritingMode()) {
         const model = compactText(stateRuntime.serverConfig?.companion?.model, 160);
-        return `幕后七条独立API · ${model || '自选模型'} · 独立资料边界`;
+        return `API riêng của Bảy điều hậu trường · ${model || 'mô hình tự chọn'} · ranh giới dữ liệu riêng`;
     }
 
     function isCompanionPayloadSource(value) {
-        // 旧来源只用于识别升级前已写入的历史sidecar，不能再发起对应旧请求。
+        // Nguồn cũ chỉ dùng để nhận diện các sidecar lịch sử đã ghi trước khi nâng cấp, không được gửi lại yêu cầu cũ tương ứng.
         return ['dedicated-seven-api','tavern-current-preset','tavern-current-preset-manual','relay-shared-api','companion-independent-api','companion-independent-then-tavern'].includes(String(value || ''));
     }
 
@@ -9378,7 +9378,7 @@ ${messageText(message).slice(0,10000)}`;
 
     async function callCompanionIndependentApi(prompt, { responseLength = null, systemPrompt = '', jsonMode = false, generationType = 'quiet', finalInstruction = '' } = {}) {
         await ensureCompanionIndependentApiReady();
-        if (stateRuntime.companionGeneration) throw new Error('上一条幕后七条独立API请求仍在后台收尾，请等它真正结束后再试');
+        if (stateRuntime.companionGeneration) throw new Error('Yêu cầu API riêng trước của Bảy điều hậu trường vẫn đang kết thúc ở nền, hãy đợi nó xong hẳn rồi thử lại');
         const configured = Number(responseLength ?? stateRuntime.serverConfig?.companion?.maxTokens ?? 7000);
         const scopedSystem = [String(systemPrompt || '').trim(), String(finalInstruction || '').trim()].filter(Boolean).join('\n\n');
         const body = {
@@ -9487,7 +9487,7 @@ ${messageText(message).slice(0,10000)}`;
             entry = lastAssistantEntry({ requireUserBefore: true });
         }
         if (!entry) {
-            if (force && !silent) toast('角色卡开场白不会读取或生成通讯终端与彼间私文。请先发送一条消息。', 'info');
+            if (force && !silent) toast('Lời mở đầu của thẻ nhân vật sẽ không đọc hay tạo thiết bị liên lạc và Bỉ Gian Tư Văn. Hãy gửi một tin nhắn trước.', 'info');
             return false;
         }
         const { index, message } = entry;
@@ -9495,7 +9495,7 @@ ${messageText(message).slice(0,10000)}`;
         const signature = messageSignature(index, message);
         const existing = message?.extra?.vvvTheaterCompanion;
         if (!force && existing?.signature === signature && ['ok','fallback-ok'].includes(String(existing?.parseStatus||''))) { decorateCompanionOutput(index); return true; }
-        // 正常入口遇到已挂起重试时不重复开任务；真正的retry timer必须放行，否则会形成‘看似重试、实际永远0%’。
+        // Lối vào bình thường gặp lần thử lại đang treo thì không mở thêm tác vụ; riêng retry timer thật thì phải cho qua, nếu không sẽ thành cảnh “trông như đang thử lại mà thực ra mãi mãi 0%”.
         if (!force && !fromRetry && existing?.signature === signature && existing?.parseStatus === 'retrying-seven-api') { decorateCompanionOutput(index); return true; }
         if (!force && !existing && index <= Number(stateRuntime.state.progress.lastCompanionFloor ?? -1)) return false;
         if (!force && index < Number(stateRuntime.state.progress.lastCompanionFloor ?? -1)) return false;
@@ -9506,8 +9506,8 @@ ${messageText(message).slice(0,10000)}`;
         let companionTaskRecord=null;
         startCompanionProgress(
             index,
-            fromRetry ? '幕后七条自动重试中' : '幕后七条正在后台生成',
-            fallbackReason || (fromRetry ? `失败后自动续试（最多${companionRetryLimit()}次）` : companionWritingSourceLabel()),
+            fromRetry ? 'Bảy điều hậu trường đang tự thử lại' : 'Bảy điều hậu trường đang tạo ở nền',
+            fallbackReason || (fromRetry ? `Tự thử tiếp sau khi thất bại (tối đa ${companionRetryLimit()} lần)` : companionWritingSourceLabel()),
         );
         try {
             await ensureCompanionWritingSourceReady();
@@ -9540,7 +9540,7 @@ ${messageText(message).slice(0,10000)}`;
                 clearCompanionRetryForFloor(index);
                 return false;
             }
-            updateCompanionFallbackProgress(index, 96, '幕后七条已返回，正在解析写入', record.companionSourceLabel||companionWritingSourceLabel());
+            updateCompanionFallbackProgress(index, 96, 'Bảy điều hậu trường đã trả về, đang phân tích và ghi vào', record.companionSourceLabel||companionWritingSourceLabel());
             const applied = await applyCompletedJob(record, task);
             if (!applied) {
                 const status = String(record.status || '');
@@ -9548,7 +9548,7 @@ ${messageText(message).slice(0,10000)}`;
                     clearCompanionRetryForFloor(index);
                     return false;
                 }
-                throw new Error(record.error || '幕后七条结果未成功写入');
+                throw new Error(record.error || 'Kết quả Bảy điều hậu trường chưa ghi vào thành công');
             }
             clearCompanionRetryForFloor(index);
             const written = context()?.chat?.[index]?.extra?.vvvTheaterCompanion;
@@ -9567,7 +9567,7 @@ ${messageText(message).slice(0,10000)}`;
             decorateCompanionOutput(index);
             if (['phone','worldlife','appearance'].includes(stateRuntime.currentTab)) renderCurrentTab();
             // fixed37：父母主动微信作为独立生活脉冲异步运行；失败绝不拖垮当前chính văn/幕后七条。
-            runLaterForScope(operationScope,220,()=>{void maybeRunParentWechatPulse(index).catch(error=>console.warn('[0-32·父母微信脉冲] 异步任务失败',error));});
+            runLaterForScope(operationScope,220,()=>{void maybeRunParentWechatPulse(index).catch(error=>console.warn('[0-32 · Nhịp WeChat của bố mẹ] Tác vụ bất đồng bộ thất bại',error));});
             return record.status !== 'error' && record.status !== 'skipped' && record.status !== 'stale';
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
@@ -9575,7 +9575,7 @@ ${messageText(message).slice(0,10000)}`;
                 companionTaskRecord.companionSource=String(error.companionSource);
                 companionTaskRecord.companionSourceLabel=compactText(error?.companionSourceLabel||companionTaskRecord.companionSourceLabel,180);
             }
-            console.error(`[vvv小剧场] 幕后七条生成失败（${companionTaskRecord?.companionSourceLabel||companionWritingSourceLabel()}）`, error);
+            console.error(`[vvv Sân Khấu Nhỏ] Tạo Bảy điều hậu trường thất bại (${companionTaskRecord?.companionSourceLabel||companionWritingSourceLabel()})`, error);
             if(companionTaskRecord && ['GeneratedJsonFormatError','ModelJsonFormatError','CompanionPayloadIncompleteError','CompanionJsonRecoveryError'].includes(String(error?.name||''))){
                 companionTaskRecord.status='quality-rejected';companionTaskRecord.applied=true;
                 companionTaskRecord.error=compactText(error.message,500);companionTaskRecord.updatedAt=Date.now();
@@ -9602,7 +9602,7 @@ ${messageText(message).slice(0,10000)}`;
                     await saveChatExtras(operationScope);
                     decorateCompanionOutput(index);
                 }
-                if (!silent || fromRetry) toast(`幕后七条停止自动重试：${error.message}`, 'error');
+                if (!silent || fromRetry) toast(`Bảy điều hậu trường dừng tự thử lại: ${error.message}`, 'error');
                 return false;
             }
             scheduleCompanionRetry(index, signature, error, { fallbackReason, silent:true, force:Boolean(force) });
@@ -9613,13 +9613,13 @@ ${messageText(message).slice(0,10000)}`;
         }
     }
 
-    // ========================= 可交互通讯终端 =========================
+    // ========================= Thiết bị liên lạc tương tác được =========================
     function phoneContactProfile(name) {
         const key=compactText(name,80); if(!key)return null;
         const rows=(stateRuntime.state.phone?.contactProfiles||[]).filter(row=>compactText(row?.name,80)===key);
         const current=stateRuntime.state?.communicationProfile||{}; const currentKey=current.worldKey||'';
         const originKey=stateRuntime.state?.worldTransit?.origin?.worldKey||'origin-modern';
-        // S9.3：现实同一世界内旅行时优先原世界联系人，避免旧local profile把新回复挡掉。
+        // S9.3: khi di chuyển trong cùng một thế giới hiện thực thì ưu tiên liên hệ của thế giới gốc, tránh để local profile cũ chặn mất lượt trả lời mới.
         if(currentWorldMatchesOrigin(current)){
             const originRow=rows.find(r=>r.scope==='origin'&&(!r.homeWorldKey||r.homeWorldKey===originKey));
             if(originRow)return originRow;
@@ -9653,7 +9653,7 @@ ${messageText(message).slice(0,10000)}`;
         phone.contactProfiles ||= [];
         const cp=stateRuntime.state?.communicationProfile||{}; const currentKey=cp.worldKey||'';
         const originKey=stateRuntime.state?.worldTransit?.origin?.worldKey||'origin-modern';
-        // 老联系人缺元数据时按原世界联系人迁移，避免穿越后旧同学继续实时发微信。
+        // Khi liên hệ cũ thiếu metadata thì chuyển theo diện liên hệ thế giới gốc, tránh việc sau khi xuyên không bạn học cũ vẫn nhắn WeChat theo thời gian thực.
         for(const item of phone.contacts||[]){const name=compactText(typeof item==='string'?item:item?.name,80);if(name&&!phone.contactProfiles.some(r=>compactText(r?.name,80)===name))phone.contactProfiles.push({name,scope:'origin',homeWorldKey:originKey,availability:cp.originReachable?'active':'offline-origin',source:'auto-contact-migration',createdAt:Date.now(),updatedAt:Date.now()})}
         for(const row of phone.contactProfiles){
             const scope=row.scope||'origin'; const home=row.homeWorldKey||(scope==='origin'?originKey:'');
@@ -9663,7 +9663,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function phoneContactNames() {
-        // 只在微信UI显示当前可达联系人；跨世界后原联系人仍保存在contactProfiles但标记离线。
+        // Chỉ hiện những liên hệ hiện còn với tới được trong giao diện WeChat; sau khi xuyên thế giới, liên hệ gốc vẫn nằm trong contactProfiles nhưng bị đánh dấu ngoại tuyến.
         refreshPhoneContactAvailability();
         const names = new Set();
         const phone = stateRuntime.state.phone || {};
@@ -9671,10 +9671,10 @@ ${messageText(message).slice(0,10000)}`;
         const active=name=>{const p=phoneContactProfile(name);return !p || (p.availability==='active'&&(!p.homeWorldKey||p.homeWorldKey===currentKey||p.scope==='origin'));};
         (phone.contacts || []).forEach(item => {const n=compactText(typeof item === 'string' ? item : item?.name, 80);if(n&&active(n))names.add(n)});
         (phone.threads || []).forEach(item => {const n=compactText(item?.contact,80);if(n&&active(n))names.add(n)});
-        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b, 'zh-CN'));
+        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b, 'vi-VN'));
     }
 
-    // fixed37：微信/群聊列表按最后一条真实消息排序。谁刚来消息，谁就像真实微信/QQ一样自动顶到最上面。
+    // fixed37: danh sách WeChat/chat nhóm sắp xếp theo tin nhắn thật cuối cùng. Ai vừa có tin thì tự nhảy lên đầu đúng như WeChat/QQ thật.
     function phoneThreadLatestActivity(thread) {
         const messages=visiblePhoneThreadMessages(thread?.messages||[]);
         const last=messages.at(-1)||null;
@@ -9685,7 +9685,7 @@ ${messageText(message).slice(0,10000)}`;
         const delta=Number(b?.stamp||0)-Number(a?.stamp||0);
         if(delta)return delta;
         const aHas=Boolean(a?.last),bHas=Boolean(b?.last);if(aHas!==bHas)return aHas?-1:1;
-        return compactText(a?.name,120).localeCompare(compactText(b?.name,120),'zh-CN');
+        return compactText(a?.name,120).localeCompare(compactText(b?.name,120),'vi-VN');
     }
 
     function ensurePhoneThread(contact) {
@@ -9734,8 +9734,8 @@ ${messageText(message).slice(0,10000)}`;
         const current=stateRuntime.state?.communicationProfile || {};
         const currentKey=current.worldKey || '';
         const originKey=stateRuntime.state?.worldTransit?.origin?.worldKey || 'origin-modern';
-        // S9.3：同一个现实世界里只是换城市/国家时，旧版偶尔会残留一份 local profile。
-        // 如果同名群已经有 origin profile，优先使用 origin，避免“用户消息写到local线程、AI回复写到origin线程”造成半边聊天消失。
+        // S9.3: khi chỉ đổi thành phố/quốc gia trong cùng một thế giới hiện thực, bản cũ thỉnh thoảng còn sót lại một local profile.
+        // Nếu nhóm cùng tên đã có origin profile thì ưu tiên dùng origin, tránh cảnh “tin người dùng ghi vào luồng local, lượt AI ghi vào luồng origin” làm mất một nửa cuộc trò chuyện.
         if (currentWorldMatchesOrigin(current)) {
             const originRow=rows.find(r=>r.scope==='origin'&&(!r.homeWorldKey||r.homeWorldKey===originKey));
             if(originRow)return originRow;
@@ -9794,8 +9794,8 @@ ${messageText(message).slice(0,10000)}`;
         const aTime=compactText(a?.time,80), bTime=compactText(b?.time,80);
         const aAtt=phoneAttachmentFingerprint(a), bAtt=phoneAttachmentFingerprint(b);
         if(aSender!==bSender || aContent!==bContent || aAtt!==bAtt)return false;
-        // S9.4：恢复镜像时，不再因为 _sidecarId 不同就把同一条用户消息复制一遍。
-        // 有明确时间时必须时间也一致；无时间时仅在 sidecar/手动消息互为镜像时视为同一条。
+        // S9.4: khi khôi phục bản sao, không nhân đôi cùng một tin của người dùng chỉ vì _sidecarId khác nhau.
+        // Khi có thời gian rõ ràng thì thời gian cũng phải khớp; khi không có thời gian thì chỉ coi là cùng một tin nếu sidecar và tin thủ công là bản sao của nhau.
         if(aTime || bTime) return aTime===bTime;
         return Boolean(a?._sidecarId)!==Boolean(b?._sidecarId) || (a?._sidecarId&&a?._sidecarId===b?._sidecarId);
     }
@@ -9840,8 +9840,8 @@ ${messageText(message).slice(0,10000)}`;
     function normalizePhoneThreadChronology(thread, groupName='') {
         if(!thread||!Array.isArray(thread.messages)||thread.messages.length<2)return false;
         let changed=false;
-        // 先只消掉 S9.3 自愈产生的“手动原消息 + sidecar镜像”重复；
-        // 两条都来自真实NPC/真实手动记录时不做激进去重。
+        // Trước tiên chỉ khử phần trùng “tin gốc thủ công + bản sao sidecar” do S9.3 tự chữa sinh ra;
+        // khi cả hai đều đến từ NPC thật/bản ghi thủ công thật thì không khử trùng một cách quyết liệt.
         const kept=[];
         for(const row of thread.messages){
             const dup=kept.find(old=>samePhoneLogicalMessage(old,row,groupName) && (Boolean(old?._sidecarId)!==Boolean(row?._sidecarId) || (old?.pendingId&&old.pendingId===row?.pendingId) || (old?.id&&old.id===row?.id)));
@@ -9995,7 +9995,7 @@ ${messageText(message).slice(0,10000)}`;
         }
         if(normalizeAllPhoneThreadChronology())changed=true;
         if(changed){
-            // S9.4：手机会话永久采用 append-only，不再因普通容量阈值裁掉旧消息。
+            // S9.4: hội thoại điện thoại vĩnh viễn theo kiểu append-only, không cắt tin cũ vì ngưỡng dung lượng thông thường nữa.
             clearTimeout(stateRuntime.phoneHistoryRecoverySaveTimer);
             const scope=captureChatScope(), operationState=stateRuntime.state;
             stateRuntime.phoneHistoryRecoverySaveTimer=runLaterForScope(scope,120,()=>{
@@ -10089,12 +10089,12 @@ ${messageText(message).slice(0,10000)}`;
                 if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)return 0;
                 await saveState({immediate:true,refresh:false,reason:'phone-history-server-salvage',forceSnapshot:true});
                 if(!chatScopeIsCurrent(scope))return added;
-                if(!silent)toast(`📱 从永久档案/安全快照找回 ${added} 条手机历史`,'success');
-                console.info(`[0-32·S10] 从服务器历史保险库找回 ${added} 条手机记录；只追加，不删除`);
+                if(!silent)toast(`📱 Đã lấy lại ${added} mục lịch sử điện thoại từ kho lưu vĩnh viễn/ảnh chụp an toàn`,'success');
+                console.info(`[0-32·S10] Đã lấy lại ${added} bản ghi điện thoại từ hầm lưu trữ lịch sử trên máy chủ; chỉ thêm, không xóa`);
             }
             return added;
         }catch(error){
-            if(chatScopeIsCurrent(scope))console.warn('[0-32·S10] 服务器手机历史救援失败',error);
+            if(chatScopeIsCurrent(scope))console.warn('[0-32·S10] Cứu lịch sử điện thoại từ máy chủ thất bại',error);
             return 0;
         }finally{
             if(stateRuntime.phoneServerRecoveryToken===token){stateRuntime.phoneServerRecoveryToken=null;stateRuntime.phoneServerRecoveryRunning=false;}
@@ -10194,15 +10194,15 @@ ${messageText(message).slice(0,10000)}`;
         return {target,stats};
     }
     async function precisePhoneChronology({apply=false,silent=false}={}) {
-        if(!stateRuntime.state?.phone)throw new Error('手机数据尚未初始化');
+        if(!stateRuntime.state?.phone)throw new Error('Dữ liệu điện thoại chưa được khởi tạo');
         const scope=captureChatScope();const capturedState=stateRuntime.state;
-        // U1.7：预览严格只读；apply 也绑定不可变chat scope，切聊天立即终止，绝不把A聊天证据应用到B。
+        // U1.7: bản xem trước hoàn toàn chỉ đọc; apply cũng gắn với chat scope bất biến, đổi cuộc trò chuyện là dừng ngay, tuyệt đối không đem bằng chứng của cuộc A áp vào cuộc B.
         if(apply){await recoverPhoneHistoryFromServerArchive({force:true,silent:true});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('Đã đổi cuộc trò chuyện, việc đưa điện thoại về chỗ đã hủy an toàn');}
         const binding=scope.binding?.archiveId ? scope.binding : (await resolvePermanentArchiveForScope(scope,{create:false}))?.binding;
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('Đã đổi cuộc trò chuyện, việc đưa điện thoại về chỗ đã hủy an toàn');
-        const chatKey=scope.serverChatKey;if(!binding?.archiveId||!binding?.characterKey||!chatKey)throw new Error('当前角色聊天尚未绑定永久档案');
+        const chatKey=scope.serverChatKey;if(!binding?.archiveId||!binding?.characterKey||!chatKey)throw new Error('Cuộc trò chuyện của nhân vật hiện tại chưa gắn với kho lưu vĩnh viễn');
         const data=await serverFetch('/archives/phone-chronology-evidence',{method:'POST',body:JSON.stringify({characterKey:binding.characterKey,archiveId:binding.archiveId,chatKey})});
-        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('聊天已切换，手机归位结果未应用');
+        if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)throw new Error('Đã đổi cuộc trò chuyện, kết quả đưa điện thoại về chỗ chưa được áp dụng');
         const evidence=[...(data?.evidence||[]),...currentChatPhoneChronologyEvidence()];
         const maps=buildPhoneChronologyEvidenceMaps(evidence);
         const phone=capturedState.phone;const totals={threads:0,messages:0,exact:0,strong:0,unresolved:0,enriched:0,moved:0,sources:Number(data?.sourceCount||0),evidence:evidence.length};
@@ -10214,7 +10214,7 @@ ${messageText(message).slice(0,10000)}`;
             await saveState({immediate:true,refresh:false,reason:'user-phone-chronology-calibration',forceSnapshot:true});
             if(!chatScopeIsCurrent(scope))return totals;
             renderRolePhone();if(stateRuntime.currentTab==='phone')renderCurrentTab();
-            if(!silent)toast(`🧭 手机历史归位完成：${totals.moved} 个位置调整，精确证据 ${totals.exact} 条，强证据 ${totals.strong} 条`,'success');
+            if(!silent)toast(`🧭 Đã đưa lịch sử điện thoại về đúng chỗ: ${totals.moved} lần điều chỉnh vị trí, ${totals.exact} bằng chứng chính xác, ${totals.strong} bằng chứng mạnh`,'success');
         }
         return totals;
     }
@@ -10233,8 +10233,8 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     // R9S1P31：把“已经存在的微信群消息”当作群聊存在的强证据，自动修复旧Trạng thái。
-    // P30 只恢复已有 groupProfiles 的 active/offline；如果旧档里的 profile 本身缺失、scope/homeWorldKey
-    // 错位，或 channelType 还是旧值 smartphone，列表仍可能显示 0 个群聊。
+    // P30 chỉ khôi phục active/offline cho những groupProfiles đã có; nếu profile trong bản lưu cũ vốn đã thiếu, scope/homeWorldKey
+    // lệch chỗ, hoặc channelType vẫn là giá trị cũ smartphone thì danh sách vẫn có thể hiện 0 nhóm chat.
     // 本函数只整理本地Trạng thái，不调用 API，也不删除任何历史消息。
     function reconcileWechatGroupState() {
         const s = stateRuntime.state;
@@ -10250,7 +10250,7 @@ ${messageText(message).slice(0,10000)}`;
         const currentWechat = cp.communicationType === 'smartphone' && cp.available !== false;
         let changed = false;
 
-        // 先兼容旧数据：smartphone / 微信 / weixin 都归一成 wechat。
+        // Tương thích dữ liệu cũ trước: smartphone / WeChat / weixin đều quy về wechat.
         for (const row of phone.groupProfiles) {
             if (!row || typeof row !== 'object') continue;
             const normalized = normalizeGroupChannelType(row.channelType, row.channelType ? '' : (currentWechat ? 'wechat' : ''));
@@ -10283,7 +10283,7 @@ ${messageText(message).slice(0,10000)}`;
             const mergedMembers=[...new Set([...(profile.members||[]), ...(msg?.members||[]), msg?.sender].map(x=>compactText(x,80)).filter(Boolean))].slice(0,50);
             if (mergedMembers.length !== (profile.members||[]).length) { profile.members=mergedMembers; changed=true; }
 
-            // 只有当前确实能使用微信的世界才把对应群恢复为 active；跨世界离线关系仍保持离线。
+            // Chỉ thế giới thật sự dùng được WeChat mới khôi phục nhóm tương ứng về active; quan hệ ngoại tuyến xuyên thế giới vẫn giữ ngoại tuyến.
             if (profile.scope === 'origin' && originOnline && profile.availability !== 'active') { profile.availability='active'; changed=true; }
             if (profile.scope !== 'origin' && currentWechat && (!profile.homeWorldKey || !currentKey || profile.homeWorldKey === currentKey) && profile.availability !== 'active') { profile.availability='active'; changed=true; }
 
@@ -10303,8 +10303,8 @@ ${messageText(message).slice(0,10000)}`;
         return changed;
     }
 
-    // R9S1P30：群聊可达性必须像联系人一样随“当前世界/原世界网络”实时恢复。
-    // 旧版只会刷新 contactProfiles，不会刷新 groupProfiles：用户从异世界/历史线回到原世界后，
+    // R9S1P30: khả năng với tới nhóm chat phải khôi phục theo thời gian thực cùng “mạng của thế giới hiện tại/thế giới gốc”, y như với danh bạ.
+    // Bản cũ chỉ làm mới contactProfiles chứ không làm mới groupProfiles: sau khi người dùng từ dị giới/tuyến lịch sử quay về thế giới gốc,
     // 联系人已经重新 active，但群聊仍可能卡在 offline-origin。于是chính văn下方能看到新的微信群消息，
     // 打开完整微信却显示“0 个群聊”。这里只修Trạng thái，不删历史、不额外调用 API。
     function refreshPhoneGroupAvailability() {
@@ -10341,7 +10341,7 @@ ${messageText(message).slice(0,10000)}`;
         (stateRuntime.state.phone?.groupThreads || []).forEach(item => names.add(compactText(item?.groupName, 120)));
         (stateRuntime.state.phone?.wechatGroups || []).forEach(item => names.add(compactText(item?.groupName, 120)));
         (stateRuntime.state.phone?.channelGroups || []).forEach(item => names.add(compactText(item?.groupName, 120)));
-        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b, 'zh-CN'));
+        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b, 'vi-VN'));
     }
 
     function phoneClock() {
@@ -10352,19 +10352,19 @@ ${messageText(message).slice(0,10000)}`;
         const year=strictGregorianYear(storyTime);
         const time=Number.isFinite(minutes)
             ? `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`
-            : wall.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});
-        let date=wall.toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});
+            : wall.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',hour12:false});
+        let date=wall.toLocaleDateString('vi-VN',{month:'long',day:'numeric',weekday:'short'});
         if(fact){
             const labelDate=new Date(Number.isFinite(year)?year:wall.getFullYear(),fact.month-1,fact.day);
-            const weekday=labelDate.toLocaleDateString('zh-CN',{weekday:'short'});
-            date=`${fact.month}月${fact.day}日 ${weekday}`;
+            const weekday=labelDate.toLocaleDateString('vi-VN',{weekday:'short'});
+            date=`${fact.day}/${fact.month} ${weekday}`;
         }
         return {time,date};
     }
 
 
-    // R9S1P41-S8：完整手机生态层。所有余额、订单、支付密码均为0-32剧情模拟，
-    // 不连接真实淘宝/饿了么/支付宝/微信支付，也绝不应输入真实支付密码。
+    // R9S1P41-S8: tầng hệ sinh thái điện thoại hoàn chỉnh. Mọi số dư, đơn hàng, mật khẩu thanh toán đều là mô phỏng cốt truyện của 0-32,
+    // không kết nối tới Taobao/Ele.me/Alipay/WeChat Pay thật, và tuyệt đối không được nhập mật khẩu thanh toán thật.
     const S8_TAOBAO_PRODUCTS = [
         {id:'tb-case17',store:'Viện Đồ Số',name:'iPhone17ProMax 透明防摔壳',price:39.9,category:'Đồ số',icon:'📱',sold:'20.000+'},
         {id:'tb-cable',store:'Viện Đồ Số',name:'USB-C 编织快充线 2m',price:29.9,category:'Đồ số',icon:'🔌',sold:'5万+'},
@@ -10386,7 +10386,7 @@ ${messageText(message).slice(0,10000)}`;
             {id:'el-noodle-1',name:'Mì bò kho tàu',price:24,icon:'🍜'},{id:'el-noodle-2',name:'Mì trứng cà chua',price:18,icon:'🥣'},{id:'el-noodle-3',name:'卤蛋',price:3,icon:'🥚'}]},
         {id:'el-bbq',name:'楼下烧烤研究所',score:4.6,delivery:5,eta:'35分钟',icon:'🍢',tags:['Nướng','Ăn khuya'],menu:[
             {id:'el-bbq-1',name:'羊肉串×10',price:38,icon:'🍢'},{id:'el-bbq-2',name:'Cà tím nướng',price:16,icon:'🍆'},{id:'el-bbq-3',name:'冰可乐',price:6,icon:'🥤'}]},
-        {id:'el-tea',name:'今日奶茶',score:4.9,delivery:0,eta:'19分钟',icon:'🧋',tags:['奶茶','甜品'],menu:[
+        {id:'el-tea',name:'Trà Sữa Hôm Nay',score:4.9,delivery:0,eta:'19分钟',icon:'🧋',tags:['奶茶','甜品'],menu:[
             {id:'el-tea-1',name:'Trà xanh sữa nhài',price:16,icon:'🧋'},{id:'el-tea-2',name:'葡萄冰茶',price:18,icon:'🍇'},{id:'el-tea-3',name:'芋圆小料',price:3,icon:'🟣'}]},
         {id:'el-jp',name:'小町日料',score:4.8,delivery:4,eta:'31分钟',icon:'🍣',tags:['日料','Sushi'],menu:[
             {id:'el-jp-1',name:'三文鱼寿司套餐',price:42,icon:'🍣'},{id:'el-jp-2',name:'Cơm lươn',price:39,icon:'🍱'},{id:'el-jp-3',name:'味噌汤',price:6,icon:'🥣'}]},
@@ -10395,9 +10395,9 @@ ${messageText(message).slice(0,10000)}`;
     ];
 
 
-    // R9S1P41-S9.2：100%唯一真实命名。继续确定性生成；每个电商店铺名、商品显示名、外卖门店名与菜单显示名都拥有稳定唯一文本。
-    // 唯一性依靠现实里正常存在的品牌/品类/规格/型号/款号/门店品牌等维度，不使用“智能拿铁”“专业炒饭”之类万能词。
-    // 不连接真实淘宝/京东/美团/饿了么/银行/航旅/打车等服务，不使用官方私有素材；交互与信息架构做拟真模拟。
+    // R9S1P41-S9.2: đặt tên thật và duy nhất 100%. Vẫn sinh theo cách tất định; mỗi tên cửa hàng thương mại điện tử, tên hiển thị của sản phẩm, tên quán giao đồ ăn và tên món trong thực đơn đều có một chuỗi ổn định và duy nhất.
+    // Tính duy nhất dựa vào các chiều vốn có thật ngoài đời như thương hiệu/nhóm hàng/quy cách/mã model/mã mẫu/thương hiệu cửa hàng, không dùng những từ vạn năng kiểu “latte thông minh”, “cơm rang chuyên nghiệp”.
+    // Không kết nối tới các dịch vụ thật như Taobao/JD/Meituan/Ele.me/ngân hàng/hàng không - du lịch/đặt xe, không dùng tài nguyên riêng của họ; tương tác và kiến trúc thông tin chỉ là mô phỏng giống thật.
     const S9_PAGE_SIZE = 20;
     const S9_CATALOG_COUNTS = { taobao:4800, jd:3600, eleme:1600, meituan:1800 };
     const S9_PRODUCT_CATEGORIES = ['Điện thoại & đồ số','Máy tính & văn phòng','Điện gia dụng','Nhà cửa & nội thất','Trang phục & đồ lót','Giày dép & túi ví','Trang điểm & dưỡng da','Thực phẩm & đồ tươi','Mẹ & bé & đồ chơi','Thể thao & ngoài trời','Sách & văn phòng phẩm','Đồ dùng xe hơi','Đồ dùng du lịch','Thú cưng','Thuốc & sức khỏe','Trang sức & phụ kiện','Nhạc cụ','Làm vườn','Đồ chơi sưu tầm','Hàng cũ tuyển chọn'];
@@ -10489,8 +10489,8 @@ ${messageText(message).slice(0,10000)}`;
     };
     const S9_BRANDS = ['Bắc Thần','Thanh Hòa','Vân Đóa','Mộ Sắc','Lâm Gian','Vi Quang','Tinh Dã','Bạch Trú','Muối biển','Mộc Miên','Thập Quang','Chanh xanh','Mộc Trạch','Tri Hạ','Tễ Nguyệt','Sơn Xuyên','Phù Quang','Vân Lam','Tùng Gian','Trường Phong','Noãn Đảo','Hắc Diệu','Đào trắng','Kình Dữ','Sơ Tễ','Viễn Sơn','Thanh Không','Zero','Sương Tự','Đào Yêu'];
 
-    // S13：常见日用品不能依赖随机生成的12个SKU。独立的可寻址索引让“酱油/老抽”等
-    // 任意生活用品在淘宝和京东都能稳定搜到、打开详情、加入购物车并在重载后继续结算。
+    // S13: đồ dùng hằng ngày phổ biến không thể trông vào 12 SKU sinh ngẫu nhiên. Một chỉ mục địa chỉ hóa riêng giúp mọi đồ dùng như “nước tương/xì dầu đậm”
+    // đều tìm được ổn định trên Taobao lẫn JD, mở được trang chi tiết, thêm vào giỏ và vẫn thanh toán tiếp được sau khi tải lại.
     const S93_COMMON_GOODS = Object.freeze([
         {key:'dark-soy-sauce',category:'Thực phẩm & đồ tươi',name:'Xì dầu đậm màu',aliases:['Nước tương đậm','Laochouwang','Nước tương','Xì dầu kho','Xì dầu đậm'],brands:['Haday','Lee Kum Kee','Chubang','Weishida'],icon:'🫙',price:[8.9,39.9],variants:['500ml','Gói gia đình 1.28L','Loại kho tạo màu','Loại không phụ gia']},
         {key:'light-soy-sauce',category:'Thực phẩm & đồ tươi',name:'Xì dầu nhạt',aliases:['Nước tương nhạt','Weijixian','Xì dầu vị tươi','Nước tương'],brands:['Haday','Chubang','Qianhe','Liuyuexian'],icon:'🫙',price:[8.9,42.9],variants:['500ml','1L gói gia đình','Loại nhạt muối','Loại không phụ gia']},
@@ -10522,18 +10522,18 @@ ${messageText(message).slice(0,10000)}`;
         {key:'usb-cable',category:'Điện thoại & đồ số',name:'Cáp Type-C',aliases:['Cáp dữ liệu','Cáp sạc','Dây điện thoại','Dây Type-C'],brands:['UGREEN','Baseus','Anker','Pisen'],icon:'🔌',price:[12.9,69.9],variants:['1m','2m','Sạc nhanh hai đầu','Loại chịu gập']},
         {key:'power-strip',category:'Điện gia dụng',name:'Ổ cắm điện gia dụng',aliases:['Ổ cắm điện','Ổ cắm nối dài','Ổ điện','Ổ cắm kéo dài'],brands:['BULL','Xiaomi','Deli','Philips'],icon:'🔌',price:[29.9,129],variants:['3 ổ 1.8m','6 ổ 3m','Có cổng USB','Loại chống quá tải']},
     ]);
-    function s93NormalizeQuery(value='') { return String(value??'').toLowerCase().trim().replace(/[\s\u3000,，、。；;|\/\\_]+/g,''); }
-    function s93QueryParts(value='') { return String(value??'').toLowerCase().trim().split(/[\s\u3000,，、。；;|\/\\_]+/).map(part=>part.trim()).filter(Boolean).slice(0,12); }
+    function s93NormalizeQuery(value='') { return String(value??'').toLowerCase().trim().replace(/[\s,;|\/\\_]+/g,''); }
+    function s93QueryParts(value='') { return String(value??'').toLowerCase().trim().split(/[\s,;|\/\\_]+/).map(part=>part.trim()).filter(Boolean).slice(0,12); }
     function s93SearchTerm(value='') {
         // Search fields often receive a whole spoken request rather than a bare
-        // SKU (for example “我要买酱油老抽，做红烧肉用”). Keep the useful noun
+        // SKU (for example “tôi muốn mua nước tương xì dầu đậm để kho thịt”). Keep the useful noun
         // phrase while dropping intent, quantity and conversational filler.
         return String(value??'').toLowerCase()
-            .replace(/(?:我想|我要|帮我|请|给我|麻烦|想要|需要|准备|打算|帮忙|能不能|可以)/g,' ')
-            .replace(/(?:买|购买|下单|Tìm|搜|查找|找一下|找|看看|浏览|商品|东西|来点|来些)/g,' ')
-            .replace(/(?:一|两|二|三|四|五|六|七|八|九|十|几|多)?(?:瓶|罐|袋|盒|包|个|件|套|斤|公斤|只|箱|桶|支|卷|提)/g,' ')
-            .replace(/(?:这种|那种|这个|那个|之类的|之类|就行|即可|可以吗|吧|呗|呢|啊|呀|用来|用作|拿来|做菜|做饭|做红烧肉|炒菜用|家用|日常用)/g,' ')
-            .replace(/[\n\r，,。；;！!？?：:（）()【】\[\]"“”'`]/g,' ')
+            .replace(/(?:tôi muốn|mình muốn|giúp tôi|làm ơn|cho tôi|phiền|muốn|cần|chuẩn bị|định|giúp với|có thể|được không)/gi,' ')
+            .replace(/(?:mua sắm|mua|đặt đơn|tìm kiếm|tìm|tra cứu|xem thử|xem|lướt|sản phẩm|đồ|lấy chút|lấy ít)/gi,' ')
+            .replace(/(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|vài|mấy|\d+)?\s*(?:chai|lon|túi|hộp|gói|cái|chiếc|bộ|cân|kg|con|thùng|can|cây|cuộn|lốc)\b/gi,' ')
+            .replace(/(?:loại này|loại kia|cái này|cái kia|đại loại|là được|cũng được|được chứ|nhé|nha|nhỉ|để dùng|dùng để|đem về|nấu ăn|nấu cơm|kho thịt|để xào|dùng ở nhà|dùng hằng ngày)/gi,' ')
+            .replace(/[\n\r,;!?:()\[\]"“”'`]/g,' ')
             .replace(/\s+/g,' ').trim();
     }
     function s93CommonMatches(query,category='Tất cả') {
@@ -10545,14 +10545,14 @@ ${messageText(message).slice(0,10000)}`;
             const aliases=[g.name,...(g.aliases||[])].map(s93NormalizeQuery).filter(Boolean);
             const hay=s93NormalizeQuery([...aliases,g.category].join(' '));
             // Score exact aliases highest, then aliases embedded in a longer
-            // sentence. This lets “酱油老抽” resolve to both 老抽 and 生抽,
+            // sentence. This lets “nước tương xì dầu” resolve to both xì dầu đậm and nước tương nhạt,
             // while unrelated prose still falls through to the generic SKU.
             let score=0;
             for(const alias of aliases){
                 if(!alias)continue;
                 if(normalized===alias)score=Math.max(score,100+alias.length);
-                // 单字别名（油/盐/米等）只接受整词命中；否则“酱油”会
-                // 意外把食用油一并召回，降低口语检索的精度。
+                // Bí danh một từ (dầu/muối/gạo…) chỉ chấp nhận khớp trọn từ; nếu không thì “nước tương”
+                // sẽ vô tình kéo cả dầu ăn về, làm giảm độ chính xác khi tìm bằng lời nói.
                 else if(alias.length>=2&&normalized.includes(alias))score=Math.max(score,70+alias.length);
                 else if(alias.length>=2&&alias.includes(normalized)&&normalized.length>=2)score=Math.max(score,55+normalized.length);
                 for(const token of queryTokens){
