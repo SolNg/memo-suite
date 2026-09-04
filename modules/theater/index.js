@@ -61,72 +61,72 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     const chatRuntimeIds = new WeakMap();
 
     const TABLE_DEFS = {
-        mainline: { title: 'Cốt truyện chính', columns: ['Ngày', 'Giờ bắt đầu', 'Giờ kết thúc', 'Tóm tắt sự kiện', 'Trạng thái', 'Tầng'] },
-        branches: { title: 'Theo dõi nhánh phụ', columns: ['Trạng thái', 'Tên nhánh phụ', 'Giờ bắt đầu', 'Giờ kết thúc', 'Theo dõi sự kiện', 'NPC then chốt', 'Tầng'] },
-        states: { title: 'Trạng thái nhân vật', columns: ['Tên nhân vật', 'Thay đổi trạng thái', 'Thời gian', 'Nguyên nhân', 'Vị trí hiện tại', 'Tầng'] },
-        people: { title: 'Hồ sơ nhân vật', columns: ['Họ tên', 'Tuổi', 'Thân phận', 'Địa điểm', 'Tính cách', 'Ghi chú'] },
-        relations: { title: 'Quan hệ nhân vật', columns: ['Nhân vật A', 'Nhân vật B', 'Mô tả quan hệ', 'Thái độ tình cảm', 'Thời điểm cập nhật'] },
-        world: { title: 'Thiết định thế giới', columns: ['Tên thiết định', 'Loại', 'Diễn giải chi tiết', 'Phạm vi ảnh hưởng'] },
-        items: { title: 'Theo dõi vật phẩm', columns: ['Tên vật phẩm', 'Mô tả vật phẩm', 'Vị trí hiện tại', 'Người sở hữu', 'Trạng thái', 'Mức quan trọng', 'Ghi chú'] },
-        promises: { title: 'Lời hẹn', columns: ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái', 'Tầng'] },
-        summaries: { title: 'Tổng kết ký ức', columns: ['Loại', 'Trạng thái', 'Nội dung tổng kết', 'Tầng bao phủ', 'Mô hình', 'Thời điểm tạo', 'Khóa'] },
+        mainline: { title:'Cốt truyện chính', columns: ['Ngày','Giờ bắt đầu','Giờ kết thúc','Tóm tắt sự kiện','Trạng thái','Tầng'] },
+        branches: { title:'Theo dõi nhánh phụ', columns: ['Trạng thái','Tên nhánh phụ','Giờ bắt đầu','Giờ kết thúc','Theo dõi sự kiện','NPC then chốt','Tầng'] },
+        states: { title:'Trạng thái nhân vật', columns: ['Tên nhân vật','Thay đổi trạng thái','Thời gian','Nguyên nhân','Vị trí hiện tại','Tầng'] },
+        people: { title:'Hồ sơ nhân vật', columns: ['Họ tên','Tuổi','Thân phận','Địa điểm','Tính cách','Ghi chú'] },
+        relations: { title:'Quan hệ nhân vật', columns: ['Nhân vật A','Nhân vật B','Mô tả quan hệ','Thái độ tình cảm','Thời điểm cập nhật'] },
+        world: { title:'Thiết định thế giới', columns: ['Tên thiết định','Loại','Diễn giải chi tiết','Phạm vi ảnh hưởng'] },
+        items: { title:'Theo dõi vật phẩm', columns: ['Tên vật phẩm','Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'] },
+        promises: { title:'Lời hẹn', columns: ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái','Tầng'] },
+        summaries: { title:'Tổng kết ký ức', columns: ['Loại','Trạng thái','Nội dung tổng kết','Tầng bao phủ','Mô hình','Thời điểm tạo','Khóa'] },
     };
 
     const TABLE_ORDER = Object.keys(TABLE_DEFS);
     const TAB_DEFS = [
-        ['overview', 'Tổng quan'],
-        ['tables', 'Ký ức cốt truyện'],
-        ['timeline', 'Dòng thời gian'],
-        ['characters', 'Nhân vật'],
-        ['relations', 'Quan hệ'],
-        ['secrets', 'Lời hẹn & bí mật'],
-        ['summary', 'Trung tâm tổng kết'],
-        ['retrieval', 'Trung tâm truy xuất'],
-        ['phone', 'Thiết bị liên lạc'],
-        ['worldlife', 'Bỉ Gian Tư Văn'],
-        ['appearance', 'Ngoại hình nhân vật'],
-        ['chapters', 'Chương hồi'],
-        ['diagnostics', 'Khám sức khỏe cốt truyện'],
-        ['api', 'API & mô hình'],
-        ['settings', 'Cài đặt'],
+        ['overview','Tổng quan'],
+        ['tables','Ký ức cốt truyện'],
+        ['timeline','Dòng thời gian'],
+        ['characters','Nhân vật'],
+        ['relations','Quan hệ'],
+        ['secrets','Lời hẹn & bí mật'],
+        ['summary','Trung tâm tổng kết'],
+        ['retrieval','Trung tâm truy xuất'],
+        ['phone','Thiết bị liên lạc'],
+        ['worldlife','Bỉ Gian Tư Văn'],
+        ['appearance','Ngoại hình nhân vật'],
+        ['chapters','Chương hồi'],
+        ['diagnostics','Khám sức khỏe cốt truyện'],
+        ['api','API & mô hình'],
+        ['settings','Cài đặt'],
     ];
 
     const stateRuntime = {
         state: null,
-        currentTab: 'overview',
-        currentTable: 'mainline',
+        currentTab:'overview',
+        currentTable:'mainline',
         // U1.7: việc lưu/ghi hồ sơ vĩnh viễn được xếp hàng riêng theo từng cuộc trò chuyện; cấm tác vụ trễ của chat A bị chat B ghi đè hoặc ghi lẫn.
         saveTimers: new Map(),
         chatEpoch: 0,
         autoTimer: null,
         extracting: false,
         initialized: false,
-        lastChatKey: '',
+        lastChatKey:'',
         lastToast: 0,
         serverConfig: null,
         serverHealth: null,
         serverTasks: [],
         retrievalHits: [],
         localRetrievalHits: [],
-        retrievalQuery: '',
-        localRetrievalPrimedQuery: '',
+        retrievalQuery:'',
+        localRetrievalPrimedQuery:'',
         indexStatus: null,
-        phoneTab: 'messages',
-        phoneContact: '',
-        phoneView: 'home',
-        phoneSelectedContact: '',
+        phoneTab:'messages',
+        phoneContact:'',
+        phoneView:'home',
+        phoneSelectedContact:'',
         phoneSending: false,
         phoneSendingToken: null,
         phoneDraftAttachment: null,
         phoneMomentDraftAttachments: [],
-        phoneMomentDraftContent: '',
-        phonePaymentDigits: '',
+        phoneMomentDraftContent:'',
+        phonePaymentDigits:'',
         phoneDialog: null,
         phoneCalendarOffset: 0,
-        phoneCampusView: 'home',
-        phoneSelectedStore: '',
-        phoneSelectedProduct: '',
-        phoneSearch: '',
+        phoneCampusView:'home',
+        phoneSelectedStore:'',
+        phoneSelectedProduct:'',
+        phoneSearch:'',
         sourceCharacterRoster: [],
         sourceCharacterRosterUpdatedAt: 0,
         phoneCatalogPage: {taobao:1,jd:1,eleme:1,meituan:1},
@@ -136,29 +136,29 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             eleme:{highRating:false,fastDelivery:false,lowDeliveryFee:false},
             meituan:{highRating:false,fastDelivery:false,lowDeliveryFee:false},
         },
-        phoneBrowserQuery: '',
-        phoneSelectedMail: '',
-        phoneSelectedOrderId: '',
-        phoneOrderFilter: 'all',
-        lastPaymentOrderId: '',
+        phoneBrowserQuery:'',
+        phoneSelectedMail:'',
+        phoneSelectedOrderId:'',
+        phoneOrderFilter:'all',
+        lastPaymentOrderId:'',
         phonePaymentInFlight: false,
-        phoneActiveCallId: '',
+        phoneActiveCallId:'',
         phoneStickers: [],
         phoneStickersLoaded: false,
         phoneStickersLoading: false,
-        phoneStickerLoadError: '',
+        phoneStickerLoadError:'',
         phoneStickerLoadPromise: null,
         phoneStickerPanel: false,
         phoneStickerManage: false,
-        phoneStickerQuery: '',
-        phoneTavernCharacterId: '',
-        phoneTavernSessionId: '',
-        phoneMapDestination: '',
-        phoneMapMode: 'drive',
-        phoneDianpingCategory: 'Ẩm thực',
-        phoneGlobalSearch: '',
+        phoneStickerQuery:'',
+        phoneTavernCharacterId:'',
+        phoneTavernSessionId:'',
+        phoneMapDestination:'',
+        phoneMapMode:'drive',
+        phoneDianpingCategory:'Ẩm thực',
+        phoneGlobalSearch:'',
         socialBootstrapSaveTimer: null,
-        worldCharacter: '',
+        worldCharacter:'',
         summaryRunning: false,
         memoryCollectionRunning: false,
         memoryCollectionAbort: false,
@@ -192,7 +192,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         worldBookSyncing: false,
         worldBookSyncToken: null,
         extractOperationToken: null,
-        memoryPipelineNotice: '',
+        memoryPipelineNotice:'',
         recentEventRerunFloor: -1,
         summaryOperationToken: null,
         companionOperationToken: null,
@@ -207,9 +207,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         uiPages: {},
         archiveReindexDeferred: false,
         archiveBinding: null,
-        archiveBindingChatKey: '',
+        archiveBindingChatKey:'',
         phoneServerRecoveryRunning: false,
-        phoneServerRecoveryStamp: '',
+        phoneServerRecoveryStamp:'',
         phoneServerRecoverySaveTimer: null,
         phoneServerRecoveryTimer: null,
         phoneHistoryRecoverySaveTimer: null,
@@ -218,12 +218,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         permanentArchiveSyncs: new Map(),
         serverJobResumeTimer: null,
         phoneScrollMemory: new Map(),
-        phoneHistoryPreparedForChat: '',
+        phoneHistoryPreparedForChat:'',
         destructiveSaveDepth: 0,
         loadingState: false,
         loadingToken: null,
         lastSafetySnapshotAt: 0,
-        lastSafetySnapshotSignature: '',
+        lastSafetySnapshotSignature:'',
         safetySnapshotLedger: new Map(),
         lastSafetyNoticeAt: 0,
         // R9S1: giai đoạn mở cuộc trò chuyện/dựng lại tin nhắn lịch sử tuyệt đối không được kích hoạt nhầm tác vụ AI.
@@ -232,15 +232,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         // fixed40: một lượt thật bắt buộc phải gắn với một tầng user có thật. Kể cả khi bản lưu mới/khởi tạo lời mở đầu lỡ phát ra GENERATION_STARTED dạng normal,
         // nó vẫn không đủ tư cách khởi động phần tự sắp xếp của 0-32. Còn regenerate/swipe/continue thì gắn lại vào tầng user thật gần nhất.
         liveUserFloor: -1,
-        liveTurnChatKey: '',
-        liveGenerationType: '',
+        liveTurnChatKey:'',
+        liveGenerationType:'',
         // fixed41: GENERATION_STARTED có thể đến trước USER_MESSAGE_RENDERED. Hãy ghi nhớ rằng lượt sinh ở tiền cảnh đã bắt đầu, rồi đợi tầng user thật được ghi xuống.
         foregroundAwaitingUser: false,
         // U1.7.10: tăng dần theo mỗi lần sinh chính văn thật. Nếu lượt cũ vẫn đang chờ đặt lại theo trình tự “dừng → gửi” thì nó sẽ hết hiệu lực ngay khi lượt mới bắt đầu.
         mainGenerationSerial: 0,
         baselineChatLength: 0,
         messageKeySnapshot: [],
-        historyMutationFingerprint: '',
+        historyMutationFingerprint:'',
         historyMutationFingerprintAt: 0,
         lastHistoryReconciliation: null,
         // Giữ lại bản vá ổn định của P11: phần sinh nội dung ngầm ở nền của SillyTavern cũng phát ra GENERATION_STARTED/GENERATION_ENDED.
@@ -264,12 +264,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     const clone = value => JSON.parse(JSON.stringify(value));
     const nowText = () => new Date().toLocaleString('vi-VN', { hour12: false });
-    const esc = value => String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+    const esc = value => String(value ??'')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#39;');
 
     function context() {
         return globalThis.SillyTavern?.getContext?.() ?? null;
@@ -291,7 +291,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ctx.chatMetadata?.fileName,
         ];
         const value = values.find(item => item !== undefined && item !== null && String(item).trim());
-        return value ? String(value).trim() : '';
+        return value ? String(value).trim() :'';
     }
 
     function getChatKey(ctx = context()) {
@@ -312,7 +312,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
         const chat = ctx.chat;
         if (chat && typeof chat === 'object') {
-            if (!chatRuntimeIds.has(chat)) chatRuntimeIds.set(chat, `runtime-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`);
+            if (!chatRuntimeIds.has(chat)) chatRuntimeIds.set(chat,`runtime-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`);
             return chatRuntimeIds.get(chat);
         }
         return `runtime:${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
@@ -320,23 +320,23 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function currentChatAnchor(ctx = context()) {
         const chat = ctx?.chat || [];
-        const firstUserIndex = chat.findIndex(message => message?.is_user && String(message?.mes ?? message?.message ?? message?.text ?? '').trim());
+        const firstUserIndex = chat.findIndex(message => message?.is_user && String(message?.mes ?? message?.message ?? message?.text ??'').trim());
         if (firstUserIndex < 0) return '';
-        const firstUser = String(chat[firstUserIndex]?.mes ?? chat[firstUserIndex]?.message ?? chat[firstUserIndex]?.text ?? '').trim().slice(0, 1200);
-        const firstAssistant = String(chat.find(message => !message?.is_user && !message?.is_system)?.mes ?? '').trim().slice(0, 700);
-        const raw = `${ctx?.characterId ?? ctx?.character_id ?? ''}|${firstUser}|${firstAssistant}`;
+        const firstUser = String(chat[firstUserIndex]?.mes ?? chat[firstUserIndex]?.message ?? chat[firstUserIndex]?.text ??'').trim().slice(0, 1200);
+        const firstAssistant = String(chat.find(message => !message?.is_user && !message?.is_system)?.mes ??'').trim().slice(0, 700);
+        const raw = `${ctx?.characterId ?? ctx?.character_id ??''}|${firstUser}|${firstAssistant}`;
         let hash = 2166136261;
         for (const char of raw) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619); }
         return `anchor-${(hash >>> 0).toString(16)}-${raw.length}`;
     }
 
     function currentCharacterArchiveIdentity(ctx = context()) {
-        const characterId = String(ctx?.characterId ?? ctx?.character_id ?? ctx?.chatMetadata?.character_id ?? '').trim();
-        const characterName = String(ctx?.name2 ?? ctx?.characterName ?? ctx?.chatMetadata?.character_name ?? 'Nhân vật chưa đặt tên').trim() || 'Nhân vật chưa đặt tên';
-        const avatar = String(ctx?.characters?.[ctx?.characterId]?.avatar ?? ctx?.chatMetadata?.avatar ?? '').trim();
-        const characterKey = characterId ? `character-id:${characterId}` : `character-name:${characterName}|avatar:${avatar}`;
+        const characterId = String(ctx?.characterId ?? ctx?.character_id ?? ctx?.chatMetadata?.character_id ??'').trim();
+        const characterName = String(ctx?.name2 ?? ctx?.characterName ?? ctx?.chatMetadata?.character_name ??'Nhân vật chưa đặt tên').trim() || 'Nhân vật chưa đặt tên';
+        const avatar = String(ctx?.characters?.[ctx?.characterId]?.avatar ?? ctx?.chatMetadata?.avatar ??'').trim();
+        const characterKey = characterId ?`character-id:${characterId}` :`character-name:${characterName}|avatar:${avatar}`;
         const chatKey = getChatKey(ctx);
-        const chatName = nativeChatId(ctx) || String(ctx?.chatMetadata?.chat_name ?? ctx?.chatMetadata?.file_name ?? 'Cuộc trò chuyện hiện tại');
+        const chatName = nativeChatId(ctx) || String(ctx?.chatMetadata?.chat_name ?? ctx?.chatMetadata?.file_name ??'Cuộc trò chuyện hiện tại');
         return { characterKey, characterId, characterName, avatar, chatKey, chatName, chatAnchor: currentChatAnchor(ctx) };
     }
 
@@ -355,7 +355,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             hasMessages: chat.some(message => String(messageText(message) || '').trim()),
             rememberedArchiveId: String(remembered?.archiveId || runtimeBinding?.archiveId || ''),
             binding: runtimeBinding ? clone(runtimeBinding) : null,
-            localStorageKey: `${MODULE}:${chatKey}`,
+            localStorageKey:`${MODULE}:${chatKey}`,
         };
     }
 
@@ -495,7 +495,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const source = raw && typeof raw === 'object' ? raw : {};
         const value = String(source.value || '').trim().slice(0, 180);
         return {
-            mode: source.mode === 'manual' && value ? 'manual' : 'auto',
+            mode: source.mode === 'manual' && value ?'manual' :'auto',
             value,
             previousSceneTime: String(source.previousSceneTime || '').trim().slice(0, 180),
             appliedAtFloor: Number.isFinite(Number(source.appliedAtFloor)) ? Number(source.appliedAtFloor) : -1,
@@ -509,19 +509,19 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             updatedAt: Date.now(),
             tables: emptyRows(),
             scene: {
-                time: '',
-                location: '',
-                weather: '',
-                mood: '',
-                pace: 'Thường nhật',
-                goal: '',
+                time:'',
+                location:'',
+                weather:'',
+                mood:'',
+                pace:'Thường nhật',
+                goal:'',
             },
             timeCalibration: {
-                mode: 'auto',
-                value: '',
-                previousSceneTime: '',
+                mode:'auto',
+                value:'',
+                previousSceneTime:'',
                 appliedAtFloor: -1,
-                appliedAt: '',
+                appliedAt:'',
             },
             secrets: [],
             appearances: [],
@@ -542,34 +542,34 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             // khi vân tay nội dung của sách thế giới/thẻ nhân vật không đổi thì các lượt sau dùng lại luôn, không đốt API mỗi lượt nữa.
             sourceRosterAi: {
                 schemaVersion: 1,
-                status: 'idle',
-                fingerprint: '',
+                status:'idle',
+                fingerprint:'',
                 rows: [],
                 builtAtFloor: -1,
                 generatedAt: 0,
                 lastAttemptAt: 0,
                 attempts: 0,
-                model: '',
-                provider: '',
-                error: '',
+                model:'',
+                provider:'',
+                error:'',
             },
             takeover: { running:false, resumeWanted:false, userInitiated:false, consentAt:0, lastProcessedFloor:-1, targetFloor:-1, processedChunks:0, totalChunks:0, currentStart:-1, currentEnd:-1, phase:'', retryCount:0, nextRetryAt:'', startedAt:'', completedAt:'', lastError:'' },
             communicationProfile: {
-                worldKey: 'origin-modern',
-                worldType: 'Hiện đại',
-                era: '',
-                location: '',
-                technologyLevel: 'modern-digital',
-                communicationType: 'smartphone',
-                deviceLabel: 'iPhone17Promax',
+                worldKey:'origin-modern',
+                worldType:'Hiện đại',
+                era:'',
+                location:'',
+                technologyLevel:'modern-digital',
+                communicationType:'smartphone',
+                deviceLabel:'iPhone17Promax',
                 available: true,
-                networkState: 'online',
+                networkState:'online',
                 originReachable: true,
-                personalDeviceType: 'smartphone',
-                personalDeviceLabel: 'iPhone17Promax',
+                personalDeviceType:'smartphone',
+                personalDeviceLabel:'iPhone17Promax',
                 personalDeviceAvailable: true,
-                reason: '',
-                updatedAt: '',
+                reason:'',
+                updatedAt:'',
             },
             worldTransit: {
                 origin: { worldKey:'origin-modern', worldType:'Hiện đại', era:'', location:'', technologyLevel:'modern-digital', communicationType:'smartphone', deviceLabel:'iPhone17Promax' },
@@ -578,10 +578,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             },
             worldMap: {
                 schemaVersion: 2,
-                city: '',
-                currentLocation: '',
-                currentLocationId: '',
-                residenceId: '',
+                city:'',
+                currentLocation:'',
+                currentLocationId:'',
+                residenceId:'',
                 locations: [],
                 travelEvents: [],
                 activeTravel: null,
@@ -629,7 +629,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 parentPulse: { enabled:true, lastFloor:-1, nextFloor:-1, lastContact:'', cursor:0, lastAt:0 },
                 finance: {
                     openingBalances: { alipay: 0, wechat: 0 },
-                    paymentPasswordHash: '',
+                    paymentPasswordHash:'',
                     phoneBalance: 0,
                     transactions: [],
                 },
@@ -637,32 +637,32 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     taobao: { products: [], cart: [], orders: [] },
                     eleme: { stores: [], cart: [], orders: [] },
                 },
-                themeStore: { active: 'classic', installed: ['classic'] },
+                themeStore: { active:'classic', installed: ['classic'] },
                 // Trường tương thích với bản cũ: sau khi nâng cấp chỉ đọc để di trú, không còn là App trên màn hình chính của iPhone.
                 messages: [], moments: [], notes: [], albums: [], diary: [], anniversaries: [],
             },
             storyExtras: { moments: [], diary: [], anniversaries: [] },
-            characterWorld: { characters: [], events: [], lastGeneratedAt: '', lastFloor: -1 },
+            characterWorld: { characters: [], events: [], lastGeneratedAt:'', lastFloor: -1 },
             chapters: [],
             diagnostics: [],
             diceHistory: [],
             // S10: chỉ khi người dùng bấm xóa/dọn sạch rõ ràng mới sinh bia mộ; nâng cấp/đồng bộ thông thường tuyệt đối không có quyền xóa.
             manualDeletionTombstones: [],
-            directorInstruction: '',
+            directorInstruction:'',
             progress: {
                 lastExtractedMessage: -1,
                 lastExtractedAssistantFloor: -1,
-                lastExtractedAssistantSignature: '',
+                lastExtractedAssistantSignature:'',
                 assistantMemoryQueue: [],
                 extractRetryPending: false,
                 extractRetryAttempt: 0,
-                extractRetryReason: '',
-                extractRetryChatIdentity: '',
+                extractRetryReason:'',
+                extractRetryChatIdentity:'',
                 extractRetryFloor: -1,
-                extractRetrySignature: '',
+                extractRetrySignature:'',
                 extractRetryAt: 0,
                 extractDedupeFloor: -1,
-                extractDedupeSignature: '',
+                extractDedupeSignature:'',
                 extractDedupeGeneration: 0,
                 nextSummaryStart: 0,
                 lastSummaryMessage: -1,
@@ -673,8 +673,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 completedBigCount: 0,
                 completedEraCount: 0,
                 memoryCollection: {
-                    status: 'idle',
-                    sourceFingerprint: '',
+                    status:'idle',
+                    sourceFingerprint:'',
                     totalParts: 0,
                     nextPart: 0,
                     completedParts: 0,
@@ -683,12 +683,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     startedAt: 0,
                     updatedAt: 0,
                     completedAt: 0,
-                    error: '',
+                    error:'',
                 },
                 indexRevision: 0,
                 indexDocumentSchemaRevision: 0,
                 lastCompanionFloor: -1,
-                lastCompanionSignature: '',
+                lastCompanionSignature:'',
                 maxObservedFloor: -1,
                 // Khi đã có cuộc trò chuyện dài nhưng chưa lập tổng kết giai đoạn, người dùng phải tự chọn tiếp quản hồ sơ cũ/tổng kết thủ công; cấm tự động điền bù từ tầng 0.
                 archiveTakeoverRequired: false,
@@ -709,7 +709,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 detailRescueRetryBaseMs: 1200,
                 lifeFactStabilityEvidence: 3,
                 memoryHealthRecentLimit: 120,
-                aiMode: 'server',
+                aiMode:'server',
                 autoExtract: true,
                 extractEvery: 1,
                 // R56: phần sắp xếp ở nền chỉ dùng API có phạm vi riêng; nếu thất bại thì lưu nguyên văn làm phương án tối thiểu, không gọi API chính của SillyTavern.
@@ -771,8 +771,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 companionWorldMaxEvents: 4,
                 companionShowLoading: true,
                 companionSkipGreeting: true,
-                companionGenerationMode: 'background-writing-source',
-                phoneInteractiveMode: 'realtime',
+                companionGenerationMode:'background-writing-source',
+                phoneInteractiveMode:'realtime',
                 autoEcologyRepair: false,
                 companionRetryMaxAttempts: 8,
                 removeDuplicateAssistantReplies: true,
@@ -788,8 +788,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 worldDeadAirMaxFloors: 1,
                 worldMinPulseEvents: 2,
             },
-            chatIdentity: '',
-            chatAnchor: '',
+            chatIdentity:'',
+            chatAnchor:'',
             intentionalResetAt: 0,
             migration: {
                 importedGaigai: false,
@@ -851,7 +851,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         for (const key of TABLE_ORDER) {
             if (!Array.isArray(merged.tables[key])) merged.tables[key] = [];
         }
-        for (const key of ['secrets', 'appearances', 'memoryAnchors', 'episodeFacts', 'lifeFacts', 'factConflicts', 'npcRegistry', 'chapters', 'diagnostics', 'diceHistory', 'summaryJobs', 'summaryRecycleBin', 'importantFloors', 'hiddenSummaryIds', 'auditLog', 'manualDeletionTombstones']) {
+        for (const key of ['secrets','appearances','memoryAnchors','episodeFacts','lifeFacts','factConflicts','npcRegistry','chapters','diagnostics','diceHistory','summaryJobs','summaryRecycleBin','importantFloors','hiddenSummaryIds','auditLog','manualDeletionTombstones']) {
             if (!Array.isArray(merged[key])) merged[key] = [];
         }
         if (!Array.isArray(merged.memoryHealth.attempts)) merged.memoryHealth.attempts = [];
@@ -859,7 +859,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!merged.worldTransit.origin || typeof merged.worldTransit.origin !== 'object') merged.worldTransit.origin = clone(base.worldTransit.origin);
         if (!merged.worldTransit.current || typeof merged.worldTransit.current !== 'object') merged.worldTransit.current = clone(base.worldTransit.current);
         if (!Array.isArray(merged.worldTransit.history)) merged.worldTransit.history = [];
-        for (const key of ['contacts', 'contactProfiles', 'wechat', 'wechatGroups', 'channelGroups', 'sms', 'messages', 'moments', 'notes', 'calls', 'albums', 'threads', 'groupThreads', 'groupProfiles', 'diary', 'anniversaries', 'pendingOutgoing', 'notifications', 'calendarEvents', 'financeEvents', 'activityEvents', 'knowledgeLedger', 'storyLedger', 'acquaintanceLedger', 'callReceipts', 'npcActivities', 'orderEvents', 'realtimeEvents', 'manualDeletionTombstones']) {
+        for (const key of ['contacts','contactProfiles','wechat','wechatGroups','channelGroups','sms','messages','moments','notes','calls','albums','threads','groupThreads','groupProfiles','diary','anniversaries','pendingOutgoing','notifications','calendarEvents','financeEvents','activityEvents','knowledgeLedger','storyLedger','acquaintanceLedger','callReceipts','npcActivities','orderEvents','realtimeEvents','manualDeletionTombstones']) {
             if (!Array.isArray(merged.phone[key])) merged.phone[key] = [];
         }
         // fixed39: điện thoại và chính văn dùng chung một tuyến truyện; logic bỏ ghi chú của fixed38 vẫn được giữ.
@@ -1029,9 +1029,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 ...row,
                 'Loại': row['Loại'] || row['Loại bảng'] || 'Tổng kết giai đoạn',
                 'Trạng thái': row['Trạng thái'] || 'Đã hoàn thành',
-                'Mô hình': row['Mô hình'] || (row['Loại bảng'] ? 'Nhập từ bản cũ' : ''),
+                'Mô hình': row['Mô hình'] || (row['Loại bảng'] ?'Nhập từ bản cũ' :''),
                 'Khóa': row['Khóa'] || 'Không',
-                'Trạng thái ẩn': row['Trạng thái ẩn'] || (row._hiddenRange ? 'Đã ẩn' : 'Chưa ẩn'),
+                'Trạng thái ẩn': row['Trạng thái ẩn'] || (row._hiddenRange ?'Đã ẩn' :'Chưa ẩn'),
                 _id: row._id || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
                 _history: Array.isArray(row._history) ? row._history : [],
             };
@@ -1082,7 +1082,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!Array.isArray(rows)) return [];
         return rows.map(row => {
             if (Array.isArray(row)) {
-                return Object.fromEntries(def.columns.map((column, index) => [column, row[index] ?? '']));
+                return Object.fromEntries(def.columns.map((column, index) => [column, row[index] ??'']));
             }
             if (row && typeof row === 'object') {
                 const result = {};
@@ -1090,11 +1090,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     result[column] = row[column]
                         ?? row[columns?.[index]]
                         ?? row[index]
-                        ?? '';
+                        ??'';
                 });
                 return result;
             }
-            return Object.fromEntries(def.columns.map((column, index) => [column, index === 0 ? String(row) : '']));
+            return Object.fromEntries(def.columns.map((column, index) => [column, index === 0 ? String(row) :'']));
         });
     }
 
@@ -1109,7 +1109,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         TABLE_ORDER.forEach((key, index) => {
             const def = TABLE_DEFS[key];
             const byName = sheets.find(sheet => {
-                const name = String(sheet?.name ?? sheet?.title ?? sheet?.n ?? '');
+                const name = String(sheet?.name ?? sheet?.title ?? sheet?.n ??'');
                 return name.includes(def.title) || def.title.includes(name);
             });
             next.tables[key] = flexibleSheetRows(byName ?? sheets[index], def);
@@ -1117,7 +1117,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         next.migration = {
             importedGaigai: true,
             importedAt: nowText(),
-            sourceVersion: String(oldData.v ?? oldData.version ?? 'không rõ'),
+            sourceVersion: String(oldData.v ?? oldData.version ??'không rõ'),
         };
         next.updatedAt = Date.now();
         return next;
@@ -1155,7 +1155,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const world = (Array.isArray(data?.characterWorld?.events)?data.characterWorld.events.length:0) + (Array.isArray(data?.characterWorld?.characters)?data.characterWorld.characters.length:0);
         const floors = [];
         for (const table of Object.values(data?.tables || {})) for (const row of Array.isArray(table)?table:[]) {
-            const nums = String(row?.['Tầng bao phủ'] ?? row?.['Tầng'] ?? row?._sourceFloor ?? '').match(/\d+/g)?.map(Number) || [];
+            const nums = String(row?.['Tầng bao phủ'] ?? row?.['Tầng'] ?? row?._sourceFloor ??'').match(/\d+/g)?.map(Number) || [];
             floors.push(...nums);
         }
         const maxFloor = floors.length ? Math.max(...floors) : Number(data?.progress?.maxObservedFloor ?? -1);
@@ -1316,11 +1316,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const history = Array.isArray(data?.history) ? data.history : [];
         if (!history.length) throw new Error('Cuộc trò chuyện hiện tại chưa có ảnh chụp an toàn nào trên máy chủ');
         const lines = history.map((item, index) => {
-            const time = item.createdAt ? new Date(Number(item.createdAt)).toLocaleString() : 'thời điểm không rõ';
+            const time = item.createdAt ? new Date(Number(item.createdAt)).toLocaleString() :'thời điểm không rõ';
             const m = item.metrics || {};
-            return `${index + 1}. ${time}｜${item.reason || 'auto'}｜ký ức ${m.rows ?? '?'} · tổng kết ${m.summaries ?? '?'} · điện thoại ${m.phone ?? '?'}`;
+            return `${index + 1}. ${time}｜${item.reason || 'auto'}｜ký ức ${m.rows ??'?'} · tổng kết ${m.summaries ??'?'} · điện thoại ${m.phone ??'?'}`;
         });
-        const answer = prompt(`Chọn ảnh chụp an toàn muốn khôi phục (1-${history.length}):\n\n${lines.join('\n')}\n\nBấm Hủy thì không khôi phục.`, '1');
+        const answer = prompt(`Chọn ảnh chụp an toàn muốn khôi phục (1-${history.length}):\n\n${lines.join('\n')}\n\nBấm Hủy thì không khôi phục.`,'1');
         if (answer == null) return false;
         const index = Number(answer) - 1;
         if (!Number.isInteger(index) || index < 0 || index >= history.length) throw new Error('Số thứ tự ảnh chụp bạn nhập không hợp lệ');
@@ -1492,7 +1492,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const migrated = tryMigrateFromMetadata(ctx);
                 if (migrated) {
                     selected = { source:'migration', data:migrated };
-                    if (notifyMigration && chatScopeIsCurrent(scope)) toast('Đã tự động di trú các bảng ký ức cũ của cuộc trò chuyện này', 'success');
+                    if (notifyMigration && chatScopeIsCurrent(scope)) toast('Đã tự động di trú các bảng ký ức cũ của cuộc trò chuyện này','success');
                 }
             }
             if(!chatScopeIsCurrent(scope))return null;
@@ -1536,7 +1536,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 : {changed:false,added:[],repaired:[]};
             if(mainlineCoverage.changed){
                 nextState.auditLog ||= [];
-                nextState.auditLog.push({time:nowText(),type:'r55-extract-source-lock-backfill',note:`Đã bù đủ tuyến chính cho các tầng AI: thêm mới ${mainlineCoverage.added.join(', ')||'không có'}; sửa chỗ trống ${mainlineCoverage.repaired.join(', ')||'không có'}`});
+                nextState.auditLog.push({time:nowText(),type:'r55-extract-source-lock-backfill',note:`Đã bù đủ tuyến chính cho các tầng AI: thêm mới ${mainlineCoverage.added.join(',')||'không có'}; sửa chỗ trống ${mainlineCoverage.repaired.join(',')||'không có'}`});
             }
             if(legacyIntegrityRepair.changed){
                 nextState.auditLog ||= [];
@@ -1558,7 +1558,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if (selected?.source === 'safety' || selected?.source === 'migration') {
                 await saveState({ immediate:true, refresh:false, reason:`load-${selected.source}`, allowDestructive:true, forceSnapshot:true });
                 if(!chatScopeIsCurrent(scope))return null;
-                if (selected.source === 'safety' && notifyMigration) toast('Trạng thái ký ức chính của cuộc trò chuyện hiện tại bị thiếu, đã khôi phục từ ảnh chụp an toàn trên máy chủ', 'warn');
+                if (selected.source === 'safety' && notifyMigration) toast('Trạng thái ký ức chính của cuộc trò chuyện hiện tại bị thiếu, đã khôi phục từ ảnh chụp an toàn trên máy chủ','warn');
             } else if (hasUserMessage && selected) {
                 await savePermanentArchiveState(selected.source==='merged'?'load-merged-device-sources':(rawArchive?'load-normalized-state':'initial-bind-from-existing-state'),{stateSnapshot:authoritativeSnapshot,scope});
                 if(!chatScopeIsCurrent(scope))return null;
@@ -1597,7 +1597,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const promiseStateBefore = JSON.stringify(stateRuntime.state.tables?.promises || []);
         compactCurrentStateCollections(stateRuntime.state);
         if (promiseStateBefore !== JSON.stringify(stateRuntime.state.tables?.promises || [])) {
-            logAudit('Tự phục hồi bảng lời hẹn', 'Trước khi lưu đã dọn các lời hẹn không phải thực thể và gộp các mục trùng.');
+            logAudit('Tự phục hồi bảng lời hẹn','Trước khi lưu đã dọn các lời hẹn không phải thực thể và gộp các mục trùng.');
         }
 
         // Mỗi lần lưu đều hàn “danh tính cuộc trò chuyện hiện tại” vào trạng thái trước; các bước lưu trữ sau đó chỉ dùng ảnh chụp bất biến của lần này,
@@ -1681,7 +1681,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function rowText(row, columns) {
-        return columns.map(column => String(row?.[column] ?? '').trim()).filter(Boolean).join('｜');
+        return columns.map(column => String(row?.[column] ??'').trim()).filter(Boolean).join('｜');
     }
 
     function compactTable(key, limit = 12) {
@@ -1691,7 +1691,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function messageText(message) {
-        return String(message?.mes ?? message?.message ?? message?.text ?? '').trim();
+        return String(message?.mes ?? message?.message ?? message?.text ??'').trim();
     }
 
     function memoryNarrativeText(message) {
@@ -1701,7 +1701,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function messageSpeaker(message) {
         if (message?.is_user) return '{{user}}';
         if (message?.is_system) return 'Hệ thống';
-        return String(message?.name ?? 'Nhân vật');
+        return String(message?.name ??'Nhân vật');
     }
 
     function recentTranscript(limit = 10) {
@@ -1714,7 +1714,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function stripJsonFence(text) {
-        const raw = String(text ?? '').trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
+        const raw = String(text ??'').trim().replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/i,'');
         const start = raw.indexOf('{');
         const end = raw.lastIndexOf('}');
         return start >= 0 && end > start ? raw.slice(start, end + 1) : raw;
@@ -1740,8 +1740,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function semanticText(value, max = 1200) {
         return compactText(value, max).toLowerCase()
-            .replace(/[\s\p{P}\p{S}]+/gu, '')
-            .replace(/(?:đã|vẫn|hiện tại|lúc này|sẽ|chuẩn bị|quyết định|đồng ý|hứa|hẹn|đã hẹn|bày tỏ|dự định)/gi, '');
+            .replace(/[\s\p{P}\p{S}]+/gu,'')
+            .replace(/(?:đã|vẫn|hiện tại|lúc này|sẽ|chuẩn bị|quyết định|đồng ý|hứa|hẹn|đã hẹn|bày tỏ|dự định)/gi,'');
     }
 
     function semanticBigrams(value) {
@@ -1754,7 +1754,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function groundingNgrams(value, size = 4) {
-        const text = compactText(value, 18000).toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '');
+        const text = compactText(value, 18000).toLowerCase().replace(/[\s\p{P}\p{S}]+/gu,'');
         const width = Math.max(2, Number(size) || 4);
         if (text.length < width) return new Set(text ? [text] : []);
         const out = new Set();
@@ -1772,7 +1772,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function historySnapshot(row, fields, reason = 'Cập nhật trạng thái') {
         return {
-            ...Object.fromEntries(fields.map(key => [key, row?.[key] ?? ''])),
+            ...Object.fromEntries(fields.map(key => [key, row?.[key] ??''])),
             floor: Number(row?._lastSeenFloor ?? row?._sourceFloor ?? row?.['Tầng'] ?? -1),
             time: row?._lastUpdatedAt || row?.updatedAt || row?.['Thời điểm cập nhật'] || nowText(),
             reason,
@@ -1803,7 +1803,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function promiseMoneyAmounts(value) {
-        const text = compactText(value, 1600).replace(/[,.]/g, '');
+        const text = compactText(value, 1600).replace(/[,.]/g,'');
         const amounts = [];
         const patterns=[/(?:đ|₫|VND|vnd)\s*(\d+(?:\.\d+)?)\s*([kKmMtT]?)/g,/(\d+(?:\.\d+)?)\s*([kKmM]|nghìn|ngàn|triệu|tỷ)(?:\s*(?:đồng|đ|VND))?/gi,/(\d+(?:\.\d+)?)\s*(?:đồng|đ|VND)/gi,/(\d+(?:\.\d+)?)(?=\s*(?:tiền về|vào tài khoản|chuyển tiền|nhận tiền))/gi];
         for(const pattern of patterns)for (const match of text.matchAll(pattern)) {
@@ -1872,7 +1872,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         let changed = 0;
         for (const { row } of selected) {
             row._history = Array.isArray(row._history) ? row._history : [];
-            row._history.push(historySnapshot(row, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], 'Bằng chứng tiền về thật đã hoàn thành lời hẹn'));
+            row._history.push(historySnapshot(row, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],'Bằng chứng tiền về thật đã hoàn thành lời hẹn'));
             row['Trạng thái'] = 'Đã thực hiện xong';
             row._completionFloor = Number(currentFloor);
             row._completionEvidence = {
@@ -1880,7 +1880,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 amount:Math.abs(Number(normalizedEvidence.amount || 0)), title:compactText(normalizedEvidence.title, 240),
                 counterparty:compactText(normalizedEvidence.counterparty, 160), floor:Number(currentFloor), time:compactText(normalizedEvidence.time, 120),
             };
-            row._statusReason = `Tại tầng ${Number.isFinite(Number(currentFloor)) ? Number(currentFloor) : '?'} phát hiện ${compactText(normalizedEvidence.title || 'khoản tiền đã về', 120)} ${s8MoneyText(Math.abs(Number(normalizedEvidence.amount || 0)))}; lời hẹn chờ nhận tiền cũ đã được bằng chứng giao dịch thật thay thế.`;
+            row._statusReason = `Tại tầng ${Number.isFinite(Number(currentFloor)) ? Number(currentFloor) :'?'} phát hiện ${compactText(normalizedEvidence.title || 'khoản tiền đã về', 120)} ${s8MoneyText(Math.abs(Number(normalizedEvidence.amount || 0)))}; lời hẹn chờ nhận tiền cũ đã được bằng chứng giao dịch thật thay thế.`;
             row._lastEvidenceFloor = Number(currentFloor); row._lastUpdatedAt = nowText(); changed += 1;
         }
         return changed;
@@ -1985,14 +1985,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ['schedule:long-term', /dài hạn|cả đời|mãi mãi/i],
         ];
         const result = new Set(rules.filter(([, pattern]) => pattern.test(text)).map(([key]) => key));
-        for (const value of text.match(/\d{1,2}[-/.]\d{1,2}(?:[-/.]\d{4})?|\d{4}[-/.]\d{1,2}(?:[-/.]\d{1,2})?/g) || []) result.add(`day:${value.replace(/[/.]/g, '-')}`);
+        for (const value of text.match(/\d{1,2}[-/.]\d{1,2}(?:[-/.]\d{4})?|\d{4}[-/.]\d{1,2}(?:[-/.]\d{1,2})?/g) || []) result.add(`day:${value.replace(/[/.]/g,'-')}`);
         return result;
     }
 
     function promiseTemporalConflict(left, right) {
         if (!left.size || !right.size) return false;
         if (!setOverlap(left, right)) return true;
-        for (const prefix of ['day:', 'period:', 'window:', 'schedule:']) {
+        for (const prefix of ['day:','period:','window:','schedule:']) {
             const leftGroup = new Set([...left].filter(value => value.startsWith(prefix)));
             const rightGroup = new Set([...right].filter(value => value.startsWith(prefix)));
             if (leftGroup.size && rightGroup.size && !setOverlap(leftGroup, rightGroup)) return true;
@@ -2015,7 +2015,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function promiseLexicalKeys(value) {
         const text = compactText(value, 1200).toLowerCase()
-            .replace(/\b(?:đồng ý|hứa|hẹn|đã hẹn|yêu cầu|bảo đảm|chịu trách nhiệm|cần|phải|nên|hãy|sẽ|muốn|chuẩn bị|dự định|hôm nay|tối nay|sáng nay|ngày mai|ngày kia|buổi sáng|sáng sớm|buổi tối|lát nữa|chốc nữa|chờ chút|sau đó|tiếp theo|mỗi tuần|mỗi ngày|dài hạn|cả đời|mãi mãi|hạn chót|và|với|cùng|cho|ở|đi|tới|qua đây|đến|đi cùng|mua|mua sắm|đặt đơn|làm|nấu|xào|luộc|hầm|ăn|uống|thanh toán|trả tiền|xử lý|hoàn thành)\b/gi, '');
+            .replace(/\b(?:đồng ý|hứa|hẹn|đã hẹn|yêu cầu|bảo đảm|chịu trách nhiệm|cần|phải|nên|hãy|sẽ|muốn|chuẩn bị|dự định|hôm nay|tối nay|sáng nay|ngày mai|ngày kia|buổi sáng|sáng sớm|buổi tối|lát nữa|chốc nữa|chờ chút|sau đó|tiếp theo|mỗi tuần|mỗi ngày|dài hạn|cả đời|mãi mãi|hạn chót|và|với|cùng|cho|ở|đi|tới|qua đây|đến|đi cùng|mua|mua sắm|đặt đơn|làm|nấu|xào|luộc|hầm|ăn|uống|thanh toán|trả tiền|xử lý|hoàn thành)\b/gi,'');
         return semanticBigrams(text);
     }
 
@@ -2093,8 +2093,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             'Thời điểm hẹn': compactText(item?.time ?? item?.['Thời điểm hẹn'], 220),
             'Nội dung lời hẹn': content,
             'Nhân vật cốt lõi': compactText(item?.characters ?? item?.['Nhân vật cốt lõi'], 300),
-            'Trạng thái': compactText(item?.status ?? item?.['Trạng thái'] ?? 'Chờ thực hiện', 120) || 'Chờ thực hiện',
-            'Tầng': String(item?.floor ?? floor ?? ''),
+            'Trạng thái': compactText(item?.status ?? item?.['Trạng thái'] ??'Chờ thực hiện', 120) || 'Chờ thực hiện',
+            'Tầng': String(item?.floor ?? floor ??''),
             _sourceFloor: Number(floor), _sourceMessageKey: sourceMessageKey,
             _lastSeenFloor: Number(floor), _lastUpdatedAt: nowText(),
             _firstSeenFloor:Number(floor), _lastEvidenceFloor:Number(floor),
@@ -2114,7 +2114,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             existing._lastSeenFloor=Number(floor);existing._repeatAfterClosureCount=Number(existing._repeatAfterClosureCount||0)+1;existing._lastRepeatedAfterClosureAt=nowText();
             return true;
         }
-        const meaningfulChange=pushHistoryIfChanged(existing, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], incoming, 'Cập nhật trạng thái/cách diễn đạt của lời hẹn');
+        const meaningfulChange=pushHistoryIfChanged(existing, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'], incoming,'Cập nhật trạng thái/cách diễn đạt của lời hẹn');
         for (const key of ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái','Tầng']) if (compactText(incoming[key], 1400)) existing[key] = incoming[key];
         existing._entityId ||= promiseObjectId(item) || uid('promise');
         existing._recordedStoryTime ||= incoming._recordedStoryTime || (typeof storyTimeForFloor==='function'?storyTimeForFloor(existing._firstSeenFloor ?? floor).label:'');
@@ -2134,7 +2134,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function markPromiseCompleted(row, floor = -1) {
         if (!row || typeof row !== 'object' || promiseClosedStatus(row['Trạng thái'])) return false;
         row._history = Array.isArray(row._history) ? row._history : [];
-        row._history.push(historySnapshot(row, ['Thời điểm hẹn', 'Nội dung lời hẹn', 'Nhân vật cốt lõi', 'Trạng thái'], 'Người dùng tự đánh dấu lời hẹn đã hoàn thành'));
+        row._history.push(historySnapshot(row, ['Thời điểm hẹn','Nội dung lời hẹn','Nhân vật cốt lõi','Trạng thái'],'Người dùng tự đánh dấu lời hẹn đã hoàn thành'));
         row._entityId ||= promiseObjectId(row) || uid('promise');
         const requestedFloor = Number(floor);
         const chatFloor = Number(context()?.chat?.length) - 1;
@@ -2148,9 +2148,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         row._completionMode = 'manual';
         row._completionFloor = completionFloor;
         row._manualCompletedAt = completionTime;
-        row._statusReason = `Người dùng tự đánh dấu lời hẹn đã hoàn thành${completionFloor >= 0 ? ` (tầng ${completionFloor})` : ''}`;
+        row._statusReason = `Người dùng tự đánh dấu lời hẹn đã hoàn thành${completionFloor >= 0 ?` (tầng ${completionFloor})` :''}`;
         row._completionEvidence = {
-            kind: 'manual-ui',
+            kind:'manual-ui',
             id: row._entityId,
             floor: completionFloor,
             time: completionTime,
@@ -2174,7 +2174,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             : null;
         if (!explicitId && Array.isArray(rows) && Number.isInteger(numeric)) row = rows[numeric];
         if (!row) {
-            toast('Không tìm thấy lời hẹn này, có thể nó đã bị xóa hoặc bạn đã đổi cuộc trò chuyện', 'warn');
+            toast('Không tìm thấy lời hẹn này, có thể nó đã bị xóa hoặc bạn đã đổi cuộc trò chuyện','warn');
             return false;
         }
         const resolvedIndex = Array.isArray(rows) ? rows.indexOf(row) : -1;
@@ -2189,11 +2189,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             inputs.forEach(input => { row[input.dataset.cell] = input.value.trim(); });
         }
         if (!markPromiseCompleted(row)) {
-            toast('Lời hẹn này đã đóng rồi, không cần hoàn thành lại', 'info');
+            toast('Lời hẹn này đã đóng rồi, không cần hoàn thành lại','info');
             return false;
         }
-        await saveState({ immediate: true, refresh: true, reason: 'manual-promise-complete' });
-        toast('Đã tự đánh dấu lời hẹn hoàn thành', 'success');
+        await saveState({ immediate: true, refresh: true, reason:'manual-promise-complete' });
+        toast('Đã tự đánh dấu lời hẹn hoàn thành','success');
         return true;
     }
 
@@ -2241,20 +2241,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ? (Array.isArray(rows) ? rows.find(candidate => promiseEntityId(candidate) === explicitId) : null)
             : promiseRowForItem(source);
         if (!row) {
-            toast('Không tìm thấy lời hẹn này, có thể nó đã bị xóa hoặc bạn đã đổi cuộc trò chuyện', 'warn');
+            toast('Không tìm thấy lời hẹn này, có thể nó đã bị xóa hoặc bạn đã đổi cuộc trò chuyện','warn');
             return false;
         }
         const requestedFloor = Number(sidecarFloor);
         if (!markPromiseCompleted(row, Number.isFinite(requestedFloor) && requestedFloor >= 0 ? requestedFloor : -1)) {
-            toast('Lời hẹn này đã đóng rồi, không cần hoàn thành lại', 'info');
+            toast('Lời hẹn này đã đóng rồi, không cần hoàn thành lại','info');
             return false;
         }
-        await saveState({ immediate: true, refresh: true, reason: 'manual-promise-complete' });
+        await saveState({ immediate: true, refresh: true, reason:'manual-promise-complete' });
         // The sidecar payload itself is immutable history; re-render it against
         // current state so a manually completed item disappears immediately.
         const floor = Number(sidecarFloor);
         if (Number.isFinite(floor) && floor >= 0) decorateCompanionOutput(floor);
-        toast('Đã tự đánh dấu lời hẹn hoàn thành', 'success');
+        toast('Đã tự đánh dấu lời hẹn hoàn thành','success');
         return true;
     }
 
@@ -2280,9 +2280,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         let existing = explicitId ? rows.find(row => compactText(row?._entityId, 180) === explicitId) : null;
         if (!existing) existing = rows.find(row => semanticText(row?.['Tên vật phẩm'], 240) === semanticText(name, 240));
         const incoming = {
-            'Tên vật phẩm':name, 'Mô tả vật phẩm':compactText(item?.description ?? item?.['Mô tả vật phẩm'], 1200),
-            'Vị trí hiện tại':compactText(item?.location ?? item?.['Vị trí hiện tại'], 300), 'Người sở hữu':compactText(item?.holder ?? item?.['Người sở hữu'], 240),
-            'Trạng thái':compactText(item?.status ?? item?.['Trạng thái'], 180), 'Mức quan trọng':compactText(item?.importance ?? item?.['Mức quan trọng'], 120),
+            'Tên vật phẩm':name,'Mô tả vật phẩm':compactText(item?.description ?? item?.['Mô tả vật phẩm'], 1200),
+            'Vị trí hiện tại':compactText(item?.location ?? item?.['Vị trí hiện tại'], 300),'Người sở hữu':compactText(item?.holder ?? item?.['Người sở hữu'], 240),
+            'Trạng thái':compactText(item?.status ?? item?.['Trạng thái'], 180),'Mức quan trọng':compactText(item?.importance ?? item?.['Mức quan trọng'], 120),
             'Ghi chú':compactText(item?.note ?? item?.['Ghi chú'], 900), _sourceFloor:Number(floor), _sourceMessageKey:sourceMessageKey,
             _lastSeenFloor:Number(floor), _lastUpdatedAt:nowText(),
         };
@@ -2292,7 +2292,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             if(highMeaning&&!acquisition){quarantineFactConflict('item-acquisition',null,incoming,{floor,sourceMessageKey,sourceText,reason:'important-item-without-acquisition-source'});return false;}
             rows.push({...incoming,_entityId:explicitId||uid('item'),_history:[],_acquisitionEvidence:acquisition||null,_evidenceRank:acquisition?80:45}); return true;
         }
-        pushHistoryIfChanged(existing, ['Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'], incoming, 'Cập nhật trạng thái/luân chuyển vật phẩm');
+        pushHistoryIfChanged(existing, ['Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú'], incoming,'Cập nhật trạng thái/luân chuyển vật phẩm');
         for (const key of ['Tên vật phẩm','Mô tả vật phẩm','Vị trí hiện tại','Người sở hữu','Trạng thái','Mức quan trọng','Ghi chú']) if (compactText(incoming[key], 1400)) existing[key]=incoming[key];
         existing._entityId ||= explicitId || uid('item'); existing._lastSeenFloor=Number(floor); existing._lastUpdatedAt=nowText();
         if(acquisition&&!existing._acquisitionEvidence)existing._acquisitionEvidence=acquisition;
@@ -2301,13 +2301,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function secretSubjectKey(subject, content) {
         const key = semanticText(subject, 300);
-        return !key || /^(?:bí mật|tình hình|thông tin|sự thật)$/i.test(key) ? `content:${semanticText(content, 320).slice(0,80)}` : `subject:${key}`;
+        return !key || /^(?:bí mật|tình hình|thông tin|sự thật)$/i.test(key) ?`content:${semanticText(content, 320).slice(0,80)}` :`subject:${key}`;
     }
 
     function upsertSecretSnapshot(item, floor = -1, sourceMessageKey = '', extra = {}) {
         const rows = stateRuntime.state?.secrets;
         if (!Array.isArray(rows)) return false;
-        const subject = compactText(item?.subject ?? 'Bí mật', 260) || 'Bí mật';
+        const subject = compactText(item?.subject ??'Bí mật', 260) || 'Bí mật';
         const content = compactText(item?.content, 1400);
         if (!content) return false;
         const explicitId = extractedEntityId(item?.secretId ?? item?._entityId);
@@ -2316,7 +2316,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!existing) existing = rows.find(row => secretSubjectKey(row?.subject,row?.content) === subjectKey || (semanticText(row?.subject,300)===semanticText(subject,300) && semanticSimilarity(row?.content,content)>=0.68));
         const incoming = {subject,content,knowers:compactText(item?.knowers,700),suspects:compactText(item?.suspects,700),unknown:compactText(item?.unknown,700),updatedAt:nowText(),_sourceFloor:Number(floor),_sourceMessageKey:sourceMessageKey,_lastSeenFloor:Number(floor),...extra};
         if (!existing) { rows.push({...incoming,id:uid('secret'),_entityId:explicitId||uid('secret-entity'),_history:[]}); return true; }
-        pushHistoryIfChanged(existing, ['subject','content','knowers','suspects','unknown'], incoming, 'Cập nhật nội dung bí mật/ranh giới người biết');
+        pushHistoryIfChanged(existing, ['subject','content','knowers','suspects','unknown'], incoming,'Cập nhật nội dung bí mật/ranh giới người biết');
         for(const key of ['subject','content','knowers','suspects','unknown']) if(compactText(incoming[key],1600)) existing[key]=incoming[key];
         existing.updatedAt=nowText(); existing._sourceFloor=Number(floor); existing._lastSeenFloor=Number(floor); existing._entityId ||= explicitId||uid('secret-entity');
         return true;
@@ -2417,7 +2417,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 existing['Trạng thái'] = 'Đã hoàn thành';
                 existing._completionMode ||= 'manual';
                 existing._completionEvidence ||= {
-                    kind: 'manual-ui',
+                    kind:'manual-ui',
                     id: existing._entityId,
                     floor: Number(existing._completionFloor ?? -1),
                     time: existing._manualCompletedAt || nowText(),
@@ -2463,7 +2463,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function normalizeExtracted(extracted, floor) {
         const result = extracted && typeof extracted === 'object' ? extracted : {};
         result.floor = floor;
-        for (const key of ['mainline', 'branches', 'states', 'people', 'relations', 'world', 'items', 'promises', 'secrets', 'chapters', 'anchors', 'lifeFacts']) {
+        for (const key of ['mainline','branches','states','people','relations','world','items','promises','secrets','chapters','anchors','lifeFacts']) {
             if (!Array.isArray(result[key])) result[key] = [];
         }
         result.promises = result.promises.filter(item => promiseContentIsConcrete(item?.content ?? item?.['Nội dung lời hẹn'], item));
@@ -2480,7 +2480,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function sanitizeTimelineSummary(value, max = 360) {
         if (value !== null && typeof value === 'object') return '';
-        let raw = String(value ?? '').replace(/\r\n?/g,'\n').trim();
+        let raw = String(value ??'').replace(/\r\n?/g,'\n').trim();
         if (!raw) return '';
         let cut = raw.length;
         for (const pattern of TIMELINE_META_TAIL_PATTERNS) {
@@ -2511,7 +2511,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function assistantMainlineSummary(item) {
         const value=item?.summary ?? item?.event ?? item?.['Tóm tắt sự kiện'];
-        return value !== null && typeof value === 'object' ? '' : compactText(value, 360);
+        return value !== null && typeof value === 'object' ?'' : compactText(value, 360);
     }
 
     function recentEventSummaryLooksInternal(value) {
@@ -2526,10 +2526,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function sanitizedAssistantEvidence(message, max = 360) {
         const raw = memoryNarrativeText(message);
         const cleaned = raw
-            .replace(/<(?:think|analysis|script|style)\b[^>]*>[\s\S]*?<\/(?:think|analysis|script|style)>/gi, ' ')
-            .replace(/<Memory\b[^>]*>[\s\S]*?<\/Memory>/gi, ' ')
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/\{\{[^{}]{0,300}\}\}/g, ' ');
+            .replace(/<(?:think|analysis|script|style)\b[^>]*>[\s\S]*?<\/(?:think|analysis|script|style)>/gi,' ')
+            .replace(/<Memory\b[^>]*>[\s\S]*?<\/Memory>/gi,' ')
+            .replace(/<[^>]+>/g,' ')
+            .replace(/\{\{[^{}]{0,300}\}\}/g,' ');
         const normalized = compactText(cleaned, 18000) || compactText(raw, 18000);
         const limit = Math.max(200, Number(max) || 360);
         if (normalized.length <= limit) return normalized;
@@ -2626,9 +2626,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const incoming = {
             'Ngày': compactText(item?.date ?? item?.['Ngày'],120) || sourceStoryTime.date || '',
             'Giờ bắt đầu': compactText(item?.start ?? item?.['Giờ bắt đầu'],80) || sourceStoryTime.time || '',
-            'Giờ kết thúc': item?.end ?? item?.['Giờ kết thúc'] ?? '',
+            'Giờ kết thúc': item?.end ?? item?.['Giờ kết thúc'] ??'',
             'Tóm tắt sự kiện': summary,
-            'Trạng thái': item?.status ?? item?.['Trạng thái'] ?? 'Đang diễn ra',
+            'Trạng thái': item?.status ?? item?.['Trạng thái'] ??'Đang diễn ra',
             'Tầng': String(floor),
             _sourceFloor:floor, _sourceMessageKey:sourceMessageKey, _sourceBoundSignature:messageSignature(floor, message), _assistantOnce:true,
             _storyTime: sourceStoryTime.label || compactText(item?._storyTime,120),
@@ -2758,7 +2758,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const missing=[];
         if(!value.scene||typeof value.scene!=='object'||Array.isArray(value.scene))missing.push('scene');
         for(const key of arrayKeys)if(!Array.isArray(value[key]))missing.push(key);
-        if(missing.length)throw new Error(`JSON ký ức chính thiếu hoặc hỏng các trường cấp cao nhất: ${missing.join(', ')}`);
+        if(missing.length)throw new Error(`JSON ký ức chính thiếu hoặc hỏng các trường cấp cao nhất: ${missing.join(',')}`);
         return value;
     }
 
@@ -2788,23 +2788,23 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const f = String(floor);
         data.mainline.forEach(item => upsertAssistantMainline(item, floor, chat[floor], s));
         data.branches.forEach(item => uniquePush(s.tables.branches, {
-            'Trạng thái': item.status ?? 'Đang diễn ra', 'Tên nhánh phụ': item.name ?? '', 'Giờ bắt đầu': item.start ?? '',
-            'Giờ kết thúc': item.end ?? '', 'Theo dõi sự kiện': item.tracking ?? item.summary ?? '', 'NPC then chốt': item.npcs ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+            'Trạng thái': item.status ??'Đang diễn ra','Tên nhánh phụ': item.name ??'','Giờ bắt đầu': item.start ??'',
+            'Giờ kết thúc': item.end ??'','Theo dõi sự kiện': item.tracking ?? item.summary ??'','NPC then chốt': item.npcs ??'','Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Tên nhánh phụ']}|${row['Theo dõi sự kiện']}`));
         data.states.forEach(item => uniquePush(s.tables.states, {
-            'Tên nhân vật': item.name ?? '', 'Thay đổi trạng thái': item.change ?? item.state ?? '', 'Thời gian': item.time ?? '',
-            'Nguyên nhân': item.reason ?? '', 'Vị trí hiện tại': item.location ?? '', 'Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+            'Tên nhân vật': item.name ??'','Thay đổi trạng thái': item.change ?? item.state ??'','Thời gian': item.time ??'',
+            'Nguyên nhân': item.reason ??'','Vị trí hiện tại': item.location ??'','Tầng': item.floor ?? f, _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Tên nhân vật']}|${row['Thay đổi trạng thái']}|${row['Thời gian']}`));
         data.people.forEach(item => {
             const canonical = registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor) || compactText(item?.name,120);
             if (!canonical) return;
-            const incoming = { 'Họ tên':canonical, 'Tuổi':item.age??'', 'Thân phận':item.identity??'', 'Địa điểm':item.location??'', 'Tính cách':item.personality??'', 'Ghi chú':item.note??'', _sourceFloor:Number(item?.floor??floor), _sourceMessageKey:sourceMessageKey };
+            const incoming = { 'Họ tên':canonical,'Tuổi':item.age??'','Thân phận':item.identity??'','Địa điểm':item.location??'','Tính cách':item.personality??'','Ghi chú':item.note??'', _sourceFloor:Number(item?.floor??floor), _sourceMessageKey:sourceMessageKey };
             const existing=s.tables.people.find(row=>npcNameKey(row?.['Họ tên'])===npcNameKey(canonical));
             if(!existing)s.tables.people.push(incoming);else{if(String(incoming['Thân phận']||'').trim())existing['Thân phận']=mergeIdentityDescription(existing['Thân phận'],incoming['Thân phận'],messageText(chat[floor]));for(const key of ['Tuổi','Địa điểm','Tính cách','Ghi chú'])if(String(incoming[key]||'').trim())existing[key]=incoming[key];existing['Họ tên']=canonical;}
         });
         data.relations.forEach(item => upsertRelationSnapshot(item, floor, sourceMessageKey));
         data.world.forEach(item => uniquePush(s.tables.world, {
-            'Tên thiết định': item.name ?? '', 'Loại': item.type ?? '', 'Diễn giải chi tiết': item.description ?? '', 'Phạm vi ảnh hưởng': item.scope ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+            'Tên thiết định': item.name ??'','Loại': item.type ??'','Diễn giải chi tiết': item.description ??'','Phạm vi ảnh hưởng': item.scope ??'', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Tên thiết định']}|${row['Diễn giải chi tiết']}`));
         data.items.forEach(item => upsertItemSnapshot(item, floor, sourceMessageKey));
         data.promises.forEach(item => upsertPromiseSnapshot(item, floor, sourceMessageKey));
@@ -2813,9 +2813,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         // extraction, so the current UI does not wait for a chat reload.
         compactCurrentStateCollections(s);
         data.chapters.forEach(item => uniquePush(s.chapters, {
-            id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`,
-            title: item.title ?? `Chương ${s.chapters.length + 1}`, startFloor: item.startFloor ?? f,
-            endFloor: item.endFloor ?? f, summary: item.summary ?? '', time: item.time ?? '', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
+            id: globalThis.crypto?.randomUUID?.() ??`${Date.now()}-${Math.random()}`,
+            title: item.title ??`Chương ${s.chapters.length + 1}`, startFloor: item.startFloor ?? f,
+            endFloor: item.endFloor ?? f, summary: item.summary ??'', time: item.time ??'', _sourceFloor: floor, _sourceMessageKey: sourceMessageKey,
         }, item2 => `${item2.title}|${item2.startFloor}`));
         mergeMemoryAnchors(data.anchors, floor);
         mergeLifeFacts(data.lifeFacts, floor);
@@ -2827,7 +2827,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const value = safeScene[key];
             if (value !== undefined && value !== null && String(value).trim()) s.scene[key] = String(value);
         }
-        if(safeReality.audit?.length)logAudit('Chặn ở lớp hiện thực của ký ức chính',`Tầng ${floor}: ${safeReality.audit.join('; ')}`);
+        if(safeReality.audit?.length)logAudit('Chặn ở lớp hiện thực của ký ức chính',`Tầng ${floor}: ${safeReality.audit.join(';')}`);
         selfHealCommunicationReality({floor});
         s.progress.lastExtractedMessage = Math.max(Number(s.progress.lastExtractedMessage ?? -1), floor);
         reconcilePromiseNarrativeEvidenceForState(s, messageText(chat[floor]), floor);
@@ -2849,24 +2849,24 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const count = Math.max(2, Number(operationState.settings.bigSummariesPerEra || 10));
         const rows = contiguousSummaryGroup('Đại tổng kết','_includedInEra',count,{force});
         if (!rows.length) return false;
-        setBusy(true, 'Đang gộp tổng kết thời đại…');
+        setBusy(true,'Đang gộp tổng kết thời đại…');
         try {
             const sourceSummaryIds = rows.map(row => row._id).filter(Boolean);
             const sourceRanges = rows.map(row => row['Tầng bao phủ']);
             const rangeLabel = `${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}`;
             const result = await runFeature('eraSummary', eraSummaryPrompt(rows), {
-                kind: 'eraSummary', sourceSummaryIds, sourceRanges, rangeLabel,
+                kind:'eraSummary', sourceSummaryIds, sourceRanges, rangeLabel,
             });
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const record = result.record || { id:'', kind:'eraSummary', sourceSummaryIds, sourceRanges, rangeLabel, chatIdentity:operationScope.chatKey };
             if (result.task && !(await applyCompletedJob(record, result.task))) return false;
             else if(!(await applyCompletedJob(record, { status:'completed', result:{ text:result.text }, model:result.model, usage:result.usage })))return false;
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast('Đã hoàn tất tổng kết thời đại', 'success');
+            if (!quiet) toast('Đã hoàn tất tổng kết thời đại','success');
             return true;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast(`Tổng kết thời đại thất bại: ${error.message}`, 'error');
+            if (!quiet) toast(`Tổng kết thời đại thất bại: ${error.message}`,'error');
             if (throwOnError) throw error;
             return false;
         } finally { if(chatScopeIsCurrent(operationScope))setBusy(false); }
@@ -2919,8 +2919,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!entry) return '';
         const user = previousUserEntryForAssistant(entry.index);
         const contextPart = user
-            ? `【ĐẦU VÀO CỦA USER, CHỈ ĐỂ HIỂU NGỮ CẢNH｜tầng ${user.index}｜cấm ghi nhớ riêng / cấm sinh dòng thời gian】\n${memoryNarrativeText(user.message).slice(0,7000)}\n\n`
-            : '';
+            ?`【ĐẦU VÀO CỦA USER, CHỈ ĐỂ HIỂU NGỮ CẢNH｜tầng ${user.index}｜cấm ghi nhớ riêng / cấm sinh dòng thời gian】\n${memoryNarrativeText(user.message).slice(0,7000)}\n\n`
+            :'';
         return `${contextPart}【MỤC TIÊU GHI NHỚ DUY NHẤT: câu trả lời của AI/nhân vật｜tầng ${entry.index}】\n${memoryNarrativeText(entry.message).slice(0,18000)}`;
     }
 
@@ -2996,13 +2996,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const queued = enqueueAssistantMemoryFloor(entry.index);
         if (!queued) return false;
         payload.mainlineBridge = {
-            status: 'queued',
+            status:'queued',
             floor: entry.index,
             signature: entry.signature,
             at: Date.now(),
         };
         saveChatExtras(scope).catch(() => {});
-        saveState({ immediate: true, refresh: false, reason: 'companion-mainline-bridge' }).catch(() => {});
+        saveState({ immediate: true, refresh: false, reason:'companion-mainline-bridge' }).catch(() => {});
         scheduleAssistantMemoryDrain(scope, state, 180);
         return true;
     }
@@ -3139,16 +3139,16 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const text = messageText(last);
         const floor = chat.length - 1;
         if (/(?:\{\{user\}\}|\buser\b).{0,18}(?:gật đầu|đồng ý|từ chối|nói rằng|cất tiếng|đi về phía|đưa tay|hôn|cởi ra|quyết định|chấp nhận)/i.test(text)) {
-            addDiagnostic('Giành hành động của {{user}}', 'AI có thể đã hành động, quyết định hoặc phát ngôn thay cho {{user}}.', floor);
+            addDiagnostic('Giành hành động của {{user}}','AI có thể đã hành động, quyết định hoặc phát ngôn thay cho {{user}}.', floor);
         }
         if (/(vài ngày sau|mấy hôm sau|chẳng bao lâu sau|rất lâu sau đó|thoáng cái|một ngày nọ về sau)/i.test(text)) {
-            addDiagnostic('Thời gian mơ hồ', 'Xuất hiện bước đẩy thời gian mơ hồ; nên bổ sung ngày cụ thể hoặc khoảng cách so với sự kiện trước.', floor);
+            addDiagnostic('Thời gian mơ hồ','Xuất hiện bước đẩy thời gian mơ hồ; nên bổ sung ngày cụ thể hoặc khoảng cách so với sự kiện trước.', floor);
         }
         const previous = [...chat.slice(0, -1)].reverse().find(message => !message.is_user && !message.is_system);
         if (previous) {
-            const a = text.replace(/\s+/g, '').slice(0, 70);
-            const b = messageText(previous).replace(/\s+/g, '').slice(0, 70);
-            if (a.length > 35 && a === b) addDiagnostic('Mở đầu lặp lại', 'Phần mở đầu của lượt này trùng lặp rất cao với lượt trước.', floor);
+            const a = text.replace(/\s+/g,'').slice(0, 70);
+            const b = messageText(previous).replace(/\s+/g,'').slice(0, 70);
+            if (a.length > 35 && a === b) addDiagnostic('Mở đầu lặp lại','Phần mở đầu của lượt này trùng lặp rất cao với lượt trước.', floor);
         }
         saveState();
     }
@@ -3156,13 +3156,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function jumpToFloor(floor) {
         const index = Number.parseInt(String(floor), 10);
         if (!Number.isFinite(index)) return;
-        const selectors = [`.mes[mesid="${index}"]`, `.mes[data-mesid="${index}"]`, `#chat .mes:nth-child(${index + 1})`];
+        const selectors = [`.mes[mesid="${index}"]`,`.mes[data-mesid="${index}"]`,`#chat .mes:nth-child(${index + 1})`];
         const element = selectors.map(selector => document.querySelector(selector)).find(Boolean);
         if (element) {
             closeModal();
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            element.animate([{ outline: '3px solid #a78bfa' }, { outline: '0 solid transparent' }], { duration: 1800 });
-        } else toast(`Không tìm thấy tầng ${index} trên trang`, 'warn');
+            element.scrollIntoView({ behavior:'smooth', block:'center' });
+            element.animate([{ outline:'3px solid #a78bfa' }, { outline:'0 solid transparent' }], { duration: 1800 });
+        } else toast(`Không tìm thấy tầng ${index} trên trang`,'warn');
     }
 
     function toast(message, type = 'info') {
@@ -3351,11 +3351,11 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function readFabPosition() {
         const fallback = isMobileViewport()
-            ? { side: 'left', yRatio: 0.58 }
-            : { side: 'right', yRatio: 0.72 };
+            ? { side:'left', yRatio: 0.58 }
+            : { side:'right', yRatio: 0.72 };
         try {
             const stored = JSON.parse(localStorage.getItem(FAB_POSITION_KEY) || 'null');
-            if (!stored || !['left', 'right'].includes(stored.side)) return fallback;
+            if (!stored || !['left','right'].includes(stored.side)) return fallback;
             return {
                 side: stored.side,
                 yRatio: clampNumber(stored.yRatio, 0, 1),
@@ -3370,20 +3370,20 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!fab || stateRuntime.fabDragging) return;
         const visible = stateRuntime.state?.settings?.showFloatingButton !== false;
         fab.hidden = !visible;
-        fab.setAttribute('aria-hidden', visible ? 'false' : 'true');
-        const important = (name, value) => fab.style.setProperty(name, value, 'important');
-        important('position', 'fixed');
-        important('z-index', '2147483646');
-        important('display', visible ? 'flex' : 'none');
-        important('visibility', visible ? 'visible' : 'hidden');
-        important('opacity', visible ? '1' : '0');
-        important('pointer-events', visible ? 'auto' : 'none');
-        important('align-items', 'center');
-        important('justify-content', 'center');
-        important('touch-action', 'none');
-        important('-webkit-tap-highlight-color', 'transparent');
-        important('user-select', 'none');
-        important('-webkit-user-select', 'none');
+        fab.setAttribute('aria-hidden', visible ?'false' :'true');
+        const important = (name, value) => fab.style.setProperty(name, value,'important');
+        important('position','fixed');
+        important('z-index','2147483646');
+        important('display', visible ?'flex' :'none');
+        important('visibility', visible ?'visible' :'hidden');
+        important('opacity', visible ?'1' :'0');
+        important('pointer-events', visible ?'auto' :'none');
+        important('align-items','center');
+        important('justify-content','center');
+        important('touch-action','none');
+        important('-webkit-tap-highlight-color','transparent');
+        important('user-select','none');
+        important('-webkit-user-select','none');
 
         const mobile = isMobileViewport();
         const size = mobile ? 50 : 52;
@@ -3397,12 +3397,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             ? viewport.left + viewport.width - size - margin
             : viewport.left + margin;
 
-        important('left', `${Math.round(left)}px`);
-        important('right', 'auto');
-        important('top', `${Math.round(top)}px`);
-        important('bottom', 'auto');
-        important('width', `${size}px`);
-        important('height', `${size}px`);
+        important('left',`${Math.round(left)}px`);
+        important('right','auto');
+        important('top',`${Math.round(top)}px`);
+        important('bottom','auto');
+        important('width',`${size}px`);
+        important('height',`${size}px`);
         fab.dataset.side = position.side;
     }
 
@@ -3488,7 +3488,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if (event.target === modal) closeModal();
                 const action = event.target.closest('[data-action]')?.dataset.action;
                 if (action === 'close') closeModal();
-                if (action === 'memory-hub') window.open('/scripts/extensions/third-party/vvv-story-memory-suite/memory-hub/index.html', '_blank', 'noopener');
+                if (action === 'memory-hub') window.open('/scripts/extensions/third-party/vvv-story-memory-suite/memory-hub/index.html','_blank','noopener');
                 if (action === 'ai-extract') extractWithAI({ manual: true });
                 if (action === 'unhide-all') globalThis.VVVTheaterP41Plus?.unhideAll?.();
                 if (action === 'export') exportData();
@@ -3532,7 +3532,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if (!nav) return;
         nav.innerHTML = TAB_DEFS.map(([key, title]) => {
             const displayTitle = key === 'phone' ? communicationLabel() : title;
-            return `<button data-tab="${key}" class="${stateRuntime.currentTab === key ? 'active' : ''}">${esc(displayTitle)}</button>`;
+            return `<button data-tab="${key}" class="${stateRuntime.currentTab === key ?'active' :''}">${esc(displayTitle)}</button>`;
         }).join('');
         nav.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => {
             stateRuntime.currentTab = button.dataset.tab;
@@ -3559,8 +3559,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function pagerMarkup(info) {
-        if (!info || info.totalPages <= 1) return info?.total ? `<div class="vvvtm-pager single"><span>Tổng ${info.total} mục</span></div>` : '';
-        return `<div class="vvvtm-pager"><button data-page-key="${esc(info.key)}" data-page-to="${Math.max(0, info.page - 1)}" ${info.page <= 0 ? 'disabled' : ''}>‹ Trang trước</button><span>${info.page + 1} / ${info.totalPages} · ${info.start + 1}-${info.end} / ${info.total}</span><button data-page-key="${esc(info.key)}" data-page-to="${Math.min(info.totalPages - 1, info.page + 1)}" ${info.page >= info.totalPages - 1 ? 'disabled' : ''}>Trang sau ›</button></div>`;
+        if (!info || info.totalPages <= 1) return info?.total ?`<div class="vvvtm-pager single"><span>Tổng ${info.total} mục</span></div>` :'';
+        return `<div class="vvvtm-pager"><button data-page-key="${esc(info.key)}" data-page-to="${Math.max(0, info.page - 1)}" ${info.page <= 0 ?'disabled' :''}>‹ Trang trước</button><span>${info.page + 1} / ${info.totalPages} · ${info.start + 1}-${info.end} / ${info.total}</span><button data-page-key="${esc(info.key)}" data-page-to="${Math.min(info.totalPages - 1, info.page + 1)}" ${info.page >= info.totalPages - 1 ?'disabled' :''}>Trang sau ›</button></div>`;
     }
 
     function bindPaging(content) {
@@ -3601,9 +3601,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const hasFloor = floor !== undefined && floor !== null && String(floor) !== '';
             const recorded=promiseRecordedStamp(row);
             const due=compactText(row?._due || row?.['Thời điểm hẹn'],120);
-            const meta = [`Ghi nhận lúc ${recorded}`, due ? `Thực hiện ${due}` : '', row?.['Trạng thái'] || 'Chờ thực hiện', hasFloor ? `Tầng ${floor}` : ''].filter(Boolean).join(' · ');
+            const meta = [`Ghi nhận lúc ${recorded}`, due ?`Thực hiện ${due}` :'', row?.['Trạng thái'] || 'Chờ thực hiện', hasFloor ?`Tầng ${floor}` :''].filter(Boolean).join(' · ');
             const promiseId = promiseEntityId(row, { create: true });
-            return `<div class="vvvtm-list-item vvvtm-promise-item"><button type="button" class="vvvtm-promise-jump" ${hasFloor ? `data-jump="${esc(floor)}"` : ''}><span><b class="vvvtm-story-stamp">${esc(recorded)}</b>${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}</span><small>${esc(meta)}</small></button><button type="button" class="vvvtm-promise-complete" data-promise-complete-index="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="Hoàn thành lời hẹn: ${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}" title="Đánh dấu đã hoàn thành ngay">Hoàn thành</button></div>`;
+            return `<div class="vvvtm-list-item vvvtm-promise-item"><button type="button" class="vvvtm-promise-jump" ${hasFloor ?`data-jump="${esc(floor)}"` :''}><span><b class="vvvtm-story-stamp">${esc(recorded)}</b>${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}</span><small>${esc(meta)}</small></button><button type="button" class="vvvtm-promise-complete" data-promise-complete-index="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="Hoàn thành lời hẹn: ${esc(row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên')}" title="Đánh dấu đã hoàn thành ngay">Hoàn thành</button></div>`;
         }).join('')}</div>`;
     }
 
@@ -3650,14 +3650,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             content.querySelectorAll('[data-scene]').forEach(input => { stateRuntime.state.scene[input.dataset.scene] = input.value.trim(); });
             if(calibration&&stateRuntime.state.scene.time!==calibration.value)releaseTimeCalibrationIfSceneAdvanced(stateRuntime.state.scene.time);
             selfHealCommunicationReality();
-            saveState({ refresh: true }); toast('Đã lưu bối cảnh', 'success');
+            saveState({ refresh: true }); toast('Đã lưu bối cảnh','success');
         });
         content.querySelector('[data-overview-action="calibrate-time"]')?.addEventListener('click',showTimeCalibrationDialog);
         content.querySelectorAll('[data-recent-event-floor]').forEach(button=>button.addEventListener('click',()=>showRecentEventDialog(button.dataset.recentEventFloor)));
-        bindPromiseCompletionButtons(content, '[data-promise-complete-index]', 'promiseCompleteIndex');
+        bindPromiseCompletionButtons(content,'[data-promise-complete-index]','promiseCompleteIndex');
         content.querySelector('[data-overview-action="save-director"]')?.addEventListener('click', () => {
-            stateRuntime.state.directorInstruction = content.querySelector('#vvvtm-director')?.value.trim() ?? '';
-            saveState(); toast('Đã chèn chỉ thị đạo diễn vào lượt kế tiếp', 'success');
+            stateRuntime.state.directorInstruction = content.querySelector('#vvvtm-director')?.value.trim() ??'';
+            saveState(); toast('Đã chèn chỉ thị đạo diễn vào lượt kế tiếp','success');
         });
         content.querySelector('[data-overview-action="clear-director"]')?.addEventListener('click', () => {
             stateRuntime.state.directorInstruction = ''; saveState({ refresh: true });
@@ -3676,14 +3676,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const key = stateRuntime.currentTable;
         const def = TABLE_DEFS[key];
         const rows = stateRuntime.state.tables[key];
-        const page = pageSlice(rows, `table:${key}`);
+        const page = pageSlice(rows,`table:${key}`);
         return `
             <section class="vvvtm-card table-card">
-                <div class="vvvtm-table-tabs">${TABLE_ORDER.map(tableKey => `<button data-table-key="${tableKey}" class="${key === tableKey ? 'active' : ''}">${TABLE_DEFS[tableKey].title}<small>${stateRuntime.state.tables[tableKey].length}</small></button>`).join('')}</div>
+                <div class="vvvtm-table-tabs">${TABLE_ORDER.map(tableKey => `<button data-table-key="${tableKey}" class="${key === tableKey ?'active' :''}">${TABLE_DEFS[tableKey].title}<small>${stateRuntime.state.tables[tableKey].length}</small></button>`).join('')}</div>
                 <div class="vvvtm-section-title table-tools"><div><h3>${def.title}</h3><p class="vvvtm-note">Chế độ hồ sơ siêu dài dựng theo từng trang, tránh để vài nghìn bản ghi cùng lúc làm chậm điện thoại/trình duyệt.</p></div><div><button data-table-action="add">＋ Thêm</button><button data-table-action="delete" class="danger-soft">Xóa mục đã chọn</button><button data-table-action="clear" class="danger-soft">Dọn sạch bảng</button></div></div>
                 ${pagerMarkup(page)}
                 <div class="vvvtm-table-wrap"><table><thead><tr><th class="check"><input type="checkbox" id="vvvtm-check-all"></th>${def.columns.map(column => `<th>${esc(column)}</th>`).join('')}<th>Thao tác</th></tr></thead><tbody>
-                    ${page.items.length ? page.items.map((row, offset) => { const index = page.start + offset; const promiseDone = key === 'promises' && promiseClosedStatus(row?.['Trạng thái']); const promiseId = key === 'promises' ? promiseEntityId(row, { create: true }) : ''; const promiseAction = key === 'promises' ? `<button type="button" class="vvvtm-promise-complete" data-promise-complete="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="${promiseDone ? 'Đã hoàn thành' : `Hoàn thành lời hẹn: ${row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên'}`}" title="Đánh dấu đã hoàn thành ngay" ${promiseDone ? 'disabled' : ''}>${promiseDone ? 'Đã hoàn thành' : 'Hoàn thành'}</button>` : ''; return `<tr data-row="${index}"><td class="check"><input type="checkbox" data-check-row="${index}"></td>${def.columns.map(column => `<td><textarea data-cell="${esc(column)}" data-row-index="${index}">${esc(row[column])}</textarea></td>`).join('')}<td><button data-row-save="${index}">Lưu</button>${promiseAction}${row['Tầng'] !== undefined ? `<button data-jump="${esc(row['Tầng'])}">Nhảy tới</button>` : ''}</td></tr>`; }).join('') : `<tr><td colspan="${def.columns.length + 2}" class="vvvtm-empty">Chưa có dữ liệu, hãy bấm Thêm hoặc “AI sắp xếp”</td></tr>`}
+                    ${page.items.length ? page.items.map((row, offset) => { const index = page.start + offset; const promiseDone = key === 'promises' && promiseClosedStatus(row?.['Trạng thái']); const promiseId = key === 'promises' ? promiseEntityId(row, { create: true }) :''; const promiseAction = key === 'promises' ?`<button type="button" class="vvvtm-promise-complete" data-promise-complete="${index}" data-promise-complete-id="${esc(promiseId)}" data-promise-id="${esc(promiseId)}" aria-label="${promiseDone ?'Đã hoàn thành' :`Hoàn thành lời hẹn: ${row?.['Nội dung lời hẹn'] || 'Lời hẹn chưa đặt tên'}`}" title="Đánh dấu đã hoàn thành ngay" ${promiseDone ?'disabled' :''}>${promiseDone ?'Đã hoàn thành' :'Hoàn thành'}</button>` :''; return `<tr data-row="${index}"><td class="check"><input type="checkbox" data-check-row="${index}"></td>${def.columns.map(column => `<td><textarea data-cell="${esc(column)}" data-row-index="${index}">${esc(row[column])}</textarea></td>`).join('')}<td><button data-row-save="${index}">Lưu</button>${promiseAction}${row['Tầng'] !== undefined ?`<button data-jump="${esc(row['Tầng'])}">Nhảy tới</button>` :''}</td></tr>`; }).join('') :`<tr><td colspan="${def.columns.length + 2}" class="vvvtm-empty">Chưa có dữ liệu, hãy bấm Thêm hoặc “AI sắp xếp”</td></tr>`}
                 </tbody></table></div>
                 ${pagerMarkup(page)}
             </section>`;
@@ -3695,12 +3695,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         }));
         content.querySelector('[data-table-action="add"]')?.addEventListener('click', () => {
             const def = TABLE_DEFS[stateRuntime.currentTable];
-            stateRuntime.state.tables[stateRuntime.currentTable].push({...Object.fromEntries(def.columns.map(column => [column, ''])),_manualRecord:true});
+            stateRuntime.state.tables[stateRuntime.currentTable].push({...Object.fromEntries(def.columns.map(column => [column,''])),_manualRecord:true});
             saveState({ refresh: true });
         });
         content.querySelector('[data-table-action="delete"]')?.addEventListener('click', () => {
             const checked = [...content.querySelectorAll('[data-check-row]:checked')].map(input => Number(input.dataset.checkRow)).sort((a, b) => b - a);
-            if (!checked.length) return toast('Hãy tích chọn các bản ghi cần xóa trước', 'warn');
+            if (!checked.length) return toast('Hãy tích chọn các bản ghi cần xóa trước','warn');
             const rows=stateRuntime.state.tables[stateRuntime.currentTable]||[];
             recordManualDeletion(`tables.${stateRuntime.currentTable}`, checked.map(index=>rows[index]).filter(Boolean));
             checked.forEach(index => rows.splice(index, 1));
@@ -3720,9 +3720,9 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const row = stateRuntime.state.tables[stateRuntime.currentTable][index];
             content.querySelectorAll(`[data-row-index="${index}"]`).forEach(input => { row[input.dataset.cell] = input.value.trim(); });
             row._manualEdited=true;
-            saveState({ refresh: true }); toast('Đã lưu bản ghi', 'success');
+            saveState({ refresh: true }); toast('Đã lưu bản ghi','success');
         }));
-        bindPromiseCompletionButtons(content, '[data-promise-complete]', 'promiseComplete');
+        bindPromiseCompletionButtons(content,'[data-promise-complete]','promiseComplete');
     }
 
     function bindPromiseCompletionButtons(content, selector, indexAttribute) {
@@ -3739,7 +3739,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if (!done && button.isConnected) button.disabled = false;
             } catch (error) {
                 button.disabled = false;
-                toast(`Hoàn thành lời hẹn thất bại: ${error?.message || error}`, 'error');
+                toast(`Hoàn thành lời hẹn thất bại: ${error?.message || error}`,'error');
             }
         }));
     }
@@ -3747,8 +3747,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function renderTimeline() {
         const rows = stateRuntime.state.tables.mainline.slice().reverse();
         if (!rows.length) return '<div class="vvvtm-empty big">Chưa có dòng thời gian, hãy bấm “AI sắp xếp” ở góc trên bên phải.</div>';
-        const page = pageSlice(rows, 'timeline');
-        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕰 Hồ sơ dòng thời gian</h3><p class="vvvtm-note">Dòng thời gian là nguồn truy xuất dài hạn hạng nhất; R9 chỉ dựng trang hiện tại, nên hồ sơ 20.000 tầng cũng không vẽ hết mọi sự kiện cùng lúc.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-timeline">${page.items.map(row => `<article><div class="dot"></div><div class="line"></div><div class="vvvtm-card"><small><b class="vvvtm-story-stamp">${esc(timelineRowStamp(row))}</b>${row['Giờ kết thúc'] ? ` — ${esc(row['Giờ kết thúc'])}` : ''}</small><h3>${esc(row['Tóm tắt sự kiện'] || 'Sự kiện chưa đặt tên')}</h3><p>${esc(row['Trạng thái'])}</p>${row['Tầng'] !== undefined && row['Tầng'] !== '' ? `<button data-jump="${esc(row['Tầng'])}">Tới tầng ${esc(row['Tầng'])}</button>` : ''}</div></article>`).join('')}</section>${pagerMarkup(page)}`;
+        const page = pageSlice(rows,'timeline');
+        return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕰 Hồ sơ dòng thời gian</h3><p class="vvvtm-note">Dòng thời gian là nguồn truy xuất dài hạn hạng nhất; R9 chỉ dựng trang hiện tại, nên hồ sơ 20.000 tầng cũng không vẽ hết mọi sự kiện cùng lúc.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-timeline">${page.items.map(row => `<article><div class="dot"></div><div class="line"></div><div class="vvvtm-card"><small><b class="vvvtm-story-stamp">${esc(timelineRowStamp(row))}</b>${row['Giờ kết thúc'] ?` — ${esc(row['Giờ kết thúc'])}` :''}</small><h3>${esc(row['Tóm tắt sự kiện'] || 'Sự kiện chưa đặt tên')}</h3><p>${esc(row['Trạng thái'])}</p>${row['Tầng'] !== undefined && row['Tầng'] !== '' ?`<button data-jump="${esc(row['Tầng'])}">Tới tầng ${esc(row['Tầng'])}</button>` :''}</div></article>`).join('')}</section>${pagerMarkup(page)}`;
     }
 
     function renderCharacters() {
@@ -3756,7 +3756,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         const states = stateRuntime.state.tables.states;
         const names = [...new Set([...people.map(row => row['Họ tên']), ...states.map(row => row['Tên nhân vật'])].filter(Boolean))];
         if (!names.length) return '<div class="vvvtm-empty big">Chưa có tư liệu nhân vật nào.</div>';
-        const page = pageSlice(names, 'characters');
+        const page = pageSlice(names,'characters');
         return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>👥 Hồ sơ nhân vật</h3><p class="vvvtm-note">Mỗi nhân vật chỉ giữ một hồ sơ hiện hành; khi có nhiều NPC thì hiển thị theo trang.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-grid characters">${page.items.map(name => {
             const profile = people.find(row => row['Họ tên'] === name) ?? {};
             const recent = states.filter(row => row['Tên nhân vật'] === name).at(-1) ?? {};
@@ -3767,7 +3767,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     function renderRelations() {
         const rows = stateRuntime.state.tables.relations;
         if (!rows.length) return '<div class="vvvtm-empty big">Chưa có quan hệ nhân vật nào.</div>';
-        const page = pageSlice(rows, 'relations');
+        const page = pageSlice(rows,'relations');
         return `<section class="vvvtm-card vvvtm-longlist-head"><div><h3>🕸 Quan hệ nhân vật</h3><p class="vvvtm-note">Mỗi cặp nhân vật chỉ hiển thị quan hệ và trạng thái tâm lý tính tới hiện tại; khi có thay đổi thì ghi đè giá trị hiện hành và cất trạng thái cũ vào phần lịch sử mở rộng được.</p></div>${pagerMarkup(page)}</section><section class="vvvtm-relation-map">${page.items.map(row => {
             const history=(row._history||[]).slice().reverse();
             const historical=history.length?`<details class="vvvtm-relation-history"><summary>Lịch sử thay đổi quan hệ và tâm lý (${history.length})</summary>${history.map(item=>`<div><b>${esc(item['Thời điểm cập nhật']||item.time||'Chưa ghi giờ')}</b><span>${esc(item['Mô tả quan hệ']||'Chưa ghi quan hệ')}</span><small>${esc(item['Thái độ tình cảm']||'Chưa ghi tâm lý')}${item._psychologyChange?`; thay đổi lúc đó: ${esc(item._psychologyChange)}`:''}${Number.isFinite(Number(item.floor))&&Number(item.floor)>=0?` · tầng ${esc(item.floor)}`:''}</small></div>`).join('')}</details>`:'';
@@ -3777,12 +3777,12 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function renderSecrets() {
         const rows = stateRuntime.state.secrets;
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔒 Ai biết chuyện gì</h3><button data-secret-action="add">＋ Thêm bí mật</button></div><div class="vvvtm-secret-list">${rows.length ? rows.map((item, index) => `<article><input data-secret-field="subject" data-secret-index="${index}" value="${esc(item.subject)}" placeholder="Tên bí mật"><textarea data-secret-field="content" data-secret-index="${index}" placeholder="Nội dung bí mật">${esc(item.content)}</textarea><div class="vvvtm-form-grid"><label><span>Biết rõ</span><input data-secret-field="knowers" data-secret-index="${index}" value="${esc(item.knowers)}"></label><label><span>Chỉ nghi ngờ</span><input data-secret-field="suspects" data-secret-index="${index}" value="${esc(item.suspects)}"></label><label><span>Chắc chắn không biết</span><input data-secret-field="unknown" data-secret-index="${index}" value="${esc(item.unknown)}"></label></div><div class="vvvtm-row-actions"><button data-secret-save="${index}">Lưu</button><button class="danger-soft" data-secret-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có bí mật nào được ghi</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>🔒 Ai biết chuyện gì</h3><button data-secret-action="add">＋ Thêm bí mật</button></div><div class="vvvtm-secret-list">${rows.length ? rows.map((item, index) => `<article><input data-secret-field="subject" data-secret-index="${index}" value="${esc(item.subject)}" placeholder="Tên bí mật"><textarea data-secret-field="content" data-secret-index="${index}" placeholder="Nội dung bí mật">${esc(item.content)}</textarea><div class="vvvtm-form-grid"><label><span>Biết rõ</span><input data-secret-field="knowers" data-secret-index="${index}" value="${esc(item.knowers)}"></label><label><span>Chỉ nghi ngờ</span><input data-secret-field="suspects" data-secret-index="${index}" value="${esc(item.suspects)}"></label><label><span>Chắc chắn không biết</span><input data-secret-field="unknown" data-secret-index="${index}" value="${esc(item.unknown)}"></label></div><div class="vvvtm-row-actions"><button data-secret-save="${index}">Lưu</button><button class="danger-soft" data-secret-delete="${index}">Xóa</button></div></article>`).join('') :'<div class="vvvtm-empty">Chưa có bí mật nào được ghi</div>'}</div></section>`;
     }
 
     function bindSecrets(content) {
         content.querySelector('[data-secret-action="add"]')?.addEventListener('click', () => {
-            stateRuntime.state.secrets.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), subject: '', content: '', knowers: '', suspects: '', unknown: '', updatedAt: nowText(), _manualRecord:true });
+            stateRuntime.state.secrets.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), subject:'', content:'', knowers:'', suspects:'', unknown:'', updatedAt: nowText(), _manualRecord:true });
             saveState({ refresh: true });
         });
         content.querySelectorAll('[data-secret-save]').forEach(button => button.addEventListener('click', () => {
@@ -3800,13 +3800,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function renderChapters() {
         const rows = stateRuntime.state.chapters;
-        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>📚 Mốc chương cho truyện dài</h3><p class="vvvtm-note">Tính năng này vẫn được giữ: nó không lo từng lượt truyện, chỉ đánh dấu những lần chuyển địa điểm/giai đoạn cuộc đời/mục tiêu chính hoặc bước ngoặt quan hệ lớn, và tham gia vào truy xuất dài hạn.</p></div><button data-chapter-add>＋ Thêm chương</button></div><div class="vvvtm-chapters">${rows.length ? rows.map((item, index) => `<article><div><small>${esc(item.time || '')} · tầng ${esc(item.startFloor)}-${esc(item.endFloor)}</small><input data-chapter-field="title" data-chapter-index="${index}" value="${esc(item.title)}"><textarea data-chapter-field="summary" data-chapter-index="${index}">${esc(item.summary)}</textarea></div><div><button data-jump="${esc(item.startFloor)}">Nhảy tới</button><button data-chapter-save="${index}">Lưu</button><button class="danger-soft" data-chapter-delete="${index}">Xóa</button></div></article>`).join('') : '<div class="vvvtm-empty">Chưa có chương nào</div>'}</div></section>`;
+        return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>📚 Mốc chương cho truyện dài</h3><p class="vvvtm-note">Tính năng này vẫn được giữ: nó không lo từng lượt truyện, chỉ đánh dấu những lần chuyển địa điểm/giai đoạn cuộc đời/mục tiêu chính hoặc bước ngoặt quan hệ lớn, và tham gia vào truy xuất dài hạn.</p></div><button data-chapter-add>＋ Thêm chương</button></div><div class="vvvtm-chapters">${rows.length ? rows.map((item, index) => `<article><div><small>${esc(item.time || '')} · tầng ${esc(item.startFloor)}-${esc(item.endFloor)}</small><input data-chapter-field="title" data-chapter-index="${index}" value="${esc(item.title)}"><textarea data-chapter-field="summary" data-chapter-index="${index}">${esc(item.summary)}</textarea></div><div><button data-jump="${esc(item.startFloor)}">Nhảy tới</button><button data-chapter-save="${index}">Lưu</button><button class="danger-soft" data-chapter-delete="${index}">Xóa</button></div></article>`).join('') :'<div class="vvvtm-empty">Chưa có chương nào</div>'}</div></section>`;
     }
 
     function bindChapters(content) {
         content.querySelector('[data-chapter-add]')?.addEventListener('click', () => {
             const floor = Math.max(0, (context()?.chat?.length ?? 1) - 1);
-            stateRuntime.state.chapters.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), title: `Chương ${stateRuntime.state.chapters.length + 1}`, startFloor: floor, endFloor: floor, summary: '', time: stateRuntime.state.scene.time, _manualRecord:true });
+            stateRuntime.state.chapters.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), title:`Chương ${stateRuntime.state.chapters.length + 1}`, startFloor: floor, endFloor: floor, summary:'', time: stateRuntime.state.scene.time, _manualRecord:true });
             saveState({ refresh: true });
         });
         content.querySelectorAll('[data-chapter-save]').forEach(button => button.addEventListener('click', () => {
@@ -3858,10 +3858,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                         item._archiveItemId=uid('archive-item');
                     }
                     for (const [key,child] of Object.entries(item)) {
-                        if (child && typeof child==='object') ensurePermanentArrayItemIds(child, `${pathKey}[].${key}`);
+                        if (child && typeof child==='object') ensurePermanentArrayItemIds(child,`${pathKey}[].${key}`);
                     }
                 } else if (Array.isArray(item)) {
-                    ensurePermanentArrayItemIds(item, `${pathKey}[]`);
+                    ensurePermanentArrayItemIds(item,`${pathKey}[]`);
                 }
             }
             return value;
@@ -3977,9 +3977,14 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const fact = facts.at(-1);
             if (fact) { month = String(fact.month); day = String(fact.day); }
         }
+        if (!year) {
+            const yearHit = text.match(/\bnăm\s*((?:1[0-9]|2[01])\d{2})\b/i)
+                || text.match(/\b(?:3[01]|[12]\d|0?[1-9])\s*[-\/.]\s*(?:1[0-2]|0?[1-9])\s*[-\/.]\s*((?:1[0-9]|2[01])\d{2})\b/);
+            if (yearHit) year = yearHit[1];
+        }
         const clock = [...text.matchAll(/(?:^|[^\d])([01]?\d|2[0-3])\s*(?::|gi[ờo]|h(?![A-Za-zÀ-ỹ]))\s*([0-5]?\d)?\s*(?:phút)?/gi)].at(-1);
         if (clock) time = `${String(Number(clock[1])).padStart(2,'0')}:${String(Number(clock[2] || 0)).padStart(2,'0')}`;
-        const date = month && day ? (year?`ngày ${day}/${month}/${year}`:`ngày ${day}/${month}`) : '';
+        const date = month && day ? (year?`ngày ${day}/${month}/${year}`:`ngày ${day}/${month}`) :'';
         const result={year,month,day,time,date,label:''};
         result.label=storyDateTimeLabel(result);
         return result;
@@ -4038,7 +4043,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function compactText(value, max = 1200) {
-        return String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
+        return String(value ??'').replace(/\s+/g,' ').trim().slice(0, max);
     }
 
     function hasUserBefore(floor) {
@@ -4141,7 +4146,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     }
 
     function messageSignature(index, message) {
-        const raw = `${getChatKey()}|${index}|${message?.swipe_id ?? message?.swipeId ?? ''}|${messageText(message)}`;
+        const raw = `${getChatKey()}|${index}|${message?.swipe_id ?? message?.swipeId ??''}|${messageText(message)}`;
         let hash = 2166136261;
         for (const char of raw) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619); }
         return `${index}-${(hash >>> 0).toString(16)}-${raw.length}`;
@@ -4150,7 +4155,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function messageStableKey(message) {
         if (!message) return '';
-        const raw = `${message?.is_user ? 'u' : message?.is_system ? 's' : 'a'}|${message?.send_date ?? message?.sendDate ?? ''}|${message?.swipe_id ?? message?.swipeId ?? ''}|${messageText(message)}`;
+        const raw = `${message?.is_user ?'u' : message?.is_system ?'s' :'a'}|${message?.send_date ?? message?.sendDate ??''}|${message?.swipe_id ?? message?.swipeId ??''}|${messageText(message)}`;
         let hash = 2166136261;
         for (const char of raw) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619); }
         return `${(hash >>> 0).toString(16)}-${raw.length}`;
@@ -4352,10 +4357,10 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
     function duplicateComparableText(message) {
         return String(messageText(message) || '')
-            .replace(/<!--\s*VVV_EXTRA_START[\s\S]*?VVV_EXTRA_END\s*-->/gi, '')
-            .replace(/<VVV_EXTRA>[\s\S]*?<\/VVV_EXTRA>/gi, '')
-            .replace(/[\u200B-\u200D\uFEFF]/g, '')
-            .replace(/\s+/g, '')
+            .replace(/<!--\s*VVV_EXTRA_START[\s\S]*?VVV_EXTRA_END\s*-->/gi,'')
+            .replace(/<VVV_EXTRA>[\s\S]*?<\/VVV_EXTRA>/gi,'')
+            .replace(/[\u200B-\u200D\uFEFF]/g,'')
+            .replace(/\s+/g,'')
             .trim();
     }
 
@@ -4414,13 +4419,13 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         return strongWorldInfoModulePromise;
     }
 
-    const worldBookNameKey = value => String(value ?? '').trim().toLowerCase().replace(/\.(?:png|webp|jpg|jpeg)$/i,'');
+    const worldBookNameKey = value => String(value ??'').trim().toLowerCase().replace(/\.(?:png|webp|jpg|jpeg)$/i,'');
     const worldBookKeywords = entry => [...new Set([...(Array.isArray(entry?.key)?entry.key:[]), ...(Array.isArray(entry?.keysecondary)?entry.keysecondary:[])].map(value=>compactText(value,180)).filter(Boolean))];
     function strongWorldBookEntryAllowed(entry, activeCharacter) {
         if (!entry || typeof entry !== 'object') return false;
         if (entry.disable === true || entry.disabled === true || entry.enabled === false) return false;
         if ((entry.decorators || []).some?.(item => String(item).trim().toLowerCase() === '@@dont_activate')) return false;
-        if (!String(entry.content ?? '').trim()) return false;
+        if (!String(entry.content ??'').trim()) return false;
         const filter=entry.characterFilter;
         const names=Array.isArray(filter?.names)?filter.names.map(worldBookNameKey).filter(Boolean):[];
         if (names.length) {
@@ -4475,7 +4480,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const constant=entry.constant===true||entry.alwaysActive===true;
                 const order=Number(entry.order??entry.insertion_order??0)||0;
                 const score=book.boost+(constant?180:0)+(primary.length?120+Math.min(60,primary.length*12):0)+Math.max(-20,Math.min(40,order/10));
-                const title=compactText(entry.comment||entry.name||keys.join(', ')||`Mục ${entry.uid??''}`,180)||'Mục chưa đặt tên';
+                const title=compactText(entry.comment||entry.name||keys.join(',')||`Mục ${entry.uid??''}`,180)||'Mục chưa đặt tên';
                 const content=String(entry.content||'').replace(/\u0000/g,'').replace(/\r\n?/g,'\n').trim().slice(0,5000);
                 if(content)candidates.push({book,title,content,score,constant,matched:primary.slice(0,8),uid:entry.uid});
             }
@@ -4486,7 +4491,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         let used=lines.join('\n').length,accepted=0;
         for(const item of candidates){
             if(accepted>=80)break;
-            const heading=`\n【${item.book.source}｜${item.book.name}｜${item.title}${item.matched.length?`｜trúng: ${item.matched.join(', ')}`:''}】\n`;
+            const heading=`\n【${item.book.source}｜${item.book.name}｜${item.title}${item.matched.length?`｜trúng: ${item.matched.join(',')}`:''}】\n`;
             const room=hardLimit-used-heading.length;
             if(room<160)break;
             const body=item.content.slice(0,Math.min(5000,room));
@@ -4504,7 +4509,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
     const SOURCE_ROSTER_RELATION_TOKENS = [
         'ông ngoại','bà ngoại','ông nội','bà nội','ông','bà','bố','mẹ','ba','má','bố mẹ','cha dượng','mẹ kế','bố vợ','mẹ vợ','bố chồng','mẹ chồng',
         'anh trai','chị gái','em trai','em gái','anh cả','chị cả','anh em','chị em','dì','bác gái','dượng','cậu','mợ','cô','chú rể','chú','thím','bác','bác dâu','anh họ','chị họ','em họ',
-        'chồng','vợ','bạn đời','người yêu','bạn đời','bạn trai','bạn gái','người yêu cũ','vị hôn phu','vị hôn thê','người thương',
+        'chồng','vợ','vợ chồng','người yêu','bạn đời','bạn trai','bạn gái','người yêu cũ','vị hôn phu','vị hôn thê','người thương',
         'bạn','bạn thân','bạn gái thân','bạn từ nhỏ','bạn cũ','bạn cùng phòng','bạn ở ghép','bạn học','lớp trưởng','cố vấn học tập','giáo viên','người hướng dẫn','giáo sư','trợ giảng','đồng nghiệp','cấp trên','cấp dưới','sếp','lãnh đạo','trợ lý','thư ký','khách hàng','bên A','bên B','đồng đội','hội trưởng','chủ nhiệm',
         'chủ nhà','hàng xóm','nhà đối diện','hàng xóm đối diện','đối diện','hàng xóm tầng năm','tầng năm','hàng xóm tầng trên','hàng xóm tầng dưới','quản lý cửa hàng','quản lý','tổng biên tập','biên tập','nhà sản xuất','nhà sản xuất quảng cáo','sản xuất','nhiếp ảnh gia','họa sĩ minh họa','nhà thiết kế','nhạc sĩ độc lập','nhạc sĩ','bác sĩ','luật sư','người quản lý','đạo diễn','biên kịch','họa sĩ','nhân viên bán hàng','bà chủ'
     ];
@@ -4545,7 +4550,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
         if(!/^[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}(?:\s+[A-ZÀ-Ỹ][A-Za-zÀ-ỹ.'-]{0,30}){0,4}$/.test(name))return false;
         if(SOURCE_ROSTER_NON_PERSON_TERM.test(name)||SOURCE_ROSTER_SEMANTIC_NON_PERSON.test(name)||SOURCE_ROSTER_GEO_OR_ORG.test(name))return false;
         if(explicit)return true;
-        // Vietnamese puts the kinship term in front: "cô Mai", "chú Nam", "thầy Hải".
+        // Vietnamese puts the kinship term in front:"cô Mai","chú Nam","thầy Hải".
         if(/^(?:cô|dì|chú|bác|cậu|mợ|thím|anh|chị|em|thầy|sư phụ)\s+[A-ZÀ-Ỹ]/.test(name)&&name.split(/\s+/).length<=3)return true;
         return SOURCE_ROSTER_COMMON_SURNAME.test(name)||SOURCE_ROSTER_COMPOUND_SURNAME.test(name);
     }
@@ -5314,12 +5319,12 @@ ${scene.mood||''}`,12000);
             if (seen.has(node)) return;
             seen.add(node);
             if (Array.isArray(node)) {
-                node.slice(0, 80).forEach((item, index) => walk(item, `${path}[${index}]`, depth + 1));
+                node.slice(0, 80).forEach((item, index) => walk(item,`${path}[${index}]`, depth + 1));
                 return;
             }
             Object.entries(node).slice(0, 160).forEach(([key, item]) => {
                 if (secretKey.test(key)) return;
-                const next = path ? `${path}.${key}` : key;
+                const next = path ?`${path}.${key}` : key;
                 if (typeof item === 'string' && !usefulKey.test(key) && !usefulKey.test(path)) return;
                 walk(item, next, depth + 1);
             });
@@ -5335,10 +5340,10 @@ ${scene.mood||''}`,12000);
         const activeCharacter = activeCharacterObject() || {};
         const activeCard = activeCharacter.data || activeCharacter;
         const writingContext = {
-            source: 'vvv-relay-scoped',
-            generationType: 'relay-scoped',
+            source:'vvv-relay-scoped',
+            generationType:'relay-scoped',
             characterName: compactText(activeCard?.name || activeCharacter?.name || ctx?.name2 || '', 160),
-            presetAndWorldInfo: 'Chưa đọc; chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong đối tượng này.',
+            presetAndWorldInfo:'Chưa đọc; chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong đối tượng này.',
         };
         const entry = latestAssistantAfterLatestUser();
         const sidecar = clone(entry?.message?.extra?.vvvTheaterCompanion || {});
@@ -5388,7 +5393,7 @@ ${scene.mood||''}`,12000);
             }).map(hit => ({
                 ...hit,
                 historicalReference: true,
-                usage: 'Sự thật lịch sử chỉ để đọc; không được dùng làm khuôn mẫu viết tiếp cho hành động/địa điểm/sự kiện hiện tại',
+                usage:'Sự thật lịch sử chỉ để đọc; không được dùng làm khuôn mẫu viết tiếp cho hành động/địa điểm/sự kiện hiện tại',
             }));
         }
 
@@ -5402,7 +5407,7 @@ ${scene.mood||''}`,12000);
                 type: row['Loại'] || row['Loại bảng'] || '',
                 range: row['Tầng bao phủ'] || '',
                 summary: compactText(row['Nội dung tổng kết'] || '', 3200),
-                usage: 'Tóm tắt lịch sử chỉ để đọc; nếu mâu thuẫn với 6 tầng mới nhất thì bỏ qua, cấm diễn lại chuỗi hành động trong bản tóm tắt',
+                usage:'Tóm tắt lịch sử chỉ để đọc; nếu mâu thuẫn với 6 tầng mới nhất thì bỏ qua, cấm diễn lại chuỗi hành động trong bản tóm tắt',
             })).filter(item => item.summary);
         } catch {}
         return {
@@ -5429,7 +5434,7 @@ ${scene.mood||''}`,12000);
                     anchorFloor: relayAnchorFloor,
                     continuityFloors: relayContinuityFloors,
                     explicitHistory: relayExplicitHistory,
-                    note: 'P24: các kết quả truy xuất dạng tự sự cũ mặc định bị cách ly; chỉ cửa sổ hiện tại hoặc sự thật có cấu trúc mới được vào phần tiếp sức.',
+                    note:'P24: các kết quả truy xuất dạng tự sự cũ mặc định bị cách ly; chỉ cửa sổ hiện tại hoặc sự thật có cấu trúc mới được vào phần tiếp sức.',
                 },
                 recentSummaries,
                 npcWorld: {
@@ -5503,11 +5508,11 @@ ${scene.mood||''}`,12000);
         const classMatch = raw.match(/((?:ngành|khoa|lớp)\s+[A-Za-zÀ-ỹ0-9\s]{1,24}?)(?=[,.;!?\n]|$)/i);
         const cleanInstitution = (value) => {
             const cleaned = compactText(value,80)
-                .replace(/^(?:tôi là|bản thân là|đến từ|học tại|đang học tại|hiện (?:đang học|ở)|bây giờ (?:đang học|ở))/i, '')
-                .replace(/^(?:năm\s*)?(?:1[0-9]\d{2}|20\d{2}|21\d{2})/, '')
-                .replace(/^(?:tại|ở)\s*/i, '')
-                .replace(/^(?:một)\s*/i, '');
-            return /^(?:đại học|học viện|trường|trường học|trung học phổ thông|trung học|thư viện|trường tư thục)$/i.test(cleaned) ? '' : cleaned;
+                .replace(/^(?:tôi là|bản thân là|đến từ|học tại|đang học tại|hiện (?:đang học|ở)|bây giờ (?:đang học|ở))/i,'')
+                .replace(/^(?:năm\s*)?(?:1[0-9]\d{2}|20\d{2}|21\d{2})/,'')
+                .replace(/^(?:tại|ở)\s*/i,'')
+                .replace(/^(?:một)\s*/i,'');
+            return /^(?:đại học|học viện|trường|trường học|trung học phổ thông|trung học|thư viện|trường tư thục)$/i.test(cleaned) ?'' : cleaned;
         };
         return { raw, student, university, dorm, club, work, family, friends, guild, fantasy, modern, schoolName:cleanInstitution(schoolMatch?.[1]), className:cleanInstitution(classMatch?.[1]) };
     }
@@ -5515,7 +5520,7 @@ ${scene.mood||''}`,12000);
     function inferEraFromEvidence(raw) {
         const text = String(raw || '');
         const lastMatch = (rx, {ignoreNegated=false} = {}) => {
-            const flags = rx.flags.includes('g') ? rx.flags : `${rx.flags}g`;
+            const flags = rx.flags.includes('g') ? rx.flags :`${rx.flags}g`;
             const re = new RegExp(rx.source, flags);
             let found=null;
             for(const m of text.matchAll(re)) {
@@ -5632,7 +5637,7 @@ ${scene.mood||''}`,12000);
         const scene = stateRuntime.state?.scene || {};
         const sceneText = [scene.time, scene.location, scene.weather, scene.goal].filter(Boolean).join('｜');
         // Chỉ lấy 6 tầng gần nhất làm bằng chứng trọng số cao cho “lúc này”, không trộn cả thẻ nhân vật và Persona của user vào việc phán đoán thời đại hiện tại.
-        return [`【SCENE HIỆN TẠI】${sceneText || 'Chưa ghi nhận'}`, `【6 TẦNG GẦN NHẤT】\n${recentTranscript(6)}`].join('\n').slice(0, limit);
+        return [`【SCENE HIỆN TẠI】${sceneText || 'Chưa ghi nhận'}`,`【6 TẦNG GẦN NHẤT】\n${recentTranscript(6)}`].join('\n').slice(0, limit);
     }
 
     function latestTransitionEvidence(limit = 6500) {
@@ -5722,12 +5727,12 @@ ${scene.mood||''}`,12000);
         let eraInfo = inferEraFromEvidence(recentOnly);
         const baseEra = inferBaseEraFromCharacterCard();
         let usingStoredWorld = false;
-        const storedKind = prevWorld.technologyLevel === 'future-networked' ? 'future'
-            : prevWorld.technologyLevel === 'modern-digital' ? 'modern'
-            : prevWorld.technologyLevel === 'industrial-telegraph' ? 'industrial'
-            : prevWorld.technologyLevel === 'analog' ? 'analog'
-            : prevWorld.technologyLevel === 'preindustrial' ? 'ancient'
-            : prevWorld.technologyLevel === 'fantasy' ? 'fantasy' : 'unknown';
+        const storedKind = prevWorld.technologyLevel === 'future-networked' ?'future'
+            : prevWorld.technologyLevel === 'modern-digital' ?'modern'
+            : prevWorld.technologyLevel === 'industrial-telegraph' ?'industrial'
+            : prevWorld.technologyLevel === 'analog' ?'analog'
+            : prevWorld.technologyLevel === 'preindustrial' ?'ancient'
+            : prevWorld.technologyLevel === 'fantasy' ?'fantasy' :'unknown';
         const chatLength = context()?.chat?.length || 0;
         const activeNonModernTransition = ['fantasy','future','historical','parallel'].includes(worldTransition.kind)
             && worldTransition.floor >= Math.max(0, chatLength - 8);
@@ -5929,15 +5934,15 @@ ${scene.mood||''}`,12000);
         let changed = false;
         const originKey = s.worldTransit?.origin?.worldKey || 'origin-modern';
         const currentKey = profile.current.worldKey || 'current';
-        const currentChannel = profile.current.communicationType === 'smartphone' ? 'wechat' : profile.current.communicationType;
+        const currentChannel = profile.current.communicationType === 'smartphone' ?'wechat' : profile.current.communicationType;
 
         // Mỗi lượt đều làm mới “khả năng liên lạc” của mọi nhóm cũ trước. Xuyên không không xóa quan hệ, và khi quay về thế giới gốc thì chúng tự trực tuyến trở lại.
         for (const row of s.phone.groupProfiles) {
             const scope = compactText(row?.scope,40) || 'origin';
             const home = compactText(row?.homeWorldKey,120) || (scope==='origin'?originKey:'');
             let availability = row?.availability || 'active';
-            if (scope === 'origin') availability = profile.originReachable ? 'active' : 'offline-origin';
-            else availability = (home && home === currentKey && profile.current.available) ? 'active' : 'offline-local';
+            if (scope === 'origin') availability = profile.originReachable ?'active' :'offline-origin';
+            else availability = (home && home === currentKey && profile.current.available) ?'active' :'offline-local';
             if (row.scope !== scope) { row.scope=scope; changed=true; }
             if (!row.homeWorldKey && home) { row.homeWorldKey=home; changed=true; }
             if (row.availability !== availability) { row.availability=availability; changed=true; }
@@ -5967,9 +5972,9 @@ ${scene.mood||''}`,12000);
         };
 
         // Quan hệ xã hội ở thế giới gốc được giữ vĩnh viễn: khi xuyên không/đổi thời đại thì chỉ chuyển sang ngoại tuyến, không xóa và không bịa tin nhắn mới.
-        const originAvailability = profile.originReachable ? 'active' : 'offline-origin';
+        const originAvailability = profile.originReachable ?'active' :'offline-origin';
         const originCommRaw = compactText(s.worldTransit?.origin?.communicationType || (profile.origin.modern?'smartphone':'letter'),60) || 'letter';
-        const originChannel = originCommRaw === 'smartphone' ? 'wechat' : originCommRaw;
+        const originChannel = originCommRaw === 'smartphone' ?'wechat' : originCommRaw;
         const originSuffix = (kind) => {
             if (originChannel === 'wechat') return ({class:'Nhóm lớp',course:'Nhóm trao đổi môn học',dorm:'Nhóm ký túc xá',club:'Nhóm câu lạc bộ',work:'Nhóm công việc',family:'Nhóm gia đình',friends:'Nhóm bạn bè',guild:'Nhóm công hội/đội tuyển'})[kind] || 'Nhóm chat';
             if (originChannel === 'magic') return ({class:'Kênh truyền tin học viên',course:'Kênh truyền tin môn học',dorm:'Kênh truyền tin ký túc xá',club:'Kênh truyền tin tổ chức',work:'Kênh truyền tin công việc',family:'Truyền tin gia tộc',friends:'Truyền tin bạn bè',guild:'Kênh truyền tin công hội'})[kind] || 'Kênh truyền tin';
@@ -5977,11 +5982,11 @@ ${scene.mood||''}`,12000);
             return ({class:'Kênh lớp',course:'Kênh môn học',dorm:'Kênh ký túc xá',club:'Kênh tổ chức',work:'Kênh công việc',family:'Kênh gia tộc',friends:'Kênh bạn bè',guild:'Kênh công hội'})[kind] || 'Kênh liên lạc';
         };
         if (profile.origin.student && phoneAutoGroupTypeEligible('class')) {
-            const prefix = profile.origin.schoolName ? `${profile.origin.schoolName} · ` : '';
-            const customClass = profile.origin.className && !/^ngành\b/i.test(profile.origin.className) ? profile.origin.className : '';
-            const className = originChannel==='wechat' && customClass ? `${prefix}Nhóm ${customClass}` : `${prefix}${originSuffix('class')}`;
-            add(className, 'class', 'Thông báo môn học, bài tập, điểm tập trung, sinh hoạt của bạn học và các sắp xếp tạm thời', 'high', 'Thân phận học sinh ở thế giới gốc của user', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
-            if (profile.origin.university) add(`${prefix}${originSuffix('course')}`, 'course', 'Môn học, bài tập, thi cử, tài liệu và lịch học', 'high', 'Thân phận đại học/học viện ở thế giới gốc của user', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+            const prefix = profile.origin.schoolName ?`${profile.origin.schoolName} · ` :'';
+            const customClass = profile.origin.className && !/^ngành\b/i.test(profile.origin.className) ? profile.origin.className :'';
+            const className = originChannel==='wechat' && customClass ?`${prefix}Nhóm ${customClass}` :`${prefix}${originSuffix('class')}`;
+            add(className,'class','Thông báo môn học, bài tập, điểm tập trung, sinh hoạt của bạn học và các sắp xếp tạm thời','high','Thân phận học sinh ở thế giới gốc của user', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
+            if (profile.origin.university) add(`${prefix}${originSuffix('course')}`,'course','Môn học, bài tập, thi cử, tài liệu và lịch học','high','Thân phận đại học/học viện ở thế giới gốc của user', {scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         }
         if (profile.origin.dorm && phoneAutoGroupTypeEligible('dorm')) add(originSuffix('dorm'),'dorm','Sinh hoạt ký túc xá, giờ giấc/ra vào, vệ sinh, ăn uống và sắp xếp với bạn cùng phòng','high','Thân phận ký túc xá ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
         if (profile.origin.club && phoneAutoGroupTypeEligible('club')) add(originSuffix('club'),'club','Lịch hoạt động, đăng ký, họp/tập luyện, vật tư và chuyện phiếm của thành viên','medium','Thân phận câu lạc bộ ở thế giới gốc của user',{scope:'origin',homeWorldKey:originKey,channelType:originChannel,availability:originAvailability});
@@ -5995,11 +6000,11 @@ ${scene.mood||''}`,12000);
         const labelByChannel = { magic:'Kênh truyền tin', telegram:'Sổ điện báo lớp', letter:'Sổ thư tín lớp', messenger:'Sổ truyền tin lớp', radio:'Kênh vô tuyến lớp', terminal:'Kênh lớp', landline:'Sổ liên lạc lớp', smartphone:'Nhóm lớp', wechat:'Nhóm lớp' };
         if (profile.local.student) {
             const suffix=labelByChannel[currentChannel] || 'Liên lạc lớp';
-            add(`${localName} · ${suffix}`, 'class', 'Môn học/tập trung/thông báo/sinh hoạt bạn học ở thế giới hiện tại', 'high', 'Thế giới hiện tại đã ghi rõ việc nhập học/cùng lớp', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+            add(`${localName} · ${suffix}`,'class','Môn học/tập trung/thông báo/sinh hoạt bạn học ở thế giới hiện tại','high','Thế giới hiện tại đã ghi rõ việc nhập học/cùng lớp', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
         }
-        if (profile.local.dorm) add(`${localName} · Liên lạc ký túc xá`, 'dorm', 'Sinh hoạt ký túc xá và sắp xếp giữa các thành viên ở thế giới hiện tại', 'high', 'Quan hệ ký túc xá ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
-        if (profile.local.club) add(`${localName} · Liên lạc tổ chức`, 'club', 'Hoạt động câu lạc bộ/tổ chức và giao tiếp giữa các thành viên ở thế giới hiện tại', 'medium', 'Quan hệ tổ chức ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
-        if (profile.local.work) add(`${localName} · Liên lạc công việc`, 'work', 'Sắp xếp công việc và giao tiếp giữa các thành viên ở thế giới hiện tại', 'medium', 'Quan hệ công việc ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+        if (profile.local.dorm) add(`${localName} · Liên lạc ký túc xá`,'dorm','Sinh hoạt ký túc xá và sắp xếp giữa các thành viên ở thế giới hiện tại','high','Quan hệ ký túc xá ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+        if (profile.local.club) add(`${localName} · Liên lạc tổ chức`,'club','Hoạt động câu lạc bộ/tổ chức và giao tiếp giữa các thành viên ở thế giới hiện tại','medium','Quan hệ tổ chức ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
+        if (profile.local.work) add(`${localName} · Liên lạc công việc`,'work','Sắp xếp công việc và giao tiếp giữa các thành viên ở thế giới hiện tại','medium','Quan hệ công việc ở thế giới hiện tại', {scope:'local',homeWorldKey:currentKey,channelType:currentChannel,availability:profile.current.available?'active':'offline-local'});
 
         if (changed && !stateRuntime.loadingState) {
             clearTimeout(stateRuntime.socialBootstrapSaveTimer);
@@ -6060,9 +6065,9 @@ ${scene.mood||''}`,12000);
             `- ${item.name}｜vị trí: ${item.location || 'chưa rõ'}｜đang làm: ${item.activity || 'chưa rõ'}｜mục tiêu: ${item.goal || 'chưa rõ'}｜trạng thái: ${item.mood || 'chưa rõ'}｜cập nhật: ${item.time || item.updatedAt || ''}`
         );
         const events = (world.events || []).slice(-16).map(item =>
-            `- ${item.time || ''}｜${item.character || 'Thế giới'}@${item.location || 'chưa rõ'}: ${item.activity || ''}${item.goal ? `; mục tiêu: ${item.goal}` : ''}`
+            `- ${item.time || ''}｜${item.character || 'Thế giới'}@${item.location || 'chưa rõ'}: ${item.activity || ''}${item.goal ?`; mục tiêu: ${item.goal}` :''}`
         );
-        return `${characters.length ? `[TRẠNG THÁI SINH HOẠT HIỆN TẠI CỦA NHÂN VẬT]\n${characters.join('\n')}` : ''}${events.length ? `\n\n[CHUYỂN ĐỘNG NGOÀI ỐNG KÍNH GẦN ĐÂY]\n${events.join('\n')}` : ''}`.trim();
+        return `${characters.length ?`[TRẠNG THÁI SINH HOẠT HIỆN TẠI CỦA NHÂN VẬT]\n${characters.join('\n')}` :''}${events.length ?`\n\n[CHUYỂN ĐỘNG NGOÀI ỐNG KÍNH GẦN ĐÂY]\n${events.join('\n')}` :''}`.trim();
     }
 
     function canonicalCommunicationReason({available=true,communicationType='',technologyLevel='',inferred={}}={}) {
@@ -6073,7 +6078,7 @@ ${scene.mood||''}`,12000);
         }
         if (communicationType === 'smartphone' && technologyLevel === 'modern-digital') return 'Môi trường hiện đại, sóng điện thoại và kết nối mạng ổn định bình thường';
         if (communicationType === 'none') return 'Không-thời gian hiện tại tạm thời không có phương tiện liên lạc từ xa nào dùng được';
-        return inferred?.originReachable === false ? 'Phương tiện liên lạc hiện tại dùng được; không kết nối được tới mạng của thế giới gốc' : 'Kết nối liên lạc hiện tại bình thường';
+        return inferred?.originReachable === false ?'Phương tiện liên lạc hiện tại dùng được; không kết nối được tới mạng của thế giới gốc' :'Kết nối liên lạc hiện tại bình thường';
     }
 
     function normalizeCommunicationProfile(raw = {}, options = {}) {
@@ -6511,7 +6516,7 @@ ${scene.mood||''}`,12000);
             time: compactText(item?.time ?? item?.['Thời điểm hẹn'], 180),
             content: compactText(item?.content ?? item?.['Nội dung lời hẹn'], 800),
             characters: compactText(item?.characters ?? item?.['Nhân vật cốt lõi'], 240),
-            status: compactText(item?.status ?? item?.['Trạng thái'] ?? 'Chờ thực hiện', 120),
+            status: compactText(item?.status ?? item?.['Trạng thái'] ??'Chờ thực hiện', 120),
             kind: compactText(item?.kind ?? item?.promiseKind, 80),
             due: compactText(item?.due ?? item?.deadline, 180),
         })).filter(item => item.content && promiseContentIsConcrete(item.content, item));
@@ -6520,7 +6525,7 @@ ${scene.mood||''}`,12000);
             const existing = findPromiseSnapshot(deduped, item);
             if (!existing) { deduped.push(item); continue; }
             if (item.content.length > existing.content.length) existing.content = item.content;
-            for (const key of ['time', 'characters', 'status', 'kind', 'due']) if (item[key]) existing[key] = item[key];
+            for (const key of ['time','characters','status','kind','due']) if (item[key]) existing[key] = item[key];
             if (!existing.promiseId && item.promiseId) existing.promiseId = item.promiseId;
         }
         return deduped.slice(0, 8);
@@ -6539,7 +6544,7 @@ ${scene.mood||''}`,12000);
     }
 
     function npcNameKey(value) {
-        return compactText(value, 160).toLowerCase().replace(/[\s·•・_\-—–,.'"“”‘’()\[\]【】]/g, '');
+        return compactText(value, 160).toLowerCase().replace(/[\s·•・_\-—–,.'"“”‘’()\[\]【】]/g,'');
     }
 
     function npcRegistryEntry(value) {
@@ -6559,7 +6564,7 @@ ${scene.mood||''}`,12000);
 
     function resolvedMemoryFloor(value, fallback = -1) {
         const fallbackNumber = Number.isFinite(Number(fallback)) ? Math.trunc(Number(fallback)) : -1;
-        const raw = String(value ?? '').trim();
+        const raw = String(value ??'').trim();
         if (!raw) return fallbackNumber;
         const match = raw.match(/-?\d+/);
         if (!match) return fallbackNumber;
@@ -6581,7 +6586,7 @@ ${scene.mood||''}`,12000);
         (s.characterWorld?.events || []).forEach(item => { if (eq(item.character)) item.character = newName; });
         (s.memoryAnchors || []).forEach(anchor => {
             if (Array.isArray(anchor.people)) anchor.people = anchor.people.map(name => eq(name) ? newName : name);
-            else if (typeof anchor.people === 'string') anchor.people = anchor.people.split(/[,;]/).map(name => eq(name.trim()) ? newName : name.trim()).join(', ');
+            else if (typeof anchor.people === 'string') anchor.people = anchor.people.split(/[,;]/).map(name => eq(name.trim()) ? newName : name.trim()).join(',');
         });
         // P13: nhận thức đời sống dài hạn phải được gộp theo tên thật của NPC, không để những mục kiêng khem/sở thích gắn với tên gọi cũ trở thành ốc đảo.
         (s.lifeFacts || []).forEach(item => { if (eq(item?.subject)) item.subject = newName; });
@@ -6605,7 +6610,7 @@ ${scene.mood||''}`,12000);
         if(incoming.includes(oldIdentity))return incoming;
         if(/^(?:chưa rõ thân phận|chưa rõ|người thường|người qua đường|người lạ|thành viên nhóm chat|thân phận cụ thể chờ xác nhận)/i.test(incoming))return oldIdentity;
         if(/(?:thăng chức|giáng chức|vào chính thức|nghỉ việc|từ chức|chuyển vị trí|đổi tên|lộ thân phận|thân phận thật|hóa ra là|xác nhận là)/i.test(evidence))return incoming;
-        return `${oldIdentity}; ${incoming}`.split(';').map(value=>value.trim()).filter((value,index,array)=>value&&array.indexOf(value)===index).join('; ').slice(0,500);
+        return `${oldIdentity}; ${incoming}`.split(';').map(value=>value.trim()).filter((value,index,array)=>value&&array.indexOf(value)===index).join(';').slice(0,500);
     }
 
     function registerNpcIdentity(raw = {}, floor = -1) {
@@ -6684,13 +6689,13 @@ ${scene.mood||''}`,12000);
                 // Chỉ dùng để lưu nguyên văn của tầng AI đó khi API ký ức chính thất bại hoàn toàn. Mốc neo do mô hình sinh bình thường không tạo ra trường này.
                 rawFallbackText: compactText(raw?.rawFallbackText, 18000),
                 tags: Array.isArray(raw?.tags) ? raw.tags.map(tag => compactText(tag,80)).filter(Boolean).slice(0,16) : [],
-                importance: ['core','high','normal','detail'].includes(String(raw?.importance||'').toLowerCase()) ? String(raw.importance).toLowerCase() : 'normal',
+                importance: ['core','high','normal','detail'].includes(String(raw?.importance||'').toLowerCase()) ? String(raw.importance).toLowerCase() :'normal',
                 source: compactText(raw?.source || 'chat', 80), createdAt: nowText(),
                 _sourceFloor:floor,_sourceMessageKey:messageStableKey(context()?.chat?.[floor]),
             };
             const key = `${anchor.floor}|${anchor.date}|${anchor.time}|${npcNameKey(anchor.event.slice(0,120))}`;
             const existing = s.memoryAnchors.find(item => `${item.floor}|${item.date}|${item.time}|${npcNameKey(String(item.event||'').slice(0,120))}` === key);
-            if (existing) Object.assign(existing, Object.fromEntries(Object.entries(anchor).filter(([k,v]) => k !== 'id' && (Array.isArray(v) ? v.length : String(v ?? '').trim()))));
+            if (existing) Object.assign(existing, Object.fromEntries(Object.entries(anchor).filter(([k,v]) => k !== 'id' && (Array.isArray(v) ? v.length : String(v ??'').trim()))));
             else s.memoryAnchors.push(anchor);
             if (['core','high'].includes(anchor.importance) && Number.isFinite(floor) && floor >= 0 && !s.importantFloors.includes(floor)) s.importantFloors.push(floor);
         }
@@ -6699,11 +6704,11 @@ ${scene.mood||''}`,12000);
     }
 
     function normalizeLifeFactKey(value, fallback = '') {
-        return compactText(value || fallback, 180).toLowerCase().replace(/[\s,.;:]+/g, ':').replace(/^:+|:+$/g, '');
+        return compactText(value || fallback, 180).toLowerCase().replace(/[\s,.;:]+/g,':').replace(/^:+|:+$/g,'');
     }
 
     function normalizeLifeFactValue(value) {
-        return compactText(value, 300).toLowerCase().replace(/\s+/g, ' ').trim().replace(/[,.;]+$/g, '');
+        return compactText(value, 300).toLowerCase().replace(/\s+/g,' ').trim().replace(/[,.;]+$/g,'');
     }
 
     function mergeLifeFacts(list, defaultFloor = -1) {
@@ -6717,18 +6722,18 @@ ${scene.mood||''}`,12000);
             const category = compactText(raw?.category || 'other', 50).toLowerCase() || 'other';
             const fact = compactText(raw?.fact ?? raw?.statement ?? raw?.evidence, 700);
             const value = compactText(raw?.value ?? raw?.preference ?? raw?.status, 300);
-            const key = normalizeLifeFactKey(raw?.key, `${category}:${fact || value}`);
+            const key = normalizeLifeFactKey(raw?.key,`${category}:${fact || value}`);
             if (!subject || !key || (!fact && !value)) continue;
             const floor = resolvedMemoryFloor(raw?.floor, defaultFloor);
             const sourceMessageKey=floor>=0?messageStableKey(context()?.chat?.[floor]):'';
-            const explicit = raw?.explicit === true || /^(?:true|1|yes|có|đúng)$/i.test(String(raw?.explicit ?? ''));
+            const explicit = raw?.explicit === true || /^(?:true|1|yes|có|đúng)$/i.test(String(raw?.explicit ??''));
             const normalizedValue = normalizeLifeFactValue(value || fact);
             const sameKey = s.lifeFacts.filter(item => npcNameKey(item?.subject) === npcNameKey(subject) && normalizeLifeFactKey(item?.key) === key);
             let existing = sameKey.find(item => normalizeLifeFactValue(item?.value || item?.fact) === normalizedValue && item?.status !== 'historical');
             if (!existing) {
                 existing = {
                     id: uid('life'), subject, category, key, value, fact,
-                    status: explicit ? 'confirmed' : 'observed', explicitCount: explicit ? 1 : 0,
+                    status: explicit ?'confirmed' :'observed', explicitCount: explicit ? 1 : 0,
                     evidenceFloors: Number.isFinite(floor) && floor >= 0 ? [floor] : [],
                     evidenceSources:sourceMessageKey?[{floor,messageKey:sourceMessageKey,explicit}]:[],
                     evidence: compactText(raw?.evidence, 700), firstFloor: floor, lastFloor: floor,
@@ -6796,7 +6801,7 @@ ${scene.mood||''}`,12000);
         const byFloor = new Map();
         for (const item of rows) {
             const floor = resolvedMemoryFloor(item?.floor, -1);
-            const key = floor >= 0 ? `floor:${floor}` : `id:${item?.id || `row-${byFloor.size}`}`;
+            const key = floor >= 0 ?`floor:${floor}` :`id:${item?.id || `row-${byFloor.size}`}`;
             if (byFloor.has(key)) byFloor.delete(key);
             byFloor.set(key, item);
         }
@@ -6834,7 +6839,7 @@ ${scene.mood||''}`,12000);
         const raw = String(sentence || '').trim();
         // Chỉ bắt những sự thật đời sống đã xảy ra hoặc được nêu rõ; câu hỏi, giả định, ẩn dụ và thành ngữ không kích hoạt việc quét bù.
         if (!raw || /[?]/.test(raw) || /^(?:nếu|giả như|giả sử|nếu mà|lỡ như|có phải|có nên|có thể không|được không|liệu có)/i.test(raw) || /(?:nếu|giả như|giả sử|nếu mà|lỡ như).{0,80}(?:thì|vậy thì)/i.test(raw)) return '';
-        const s = raw.replace(/ăn không ngồi rồi|ăn nói|ăn ý|ăn gian|ăn hiếp|ăn vạ|ăn mừng|uống rượu mừng/gi, '');
+        const s = raw.replace(/ăn không ngồi rồi|ăn nói|ăn ý|ăn gian|ăn hiếp|ăn vạ|ăn mừng|uống rượu mừng/gi,'');
         const abstractConsume = /(?:ăn[^,.;!?]{0,10}(?:thiệt|đòn|tát|quả đắng|vạ)|không ăn thua|ăn không được|nuốt cục tức|ghen tuông|giật mình)/i;
         if (abstractConsume.test(raw)) return '';
         if (/(?:mua)[^,.;!?]{0,8}(?:bài học|sự yên tâm|thể diện|cái tình|hy vọng|giấc mơ|niềm vui|tự do)|không mua chuộc|mua chuộc/i.test(s)) return '';
@@ -7597,7 +7602,7 @@ ${scene.mood||''}`,12000);
             const thread = (phone.groupThreads || []).find(item => compactText(item?.groupName,120) === groupName && (!homeWorldKey || compactText(item?.homeWorldKey,120)===homeWorldKey)) || (phone.groupThreads||[]).find(item=>compactText(item?.groupName,120)===groupName);
             const last = thread?.messages?.at(-1);
             const members = [...new Set([...(meta.members || []), ...(thread?.members || [])].map(x=>compactText(x,80)).filter(Boolean))].slice(0,12);
-            rows.push(`- ${groupName}${meta.type?`｜loại: ${meta.type}`:''}${meta.scope?`｜phạm vi: ${meta.scope}`:''}${meta.channelType?`｜kênh: ${meta.channelType}`:''}${meta.availability?`｜trạng thái: ${meta.availability}`:''}${meta.activityLevel?`｜mức hoạt động: ${meta.activityLevel}`:''}${members.length?`｜thành viên: ${members.join(', ')}`:''}${meta.topic?`｜chủ đề dài hạn: ${meta.topic}`:''}${last?.content?`｜lịch sử gần nhất: ${last.sender||'thành viên nhóm'}: ${compactText(last.content,160)}`:''}`);
+            rows.push(`- ${groupName}${meta.type?`｜loại: ${meta.type}`:''}${meta.scope?`｜phạm vi: ${meta.scope}`:''}${meta.channelType?`｜kênh: ${meta.channelType}`:''}${meta.availability?`｜trạng thái: ${meta.availability}`:''}${meta.activityLevel?`｜mức hoạt động: ${meta.activityLevel}`:''}${members.length?`｜thành viên: ${members.join(',')}`:''}${meta.topic?`｜chủ đề dài hạn: ${meta.topic}`:''}${last?.content?`｜lịch sử gần nhất: ${last.sender||'thành viên nhóm'}: ${compactText(last.content,160)}`:''}`);
         };
         profiles.forEach(p => add(p?.groupName, p || {}));
         (phone.groupThreads || []).forEach(t => add(t?.groupName, t || {}));
@@ -7660,7 +7665,7 @@ ${scene.mood||''}`,12000);
         return names.map(name=>({name,last:Number(lastByName.get(name)??-1),isMain:name===charName}))
             .sort((a,b)=>a.last-b.last || Number(a.isMain)-Number(b.isMain))
             .slice(0,limit)
-            .map(row=>`${row.name} (lần cập nhật ngoài ống kính gần nhất: ${row.last>=0?`tầng ${row.last}`:'chưa từng'})`).join(', ') || 'Chưa có NPC nào để luân phiên';
+            .map(row=>`${row.name} (lần cập nhật ngoài ống kính gần nhất: ${row.last>=0?`tầng ${row.last}`:'chưa từng'})`).join(',') || 'Chưa có NPC nào để luân phiên';
     }
 
     function phoneEcologyDirective() {
@@ -7674,12 +7679,12 @@ ${scene.mood||''}`,12000);
         const social = institutionalSocialProfile();
         const current = normalizeCommunicationProfile(stateRuntime.state?.communicationProfile || inferCurrentWorldContext());
         const origin = stateRuntime.state?.worldTransit?.origin || {};
-        const currentMedium = current.communicationType === 'smartphone' ? 'WeChat/SMS/điện thoại' : communicationMessageLabel(current);
-        const studentHint = social.origin.student ? `Thân phận ở thế giới gốc = học sinh${social.origin.university?' (đại học/học viện)':''}` : social.origin.work ? 'Thân phận ở thế giới gốc = người đi làm' : 'Thân phận ở thế giới gốc = quan hệ xã hội thông thường';
-        const reachHint = current.originReachable ? 'Quan hệ ở thế giới gốc hiện liên lạc được' : 'Quan hệ ở thế giới gốc hiện ngoại tuyến nhưng vẫn được giữ vĩnh viễn';
+        const currentMedium = current.communicationType === 'smartphone' ?'WeChat/SMS/điện thoại' : communicationMessageLabel(current);
+        const studentHint = social.origin.student ?`Thân phận ở thế giới gốc = học sinh${social.origin.university?' (đại học/học viện)':''}` : social.origin.work ?'Thân phận ở thế giới gốc = người đi làm' :'Thân phận ở thế giới gốc = quan hệ xã hội thông thường';
+        const reachHint = current.originReachable ?'Quan hệ ở thế giới gốc hiện liên lạc được' :'Quan hệ ở thế giới gốc hiện ngoại tuyến nhưng vẫn được giữ vĩnh viễn';
         const silentHint = debt.due
-            ? `Việc liên lạc đã im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}); chỉ cần thế giới hiện tại còn kênh dùng được thì lượt này bắt buộc phải xảy ra ít nhất 1 sự kiện liên lạc ít tác động.`
-            : `Gần đây việc liên lạc im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}), cứ dao động tự nhiên theo động cơ nhân vật.`;
+            ?`Việc liên lạc đã im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}); chỉ cần thế giới hiện tại còn kênh dùng được thì lượt này bắt buộc phải xảy ra ít nhất 1 sự kiện liên lạc ít tác động.`
+            :`Gần đây việc liên lạc im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}), cứ dao động tự nhiên theo động cơ nhân vật.`;
         return `Tăng cường hệ sinh thái liên lạc/điện thoại đang bật: độ sôi nổi nhóm chat = ${groupActivity.toFixed(2)}, mức nhiễu dịch vụ hiện đại = ${serviceNoise.toFixed(2)}.
 【TRẠNG THÁI KHÔNG-THỜI GIAN】Thế giới gốc = ${origin.worldType||'chưa rõ'} ${origin.era||''}; hiện tại = ${current.worldType||'chưa rõ'} ${current.era||''} ${current.location||''}; phương tiện hiện tại = ${current.deviceLabel||currentMedium}; ${reachHint}; ${studentHint}.
 - 【PHÂN TẦNG TUYỆT ĐỐI】Thân phận ở thế giới gốc mà tiện ích đã ghi chỉ mô tả “vốn là ai / đến từ đâu / có sẵn những quan hệ xã hội nào”, không được ghi đè thời đại và thế giới của mạch truyện hiện tại. Chính scene hiện tại cộng với các tình tiết gần đây mới quyết định “bây giờ đang ở đâu, liên lạc bằng gì”. Khi một sinh viên hiện đại xuyên về Hồng Kông năm 1900 thì nhóm lớp cũ vẫn tồn tại nhưng ngoại tuyến; lúc đó chỉ được dùng thư từ/điện báo/điện thoại bàn hợp lý với Hồng Kông 1900. Khi một sinh viên hiện đại lạc vào dị giới thì các quan hệ WeChat cũ chuyển sang ngoại tuyến; nếu nơi đó có pha lê truyền tin/sứ giả/thư từ thì đổi sang dùng kênh bản địa.
@@ -7738,9 +7743,9 @@ ${phoneExistingGroupBrief()}`;
         const settings = stateRuntime.state?.settings || {};
         if (!settings.npcWorldAutonomy) return 'Phần tăng cường thế giới NPC tự trị đang tắt: chỉ đẩy tới trong phạm vi chính văn cần, không tạo thêm thay đổi ngoài ống kính.';
         const spontaneity = Math.max(0, Math.min(1, Number(settings.npcWorldSpontaneity ?? 0.82)));
-        const band = spontaneity >= 0.8 ? 'cao' : spontaneity >= 0.5 ? 'khá cao' : spontaneity >= 0.25 ? 'khá thấp' : 'thấp';
+        const band = spontaneity >= 0.8 ?'cao' : spontaneity >= 0.5 ?'khá cao' : spontaneity >= 0.25 ?'khá thấp' :'thấp';
         const debt = worldActivityDebt();
-        const pulse = debt.due ? `Thế giới ngoài ống kính đã im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}); lượt này phải đẩy tới trạng thái sinh hoạt thật, rủi ro thấp của ít nhất ${debt.minEvents} NPC khác nhau; ưu tiên luân phiên những người lâu chưa cập nhật, cấm để cả lượt trống trơn lần nữa.` : `Thế giới ngoài ống kính im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}), có thể dao động bình thường.`;
+        const pulse = debt.due ?`Thế giới ngoài ống kính đã im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}); lượt này phải đẩy tới trạng thái sinh hoạt thật, rủi ro thấp của ít nhất ${debt.minEvents} NPC khác nhau; ưu tiên luân phiên những người lâu chưa cập nhật, cấm để cả lượt trống trơn lần nữa.` :`Thế giới ngoài ống kính im ắng khoảng ${debt.silentFloors} tầng (ngưỡng ${debt.threshold}), có thể dao động bình thường.`;
         return `Tăng cường thế giới NPC tự trị đang bật, mức tự phát = ${spontaneity.toFixed(2)} (${band}).
 - 【NHỊP ĐẬP CỦA THẾ GIỚI】${pulse}
 - 【ƯU TIÊN LUÂN PHIÊN】${dormantNpcBrief(16)}.
@@ -7770,9 +7775,9 @@ ${phoneExistingGroupBrief()}`;
             const likes = (item?.likes || []).map(name => compactText(name,80)).filter(Boolean);
             const comments = (item?.comments || []).map(comment => `${compactText(comment?.author,80)}: ${compactText(comment?.content,300)}`).filter(Boolean);
             const seenBy = (item?.seenBy || []).map(name => compactText(name,80)).filter(Boolean);
-            return `- momentId=${item.id}｜${item.author || 'chưa rõ'}｜${item.time || ''}｜nội dung: ${item.content || '[không có chữ]'}${attachments ? `｜đính kèm: ${attachments}` : ''}｜phạm vi hiển thị: ${item.visibility || 'friends'}｜đã xem: ${seenBy.join(', ') || 'không có'}｜thả tim: ${likes.join(', ') || 'không có'}｜bình luận: ${comments.join('; ') || 'không có'}｜trạng thái tương tác: ${item.reactionStatus || (item.manual ? 'pending' : 'normal')}`;
+            return `- momentId=${item.id}｜${item.author || 'chưa rõ'}｜${item.time || ''}｜nội dung: ${item.content || '[không có chữ]'}${attachments ?`｜đính kèm: ${attachments}` :''}｜phạm vi hiển thị: ${item.visibility || 'friends'}｜đã xem: ${seenBy.join(',') || 'không có'}｜thả tim: ${likes.join(',') || 'không có'}｜bình luận: ${comments.join(';') || 'không có'}｜trạng thái tương tác: ${item.reactionStatus || (item.manual ?'pending' :'normal')}`;
         });
-        return `【CÁC NPC ĐÃ QUEN CÓ THỂ THẤY NHỮNG BÀI ĐĂNG NÀY】${knownAudience.join(', ') || 'chưa có'}\n${feed.join('\n')}`;
+        return `【CÁC NPC ĐÃ QUEN CÓ THỂ THẤY NHỮNG BÀI ĐĂNG NÀY】${knownAudience.join(',') || 'chưa có'}\n${feed.join('\n')}`;
     }
 
     function cleanAppearanceSnapshot(list, floor) {
@@ -7806,7 +7811,7 @@ ${phoneExistingGroupBrief()}`;
         const latestReply = messageText(message).slice(0, 14000);
         const recent = recentTranscript(Math.max(4, Number(settings.companionRecentMessages || 12)));
         const writingSource = companionWritingSourceLabel();
-        const strongWorldBook = settings.strongWorldBookRead===false ? '' : await buildStrongWorldBookDigest({maxChars:Math.min(12000,Number(settings.strongWorldBookMaxChars||18000))});
+        const strongWorldBook = settings.strongWorldBookRead===false ?'' : await buildStrongWorldBookDigest({maxChars:Math.min(12000,Number(settings.strongWorldBookMaxChars||18000))});
         return `【TƯ LIỆU VÀ NHIỆM VỤ XUẤT CỦA BẢY ĐIỀU HẬU TRƯỜNG】Bạn là “bộ máy Bảy điều hậu trường của 0-32 · Sân Khấu Không Bao Giờ Hạ Màn” trong một cuộc nhập vai dài kỳ. Nguồn viết của lượt này là【${writingSource} + ranh giới tư liệu độc lập】; AI chính của SillyTavern đã viết xong phần chính văn nhìn thấy được, còn bạn chỉ thực hiện đúng một lượt viết ở hậu trường, không được viết tiếp hay sửa chính văn. Sau mỗi lượt cốt truyện thật, bạn tự sinh và đồng bộ: lời hẹn/bí mật còn chờ thực hiện, ngoại hình nhân vật, Khoảnh khắc/nhật ký/ngày kỷ niệm, thiết bị liên lạc, Bỉ Gian Tư Văn. Ký ức chính có cấu trúc do dây chuyền ký ức “một lần cho mỗi câu trả lời AI” riêng phụ trách, bạn không được ghi trùng vào ký ức chính. Nhiệm vụ chỉ được dùng những gì cung cấp tường minh dưới đây: chính văn hiện tại, phần ký ức hữu hạn, tư liệu nhân vật đã xác nhận, trạng thái chương trình, và trích đoạn【SÁCH THẾ GIỚI ĐỌC BẮT BUỘC 0-32】mà bên gọi đưa ra; không được tự đọc hay giả định là có preset, Persona hay ảnh chụp Prompt Manager của SillyTavern.
 
 ${strongWorldBook?`${strongWorldBook}\n\n`:''}
@@ -7915,7 +7920,7 @@ Chỉ xuất ra đúng một đối tượng JSON nghiêm ngặt, không Markdow
 18. 【RANH GIỚI THÂN MẬT NGƯỜI LỚN】Được phép mô tả tình yêu, hẹn hò, đời sống về đêm và giao dịch tình dục tự nguyện giữa các NPC trưởng thành; khi có hành vi tình dục thì bắt buộc các bên đều là người trưởng thành và tự nguyện. Bắt cóc có thể tồn tại như một tình tiết tội phạm, nhưng không được coi hành vi tình dục cưỡng ép, xâm hại tình dục hay nội dung tình dục với trẻ vị thành niên là “lối chơi tự do” có thể sinh ra.
 
 【TƯ LIỆU NHÂN VẬT ĐÃ XÁC NHẬN】
-${known.length ? known.join(', ') : 'Chưa nhận diện được một cách đáng tin'}
+${known.length ? known.join(',') :'Chưa nhận diện được một cách đáng tin'}
 
 【TRẠNG THÁI BỈ GIAN TƯ VĂN HIỆN CÓ】
 ${worldStateBrief() || 'Chưa có, bắt đầu thiết lập từ lượt này.'}
@@ -8001,7 +8006,7 @@ ${latestReply}`;
             if (type === 'sms') row.category = compactText(item?.category || 'service', 60);
             if (type === 'moment') {
                 row.attachments = cleanMomentAttachments(item?.attachments ?? item?.media, 9);
-                row.mediaDescription = row.attachments.filter(att=>att.kind==='image').map(att=>att.description).join('; ');
+                row.mediaDescription = row.attachments.filter(att=>att.kind==='image').map(att=>att.description).join(';');
                 row.likes = Array.isArray(item?.likes) ? [...new Set(item.likes.map(name => compactText(name, 80)).filter(Boolean))].slice(0, 50) : [];
                 row.comments = Array.isArray(item?.comments) ? item.comments.map(comment => ({
                     id: uid('moment-comment'),
@@ -8013,8 +8018,8 @@ ${latestReply}`;
             if (type === 'call') {
                 const allowedStatus = ['incoming','ringing','waiting','missed','connected','ended','outgoing'];
                 const status = compactText(item?.status, 40).toLowerCase();
-                row.status = allowedStatus.includes(status) ? status : 'ended';
-                row.direction = compactText(item?.direction, 40).toLowerCase() === 'outgoing' ? 'outgoing' : 'incoming';
+                row.status = allowedStatus.includes(status) ? status :'ended';
+                row.direction = compactText(item?.direction, 40).toLowerCase() === 'outgoing' ?'outgoing' :'incoming';
                 row.requiresAnswer = Boolean(item?.requiresAnswer && ['incoming','ringing','waiting'].includes(row.status));
             }
             return row;
@@ -8072,10 +8077,10 @@ ${latestReply}`;
             if(!['active','offline-origin','offline-local','remote'].includes(availability)) availability=scope==='origin'?(current.originReachable?'active':'offline-origin'):((homeWorldKey&&homeWorldKey===current.worldKey&&current.available)?'active':'offline-local');
             return {
                 groupName,
-                type: allowedTypes.has(rawType) ? rawType : 'other',
+                type: allowedTypes.has(rawType) ? rawType :'other',
                 members: Array.isArray(item?.members) ? [...new Set(item.members.map(name=>compactText(name,80)).filter(Boolean))].slice(0,50) : (existing?.members||[]).slice(0,50),
                 topic: compactText(item?.topic ?? item?.purpose ?? item?.description ?? existing?.topic, 400),
-                activityLevel: allowedActivity.has(rawActivity) ? rawActivity : 'medium',
+                activityLevel: allowedActivity.has(rawActivity) ? rawActivity :'medium',
                 source: compactText(item?.source || existing?.source, 120),
                 scope, homeWorldKey, channelType, availability,
             };
@@ -8083,7 +8088,7 @@ ${latestReply}`;
     }
     function groupSelectionKey(groupName) {
         const name = compactText(groupName, 120);
-        return name ? `group:${name}` : '';
+        return name ?`group:${name}` :'';
     }
 
     function isGroupSelection(value) {
@@ -8091,7 +8096,7 @@ ${latestReply}`;
     }
 
     function selectedGroupName(value = stateRuntime.phoneSelectedContact) {
-        return isGroupSelection(value) ? compactText(String(value).slice(6), 120) : '';
+        return isGroupSelection(value) ? compactText(String(value).slice(6), 120) :'';
     }
 
     function normalizeCompanionMemory(raw) {
@@ -8132,7 +8137,7 @@ ${latestReply}`;
 
     function relationPairKey(a, b) {
         const names = [relationPartyName(a), relationPartyName(b)].filter(Boolean).map(npcNameKey).sort();
-        return names.length === 2 ? names.join('↔') : '';
+        return names.length === 2 ? names.join('↔') :'';
     }
 
     function relationUpdateDecision({oldDescription='',newDescription='',sourceText=''}={}) {
@@ -8163,8 +8168,8 @@ ${latestReply}`;
         const pair = relationPairKey(rel.a, rel.b);
         if (!pair) return false;
         const incoming = {
-            'Nhân vật A': rel.a, 'Nhân vật B': rel.b, 'Mô tả quan hệ': rel.description || 'Đang tương tác trong cốt truyện hiện tại',
-            'Thái độ tình cảm': rel.attitude || '', 'Thời điểm cập nhật': rel.time || nowText(),
+            'Nhân vật A': rel.a,'Nhân vật B': rel.b,'Mô tả quan hệ': rel.description || 'Đang tương tác trong cốt truyện hiện tại',
+            'Thái độ tình cảm': rel.attitude || '','Thời điểm cập nhật': rel.time || nowText(),
             _psychologyChange: rel.psychologyChange || '',
             _sourceFloor: Number.isFinite(rel.floor) ? rel.floor : Number(floor), _sourceMessageKey: sourceMessageKey,
         };
@@ -8241,24 +8246,24 @@ ${latestReply}`;
         m.people.forEach(item => registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor));
         const canon = value => canonicalNpcName(value) || compactText(value,120);
         m.mainline.forEach(item => uniquePush(s.tables.mainline, {
-            'Ngày': item?.date ?? '', 'Giờ bắt đầu': item?.start ?? '', 'Giờ kết thúc': item?.end ?? '',
-            'Tóm tắt sự kiện': item?.summary ?? item?.event ?? '', 'Trạng thái': item?.status ?? 'Đang diễn ra', 'Tầng': item?.floor ?? f,
+            'Ngày': item?.date ??'','Giờ bắt đầu': item?.start ??'','Giờ kết thúc': item?.end ??'',
+            'Tóm tắt sự kiện': item?.summary ?? item?.event ??'','Trạng thái': item?.status ??'Đang diễn ra','Tầng': item?.floor ?? f,
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Ngày']}|${row['Tóm tắt sự kiện']}|${row['Tầng']}`));
         m.branches.forEach(item => uniquePush(s.tables.branches, {
-            'Trạng thái': item?.status ?? 'Đang diễn ra', 'Tên nhánh phụ': item?.name ?? '', 'Giờ bắt đầu': item?.start ?? '', 'Giờ kết thúc': item?.end ?? '',
-            'Theo dõi sự kiện': item?.tracking ?? item?.summary ?? '', 'NPC then chốt': item?.npcs ?? '', 'Tầng': item?.floor ?? f,
+            'Trạng thái': item?.status ??'Đang diễn ra','Tên nhánh phụ': item?.name ??'','Giờ bắt đầu': item?.start ??'','Giờ kết thúc': item?.end ??'',
+            'Theo dõi sự kiện': item?.tracking ?? item?.summary ??'','NPC then chốt': item?.npcs ??'','Tầng': item?.floor ?? f,
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Tên nhánh phụ']}|${row['Theo dõi sự kiện']}|${row['Tầng']}`));
         m.states.forEach(item => uniquePush(s.tables.states, {
-            'Tên nhân vật': canon(item?.name), 'Biến đổi trạng thái': item?.change ?? item?.state ?? '', 'Thời gian': item?.time ?? '', 'Lý do': item?.reason ?? '',
-            'Vị trí hiện tại': item?.location ?? '', 'Tầng': item?.floor ?? f, _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
+            'Tên nhân vật': canon(item?.name),'Biến đổi trạng thái': item?.change ?? item?.state ??'','Thời gian': item?.time ??'','Lý do': item?.reason ??'',
+            'Vị trí hiện tại': item?.location ??'','Tầng': item?.floor ?? f, _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Tên nhân vật']}|${row['Biến đổi trạng thái']}|${row['Thời gian']}|${row['Tầng']}`));
         m.people.forEach(item => {
             const canonical = registerNpcIdentity({ ...item, floor:item?.floor ?? floor }, floor) || compactText(item?.name,120);
             const incoming = {
-                'Họ tên': canonical, 'Tuổi': item?.age ?? '', 'Thân phận': item?.identity ?? '', 'Địa điểm': item?.location ?? '',
-                'Tính cách': item?.personality ?? '', 'Ghi chú': item?.note ?? '', _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
+                'Họ tên': canonical,'Tuổi': item?.age ??'','Thân phận': item?.identity ??'','Địa điểm': item?.location ??'',
+                'Tính cách': item?.personality ??'','Ghi chú': item?.note ??'', _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
             };
             if (!canonical) return;
             const existing = s.tables.people.find(row => npcNameKey(row?.['Họ tên']) === npcNameKey(canonical));
@@ -8269,7 +8274,7 @@ ${latestReply}`;
         });
         m.relations.forEach(item => upsertRelationSnapshot(item, Number(item?.floor ?? floor), sourceMessageKey));
         m.world.forEach(item => uniquePush(s.tables.world, {
-            'Tên thiết lập': item?.name ?? '', 'Loại': item?.type ?? '', 'Mô tả chi tiết': item?.description ?? '', 'Phạm vi ảnh hưởng': item?.scope ?? '',
+            'Tên thiết lập': item?.name ??'','Loại': item?.type ??'','Mô tả chi tiết': item?.description ??'','Phạm vi ảnh hưởng': item?.scope ??'',
             _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
         }, row => `${row['Tên thiết định']}|${row['Diễn giải chi tiết']}`));
         m.items.forEach(item => upsertItemSnapshot({...item,holder:canon(item?.holder)}, Number(item?.floor ?? floor), sourceMessageKey));
@@ -8277,7 +8282,7 @@ ${latestReply}`;
             if (!compactText(item?.title,200) && !compactText(item?.summary,800)) return;
             uniquePush(s.chapters, {
                 id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`, title: item?.title || `Chương ${s.chapters.length + 1}`,
-                startFloor: item?.startFloor ?? floor, endFloor: item?.endFloor ?? floor, summary: item?.summary ?? '', time: item?.time ?? '',
+                startFloor: item?.startFloor ?? floor, endFloor: item?.endFloor ?? floor, summary: item?.summary ??'', time: item?.time ??'',
                 _sourceFloor: Number(item?.floor ?? floor), _sourceMessageKey: sourceMessageKey,
             }, row => `${row.title}|${row.startFloor}`);
         });
@@ -8353,10 +8358,10 @@ ${latestReply}`;
         const reality = sanitizeCompanionReality(data.setting || data.settingProfile || {}, data.scene || {});
         const setting = reality.setting;
         const story = {
-            moments: cleanCompanionArray(storyRaw.moments ?? phoneRaw.moments, 'moment', 5),
+            moments: cleanCompanionArray(storyRaw.moments ?? phoneRaw.moments,'moment', 5),
             reactions: cleanMomentReactions(storyRaw.reactions ?? storyRaw.momentReactions, 16),
-            diary: cleanCompanionArray(storyRaw.diary ?? phoneRaw.diary ?? phoneRaw.notes, 'diary', 5),
-            anniversaries: cleanCompanionArray(storyRaw.anniversaries ?? phoneRaw.anniversaries, 'anniversary', 5),
+            diary: cleanCompanionArray(storyRaw.diary ?? phoneRaw.diary ?? phoneRaw.notes,'diary', 5),
+            anniversaries: cleanCompanionArray(storyRaw.anniversaries ?? phoneRaw.anniversaries,'anniversary', 5),
         };
         const legacyMessages = Array.isArray(phoneRaw.messages) ? phoneRaw.messages : [];
         const ps = stateRuntime.state?.settings || {};
@@ -8365,11 +8370,11 @@ ${latestReply}`;
             reason: compactText(phoneRaw.reason, 400),
             handledPendingIds: Array.isArray(phoneRaw.handledPendingIds) ? phoneRaw.handledPendingIds.map(value => compactText(value, 120)).filter(Boolean).slice(0, 30) : [],
             groupProfiles: cleanPhoneGroupProfiles(phoneRaw.groupProfiles ?? phoneRaw.groupContexts, 24),
-            wechat: cleanCompanionArray(phoneRaw.wechat ?? legacyMessages, 'wechat', Math.max(1,Math.min(8,Number(ps.phonePrivateMaxMessages||5)))),
+            wechat: cleanCompanionArray(phoneRaw.wechat ?? legacyMessages,'wechat', Math.max(1,Math.min(8,Number(ps.phonePrivateMaxMessages||5)))),
             wechatGroups: cleanWechatGroupArray(phoneRaw.wechatGroups ?? phoneRaw.groups, Math.max(1,Math.min(12,Number(ps.phoneGroupMaxMessages||12)))),
             channelGroups: cleanChannelGroupArray(phoneRaw.channelGroups ?? phoneRaw.channels, Math.max(1,Math.min(12,Number(ps.phoneGroupMaxMessages||12)))),
-            sms: cleanCompanionArray(phoneRaw.sms, 'sms', Math.max(1,Math.min(8,Number(ps.phoneSmsMaxMessages||6)))),
-            calls: cleanCompanionArray(phoneRaw.calls, 'call', Math.max(1,Math.min(4,Number(ps.phoneCallMaxEvents||2)))),
+            sms: cleanCompanionArray(phoneRaw.sms,'sms', Math.max(1,Math.min(8,Number(ps.phoneSmsMaxMessages||6)))),
+            calls: cleanCompanionArray(phoneRaw.calls,'call', Math.max(1,Math.min(4,Number(ps.phoneCallMaxEvents||2)))),
             financeEvents: (Array.isArray(phoneRaw.financeEvents) ? phoneRaw.financeEvents : []).slice(0,6).map(item=>({
                 id:compactText(item?.id,120)||uid('finance-event'),
                 type:item?.type==='expense'?'expense':'income',
@@ -8439,7 +8444,7 @@ ${latestReply}`;
             return {id: uid('world'), character, participants, knownBy, userKnows, time: compactText(item?.time, 120),
                 location: compactText(item?.location, 160), activity: compactText(item?.activity, 1800), goal: compactText(item?.goal, 600),
                 mood: compactText(item?.mood, 300), social: compactText(item?.social, 800), relationToMainPlot: compactText(item?.relationToMainPlot, 500),
-                visibility: ['public','private','rumor'].includes(item?.visibility) ? item.visibility : 'private', floor, generatedAt: nowText()};
+                visibility: ['public','private','rumor'].includes(item?.visibility) ? item.visibility :'private', floor, generatedAt: nowText()};
         }).filter(item => item.character && item.activity);
         const world = { write:Boolean(worldRaw.write !== false && events.length), timeProgress:compactText(worldRaw.timeProgress,300), events };
         return {
@@ -8474,7 +8479,7 @@ ${latestReply}`;
         const substantiveReply = latest.trim().length >= 8;
         const smartphone = profile.communicationType === 'smartphone' && profile.available !== false;
         const communicationAvailable = profile.available !== false && profile.communicationType !== 'none';
-        const anniversaryExpected = `${latest}\n${recentTranscript(4)}`.split(/[。！？\n]/).some(fragment=>
+        const anniversaryExpected = `${latest}\n${recentTranscript(4)}`.split(/[.!?。！？\n]/).some(fragment=>
             /(sinh nhật|kỷ niệm|tròn năm|kỷ niệm ngày cưới|kỷ niệm ngày quen nhau|ngày giỗ|kỷ niệm đầy tháng)/i.test(fragment)
             && !/(không có|không phải|chẳng phải|không liên quan|không cần|chưa nhắc tới|chưa xác định|không biết).{0,12}(sinh nhật|kỷ niệm|tròn năm|ngày giỗ)/i.test(fragment)
         );
@@ -8569,13 +8574,13 @@ Quy tắc:
 ${JSON.stringify(payload?.setting||{})}
 
 【NHÂN VẬT ĐÃ BIẾT】
-${(report?.knownCharacters||[]).join(', ')||'Chưa có'}
+${(report?.knownCharacters||[]).join(',')||'Chưa có'}
 
 【BÀI ĐĂNG KHOẢNH KHẮC CHỜ XỬ LÝ】
 ${momentSocialFeedBrief()}
 
 【ỨNG VIÊN NGOÀI ỐNG KÍNH】
-${(report?.worldCandidates||[]).join(', ')||'Chưa có'}
+${(report?.worldCandidates||[]).join(',')||'Chưa có'}
 
 【NGOẠI HÌNH ĐÃ XÁC NHẬN】
 ${priorAppearances}
@@ -8588,7 +8593,7 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     function companionIncompleteError(report) {
-        const names=(report?.missing||[]).map(item=>`${item.label}${item.actual}/${item.min}`).join('、')||'Mục chưa rõ';
+        const names=(report?.missing||[]).map(item=>`${item.label}${item.actual}/${item.min}`).join(',')||'Mục chưa rõ';
         const error=new Error(`Bảy điều hậu trường trả về JSON hợp lệ nhưng chưa đầy đủ: ${names}`);
         error.name='CompanionPayloadIncompleteError';
         error.completenessReport=report;
@@ -8602,7 +8607,7 @@ ${messageText(message).slice(0,10000)}`;
         const diagnostics={attempted:false,status:'not-needed',before:before.counts,after:before.counts,missingBefore:before.missing,missingAfter:[]};
         if(!before.missing.length){task.completenessRepair=diagnostics;return task;}
         diagnostics.attempted=true;diagnostics.status='running';
-        updateCompanionFallbackProgress(Number(floor),93,'Một số mục của Bảy điều hậu trường đang trống, đang bổ sung qua API riêng',before.missing.map(item=>item.label).join(', '));
+        updateCompanionFallbackProgress(Number(floor),93,'Một số mục của Bảy điều hậu trường đang trống, đang bổ sung qua API riêng',before.missing.map(item=>item.label).join(','));
         const scope=captureChatScope();const generation=stateRuntime.dataGeneration;const stateAtStart=stateRuntime.state;
         const configured=Math.max(1800,Math.min(5000,Number(stateRuntime.serverConfig?.companion?.maxTokens||5000)));
         const repairPrompt=companionRepairPrompt(before,primaryPayload,message);
@@ -8691,7 +8696,7 @@ ${messageText(message).slice(0,10000)}`;
         if (payload.realityAudit?.length) {
             console.warn('[0-32·P29] Đã chặn Bảy điều hậu trường sửa hiện thực', payload.realityAudit);
             const severe=payload.realityAudit.find(item=>/năm|địa điểm/i.test(item));
-            if(severe) toast(`🛡 Khóa hiện thực hiện tại: ${severe}`, 'warning');
+            if(severe) toast(`🛡 Khóa hiện thực hiện tại: ${severe}`,'warning');
         }
 
         // Lời hẹn/bí mật thuộc loại “thực thể trạng thái hiện tại”, dùng khóa thực thể ổn định để ghi đè cập nhật; trạng thái cũ vào _history, cấm cứ mỗi lượt đổi chữ lại thêm một dòng mới.
@@ -8712,7 +8717,7 @@ ${messageText(message).slice(0,10000)}`;
                 const stored={ ...item, _sidecarId:payload.id, _floor:payload.floor };s.storyExtras[key].push(stored);
                 const author=relationPartyName(item?.author),userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}';
                 if(key==='diary'&&author)s39RecordStoryEvent({type:'private-diary',relatedId:stored.id||`${payload.id}:diary:${author}`,participants:[author],knownBy:[author],userKnows:npcNameKey(author)===npcNameKey(userName),channel:'Nhật ký riêng',status:'Đã viết',summary:`Nhật ký của ${author}: ${compactText(item?.content,700)}`,floor:payload.floor,time:item?.time,source:'companion-diary'});
-                if(key==='moments'&&author)s39RecordStoryEvent({type:'moment',relatedId:stored.id||`${payload.id}:moment:${author}`,participants:[author],knownBy:[author,...(item?.seenBy||[])],userKnows:Boolean((item?.seenBy||[]).some(name=>npcNameKey(name)===npcNameKey(userName))),channel:'Khoảnh khắc',status:'Đã đăng',summary:`${author}：${compactText(item?.content,700)}`,floor:payload.floor,time:item?.time,source:'companion-moment'});
+                if(key==='moments'&&author)s39RecordStoryEvent({type:'moment',relatedId:stored.id||`${payload.id}:moment:${author}`,participants:[author],knownBy:[author,...(item?.seenBy||[])],userKnows:Boolean((item?.seenBy||[]).some(name=>npcNameKey(name)===npcNameKey(userName))),channel:'Khoảnh khắc',status:'Đã đăng',summary:`${author}: ${compactText(item?.content,700)}`,floor:payload.floor,time:item?.time,source:'companion-moment'});
             }
         }
 
@@ -8767,7 +8772,7 @@ ${messageText(message).slice(0,10000)}`;
                     if(key==='sms'||key==='calls'){
                         const other=compactText(stored.author||stored.contact,100);if(other){
                             s39MarkAcquaintance(other,{channel:key==='calls'?'Điện thoại':'SMS',floor:payload.floor,evidence:compactText(stored.content||stored.status,220)});
-                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,other],channel:key==='calls'?'Điện thoại':'SMS',status:'Đã xảy ra',summary:`${other}：${compactText(stored.content||stored.status,700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,other],channel:key==='calls'?'Điện thoại':'SMS',status:'Đã xảy ra',summary:`${other}: ${compactText(stored.content||stored.status,700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                         }
                     }
                     if (key === 'wechat') {
@@ -8776,7 +8781,7 @@ ${messageText(message).slice(0,10000)}`;
                         const contact = compactText(authorIsUser ? item.contact : item.author, 100);
                         if (contact) {
                             s39MarkAcquaintance(contact,{channel:'WeChat',floor:payload.floor,evidence:`Hậu trường đồng bộ WeChat: ${compactText(item.content,220)}`});
-                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,contact],channel:'WeChat',status:'Đã xảy ra',summary:`${contact}：${compactText(item.content||'[Sticker]',700)}`,floor:payload.floor,time:item.time,source:'companion-phone'});
+                            s39RecordStoryEvent({type:'communication',relatedId:stored.id,participants:[userName,contact],channel:'WeChat',status:'Đã xảy ra',summary:`${contact}: ${compactText(item.content||'[Sticker]',700)}`,floor:payload.floor,time:item.time,source:'companion-phone'});
                             const thread = ensurePhoneThread(contact);
                             pushPhoneThreadMessageUnique(thread,{ id:uid(authorIsUser?'phone-user':'phone-ai'), role:authorIsUser?'user':'character', sender:authorIsUser?userName:contact,
                                 content:item.content, time:item.time || phoneClock().time, createdAt:stored.createdAt, _eventSeq:stored._eventSeq, _sidecarId:payload.id, _floor:payload.floor },'');
@@ -8801,7 +8806,7 @@ ${messageText(message).slice(0,10000)}`;
                     else if (knownProfile.scope !== 'origin' && (!knownProfile.homeWorldKey || knownProfile.homeWorldKey === payload.setting?.worldKey) && payload.setting?.available !== false) knownProfile.availability = 'active';
                     knownProfile.updatedAt = Date.now();
                 }
-                const senderRegistered = rawItem.sender ? (registerNpcIdentity({name:rawItem.sender, source:`wechat-group:${rawItem.groupName||''}`, floor:payload.floor}, payload.floor) || rawItem.sender) : '';
+                const senderRegistered = rawItem.sender ? (registerNpcIdentity({name:rawItem.sender, source:`wechat-group:${rawItem.groupName||''}`, floor:payload.floor}, payload.floor) || rawItem.sender) :'';
                 if (senderRegistered) ensureAmbientNpcPerson(senderRegistered, rawItem.groupName, payload.floor);
                 const membersRegistered = (rawItem.members||[]).map(name=>{
                     const canonical = registerNpcIdentity({name, source:`wechat-group:${rawItem.groupName||''}`, floor:payload.floor}, payload.floor)||canonicalNpcName(name)||name;
@@ -8824,7 +8829,7 @@ ${messageText(message).slice(0,10000)}`;
                 const stored = stampPhoneEvent({ ...item, _sidecarId:payload.id, _floor:payload.floor, _homeWorldKey:messageHomeKey, _groupScope:messageScope },{floor:payload.floor,sidecarId:payload.id,createdAt:payloadCreatedAt});
                 if(stored.sender){
                     s39MarkAcquaintance(stored.sender,{channel:`Nhóm WeChat: ${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
-                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`Nhóm WeChat: ${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`Nhóm WeChat: ${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}: ${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                 }
                 const duplicate = (s.phone.wechatGroups || []).slice(-80).some(row => compactText(row?.groupName,120) === compactText(stored.groupName,120) && compactText(row?.sender,100) === compactText(stored.sender,100) && compactText(row?.content,1800) === compactText(stored.content,1800));
                 const gpForThread = messageProfile || phoneGroupProfile(item.groupName);
@@ -8852,13 +8857,13 @@ ${messageText(message).slice(0,10000)}`;
                 const knownProfile=phoneGroupProfile(rawItem.groupName);
                 if (knownProfile?.scope==='origin' && !payload.setting?.originReachable) continue;
                 if (knownProfile?.scope==='local' && knownProfile.homeWorldKey && knownProfile.homeWorldKey!==payload.setting?.worldKey && !currentWorldMatchesOrigin(payload.setting)) continue;
-                const senderRegistered = rawItem.sender ? (registerNpcIdentity({name:rawItem.sender, source:`channel-group:${rawItem.groupName||''}`, floor:payload.floor}, payload.floor) || rawItem.sender) : '';
+                const senderRegistered = rawItem.sender ? (registerNpcIdentity({name:rawItem.sender, source:`channel-group:${rawItem.groupName||''}`, floor:payload.floor}, payload.floor) || rawItem.sender) :'';
                 if (senderRegistered) ensureAmbientNpcPerson(senderRegistered, rawItem.groupName, payload.floor);
                 const membersRegistered=(rawItem.members||[]).map(name=>registerNpcIdentity({name,source:`channel-group:${rawItem.groupName||''}`,floor:payload.floor},payload.floor)||canonicalNpcName(name)||name);
                 const item={...rawItem,sender:senderRegistered,members:membersRegistered}; const stored=stampPhoneEvent({...item,_sidecarId:payload.id,_floor:payload.floor},{floor:payload.floor,sidecarId:payload.id,createdAt:payloadCreatedAt});
                 if(stored.sender){
                     s39MarkAcquaintance(stored.sender,{channel:`Liên lạc nhóm: ${stored.groupName||''}`,floor:payload.floor,evidence:compactText(stored.content,220)});
-                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`Liên lạc nhóm: ${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}：${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
+                    s39RecordStoryEvent({type:'group-communication',relatedId:stored.id,participants:[userName,stored.sender],channel:`Liên lạc nhóm: ${stored.groupName||''}`,status:'Đã xảy ra',summary:`${stored.sender}: ${compactText(stored.content||'[Tin nhắn nhóm]',700)}`,floor:payload.floor,time:stored.time,source:'companion-phone'});
                 }
                 const duplicate=(s.phone.channelGroups||[]).slice(-80).some(row=>compactText(row?.groupName,120)===compactText(stored.groupName,120)&&compactText(row?.sender,100)===compactText(stored.sender,100)&&compactText(row?.content,1800)===compactText(stored.content,1800));
                 if(duplicate)continue; s.phone.channelGroups.push(stored);
@@ -8923,7 +8928,7 @@ ${messageText(message).slice(0,10000)}`;
         for (const event of world.events || []) {
             let character = characters.find(item => item.name === event.character);
             if (!character) {
-                character = { ...(previous.get(event.character) || {}), id: previous.get(event.character)?.id || uid('character'), name: event.character, location: '', activity: '', goal: '', mood: '', social: '', updatedAt: '', time: '', lastFloor: -1, updates: 0 };
+                character = { ...(previous.get(event.character) || {}), id: previous.get(event.character)?.id || uid('character'), name: event.character, location:'', activity:'', goal:'', mood:'', social:'', updatedAt:'', time:'', lastFloor: -1, updates: 0 };
                 characters.push(character);
             }
             character.location = event.location || character.location;
@@ -8986,7 +8991,7 @@ ${messageText(message).slice(0,10000)}`;
                 author: item.groupName || item.author || 'Nhóm WeChat',
                 contact: item.sender || item.contact || '',
                 type:'wechatGroups',
-                label:`Nhóm WeChat${item.sender ? ` · ${item.sender}` : ''}`,
+                label:`Nhóm WeChat${item.sender ?` · ${item.sender}` :''}`,
                 icon:'👥',
             });
         }
@@ -9060,7 +9065,7 @@ ${messageText(message).slice(0,10000)}`;
     function foldBlock(title, meta, body, key, floor) {
         const ui = companionUiState(floor);
         const open = Boolean(ui.sections?.[key]);
-        return `<section class="vvvtm-info-fold" data-vvvtm-fold-key="${esc(key)}"><div class="vvvtm-world-fold-toggle"><span>${title}</span><em>${esc(meta || '')}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-section="${esc(key)}" data-vvvtm-floor="${esc(floor)}" aria-expanded="${open}" aria-label="${open ? 'Thu gọn' : 'Mở'}${esc(String(title).replace(/^\S+\s*/, ''))}">${open ? '－' : '＋'}</button></div><div class="vvvtm-info-fold-body" ${open ? '' : 'hidden'}>${body}</div></section>`;
+        return `<section class="vvvtm-info-fold" data-vvvtm-fold-key="${esc(key)}"><div class="vvvtm-world-fold-toggle"><span>${title}</span><em>${esc(meta || '')}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-section="${esc(key)}" data-vvvtm-floor="${esc(floor)}" aria-expanded="${open}" aria-label="${open ?'Thu gọn' :'Mở'}${esc(String(title).replace(/^\S+\s*/,''))}">${open ?'－' :'＋'}</button></div><div class="vvvtm-info-fold-body" ${open ?'' :'hidden'}>${body}</div></section>`;
     }
 
     function companionDisplayProfile(payload) {
@@ -9098,23 +9103,23 @@ ${messageText(message).slice(0,10000)}`;
         const phoneBody = phone.length
             ? phone.slice(0, 10).map(item => {
                 const callMeta = item.type === 'calls'
-                    ? `${callStatus[item.status] || 'Cuộc gọi'}${item.requiresAnswer ? ' · đang chờ bạn bắt máy' : ''}`
+                    ?`${callStatus[item.status] || 'Cuộc gọi'}${item.requiresAnswer ?' · đang chờ bạn bắt máy' :''}`
                     : item.label;
                 const actions = item.type === 'calls' && item.requiresAnswer
-                    ? `<div class="vvvtm-call-actions"><button type="button" data-vvvtm-call-action="answer" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">Nghe máy</button><button type="button" class="danger-soft" data-vvvtm-call-action="decline" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">Cúp máy</button></div>`
-                    : '';
-                return `<article class="vvvtm-inline-phone-item ${item.type === 'calls' ? 'call' : ''}"><span>${esc(item.icon)}</span><div><b>${esc(item.author || item.contact || item.label)}</b><small>${esc([callMeta,displayGeneratedEventTime(item,payload.floor)].filter(Boolean).join(' · '))}</small><p>${esc(item.content)}</p>${actions}</div></article>`;
+                    ?`<div class="vvvtm-call-actions"><button type="button" data-vvvtm-call-action="answer" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">Nghe máy</button><button type="button" class="danger-soft" data-vvvtm-call-action="decline" data-vvvtm-call-id="${esc(item.id)}" data-vvvtm-call-contact="${esc(item.author || item.contact || '')}">Cúp máy</button></div>`
+                    :'';
+                return `<article class="vvvtm-inline-phone-item ${item.type === 'calls' ?'call' :''}"><span>${esc(item.icon)}</span><div><b>${esc(item.author || item.contact || item.label)}</b><small>${esc([callMeta,displayGeneratedEventTime(item,payload.floor)].filter(Boolean).join(' · '))}</small><p>${esc(item.content)}</p>${actions}</div></article>`;
             }).join('')
-            : `<div class="vvvtm-inline-empty">${profile.available === false && profile.communicationType === 'smartphone' ? `Mạng hiện đang ngoại tuyến: vẫn mở được ${esc(device)} để xem nội dung trong máy; WeChat, SMS, cuộc gọi và các cách liên lạc từ xa tạm thời không dùng được.` : profile.available === false ? `Phán định của không - thời gian hiện tại: ${esc(device)} chưa có phương tiện liên lạc từ xa khả dụng; sẽ không nhồi nội dung lệch thời đại.` : `Lượt này không có nội dung mới hợp lý cho ${esc(device)}.`}</div>`;
+            :`<div class="vvvtm-inline-empty">${profile.available === false && profile.communicationType === 'smartphone' ?`Mạng hiện đang ngoại tuyến: vẫn mở được ${esc(device)} để xem nội dung trong máy; WeChat, SMS, cuộc gọi và các cách liên lạc từ xa tạm thời không dùng được.` : profile.available === false ?`Phán định của không - thời gian hiện tại: ${esc(device)} chưa có phương tiện liên lạc từ xa khả dụng; sẽ không nhồi nội dung lệch thời đại.` :`Lượt này không có nội dung mới hợp lý cho ${esc(device)}.`}</div>`;
 
         const worldBody = world.length
-            ? `${payload.world.timeProgress ? `<div class="vvvtm-world-progress">⏱ ${esc(payload.world.timeProgress)}</div>` : ''}${world.map(item => `<article class="vvvtm-inline-world-item"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.activity)}</p><dl>${item.goal ? `<div><dt>Mục tiêu</dt><dd>${esc(item.goal)}</dd></div>` : ''}${item.mood ? `<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>` : ''}${item.social ? `<div><dt>Giao tiếp</dt><dd>${esc(item.social)}</dd></div>` : ''}${item.relationToMainPlot ? `<div><dt>Quan hệ mạch chính</dt><dd>${esc(item.relationToMainPlot)}</dd></div>` : ''}</dl></article>`).join('')}`
-            : '<div class="vvvtm-inline-empty">Lượt này không có thay đổi nhân vật ngoài ống kính cần ghi lại.</div>';
+            ?`${payload.world.timeProgress ?`<div class="vvvtm-world-progress">⏱ ${esc(payload.world.timeProgress)}</div>` :''}${world.map(item => `<article class="vvvtm-inline-world-item"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.activity)}</p><dl>${item.goal ?`<div><dt>Mục tiêu</dt><dd>${esc(item.goal)}</dd></div>` :''}${item.mood ?`<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>` :''}${item.social ?`<div><dt>Giao tiếp</dt><dd>${esc(item.social)}</dd></div>` :''}${item.relationToMainPlot ?`<div><dt>Quan hệ mạch chính</dt><dd>${esc(item.relationToMainPlot)}</dd></div>` :''}</dl></article>`).join('')}`
+            :'<div class="vvvtm-inline-empty">Lượt này không có thay đổi nhân vật ngoài ống kính cần ghi lại.</div>';
 
         const sceneLabels = {time:'Thời gian',location:'Địa điểm',weather:'Thời tiết',mood:'Không khí',pace:'Nhịp',goal:'Mục tiêu lượt này'};
         const sceneBody = Object.entries(scene).length
-            ? `<dl class="vvvtm-inline-kv">${Object.entries(scene).map(([key,value]) => `<div><dt>${esc(sceneLabels[key] || key)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>`
-            : '<div class="vvvtm-inline-empty">Lượt này chưa nhận diện được thông tin bối cảnh mới.</div>';
+            ?`<dl class="vvvtm-inline-kv">${Object.entries(scene).map(([key,value]) => `<div><dt>${esc(sceneLabels[key] || key)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>`
+            :'<div class="vvvtm-inline-empty">Lượt này chưa nhận diện được thông tin bối cảnh mới.</div>';
 
         const promiseBody = promises.length
             ? promises.map(item => {
@@ -9124,70 +9129,70 @@ ${messageText(message).slice(0,10000)}`;
                 const content = promiseRecordContent(item);
                 const characters = promiseRecordCharacters(item);
                 const time = compactText(item?.time ?? item?.['Thời điểm hẹn'], 220);
-                const action = `<div class="vvvtm-row-actions"><button type="button" class="vvvtm-promise-complete" data-vvvtm-promise-complete="true"${promiseId ? ` data-vvvtm-promise-id="${esc(promiseId)}"` : ''}${promiseKey && promiseKey !== '::' ? ` data-vvvtm-promise-key="${esc(promiseKey)}"` : ''} data-vvvtm-promise-content="${esc(content)}" data-vvvtm-promise-characters="${esc(characters)}" data-vvvtm-promise-time="${esc(time)}" data-vvvtm-promise-floor="${esc(payload.floor)}" aria-label="Hoàn thành lời hẹn: ${esc(content || 'Lời hẹn chưa đặt tên')}" title="Đánh dấu đã hoàn thành ngay">Hoàn thành</button></div>`;
-                return `<article class="vvvtm-inline-simple"${promiseId ? ` data-vvvtm-promise-id="${esc(promiseId)}"` : ''}><b>${esc(content)}</b><small>${esc([time, characters, item.status || item['Trạng thái']].filter(Boolean).join(' · '))}</small>${action}</article>`;
+                const action = `<div class="vvvtm-row-actions"><button type="button" class="vvvtm-promise-complete" data-vvvtm-promise-complete="true"${promiseId ?` data-vvvtm-promise-id="${esc(promiseId)}"` :''}${promiseKey && promiseKey !== '::' ?` data-vvvtm-promise-key="${esc(promiseKey)}"` :''} data-vvvtm-promise-content="${esc(content)}" data-vvvtm-promise-characters="${esc(characters)}" data-vvvtm-promise-time="${esc(time)}" data-vvvtm-promise-floor="${esc(payload.floor)}" aria-label="Hoàn thành lời hẹn: ${esc(content || 'Lời hẹn chưa đặt tên')}" title="Đánh dấu đã hoàn thành ngay">Hoàn thành</button></div>`;
+                return `<article class="vvvtm-inline-simple"${promiseId ?` data-vvvtm-promise-id="${esc(promiseId)}"` :''}><b>${esc(content)}</b><small>${esc([time, characters, item.status || item['Trạng thái']].filter(Boolean).join(' · '))}</small>${action}</article>`;
             }).join('')
-            : '<div class="vvvtm-inline-empty">Hiện không có lời hẹn nào chờ thực hiện.</div>';
+            :'<div class="vvvtm-inline-empty">Hiện không có lời hẹn nào chờ thực hiện.</div>';
 
         const secretBody = secrets.length
-            ? secrets.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.subject || 'Bí mật')}</b><p>${esc(item.content || '')}</p>${item.knowers ? `<small>Người biết: ${esc(item.knowers)}</small>` : ''}${item.suspects ? `<small>Người nghi ngờ: ${esc(item.suspects)}</small>` : ''}</article>`).join('')
-            : '<div class="vvvtm-inline-empty">Hiện không có lời hẹn và bí mật nào cần hiển thị.</div>';
+            ? secrets.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.subject || 'Bí mật')}</b><p>${esc(item.content || '')}</p>${item.knowers ?`<small>Người biết: ${esc(item.knowers)}</small>` :''}${item.suspects ?`<small>Người nghi ngờ: ${esc(item.suspects)}</small>` :''}</article>`).join('')
+            :'<div class="vvvtm-inline-empty">Hiện không có lời hẹn và bí mật nào cần hiển thị.</div>';
 
         const appearanceBody = appearances.length
-            ? appearances.map(item => `<article class="vvvtm-inline-appearance"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.outfit)}</p><dl>${item.hair ? `<div><dt>Kiểu tóc</dt><dd>${esc(item.hair)}</dd></div>` : ''}${item.accessories ? `<div><dt>Phụ kiện</dt><dd>${esc(item.accessories)}</dd></div>` : ''}${item.shoes ? `<div><dt>Giày dép</dt><dd>${esc(item.shoes)}</dd></div>` : ''}${item.condition ? `<div><dt>Trạng thái</dt><dd>${esc(item.condition)}</dd></div>` : ''}</dl></article>`).join('')
-            : '<div class="vvvtm-inline-empty">Lượt này không có thông tin trang phục mới.</div>';
+            ? appearances.map(item => `<article class="vvvtm-inline-appearance"><header><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></header><p>${esc(item.outfit)}</p><dl>${item.hair ?`<div><dt>Kiểu tóc</dt><dd>${esc(item.hair)}</dd></div>` :''}${item.accessories ?`<div><dt>Phụ kiện</dt><dd>${esc(item.accessories)}</dd></div>` :''}${item.shoes ?`<div><dt>Giày dép</dt><dd>${esc(item.shoes)}</dd></div>` :''}${item.condition ?`<div><dt>Trạng thái</dt><dd>${esc(item.condition)}</dd></div>` :''}</dl></article>`).join('')
+            :'<div class="vvvtm-inline-empty">Lượt này không có thông tin trang phục mới.</div>';
 
         const storyBody = (items, emptyText) => items?.length
             ? items.map(item => `<article class="vvvtm-inline-simple"><b>${esc(item.author || item.contact || '')}</b><p>${esc(item.content || '')}</p><small>${esc(displayGeneratedEventTime(item,payload.floor))}</small></article>`).join('')
-            : `<div class="vvvtm-inline-empty">${esc(emptyText)}</div>`;
+            :`<div class="vvvtm-inline-empty">${esc(emptyText)}</div>`;
 
-        const policySourceName = ['tavern-current-preset','companion-independent-then-tavern'].includes(payload.source) ? 'Nhà cung cấp API chính của SillyTavern từ yêu cầu bản cũ' : 'Nhà cung cấp API riêng';
+        const policySourceName = ['tavern-current-preset','companion-independent-then-tavern'].includes(payload.source) ?'Nhà cung cấp API chính của SillyTavern từ yêu cầu bản cũ' :'Nhà cung cấp API riêng';
         const status = payload.parseStatus === 'ok' || payload.parseStatus === 'fallback-ok'
-            ? '<div class="vvvtm-inline-success">Đã tạo xong! ♡</div>'
+            ?'<div class="vvvtm-inline-success">Đã tạo xong! ♡</div>'
             : payload.parseStatus === 'retrying-seven-api'
-                ? `<div class="vvvtm-inline-warning">Bảy điều hậu trường tạm thời thất bại, đang tự động thử lại (lần ${Math.max(1, Number(payload.retryAttempt || 1))}) ; lý do: ${esc(payload.retryReason || 'lỗi mạng hoặc định dạng tạm thời')}. Thành công sẽ tự động ghi vào.</div>`
+                ?`<div class="vvvtm-inline-warning">Bảy điều hậu trường tạm thời thất bại, đang tự động thử lại (lần ${Math.max(1, Number(payload.retryAttempt || 1))}) ; lý do: ${esc(payload.retryReason || 'lỗi mạng hoặc định dạng tạm thời')}. Thành công sẽ tự động ghi vào.</div>`
                 : ['seven-api-failed','fallback-failed'].includes(payload.parseStatus)
                     ? payload.failureKind === 'provider-policy-refusal'
-                        ? `<div class="vvvtm-inline-warning">${esc(policySourceName)} từ chối theo chính sách, lượt này đã dừng ngay và sẽ không tự đổi tuyến: ${esc(payload.fallbackError || 'Yêu cầu bị chính sách nội dung của nhà cung cấp từ chối')}. Bạn có thể vào “API và mô hình” để chọn thủ công một nguồn viết khác.</div>`
-                        : `<div class="vvvtm-inline-warning">Bảy điều hậu trường đã dừng tự thử lại: ${esc(payload.fallbackError || 'Phát hiện lỗi cấu hình cần sửa thủ công')}.</div>`
+                        ?`<div class="vvvtm-inline-warning">${esc(policySourceName)} từ chối theo chính sách, lượt này đã dừng ngay và sẽ không tự đổi tuyến: ${esc(payload.fallbackError || 'Yêu cầu bị chính sách nội dung của nhà cung cấp từ chối')}. Bạn có thể vào “API và mô hình” để chọn thủ công một nguồn viết khác.</div>`
+                        :`<div class="vvvtm-inline-warning">Bảy điều hậu trường đã dừng tự thử lại: ${esc(payload.fallbackError || 'Phát hiện lỗi cấu hình cần sửa thủ công')}.</div>`
                     : ['waiting-seven-api','missing'].includes(payload.parseStatus)
-                        ? '<div class="vvvtm-inline-warning">Lượt này đang tạo Bảy điều hậu trường ở nền; chính văn hiển thị không bị ảnh hưởng.</div>'
+                        ?'<div class="vvvtm-inline-warning">Lượt này đang tạo Bảy điều hậu trường ở nền; chính văn hiển thị không bị ảnh hưởng.</div>'
                         : payload.parseStatus === 'seven-api-unconfigured'
-                            ? `<div class="vvvtm-inline-warning">${esc(payload.fallbackError || 'Nguồn viết của Bảy điều hậu trường không dùng được')}; chính văn hiển thị vẫn bình thường, nhưng mô-đun hậu trường của lượt này sẽ không cập nhật. Hãy vào “API và mô hình” để kiểm tra nguồn viết hiện tại.</div>`
+                            ?`<div class="vvvtm-inline-warning">${esc(payload.fallbackError || 'Nguồn viết của Bảy điều hậu trường không dùng được')}; chính văn hiển thị vẫn bình thường, nhưng mô-đun hậu trường của lượt này sẽ không cập nhật. Hãy vào “API và mô hình” để kiểm tra nguồn viết hiện tại.</div>`
                             : payload.parseStatus === 'invalid'
-                                ? '<div class="vvvtm-inline-warning">API Bảy điều hậu trường trả về định dạng bất thường; R9S1P41 sẽ tự thử tiếp khi tạo lại.</div>'
-                                : '';
+                                ?'<div class="vvvtm-inline-warning">API Bảy điều hậu trường trả về định dạng bất thường; R9S1P41 sẽ tự thử tiếp khi tạo lại.</div>'
+                                :'';
 
         const ecologyStatus = payload.ecologyRepairStatus === 'ok'
-            ? `<div class="vvvtm-inline-success">📡 Đã hồi sinh hệ sinh thái xã hội: ${esc(payload.ecologyRepairReason || 'Điện thoại/Bỉ Gian Tư Văn đã chạm ngưỡng im lặng')}。</div>`
+            ?`<div class="vvvtm-inline-success">📡 Đã hồi sinh hệ sinh thái xã hội: ${esc(payload.ecologyRepairReason || 'Điện thoại/Bỉ Gian Tư Văn đã chạm ngưỡng im lặng')}.</div>`
             : payload.ecologyRepairStatus === 'failed'
-                ? `<div class="vvvtm-inline-warning">📡 Hồi sinh hệ sinh thái xã hội thất bại: ${esc(payload.ecologyRepairError || 'API bảy điều chưa hoàn tất')}; chính văn và ký ức hiện có không bị ảnh hưởng.</div>`
-                : '';
+                ?`<div class="vvvtm-inline-warning">📡 Hồi sinh hệ sinh thái xã hội thất bại: ${esc(payload.ecologyRepairError || 'API bảy điều chưa hoàn tất')}; chính văn và ký ức hiện có không bị ảnh hưởng.</div>`
+                :'';
         const completenessStatus = payload.completenessRepair?.attempted && payload.completenessRepair?.status === 'ok'
-            ? `<div class="vvvtm-inline-success">🧩 Đã tự bổ sung các mục còn thiếu: ${esc((payload.completenessRepair.missingBefore || []).map(item=>item?.label).filter(Boolean).join(', ') || 'mục đời sống hậu trường')}.</div>`
-            : '';
+            ?`<div class="vvvtm-inline-success">🧩 Đã tự bổ sung các mục còn thiếu: ${esc((payload.completenessRepair.missingBefore || []).map(item=>item?.label).filter(Boolean).join(',') || 'mục đời sống hậu trường')}.</div>`
+            :'';
         const memoryGap=companionCoreMemoryGaps({limit:120}).find(item=>Number(item.floor)===Number(payload.floor)&&item.signature&&payload.signature&&item.signature===payload.signature);
         const memoryStatus=memoryGap
-            ? `<div class="vvvtm-inline-warning vvvtm-memory-gap">🧠 Bảy điều hậu trường đã tạo xong, nhưng ký ức chính của tầng này chưa được sắp xếp.<button type="button" data-vvvtm-memory-reextract="${esc(payload.floor)}">Dựng lại ký ức chính của tầng này</button></div>`
-            : '';
+            ?`<div class="vvvtm-inline-warning vvvtm-memory-gap">🧠 Bảy điều hậu trường đã tạo xong, nhưng ký ức chính của tầng này chưa được sắp xếp.<button type="button" data-vvvtm-memory-reextract="${esc(payload.floor)}">Dựng lại ký ức chính của tầng này</button></div>`
+            :'';
         const calibration=activeTimeCalibration();
         const latestSidecarFloor=(context()?.chat||[]).reduce((last,message,index)=>message?.extra?.vvvTheaterCompanion?index:last,-1);
         const canCalibrate=Number(payload.floor)===latestSidecarFloor;
         const timeLabel=calibration?.value || profile.era || 'Chưa ghi chú thời đại';
         const reasonLabel=calibration?'Đã hiệu chỉnh thủ công':profile.reason;
-        const settingNote = `<div class="vvvtm-setting-chip"><span>🌐 ${esc(profile.worldType || 'Tự nhận diện')} · ${esc(timeLabel)} · ${esc(device)}${reasonLabel ? ` · ${esc(reasonLabel)}` : ''}</span>${canCalibrate?'<button type="button" data-vvvtm-time-calibrate title="Tự chỉnh thời gian cốt truyện">🕒 Chỉnh giờ</button>':''}</div>`;
+        const settingNote = `<div class="vvvtm-setting-chip"><span>🌐 ${esc(profile.worldType || 'Tự nhận diện')} · ${esc(timeLabel)} · ${esc(device)}${reasonLabel ?` · ${esc(reasonLabel)}` :''}</span>${canCalibrate?'<button type="button" data-vvvtm-time-calibrate title="Tự chỉnh thời gian cốt truyện">🕒 Chỉnh giờ</button>':''}</div>`;
         return `<section class="vvvtm-inline-extra" data-vvvtm-sidecar="${esc(payload.id)}" data-vvvtm-floor="${esc(payload.floor)}">
             <header><span>✒️ 0-32 · Sân Khấu Không Bao Giờ Hạ Màn</span><div><button type="button" data-vvvtm-open-tab="worldlife">Quản lý Bỉ Gian Tư Văn</button><button type="button" data-vvvtm-regenerate="${payload.floor}">Viết lại riêng (thêm một yêu cầu)</button></div></header>
             ${status}${memoryStatus}${completenessStatus}${ecologyStatus}${settingNote}
-            ${foldBlock('🎬 Cảnh hiện tại', Object.keys(scene).length ? `${Object.keys(scene).length} mục` : 'Không có cập nhật', sceneBody, 'scene', payload.floor)}
-            ${foldBlock('⏰ Lời hẹn chờ thực hiện', promises.length ? `${promises.length} mục` : 'Chưa có', promiseBody, 'promises', payload.floor)}
-            ${foldBlock('🔐 Lời hẹn và bí mật', secrets.length ? `${secrets.length} mục` : 'Chưa có', secretBody, 'secrets', payload.floor)}
-            ${foldBlock('👗 Ngoại hình nhân vật', appearances.length ? `${appearances.length} người` : 'Lượt này không có cập nhật', appearanceBody, 'appearance', payload.floor)}
-            ${foldBlock('🌐 Khoảnh khắc', story.moments?.length ? `${story.moments.length} mục` : 'Chưa có', storyBody(story.moments, 'Lượt này không có bài đăng Khoảnh khắc.'), 'moments', payload.floor)}
-            ${foldBlock('📔 Nhật ký', story.diary?.length ? `${story.diary.length} mục` : 'Chưa có', storyBody(story.diary, 'Lượt này không có nhật ký cần ghi lại.'), 'diary', payload.floor)}
-            ${foldBlock('🗓️ Ngày kỷ niệm', story.anniversaries?.length ? `${story.anniversaries.length} mục` : 'Chưa có', storyBody(story.anniversaries, 'Lượt này không có thông tin ngày kỷ niệm mới.'), 'anniversaries', payload.floor)}
-            <section class="vvvtm-phone-fold"><div class="vvvtm-world-fold-toggle"><span>${communicationIcon(profile)} ${esc(device)}</span><em>${phone.length ? `${phone.length} nội dung mới` : 'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-phone="${payload.floor}" aria-expanded="${phoneOpen}" aria-label="${phoneOpen ? `Thu gọn ${esc(device)}` : `Mở ${esc(device)}`}">${phoneOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${phoneOpen ? '' : 'hidden'}>${phoneBody}<button type="button" class="vvvtm-open-device-inline" data-vvvtm-open-phone="${payload.floor}">Mở đầy đủ ${esc(device)}</button></div></section>
-            <section class="vvvtm-world-fold"><div class="vvvtm-world-fold-toggle"><span>🌍 Bỉ Gian Tư Văn</span><em>${world.length ? `${world.length} bài đăng` : 'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-world="${payload.floor}" aria-expanded="${worldOpen}" aria-label="${worldOpen ? 'Thu gọn Bỉ Gian Tư Văn' : 'Mở Bỉ Gian Tư Văn'}">${worldOpen ? '－' : '＋'}</button></div><div class="vvvtm-world-fold-body" ${worldOpen ? '' : 'hidden'}>${worldBody}</div></section>
+            ${foldBlock('🎬 Cảnh hiện tại', Object.keys(scene).length ?`${Object.keys(scene).length} mục` :'Không có cập nhật', sceneBody,'scene', payload.floor)}
+            ${foldBlock('⏰ Lời hẹn chờ thực hiện', promises.length ?`${promises.length} mục` :'Chưa có', promiseBody,'promises', payload.floor)}
+            ${foldBlock('🔐 Lời hẹn và bí mật', secrets.length ?`${secrets.length} mục` :'Chưa có', secretBody,'secrets', payload.floor)}
+            ${foldBlock('👗 Ngoại hình nhân vật', appearances.length ?`${appearances.length} người` :'Lượt này không có cập nhật', appearanceBody,'appearance', payload.floor)}
+            ${foldBlock('🌐 Khoảnh khắc', story.moments?.length ?`${story.moments.length} mục` :'Chưa có', storyBody(story.moments,'Lượt này không có bài đăng Khoảnh khắc.'),'moments', payload.floor)}
+            ${foldBlock('📔 Nhật ký', story.diary?.length ?`${story.diary.length} mục` :'Chưa có', storyBody(story.diary,'Lượt này không có nhật ký cần ghi lại.'),'diary', payload.floor)}
+            ${foldBlock('🗓️ Ngày kỷ niệm', story.anniversaries?.length ?`${story.anniversaries.length} mục` :'Chưa có', storyBody(story.anniversaries,'Lượt này không có thông tin ngày kỷ niệm mới.'),'anniversaries', payload.floor)}
+            <section class="vvvtm-phone-fold"><div class="vvvtm-world-fold-toggle"><span>${communicationIcon(profile)} ${esc(device)}</span><em>${phone.length ?`${phone.length} nội dung mới` :'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-phone="${payload.floor}" aria-expanded="${phoneOpen}" aria-label="${phoneOpen ?`Thu gọn ${esc(device)}` :`Mở ${esc(device)}`}">${phoneOpen ?'－' :'＋'}</button></div><div class="vvvtm-world-fold-body" ${phoneOpen ?'' :'hidden'}>${phoneBody}<button type="button" class="vvvtm-open-device-inline" data-vvvtm-open-phone="${payload.floor}">Mở đầy đủ ${esc(device)}</button></div></section>
+            <section class="vvvtm-world-fold"><div class="vvvtm-world-fold-toggle"><span>🌍 Bỉ Gian Tư Văn</span><em>${world.length ?`${world.length} bài đăng` :'Lượt này không có cập nhật'}</em><button type="button" class="vvvtm-fold-sign" data-vvvtm-toggle-world="${payload.floor}" aria-expanded="${worldOpen}" aria-label="${worldOpen ?'Thu gọn Bỉ Gian Tư Văn' :'Mở Bỉ Gian Tư Văn'}">${worldOpen ?'－' :'＋'}</button></div><div class="vvvtm-world-fold-body" ${worldOpen ?'' :'hidden'}>${worldBody}</div></section>
         </section>`;
     }
 
@@ -9261,7 +9266,7 @@ ${messageText(message).slice(0,10000)}`;
         if (!text) return;
         text.querySelectorAll('.vvvtm-inline-extra').forEach(existing => existing.remove());
         clearCompanionLoading(floor);
-        const html = payload ? renderCompanionInline(payload) : '';
+        const html = payload ? renderCompanionInline(payload) :'';
         if (html) {
             text.insertAdjacentHTML('beforeend', html);
             const card=[...text.querySelectorAll('.vvvtm-inline-extra')].find(item=>String(item.dataset.vvvtmFloor||'')===String(floor));
@@ -9414,7 +9419,7 @@ ${messageText(message).slice(0,10000)}`;
         const generation = stateRuntime.dataGeneration;
         const stateAtStart = stateRuntime.state;
         const finalPrompt = jsonMode
-            ? `${prompt}\n\n【YÊU CẦU CỨNG VỀ ĐẦU RA】Chỉ xuất đúng một object JSON mà JSON.parse đọc được ngay; không dùng khối mã Markdown, không giải thích, không viết tiếp chính văn.`
+            ?`${prompt}\n\n【YÊU CẦU CỨNG VỀ ĐẦU RA】Chỉ xuất đúng một object JSON mà JSON.parse đọc được ngay; không dùng khối mã Markdown, không giải thích, không viết tiếp chính văn.`
             : prompt;
         const data = await callCompanionJsonWithRecovery(finalPrompt, { systemPrompt, jsonMode, generationType, finalInstruction, progressFloor:Number(record?.floor), source:writingSource });
         if (!chatScopeIsCurrent(scope) || stateRuntime.dataGeneration !== generation || stateRuntime.state !== stateAtStart) {
@@ -9425,8 +9430,8 @@ ${messageText(message).slice(0,10000)}`;
         const model = compactText(data?.model || stateRuntime.serverConfig?.companion?.model || '', 180);
         const sourceLabel = compactText(data?.sourceLabel || companionWritingSourceLabel(), 180);
         const task = {
-            id: `companion-api-${globalThis.crypto?.randomUUID?.() || `${now}-${Math.random().toString(16).slice(2)}`}`,
-            status: 'completed',
+            id:`companion-api-${globalThis.crypto?.randomUUID?.() || `${now}-${Math.random().toString(16).slice(2)}`}`,
+            status:'completed',
             progress: 100,
             createdAt: now,
             updatedAt: now,
@@ -9442,7 +9447,7 @@ ${messageText(message).slice(0,10000)}`;
         if (record) {
             Object.assign(record, {
                 id: task.id,
-                status: 'completed',
+                status:'completed',
                 createdAt: Number(record.createdAt || now),
                 updatedAt: now,
                 applied: false,
@@ -9465,10 +9470,10 @@ ${messageText(message).slice(0,10000)}`;
         await ensureCompanionWritingSourceReady();
         if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation)throw new Error('Đã đổi cuộc trò chuyện: đã hủy việc ghi Bảy điều hậu trường của cuộc cũ');
         if (feature === 'companion') {
-            updateCompanionFallbackProgress(Number(record?.floor), null, `${companionWritingSourceLabel()} đang tạo`, 'Chỉ gửi chính văn hiện tại và một lượng tư liệu ký ức có hạn');
+            updateCompanionFallbackProgress(Number(record?.floor), null,`${companionWritingSourceLabel()} đang tạo`,'Chỉ gửi chính văn hiện tại và một lượng tư liệu ký ức có hạn');
         }
-        const generationType = feature === 'companion' ? 'companion-scoped' : 'memory-scoped';
-        const finalInstruction = feature === 'companion' ? COMPANION_FINAL_CONTRACT : '';
+        const generationType = feature === 'companion' ?'companion-scoped' :'memory-scoped';
+        const finalInstruction = feature === 'companion' ? COMPANION_FINAL_CONTRACT :'';
         const task = await runCompanionIndependentApi({ prompt, systemPrompt, jsonMode, record, generationType, finalInstruction, writingSource });
         if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation){
             throw new Error('Đã đổi cuộc trò chuyện: đã loại bỏ kết quả Bảy điều hậu trường của cuộc cũ');
@@ -9487,7 +9492,7 @@ ${messageText(message).slice(0,10000)}`;
             entry = lastAssistantEntry({ requireUserBefore: true });
         }
         if (!entry) {
-            if (force && !silent) toast('Lời mở đầu của thẻ nhân vật sẽ không đọc hay tạo thiết bị liên lạc và Bỉ Gian Tư Văn. Hãy gửi một tin nhắn trước.', 'info');
+            if (force && !silent) toast('Lời mở đầu của thẻ nhân vật sẽ không đọc hay tạo thiết bị liên lạc và Bỉ Gian Tư Văn. Hãy gửi một tin nhắn trước.','info');
             return false;
         }
         const { index, message } = entry;
@@ -9506,8 +9511,8 @@ ${messageText(message).slice(0,10000)}`;
         let companionTaskRecord=null;
         startCompanionProgress(
             index,
-            fromRetry ? 'Bảy điều hậu trường đang tự thử lại' : 'Bảy điều hậu trường đang tạo ở nền',
-            fallbackReason || (fromRetry ? `Tự thử tiếp sau khi thất bại (tối đa ${companionRetryLimit()} lần)` : companionWritingSourceLabel()),
+            fromRetry ?'Bảy điều hậu trường đang tự thử lại' :'Bảy điều hậu trường đang tạo ở nền',
+            fallbackReason || (fromRetry ?`Tự thử tiếp sau khi thất bại (tối đa ${companionRetryLimit()} lần)` : companionWritingSourceLabel()),
         );
         try {
             await ensureCompanionWritingSourceReady();
@@ -9515,16 +9520,16 @@ ${messageText(message).slice(0,10000)}`;
             const prompt = await companionPrompt(index, message);
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             // Mỗi lần viết lại/thử lại đều là một yêu cầu mới tới nguồn viết đang chọn; kết quả thành công vẫn được chữ ký tầng bảo vệ theo cơ chế Exactly-Once.
-            const record = { kind: 'companion', floor: index, signature, force: Boolean(force), fallbackReason: compactText(fallbackReason, 80), retryRevision:Math.max(0,Number(existing?.retryAttempt||0)), companionSource:companionPayloadSource() };
+            const record = { kind:'companion', floor: index, signature, force: Boolean(force), fallbackReason: compactText(fallbackReason, 80), retryRevision:Math.max(0,Number(existing?.retryAttempt||0)), companionSource:companionPayloadSource() };
             companionTaskRecord=record;
             let task = await runPluginLlm({
-                feature: 'companion',
+                feature:'companion',
                 prompt,
-                systemPrompt: `${FALLEN_WRITER_CONTEXT}
+                systemPrompt:`${FALLEN_WRITER_CONTEXT}
 【NHIỆM VỤ BẢY ĐIỀU HẬU TRƯỜNG】Bạn là bộ máy nội dung Bảy điều hậu trường của 0-32. Chỉ dùng chính văn hiện tại, ký ức có hạn, hồ sơ nhân vật đã xác nhận và hiện thực hiện tại do chương trình cung cấp trong yêu cầu này; cấm đọc preset của SillyTavern, sách thế giới của nhân vật, Persona hay kết quả biên dịch của Prompt Manager. Chỉ xuất JSON hợp lệ; không được viết tiếp chính văn; không được quyết định thay user. Thời đại/thế giới/phương tiện liên lạc do máy trạng thái của chương trình khóa lại lần cuối, bạn chỉ được dựa vào đó để tạo nội dung hậu trường như điện thoại, Bỉ Gian Tư Văn, ngoại hình nhân vật, Khoảnh khắc/nhật ký/ngày kỷ niệm, cảnh/lời hẹn/bí mật; không được tự đổi thời đại.`,
                 jsonMode: true,
                 record,
-                writingSource: 'configured',
+                writingSource:'configured',
             });
             if (taskChatIdentity !== getChatKey() || (taskChatAnchor && currentChatAnchor() && taskChatAnchor !== currentChatAnchor())) {
                 clearCompanionRetryForFloor(index);
@@ -9540,7 +9545,7 @@ ${messageText(message).slice(0,10000)}`;
                 clearCompanionRetryForFloor(index);
                 return false;
             }
-            updateCompanionFallbackProgress(index, 96, 'Bảy điều hậu trường đã trả về, đang phân tích và ghi vào', record.companionSourceLabel||companionWritingSourceLabel());
+            updateCompanionFallbackProgress(index, 96,'Bảy điều hậu trường đã trả về, đang phân tích và ghi vào', record.companionSourceLabel||companionWritingSourceLabel());
             const applied = await applyCompletedJob(record, task);
             if (!applied) {
                 const status = String(record.status || '');
@@ -9586,14 +9591,14 @@ ${messageText(message).slice(0,10000)}`;
                 const current = context()?.chat?.[index];
                 if (current) {
                     current.extra = current.extra && typeof current.extra === 'object' ? current.extra : {};
-                    const shell = current.extra.vvvTheaterCompanion || emptyCompanionShell(index, signature, 'seven-api-failed', companionTaskRecord?.companionSource || companionPayloadSource());
+                    const shell = current.extra.vvvTheaterCompanion || emptyCompanionShell(index, signature,'seven-api-failed', companionTaskRecord?.companionSource || companionPayloadSource());
                     shell.signature = signature;
                     shell.source = companionTaskRecord?.companionSource || companionPayloadSource();
                     shell.parseStatus = 'seven-api-failed';
                     shell.fallbackError = compactText(error.message, 500);
                     shell.failureKind = (String(error?.name||'')==='ProviderPolicyRefusalError'||String(error?.code||'')==='provider-policy-refusal'||isProviderPolicyRefusalText(error?.message))
-                        ? 'provider-policy-refusal'
-                        : 'permanent-error';
+                        ?'provider-policy-refusal'
+                        :'permanent-error';
                     shell.retryAttempt = 0;
                     shell.retryReason = '';
                     shell.retryAt = 0;
@@ -9602,7 +9607,7 @@ ${messageText(message).slice(0,10000)}`;
                     await saveChatExtras(operationScope);
                     decorateCompanionOutput(index);
                 }
-                if (!silent || fromRetry) toast(`Bảy điều hậu trường dừng tự thử lại: ${error.message}`, 'error');
+                if (!silent || fromRetry) toast(`Bảy điều hậu trường dừng tự thử lại: ${error.message}`,'error');
                 return false;
             }
             scheduleCompanionRetry(index, signature, error, { fallbackReason, silent:true, force:Boolean(force) });
@@ -9671,7 +9676,7 @@ ${messageText(message).slice(0,10000)}`;
         const active=name=>{const p=phoneContactProfile(name);return !p || (p.availability==='active'&&(!p.homeWorldKey||p.homeWorldKey===currentKey||p.scope==='origin'));};
         (phone.contacts || []).forEach(item => {const n=compactText(typeof item === 'string' ? item : item?.name, 80);if(n&&active(n))names.add(n)});
         (phone.threads || []).forEach(item => {const n=compactText(item?.contact,80);if(n&&active(n))names.add(n)});
-        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b, 'vi-VN'));
+        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b,'vi-VN'));
     }
 
     // fixed37: danh sách WeChat/chat nhóm sắp xếp theo tin nhắn thật cuối cùng. Ai vừa có tin thì tự nhảy lên đầu đúng như WeChat/QQ thật.
@@ -10253,7 +10258,7 @@ ${messageText(message).slice(0,10000)}`;
         // Tương thích dữ liệu cũ trước: smartphone / WeChat / weixin đều quy về wechat.
         for (const row of phone.groupProfiles) {
             if (!row || typeof row !== 'object') continue;
-            const normalized = normalizeGroupChannelType(row.channelType, row.channelType ? '' : (currentWechat ? 'wechat' : ''));
+            const normalized = normalizeGroupChannelType(row.channelType, row.channelType ?'' : (currentWechat ?'wechat' :''));
             if (normalized && row.channelType !== normalized) { row.channelType = normalized; changed = true; }
         }
 
@@ -10268,12 +10273,12 @@ ${messageText(message).slice(0,10000)}`;
             profile ||= rows.at(-1) || null;
 
             if (!profile) {
-                const scope = originOnline ? 'origin' : 'local';
+                const scope = originOnline ?'origin' :'local';
                 const homeWorldKey = hintedHome || (scope === 'origin' ? originKey : currentKey);
                 profile = {
                     id:uid('group-profile'), groupName:name, type:'other', members:[], topic:'', activityLevel:'medium',
                     source:'wechat-history-reconcile', scope, homeWorldKey, channelType:'wechat',
-                    availability:scope === 'origin' ? (originOnline ? 'active' : 'offline-origin') : (currentWechat ? 'active' : 'offline-local'),
+                    availability:scope === 'origin' ? (originOnline ?'active' :'offline-origin') : (currentWechat ?'active' :'offline-local'),
                     createdAt:Date.now(), updatedAt:Date.now(), _floor:Number(msg?._floor ?? -1),
                 };
                 phone.groupProfiles.push(profile); changed = true;
@@ -10323,13 +10328,13 @@ ${messageText(message).slice(0,10000)}`;
             const home = compactText(row.homeWorldKey || (scope === 'origin' ? originKey : currentKey), 120);
             row.scope = scope;
             if (!row.homeWorldKey && home) row.homeWorldKey = home;
-            const normalizedChannel = normalizeGroupChannelType(row.channelType, cp.communicationType === 'smartphone' ? 'wechat' : '');
+            const normalizedChannel = normalizeGroupChannelType(row.channelType, cp.communicationType === 'smartphone' ?'wechat' :'');
             if (normalizedChannel) row.channelType = normalizedChannel;
 
             if (scope === 'origin') {
-                row.availability = originOnline ? 'active' : 'offline-origin';
+                row.availability = originOnline ?'active' :'offline-origin';
             } else {
-                row.availability = currentOnline && (!home || !currentKey || home === currentKey) ? 'active' : 'offline-local';
+                row.availability = currentOnline && (!home || !currentKey || home === currentKey) ?'active' :'offline-local';
             }
             row.updatedAt = Number(row.updatedAt || Date.now());
         }
@@ -10341,7 +10346,7 @@ ${messageText(message).slice(0,10000)}`;
         (stateRuntime.state.phone?.groupThreads || []).forEach(item => names.add(compactText(item?.groupName, 120)));
         (stateRuntime.state.phone?.wechatGroups || []).forEach(item => names.add(compactText(item?.groupName, 120)));
         (stateRuntime.state.phone?.channelGroups || []).forEach(item => names.add(compactText(item?.groupName, 120)));
-        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b, 'vi-VN'));
+        return [...names].filter(Boolean).sort((a,b) => a.localeCompare(b,'vi-VN'));
     }
 
     function phoneClock() {
@@ -10351,7 +10356,7 @@ ${messageText(message).slice(0,10000)}`;
         const fact=sceneDateFacts(storyTime).at(-1);
         const year=strictGregorianYear(storyTime);
         const time=Number.isFinite(minutes)
-            ? `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`
+            ?`${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`
             : wall.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',hour12:false});
         let date=wall.toLocaleDateString('vi-VN',{month:'long',day:'numeric',weekday:'short'});
         if(fact){
@@ -10494,7 +10499,7 @@ ${messageText(message).slice(0,10000)}`;
     const S93_COMMON_GOODS = Object.freeze([
         {key:'dark-soy-sauce',category:'Thực phẩm & đồ tươi',name:'Xì dầu đậm màu',aliases:['Nước tương đậm','Laochouwang','Nước tương','Xì dầu kho','Xì dầu đậm'],brands:['Haday','Lee Kum Kee','Chubang','Weishida'],icon:'🫙',price:[8.9,39.9],variants:['500ml','Gói gia đình 1.28L','Loại kho tạo màu','Loại không phụ gia']},
         {key:'light-soy-sauce',category:'Thực phẩm & đồ tươi',name:'Xì dầu nhạt',aliases:['Nước tương nhạt','Weijixian','Xì dầu vị tươi','Nước tương'],brands:['Haday','Chubang','Qianhe','Liuyuexian'],icon:'🫙',price:[8.9,42.9],variants:['500ml','1L gói gia đình','Loại nhạt muối','Loại không phụ gia']},
-        {key:'oyster-sauce',category:'Thực phẩm & đồ tươi',name:'Dầu hào',aliases:['Dầu hào','Dầu hào','Nước tương hàu'],brands:['Haday','Lee Kum Kee','Chubang','Shinho'],icon:'🧴',price:[7.9,35.9],variants:['500g','700g','Chai bóp','Loại không phụ gia']},
+        {key:'oyster-sauce',category:'Thực phẩm & đồ tươi',name:'Dầu hào',aliases:['Dầu hào','Dầu hàu','Nước tương hàu'],brands:['Haday','Lee Kum Kee','Chubang','Shinho'],icon:'🧴',price:[7.9,35.9],variants:['500g','700g','Chai bóp','Loại không phụ gia']},
         {key:'rice-vinegar',category:'Thực phẩm & đồ tươi',name:'Giấm gạo',aliases:['Giấm gạo','Giấm trắng','Giấm ăn'],brands:['Hengshun','Haday','Giấm đen Sơn Tây','Zilin'],icon:'🍶',price:[5.9,29.9],variants:['500ml','1L gói gia đình','Giấm gạo lên men','Chuyên dùng trộn nguội']},
         {key:'black-vinegar',category:'Thực phẩm & đồ tươi',name:'Giấm đen',aliases:['Giấm đen','Giấm đen lâu năm','Giấm thơm'],brands:['Hengshun','Zilin','Shuita','Ninghuafu'],icon:'🍶',price:[6.9,39.9],variants:['500ml','1L gói gia đình','Ủ 3 năm','Giấm thơm trộn nguội']},
         {key:'cooking-oil',category:'Thực phẩm & đồ tươi',name:'Dầu thực vật ăn được',aliases:['Dầu ăn','Dầu xào nấu','Dầu thực vật','Dầu'],brands:['Arawana','Luhua','Fulinmen','Hujihua'],icon:'🫗',price:[39.9,139],variants:['1.8L','Gói gia đình 5L','Không biến đổi gen','Ít axit erucic']},
@@ -10515,7 +10520,7 @@ ${messageText(message).slice(0,10000)}`;
         {key:'trash-bags',category:'Nhà cửa & nội thất',name:'Túi rác',aliases:['Túi rác','Túi nilon','Túi rác gia đình'],brands:['Miaojie','Deli','Chahua','Bailu'],icon:'🗑️',price:[8.9,39.9],variants:['Dày 45 cái','Cỡ lớn 100 cái','Loại có dây rút','Tự thắt miệng']},
         {key:'cling-film',category:'Nhà cửa & nội thất',name:'Màng bọc thực phẩm',aliases:['Màng bọc thực phẩm','Túi bảo quản','Bảo quản nhà bếp'],brands:['Miaojie','Clean Wrap','Chahua','Citylong'],icon:'🍱',price:[8.9,35.9],variants:['30cm×20m','Cuộn lớn','Loại chịu nhiệt','Có dao cắt']},
         {key:'batteries',category:'Nhà cửa & nội thất',name:'Pin kiềm',aliases:['Pin','Pin AA','Pin AAA','Pin NANFU'],brands:['NANFU','Duracell','Panasonic','Shuanglu'],icon:'🔋',price:[9.9,59.9],variants:['Cỡ AA 8 viên','Cỡ AAA 8 viên','Gói hỗn hợp','Vòng tụ năng']},
-        {key:'umbrella',category:'Nhà cửa & nội thất',name:'Ô gấp che mưa',aliases:['Ô','Ô','Ô gấp','Ô che nắng'],brands:['Paradise','Beneunder','Chanh đen','ZUODU'],icon:'☂️',price:[19.9,89.9],variants:['Chống nắng phủ đen','Tự mở tự thu','Dùng cả nắng lẫn mưa','Mặt ô lớn']},
+        {key:'umbrella',category:'Nhà cửa & nội thất',name:'Ô gấp che mưa',aliases:['Ô','Dù','Ô gấp','Ô che nắng'],brands:['Paradise','Beneunder','Chanh đen','ZUODU'],icon:'☂️',price:[19.9,89.9],variants:['Chống nắng phủ đen','Tự mở tự thu','Dùng cả nắng lẫn mưa','Mặt ô lớn']},
         {key:'mask',category:'Thuốc & sức khỏe',name:'Khẩu trang y tế phẫu thuật',aliases:['Khẩu trang','Khẩu trang y tế','Khẩu trang phẫu thuật','N95'],brands:['Winner Medical','Chaomei','Zhende','Hainuo'],icon:'😷',price:[9.9,59.9],variants:['50 cái gói riêng','Người lớn màu trắng','Bảo hộ N95','Gói mang theo']},
         {key:'bandage',category:'Thuốc & sức khỏe',name:'Băng cá nhân chống nước',aliases:['Băng cá nhân','Băng dán vết thương','Băng cầm máu'],brands:['Yunnan Baiyao','Hainuo','Winner Medical','Cofoe'],icon:'🩹',price:[5.9,29.9],variants:['Gói gia đình 100 miếng','Loại chống nước','Loại co giãn','Hộp mang theo']},
         {key:'hand-sanitizer',category:'Thuốc & sức khỏe',name:'Nước rửa tay khô',aliases:['Nước rửa tay','Nước rửa tay khô','Dung dịch sát khuẩn'],brands:['Blue Moon','Walch','Dettol','Safeguard'],icon:'🧴',price:[12.9,49.9],variants:['300ml','Gói mang theo','Loại thoáng nhẹ','Gói gia đình 2 chai']},
@@ -11094,10 +11099,10 @@ ${messageText(message).slice(0,10000)}`;
             const last=messages.at(-1)||{},floor=Number(last?._floor??last?._anchorFloor??-1);
             s39MarkAcquaintance(contact,{channel:'WeChat/lịch sử điện thoại',floor,evidence:'Hội thoại điện thoại lịch sử đã tồn tại'});
             const sampled=[...messages.slice(0,4),...messages.slice(-4)].filter((item,index,arr)=>arr.findIndex(x=>(x?.id&&item?.id?x.id===item.id:x===item))===index);
-            const history=sampled.map(item=>`${compactText(item?.sender||item?.role,60)||'Tin nhắn'}：${compactText(item?.content||phoneStickerById(item?.stickerId)?.name||'[Sticker]',140)}`).filter(Boolean).join(' / ');
+            const history=sampled.map(item=>`${compactText(item?.sender||item?.role,60)||'Tin nhắn'}: ${compactText(item?.content||phoneStickerById(item?.stickerId)?.name||'[Sticker]',140)}`).filter(Boolean).join(' / ');
             s39RecordStoryEvent({type:'communication-history',relatedId:`thread:${npcNameKey(contact)}`,participants:[userName,contact],channel:'Lịch sử điện thoại',status:'Đã xảy ra',summary:`Trò chuyện điện thoại trước đây: ${history}`,floor,time:last?.time||'',source:'fixed39-migration'});
         }
-        for(const transfer of phone.walletTools?.transfers||[]){const to=s39StoryParticipantName(transfer?.to);if(!to)continue;s39MarkAcquaintance(to,{channel:transfer.account==='wechat'?'Chuyển khoản WeChat':'Chuyển khoản Alipay',floor:transfer.floor,evidence:`Chuyển khoản trước đây ${s8MoneyText(transfer.amount)}`});s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],knownBy:[userName,to],userKnows:true,channel:transfer.channel||transfer.account,amount:transfer.amount,status:transfer.status,summary:`${userName} chuyển cho ${to} qua ${transfer.channel||'Chuyển khoản'} ${s8MoneyText(transfer.amount)}；Trạng thái:${transfer.status||'Chưa ghi nhận'}`,floor:transfer.floor,time:transfer.time,source:'fixed39-migration'});}
+        for(const transfer of phone.walletTools?.transfers||[]){const to=s39StoryParticipantName(transfer?.to);if(!to)continue;s39MarkAcquaintance(to,{channel:transfer.account==='wechat'?'Chuyển khoản WeChat':'Chuyển khoản Alipay',floor:transfer.floor,evidence:`Chuyển khoản trước đây ${s8MoneyText(transfer.amount)}`});s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],knownBy:[userName,to],userKnows:true,channel:transfer.channel||transfer.account,amount:transfer.amount,status:transfer.status,summary:`${userName} chuyển cho ${to} qua ${transfer.channel||'Chuyển khoản'} ${s8MoneyText(transfer.amount)}; Trạng thái:${transfer.status||'Chưa ghi nhận'}`,floor:transfer.floor,time:transfer.time,source:'fixed39-migration'});}
         for(const event of stateRuntime.state?.characterWorld?.events||[]){
             const lead=s39StoryParticipantName(event?.character),participants=[lead,...(Array.isArray(event?.participants)?event.participants:[])].filter(Boolean),knownBy=[...(Array.isArray(event?.knownBy)?event.knownBy:participants)].filter(Boolean);
             if(!lead||!event?.activity)continue;
@@ -11145,7 +11150,7 @@ ${messageText(message).slice(0,10000)}`;
     function s39AcquaintanceBrief(limit=24,viewer='main'){
         const target=viewer==='main'?'':npcNameKey(viewer),all=(stateRuntime.state?.phone?.acquaintanceLedger||[]).slice().sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
         const rows=(target?all.filter(row=>npcNameKey(row?.npc)===target):all).slice(0,Math.max(1,Number(limit||24)));
-        return rows.length?rows.map(row=>`- ${row.npc} | Đã qua: ${(row.channels||[]).join(', ')||'điện thoại'} | Liên lạc qua điện thoại: ${row.phoneContactCount||0} lần | Gặp mặt ngoài đời: ${row.offlineMet?'Có':'Không'}${row.firstOfflineFloor>=0?` (lần đầu ở tầng ${row.firstOfflineFloor})`:''} | Hiện có mặt cùng nhau: ${row.coPresent?'Có':'Không'} | Kết luận: hai bên không phải “người lạ không có lịch sử”`).join('\n'):'- Chưa có bản ghi tiếp xúc xuyên phương tiện nào dùng được cho nhân vật hiện tại.';
+        return rows.length?rows.map(row=>`- ${row.npc} | Đã qua: ${(row.channels||[]).join(',')||'điện thoại'} | Liên lạc qua điện thoại: ${row.phoneContactCount||0} lần | Gặp mặt ngoài đời: ${row.offlineMet?'Có':'Không'}${row.firstOfflineFloor>=0?` (lần đầu ở tầng ${row.firstOfflineFloor})`:''} | Hiện có mặt cùng nhau: ${row.coPresent?'Có':'Không'} | Kết luận: hai bên không phải “người lạ không có lịch sử”`).join('\n'):'- Chưa có bản ghi tiếp xúc xuyên phương tiện nào dùng được cho nhân vật hiện tại.';
     }
     function s39UnifiedStorylineBrief(limit=24,narrativeText='',viewer='main'){
         const phone=stateRuntime.state?.phone||{},all=(phone.storyLedger||[]).slice().sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)),cap=Math.max(1,Number(limit||24));
@@ -11156,7 +11161,7 @@ ${messageText(message).slice(0,10000)}`;
         const known=rows.filter(row=>viewer==='main'?Boolean(row.userKnows):s39StoryEventKnownTo(row,viewerName));
         const hidden=rows.filter(row=>!known.includes(row));
         const knownText=known.map(fmt).join('\n')||'- Chưa có sự kiện then chốt xuyên phương tiện nào mới được biết.';
-        const hiddenText=hidden.map(row=>`${fmt(row)} | Người biết: ${(row.knownBy||row.participants||[]).join(', ')||'chỉ người tham gia sự kiện'}`).join('\n')||'- Chưa có sự kiện thế giới ngoài ống kính nào mới.';
+        const hiddenText=hidden.map(row=>`${fmt(row)} | Người biết: ${(row.knownBy||row.participants||[]).join(',')||'chỉ người tham gia sự kiện'}`).join('\n')||'- Chưa có sự kiện thế giới ngoài ống kính nào mới.';
         const text=narrativeText||messageText([...(context()?.chat||[])].reverse().find(m=>!m?.is_user&&!m?.is_system)||{}),present=s39CurrentCoPresentNames(text);
         return `【SỔ TỔNG CỦA THẾ GIỚI ĐƠN NHẤT fixed39 | CHỈ CÓ MỘT DÒNG THỜI GIAN】
 【${viewer==='main'?'Sự thật {{user}} đã biết/tự trải qua':`Sự thật mà ${viewerName||'NPC hiện tại'} có thể biết`}】
@@ -11166,7 +11171,7 @@ ${hiddenText}
 【LỊCH SỬ QUEN BIẾT NHÂN VẬT XUYÊN PHƯƠNG TIỆN】
 ${s39AcquaintanceBrief(20,viewer==='main'?'main':viewerName)}
 【NPC ĐANG CÓ MẶT NGOÀI ĐỜI】
-${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
+${present.length?present.join(','):'Chưa phát hiện rõ ràng'}
 【QUY TẮC CỨNG】
 1. Điện thoại, chính văn hiện thực, Bỉ Gian Tư Văn và hành động hậu trường của NPC đều thuộc cùng một thế giới, cùng một dòng thời gian; khác biệt chỉ nằm ở ai nhìn thấy, ai biết. Sự kiện ngoài ống kính không phải ngoại truyện, và cốt truyện về sau cũng không được coi như nó chưa từng xảy ra.
 2. “Không biết” không có nghĩa là “không xảy ra”: sự kiện ngoài ống kính có thể thật sự thay đổi địa điểm, mục tiêu, tâm trạng, quan hệ và lựa chọn về sau của NPC tham gia; nhưng trước khi có việc báo tin/chứng kiến hợp lý, cấm tiết lộ nội dung cụ thể của nó cho {{user}} hay NPC chưa biết.
@@ -11255,7 +11260,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
     function s37NarrativeFoodOrderCreates(payload={}) {
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
         const sourceTexts=[message?.mes??message?.content??'',previous?.is_user?(previous?.mes??previous?.content??''):''].filter(Boolean);
-        let text=sourceTexts.join('. ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/\s+/g,' ').trim();
+        let text=sourceTexts.join('.').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/\s+/g,' ').trim();
         if(!text||!/(?:giao đồ ăn|Meituan|Ele\.me|gọi món|đặt đơn)/i.test(text))return [];
         const segments=text.split(/(?<=[.!?;])|\n+/).map(x=>x.trim()).filter(Boolean),rows=[];
         const negative=/(?:không|chưa|chẳng|đừng|hủy|thôi khỏi|chỉ (?:hỏi|xem|nói|bàn)|có nên|có muốn|có thể).{0,12}(?:mua|gọi|đặt|đặt đơn|giao đồ ăn)/i;
@@ -11276,7 +11281,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
             const items=itemText.split(/,|(?:\svà\s)|(?:\scùng với\s)/).map(x=>compactText(x,100).trim()).filter(Boolean).slice(0,8).map(name=>({name,quantity:1,flavor:''}));
             if(!items.length)continue;
             const key=compactText(`${floor}|${platform}|${merchant}|${items.map(x=>x.name).join('|')}`,180);
-            rows.push({clientRef:`narrative-food-${s9Hash(key).toString(36)}`,platform,query:items.map(x=>x.name).join(', '),merchantHint:merchant,items,amount:0,payAccount:'auto',observers:[],knowledgeMethod:'witnessed',externalPayer:true,storyDetected:true});
+            rows.push({clientRef:`narrative-food-${s9Hash(key).toString(36)}`,platform,query:items.map(x=>x.name).join(','),merchantHint:merchant,items,amount:0,payAccount:'auto',observers:[],knowledgeMethod:'witnessed',externalPayer:true,storyDetected:true});
         }
         return rows;
     }
@@ -11288,7 +11293,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
 
     function s39NarrativeShoppingOrders(payload={}){
         const floor=Number(payload?.floor??-1),chat=context()?.chat||[],message=chat[floor],previous=chat[floor-1];
-        const raw=[messageText(message||{}),previous?.is_user?messageText(previous):''].filter(Boolean).join('. '),text=compactText(raw,16000);if(!text||!/(?:Taobao|JD|mua sắm online|trên mạng|đặt đơn|đã mua|đã thanh toán)/i.test(text))return [];
+        const raw=[messageText(message||{}),previous?.is_user?messageText(previous):''].filter(Boolean).join('.'),text=compactText(raw,16000);if(!text||!/(?:Taobao|JD|mua sắm online|trên mạng|đặt đơn|đã mua|đã thanh toán)/i.test(text))return [];
         const negative=/(?:không|chưa|chẳng|đừng|hủy|trả lại|chỉ (?:xem|hỏi|bàn)|chuẩn bị|định|kế hoạch|muốn mua|đang cân nhắc).{0,20}(?:đặt đơn|mua sắm|mua|thanh toán)/i;
         const segments=text.split(/(?<=[.!?;])|\n+/).map(v=>compactText(v,1000)).filter(Boolean),rows=[];
         for(const seg of segments){
@@ -11332,7 +11337,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         const requested=create.items.length?create.items:[{name:create.query||store.category,quantity:1,flavor:''}];
         const profile=S91_FOOD_PROFILES[store.category]||{},bases=[...(profile.menu||[])].sort((a,b)=>String(b).length-String(a).length);
         return requested.map((row,index)=>{
-            const requestText=compactText(`${row.name}${row.flavor?`（${row.flavor}）`:''}`,160),flat=requestText.replace(/[\s，。、“”'"()（）]/g,''),base=bases.find(name=>flat.includes(String(name).replace(/\s+/g,'')));
+            const requestText=compactText(`${row.name}${row.flavor?`（${row.flavor}）`:''}`,160),flat=requestText.replace(/[\s，。、“”'"()（）,.;·]/g,''),base=bases.find(name=>flat.includes(String(name).replace(/\s+/g,'')));
             const generic=/^(?:gọi|đặt|mua|lấy|muốn ăn|ăn)?\s*(?:một|một phần|phần|vài|chút)?\s*(?:giao đồ ăn|gọi món|combo|nướng|xiên nướng|lẩu|lẩu tô|cơm nhanh|ăn khuya|bữa sáng|bữa trưa|bữa tối)$/i.test(flat);
             const matched=base?store.menu.find(item=>String(item.name).includes(base)):generic?store.menu[s9Hash(`${storyKey}|${flat}|${index}`)%store.menu.length]:store.menu.find(item=>flat.includes(String(item.name).replace(/[\s（）()]/g,''))||String(item.name).replace(/[\s（）()]/g,'').includes(flat));
             const fallback=store.menu[s9Hash(`${storyKey}|fallback|${index}`)%store.menu.length];
@@ -11476,8 +11481,8 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         phone.finance.transactions.push(row);
         if(row.amount>0)reconcilePromiseEvidenceForState(stateRuntime.state,{kind:'finance-transaction',...row},Number.isFinite(row._floor)&&row._floor>=0?row._floor:Math.max(0,(context()?.chat?.length||1)-1));
         const label = row.account==='wechat'?'WeChat Pay':'Alipay';
-        const verb = row.amount >= 0 ? 'thu vào' : 'chi ra';
-        s8AddNotification(label, `${verb} ${s8MoneyText(Math.abs(row.amount))}`, `${row.title || row.counterparty || 'Hóa đơn'} · số dư ${s8MoneyText(s8WalletBalance(row.account))}`, {type:'finance',transactionId:row.id,_sidecarId:sidecarId||''});
+        const verb = row.amount >= 0 ?'thu vào' :'chi ra';
+        s8AddNotification(label,`${verb} ${s8MoneyText(Math.abs(row.amount))}`,`${row.title || row.counterparty || 'Hóa đơn'} · số dư ${s8MoneyText(s8WalletBalance(row.account))}`, {type:'finance',transactionId:row.id,_sidecarId:sidecarId||''});
         if (row.account==='wechat') {
             stateRuntime.state.phone.wechat ||= [];
             const payText=`${verb} ${s8MoneyText(Math.abs(row.amount))}: ${row.title||row.counterparty||'Giao dịch'}. Số dư tiền lẻ hiện tại ${s8MoneyText(s8WalletBalance('wechat'))}`;
@@ -11494,7 +11499,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
     function s8AddCommerceNotice(title, content, app='Taobao', options={}) {
         s8AddNotification(app,title,content,{type:'order',route:'orders',relatedId:compactText(options.relatedId,140),dedupeKey:compactText(options.dedupeKey||`order-${options.relatedId||''}-${title}`,220)});
         stateRuntime.state.phone.sms ||= [];
-        stateRuntime.state.phone.sms.push({id:uid('order-sms'),author:app,contact:compactText(context()?.name1||'{{user}}',80)||'{{user}}',content:`${title}：${content}`,time:phoneClock().time,category:['Ele.me','Meituan'].includes(app)?'food':'logistics',direction:'incoming'});
+        stateRuntime.state.phone.sms.push({id:uid('order-sms'),author:app,contact:compactText(context()?.name1||'{{user}}',80)||'{{user}}',content:`${title}: ${content}`,time:phoneClock().time,category:['Ele.me','Meituan'].includes(app)?'food':'logistics',direction:'incoming'});
     }
     const S8_ORDER_PLATFORM_LABELS = Object.freeze({taobao:'Taobao',jd:'JD',eleme:'Ele.me',meituan:'Meituan',ride:'Đặt xe',travel:'Hàng không & du lịch',campus:'Trường học'});
     const S8_ORDER_STATUS_LABELS = Object.freeze({
@@ -11616,7 +11621,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         const selected=stateRuntime.phoneSelectedOrderId?s8AllPhoneOrders().find(order=>order.id===stateRuntime.phoneSelectedOrderId):null;
         if(selected)return phoneOrderDetailMarkup(selected);
         const tabs=[['all','Tất cả'],['shopping','Mua sắm'],['food','Giao đồ ăn'],['shipping','Chờ nhận hàng'],['ride','Đặt xe'],['travel','Hàng không & du lịch']];
-        return `<div class="vvvtm-phone-app-page vvvtm-orders-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>Đơn hàng</b><small>${rows.length} đơn trong cốt truyện · xem được toàn bộ tiến độ</small></div><button data-phone-order-refresh>↻</button></header><main><nav class="vvvtm-order-tabs">${tabs.map(([id,label])=>`<button class="${filter===id?'active':''}" data-phone-order-filter="${id}">${label}</button>`).join('')}</nav>${rows.length?`<section class="vvvtm-order-list">${rows.map(order=>{const items=s8OrderItems(order);const merchant=order.storeName||order.merchant||({ride:order.destination,travel:order.code}[order.platform]||s8OrderPlatformLabel(order.platform));return `<button class="vvvtm-order-card" data-phone-order-open="${esc(order.id)}"><span class="vvvtm-order-icon">${order.platform==='travel'?'🎫':order.platform==='ride'?'🚕':order.platform==='eleme'||order.platform==='meituan'?'🛵':'📦'}</span><div><header><b>${esc(s8OrderPlatformLabel(order.platform))}</b><small>${esc(phoneOrderStoryStamp(order))}</small></header><strong>${esc(merchant||'Đơn hàng')}</strong><p>${esc(items.map(item=>`${item.name} ×${item.qty}`).join('、')||'Chi tiết đơn hàng')}</p><footer><span>${esc(s8OrderStatusLabel(order))}</span><em>${s8MoneyText(order.amount)}</em></footer></div></button>`;}).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><span>🧾</span><b>Chưa có đơn hàng</b><small>Sau khi hoàn tất một lần thanh toán mô phỏng trên Taobao, JD, giao đồ ăn, đặt xe hay hàng không & du lịch, đơn hàng sẽ hiện ở đây.</small></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-orders-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>Đơn hàng</b><small>${rows.length} đơn trong cốt truyện · xem được toàn bộ tiến độ</small></div><button data-phone-order-refresh>↻</button></header><main><nav class="vvvtm-order-tabs">${tabs.map(([id,label])=>`<button class="${filter===id?'active':''}" data-phone-order-filter="${id}">${label}</button>`).join('')}</nav>${rows.length?`<section class="vvvtm-order-list">${rows.map(order=>{const items=s8OrderItems(order);const merchant=order.storeName||order.merchant||({ride:order.destination,travel:order.code}[order.platform]||s8OrderPlatformLabel(order.platform));return `<button class="vvvtm-order-card" data-phone-order-open="${esc(order.id)}"><span class="vvvtm-order-icon">${order.platform==='travel'?'🎫':order.platform==='ride'?'🚕':order.platform==='eleme'||order.platform==='meituan'?'🛵':'📦'}</span><div><header><b>${esc(s8OrderPlatformLabel(order.platform))}</b><small>${esc(phoneOrderStoryStamp(order))}</small></header><strong>${esc(merchant||'Đơn hàng')}</strong><p>${esc(items.map(item=>`${item.name} ×${item.qty}`).join(',')||'Chi tiết đơn hàng')}</p><footer><span>${esc(s8OrderStatusLabel(order))}</span><em>${s8MoneyText(order.amount)}</em></footer></div></button>`;}).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><span>🧾</span><b>Chưa có đơn hàng</b><small>Sau khi hoàn tất một lần thanh toán mô phỏng trên Taobao, JD, giao đồ ăn, đặt xe hay hàng không & du lịch, đơn hàng sẽ hiện ở đây.</small></div>'}</main></div>`;
     }
     function s8NormalizePaymentAction(action={}) {
         const payment=clone(action||{}); payment.kind=compactText(payment.kind,40); payment.account=payment.account==='wechat'?'wechat':'alipay';
@@ -11658,14 +11663,14 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         },platform);
         order.timeline=[];
         s8OrderTimeline(order,order.status,s8OrderStatusLabel(order),'Đã tạo đơn hàng');
-        s8RecordPhoneActivity(order.kind==='food'?'food-order':'shopping-order',`Đặt đơn trên ${s8OrderPlatformLabel(platform)}`,`${order.storeName||order.merchant||'Cửa hàng'} · ${s8OrderItems(order).map(item=>`${item.name}×${item.qty}`).join(', ')}`,{relatedId:order.id,floor:order.sourceFloor});
+        s8RecordPhoneActivity(order.kind==='food'?'food-order':'shopping-order',`Đặt đơn trên ${s8OrderPlatformLabel(platform)}`,`${order.storeName||order.merchant||'Cửa hàng'} · ${s8OrderItems(order).map(item=>`${item.name}×${item.qty}`).join(',')}`,{relatedId:order.id,floor:order.sourceFloor});
         stateRuntime.lastPaymentOrderId=order.id;
         s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'Cửa hàng'} | ${s8OrderItemSummary(order,700)} | Trạng thái: ${s8OrderStatusLabel(order)}`,floor:order.sourceFloor,time:order.time,location:order.sceneLocation,source:'phone-order'});
         return order;
     }
     function s8OrderItemSummary(orderOrItems, maxChars=360) {
         const items=Array.isArray(orderOrItems)?s8OrderItems({items:orderOrItems}):s8OrderItems(orderOrItems||{});
-        return compactText(items.map(item=>`${item.name} ×${item.qty}`).join(', '),maxChars)||'Món hàng trong đơn';
+        return compactText(items.map(item=>`${item.name} ×${item.qty}`).join(','),maxChars)||'Món hàng trong đơn';
     }
     async function s8ExecutePayment(action) {
         const operationScope=captureChatScope();
@@ -11789,9 +11794,9 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
     }
     function phoneEcosystemBrief() {
         const phone=ensurePhoneEcosystem(); if(!phone)return 'Không';
-        const tb=(phone.commerce.taobao.orders||[]).slice(-4).map(o=>`${o.id}:${o.status}:${s8MoneyText(o.amount)}`).join('; ')||'Không';
-        const el=(phone.commerce.eleme.orders||[]).slice(-4).map(o=>`${o.storeName}:${o.status}:${s8MoneyText(o.amount)}`).join('; ')||'Không';
-        const jd=(phone.commerce.jd?.orders||[]).slice(-3).map(o=>`${o.id}:${o.status}:${s8MoneyText(o.amount)}`).join('; ')||'Không'; const mt=(phone.commerce.meituan?.orders||[]).slice(-3).map(o=>`${o.storeName}:${o.status}:${s8MoneyText(o.amount)}`).join('; ')||'Không'; const ext=s9EnsureExtendedApps(); const ride=(ext.ride?.orders||[]).slice(-2).map(o=>`${o.destination}:${o.status}:${s8MoneyText(o.amount)}`).join('; ')||'Không'; const travel=(ext.travel?.orders||[]).slice(-2).map(o=>`${o.code}:${o.status}:${s8MoneyText(o.amount)}`).join('; ')||'Không'; return `Ví cốt truyện: Alipay ${s8MoneyText(s8WalletBalance('alipay'))}, tiền lẻ WeChat ${s8MoneyText(s8WalletBalance('wechat'))}, tiền điện thoại ${s8MoneyText(phone.finance.phoneBalance)}. Đơn Taobao: ${tb}. Đơn JD: ${jd}. Ele.me: ${el}. Meituan: ${mt}. Đặt xe: ${ride}. Hàng không & du lịch: ${travel}.`;
+        const tb=(phone.commerce.taobao.orders||[]).slice(-4).map(o=>`${o.id}:${o.status}:${s8MoneyText(o.amount)}`).join(';')||'Không';
+        const el=(phone.commerce.eleme.orders||[]).slice(-4).map(o=>`${o.storeName}:${o.status}:${s8MoneyText(o.amount)}`).join(';')||'Không';
+        const jd=(phone.commerce.jd?.orders||[]).slice(-3).map(o=>`${o.id}:${o.status}:${s8MoneyText(o.amount)}`).join(';')||'Không'; const mt=(phone.commerce.meituan?.orders||[]).slice(-3).map(o=>`${o.storeName}:${o.status}:${s8MoneyText(o.amount)}`).join(';')||'Không'; const ext=s9EnsureExtendedApps(); const ride=(ext.ride?.orders||[]).slice(-2).map(o=>`${o.destination}:${o.status}:${s8MoneyText(o.amount)}`).join(';')||'Không'; const travel=(ext.travel?.orders||[]).slice(-2).map(o=>`${o.code}:${o.status}:${s8MoneyText(o.amount)}`).join(';')||'Không'; return `Ví cốt truyện: Alipay ${s8MoneyText(s8WalletBalance('alipay'))}, tiền lẻ WeChat ${s8MoneyText(s8WalletBalance('wechat'))}, tiền điện thoại ${s8MoneyText(phone.finance.phoneBalance)}. Đơn Taobao: ${tb}. Đơn JD: ${jd}. Ele.me: ${el}. Meituan: ${mt}. Đặt xe: ${ride}. Hàng không & du lịch: ${travel}.`;
     }
     function phoneTransferRealityBrief(limit=16) {
         const rows=(ensurePhoneEcosystem()?.walletTools?.transfers||[]).slice(-Math.max(1,Number(limit||16))).reverse();
@@ -11890,7 +11895,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         if(index>=0){dp.favorites.splice(index,1);return false;}dp.favorites.push({id:uid('dp-favorite'),venueId:venue.id,name:venue.name,category:venue.venueType,location:venue.location,icon:venue.icon,createdAt:Date.now(),time:phoneClock().time});s8RecordPhoneActivity('dianping-favorite','Đã lưu địa điểm',venue.name,{relatedId:venue.id,route:'dianping'});return true;
     }
     function s12DianpingBooking(venue,{date='',party=2,invitees=[]}={}){
-        const phone=ensurePhoneEcosystem(),names=[...new Set((invitees||[]).map(name=>relationPartyName(name)).filter(Boolean))];const floor=Math.max(0,(context()?.chat?.length||1)-1);const row={id:uid('dp-booking'),venueId:venue.id,name:venue.name,category:venue.venueType,location:venue.location,date:compactText(date,80)||stateRuntime.state?.scene?.time||phoneClock().time,party:Math.max(1,Number(party||2)),invitees:names,status:'reserved',createdAt:Date.now(),floor,time:phoneClock().time};phone.dianping.bookings.push(row);s12ScheduleCalendar({id:`dp-booking-calendar-${row.id}`,title:`Đặt chỗ tại quán · ${row.name}`,date:row.date,note:`${row.party} người${names.length?` · đi cùng: ${names.join(', ')}`:''}`,source:'dianping',relatedId:row.id,route:'dianping',dueFloor:floor+2});s8AddNotification('Dianping','Đặt chỗ thành công',`${row.name} · ${row.date} · ${row.party} người`,{route:'dianping',relatedId:row.id,dedupeKey:`dp-booking-${row.id}`});
+        const phone=ensurePhoneEcosystem(),names=[...new Set((invitees||[]).map(name=>relationPartyName(name)).filter(Boolean))];const floor=Math.max(0,(context()?.chat?.length||1)-1);const row={id:uid('dp-booking'),venueId:venue.id,name:venue.name,category:venue.venueType,location:venue.location,date:compactText(date,80)||stateRuntime.state?.scene?.time||phoneClock().time,party:Math.max(1,Number(party||2)),invitees:names,status:'reserved',createdAt:Date.now(),floor,time:phoneClock().time};phone.dianping.bookings.push(row);s12ScheduleCalendar({id:`dp-booking-calendar-${row.id}`,title:`Đặt chỗ tại quán · ${row.name}`,date:row.date,note:`${row.party} người${names.length?` · đi cùng: ${names.join(',')}`:''}`,source:'dianping',relatedId:row.id,route:'dianping',dueFloor:floor+2});s8AddNotification('Dianping','Đặt chỗ thành công',`${row.name} · ${row.date} · ${row.party} người`,{route:'dianping',relatedId:row.id,dedupeKey:`dp-booking-${row.id}`});
         for(const npc of names)s12RecordKnowledge({relatedId:row.id,subject:'Đặt chỗ tại quán',summary:`${row.name} · ${row.date}`,npc,method:'message',channel:'Lời mời',source:'dianping'});s8RecordPhoneActivity('dianping-booking','Đặt chỗ tại quán',`${row.name} · ${row.date} · ${row.party} người`,{relatedId:row.id,route:'dianping'});return row;
     }
     function s12DianpingCheckin(venue){
@@ -11910,12 +11915,12 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const p=s9EnsureExtendedApps(); if(!p)return phoneCampusMarkup();
         const view=stateRuntime.phoneCampusView||'home';
         const viewContent=view==='grades'
-            ? `<section class="vvvtm-campus-panel"><h3>Tra cứu điểm</h3>${p.campus.grades?.length?p.campus.grades.map(row=>`<article><b>${esc(row.name||row.course||'Môn học')}</b><span>${esc(row.score||row.grade||'Chờ công bố')}</span><small>${esc(row.term||'Học kỳ này')}</small></article>`).join(''):'<p>Học kỳ này chưa nhập điểm.</p>'}</section>`
+            ?`<section class="vvvtm-campus-panel"><h3>Tra cứu điểm</h3>${p.campus.grades?.length?p.campus.grades.map(row=>`<article><b>${esc(row.name||row.course||'Môn học')}</b><span>${esc(row.score||row.grade||'Chờ công bố')}</span><small>${esc(row.term||'Học kỳ này')}</small></article>`).join(''):'<p>Học kỳ này chưa nhập điểm.</p>'}</section>`
             : view==='notices'
-                ? `<section class="vvvtm-campus-panel"><h3>Thông báo trường học</h3>${p.campus.notices.map(row=>`<article><b>${esc(row.title||'Thông báo')}</b><p>${esc(row.content||'')}</p><small>${esc(row.time||'')}</small></article>`).join('')}</section>`
+                ?`<section class="vvvtm-campus-panel"><h3>Thông báo trường học</h3>${p.campus.notices.map(row=>`<article><b>${esc(row.title||'Thông báo')}</b><p>${esc(row.content||'')}</p><small>${esc(row.time||'')}</small></article>`).join('')}</section>`
                 : view==='bus'
-                    ? `<section class="vvvtm-campus-panel"><h3>Giờ xe buýt trường</h3>${(p.campus.bus||[{line:'Tuyến vòng trong trường',time:'07:30 / 12:10 / 17:40',stop:'Cổng Nam · Thư viện · Khu ký túc xá'}]).map(row=>`<article><b>${esc(row.line)}</b><p>${esc(row.stop)}</p><small>${esc(row.time)}</small></article>`).join('')}</section>`
-                    : `<section class="vvvtm-campus-panel"><h3>Thời khóa biểu tuần này</h3>${p.campus.courses.map(c=>`<article><span>${esc(c.day)}</span><div><b>${esc(c.name)}</b><small>${esc(c.time)} · ${esc(c.room)}</small></div></article>`).join('')}</section>`;
+                    ?`<section class="vvvtm-campus-panel"><h3>Giờ xe buýt trường</h3>${(p.campus.bus||[{line:'Tuyến vòng trong trường',time:'07:30 / 12:10 / 17:40',stop:'Cổng Nam · Thư viện · Khu ký túc xá'}]).map(row=>`<article><b>${esc(row.line)}</b><p>${esc(row.stop)}</p><small>${esc(row.time)}</small></article>`).join('')}</section>`
+                    :`<section class="vvvtm-campus-panel"><h3>Thời khóa biểu tuần này</h3>${p.campus.courses.map(c=>`<article><span>${esc(c.day)}</span><div><b>${esc(c.name)}</b><small>${esc(c.time)} · ${esc(c.room)}</small></div></article>`).join('')}</section>`;
         return `<div class="vvvtm-phone-app-page vvvtm-campus-page"><header class="vvvtm-phone-app-head campus-head"><button data-phone-home>‹</button><div><b>Trường học thông minh</b><small>Thời khóa biểu / Điểm / Thẻ sinh viên / Thông báo</small></div><button data-phone-campus-recharge>Nạp tiền</button></header><main><section class="vvvtm-campus-card"><small>Số dư thẻ sinh viên</small><strong>${s8MoneyText(p.campus.cardBalance)}</strong><button data-phone-campus-recharge>Nạp tiền</button></section><nav class="vvvtm-campus-nav"><button class="${view==='home'?'active':''}" data-phone-campus-view="home">📚Thời khóa biểu</button><button class="${view==='grades'?'active':''}" data-phone-campus-view="grades">📝Điểm</button><button class="${view==='notices'?'active':''}" data-phone-campus-view="notices">📢Thông báo</button><button class="${view==='bus'?'active':''}" data-phone-campus-view="bus">🚌Xe buýt trường</button></nav>${viewContent}</main></div>`;
     }
     function phoneBankMarkup(){const p=s9EnsureExtendedApps(),tx=(p.bank.transactions||[]).slice().reverse().slice(0,60);return `<div class="vvvtm-phone-app-page vvvtm-bank-page"><header class="vvvtm-phone-app-head bank-head"><button data-phone-home>‹</button><div><b>Ngân hàng di động</b><small>Tài khoản trong truyện · không kết nối ngân hàng thật</small></div><button data-phone-bank-action="transfer">Chuyển tiền</button></header><main><section class="vvvtm-bank-card"><small>Số dư tài khoản tiết kiệm</small><strong>${s8MoneyText(s9BankBalance())}</strong><p>**** **** **** ${esc(p.bank.cards?.[0]?.last4||'8888')}</p><div><button data-phone-bank-action="deposit">Mô phỏng tiền vào</button><button data-phone-bank-action="transfer">Chuyển tiền</button></div></section><section class="vvvtm-wallet-bills"><h3>Sao kê tài khoản</h3>${tx.length?tx.map(r=>`<article><div><b>${esc(r.title)}</b><small>${esc(r.time||'')}</small></div><em class="${r.amount>=0?'income':'expense'}">${r.amount>=0?'+':'-'}${s8MoneyText(Math.abs(r.amount))}</em></article>`).join(''):`<p>Chưa có giao dịch ngân hàng.</p>`}</section></main></div>`;}
@@ -11961,7 +11966,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
     function phoneMapMarkupS9(){const p=s9EnsureExtendedApps(),scene=stateRuntime.state.scene||{},dest=stateRuntime.phoneMapDestination||'',hist=(p.maps.history||[]).slice().reverse().slice(0,30);const km=dest?((s9Hash(dest)%240)/10+0.6).toFixed(1):'';return `<div class="vvvtm-phone-app-page vvvtm-map-page s9-map"><header class="vvvtm-phone-app-head map-head"><button data-phone-home>‹</button><div><b>Bản đồ dẫn đường</b><small>${esc(scene.location||'Vị trí hiện tại')}</small></div><button data-phone-map-search>🔎</button></header><main><section class="vvvtm-map-canvas"><div class="route-line"></div><span class="me">●</span>${dest?`<span class="dest">📍</span>`:''}<b>${esc(scene.location||'Vị trí hiện tại')}</b>${dest?`<strong>${esc(dest)}</strong>`:''}</section>${dest?`<section class="vvvtm-route-options"><button><b>Lái xe ${Math.ceil(Number(km)*3)} phút</b><small>${km}km · ${2+s9Hash(dest)%18} đèn giao thông</small></button><button><b>Xe buýt ${Math.ceil(Number(km)*5)} phút</b><small>Đi bộ khoảng ${5+s9Hash(dest)%20} phút</small></button><button data-phone-ride-dest="${esc(dest)}"><b>Đặt xe khoảng ${s8MoneyText(8+Number(km)*2.2)}</b><small>Gọi xe công nghệ</small></button></section>`:'<button class="vvvtm-map-search-card" data-phone-map-search>Bạn muốn đi đâu?</button>'}<section class="vvvtm-map-history">${hist.map(h=>`<button data-phone-map-dest="${esc(h.destination)}">📍 ${esc(h.destination)}<small>${esc(h.time||'')}</small></button>`).join('')}</section></main></div>`;}
     function phoneMapMarkupS9V2(){
         const place=compactText(stateRuntime.phoneMapDestination||stateRuntime.state?.scene?.location||'Vị trí hiện tại',180)||'Vị trí hiện tại';
-        return phoneMapMarkupS9().replace('<button><b>Lái xe ', '<button data-phone-map-mode="drive"><b>Lái xe ').replace('<button><b>Xe buýt ', '<button data-phone-map-mode="transit"><b>Xe buýt ').replace('</main></div>',`<button class="vvvtm-map-dianping" data-phone-app="dianping">⭐ Xem ${esc(place)} trên Dianping</button></main></div>`);
+        return phoneMapMarkupS9().replace('<button><b>Lái xe ','<button data-phone-map-mode="drive"><b>Lái xe ').replace('<button><b>Xe buýt ','<button data-phone-map-mode="transit"><b>Xe buýt ').replace('</main></div>',`<button class="vvvtm-map-dianping" data-phone-app="dianping">⭐ Xem ${esc(place)} trên Dianping</button></main></div>`);
     }
     function phoneRideMarkup(){const p=s9EnsureExtendedApps(),orders=(p.ride.orders||[]).slice().reverse();return `<div class="vvvtm-phone-app-page vvvtm-ride-page"><header class="vvvtm-phone-app-head ride-head"><button data-phone-home>‹</button><div><b>Đặt xe</b><small>Xe nhanh / Thoải mái / Xe riêng · mô phỏng trong truyện</small></div><button data-phone-ride-new>＋</button></header><main><section class="vvvtm-ride-map"><span>🚕</span><b>${esc(stateRuntime.state.scene?.location||'Vị trí hiện tại')}</b><button data-phone-ride-new>Nhập điểm đến</button></section><section class="vvvtm-ride-orders">${orders.length?orders.slice(0,30).map(o=>`<article><span>🚕</span><div><b>${esc(o.destination)}</b><small>${esc(o.status)} · ${esc(o.carType)} · ${esc(o.time)}</small></div><em>${s8MoneyText(o.amount)}</em></article>`).join(''):`<p>Chưa có chuyến đi.</p>`}</section></main></div>`;}
     function s9TravelOptions(from,to,type='flight'){const n=type==='train'?60:48;return Array.from({length:n},(_,i)=>{const seed=s9Hash(`${from}|${to}|${type}|${i}`);return{id:`${type}-${i}`,code:type==='train'?`${['G','D','C'][seed%3]}${100+(seed%8900)}`:`${['MU','CA','CZ','HU','3U','FM'][seed%6]}${1000+(seed%8000)}`,depart:`${String(6+(i%16)).padStart(2,'0')}:${String((i*17)%60).padStart(2,'0')}`,arrive:`${String(8+(i%15)).padStart(2,'0')}:${String((i*29)%60).padStart(2,'0')}`,price:Math.round((type==='train'?120:380)+(seed%(type==='train'?900:2400))),type};});}
@@ -12109,17 +12114,17 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         } else {
             // Bối cảnh phi hiện đại không còn giả vờ là màn hình điện thoại cố định: hiển thị đúng phương tiện thật theo phán đoán của AI trong lượt này.
             if (originOnline) apps += app('wechat','💚','WeChat thế giới gốc','green');
-            if (available) apps += app('sms', profile.communicationType === 'magic' ? '🔮' : profile.communicationType === 'letter' ? '✉️' : profile.communicationType === 'telegram' ? '📠' : profile.communicationType === 'radio' ? '📻' : '📨', periodLabel, 'blue');
+            if (available) apps += app('sms', profile.communicationType === 'magic' ?'🔮' : profile.communicationType === 'letter' ?'✉️' : profile.communicationType === 'telegram' ?'📠' : profile.communicationType === 'radio' ?'📻' :'📨', periodLabel,'blue');
             const hasGroups=(stateRuntime.state.phone?.groupProfiles||[]).some(g=>g?.availability==='active'&&g?.homeWorldKey===profile.worldKey)||(stateRuntime.state.phone?.channelGroups||[]).length;
             if (hasGroups) apps += app('channels', profile.communicationType==='magic'?'🔮':'👥', profile.communicationType==='magic'?'Kênh truyền tin':'Nhóm/kênh','cream');
-            if (available && liveCalls) apps += app('calls', profile.communicationType === 'magic' ? '✨' : profile.communicationType === 'radio' ? '📻' : '☎️', profile.communicationType === 'magic' ? 'Truyền tin thời gian thực' : 'Liên lạc thời gian thực', 'green');
+            if (available && liveCalls) apps += app('calls', profile.communicationType === 'magic' ?'✨' : profile.communicationType === 'radio' ?'📻' :'☎️', profile.communicationType === 'magic' ?'Truyền tin thời gian thực' :'Liên lạc thời gian thực','green');
             apps += `${app('diary','📔','Nhật ký','cream')}${app('anniversaries','🗓️','Ngày quan trọng','pink')}${app('world','📖','Bỉ Gian Tư Văn','cream')}${app('api','⚙️','Cài đặt API','cream')}${app('settings','⚙️','Cài đặt','cream')}`;
-            if (available) dock = `${app('sms','📨',periodLabel,'blue')}${liveCalls ? app('calls','☎️','Liên lạc','green') : ''}`;
+            if (available) dock = `${app('sms','📨',periodLabel,'blue')}${liveCalls ? app('calls','☎️','Liên lạc','green') :''}`;
         }
-        const unavailable = !available ? `<div class="vvvtm-phone-era-note"><b>Khu vực hiện tại chưa có phương tiện liên lạc từ xa khả dụng</b><small>${esc(profile.reason || 'AI sẽ phán đoán lại ở lượt sau dựa trên địa điểm, thời đại mới và chính văn hiện tại.')}</small></div>` : '';
-        const originDevice = profile.personalDeviceType==='smartphone' && !isSmartphone ? `<div class="vvvtm-phone-era-note origin-device"><b>Thiết bị thế giới gốc: ${esc(profile.personalDeviceLabel||'iPhone17Promax')}</b><small>${originOnline?'Đã kết nối mạng xuyên thế giới: WeChat của thế giới gốc dùng được; liên lạc bản địa vẫn chạy độc lập theo thời đại hiện tại.':'Thiết bị vẫn có thể mang theo, nhưng thế giới/thời đại hiện tại không kết nối được mạng của thế giới gốc. Nhóm lớp, nhóm bạn cũ sẽ không bị xóa, chỉ bị đánh dấu ngoại tuyến.'}</small></div>` : '';
+        const unavailable = !available ?`<div class="vvvtm-phone-era-note"><b>Khu vực hiện tại chưa có phương tiện liên lạc từ xa khả dụng</b><small>${esc(profile.reason || 'AI sẽ phán đoán lại ở lượt sau dựa trên địa điểm, thời đại mới và chính văn hiện tại.')}</small></div>` :'';
+        const originDevice = profile.personalDeviceType==='smartphone' && !isSmartphone ?`<div class="vvvtm-phone-era-note origin-device"><b>Thiết bị thế giới gốc: ${esc(profile.personalDeviceLabel||'iPhone17Promax')}</b><small>${originOnline?'Đã kết nối mạng xuyên thế giới: WeChat của thế giới gốc dùng được; liên lạc bản địa vẫn chạy độc lập theo thời đại hiện tại.':'Thiết bị vẫn có thể mang theo, nhưng thế giới/thời đại hiện tại không kết nối được mạng của thế giới gốc. Nhóm lớp, nhóm bạn cũ sẽ không bị xóa, chỉ bị đánh dấu ngoại tuyến.'}</small></div>` :'';
         return `<div class="vvvtm-os-home ${preview?'preview':''}" data-vvvtm-theme="${esc(stateRuntime.state.phone?.themeStore?.active || 'classic')}">
-            <div class="vvvtm-os-status"><b>${clock.time}</b><span>${isSmartphone ? '▮▮▮ ᯤ 🔋' : '✦'}</span></div><div class="vvvtm-os-device-label">${esc(device)}</div>
+            <div class="vvvtm-os-status"><b>${clock.time}</b><span>${isSmartphone ?'▮▮▮ ᯤ 🔋' :'✦'}</span></div><div class="vvvtm-os-device-label">${esc(device)}</div>
             <div class="vvvtm-os-clock"><strong>${clock.time}</strong><small>${clock.date}</small></div>
             ${unavailable}${originDevice}<div class="vvvtm-os-apps">${apps}</div>
             <div class="vvvtm-os-dock">${dock}</div></div>`;
@@ -12127,7 +12132,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
 
     function phoneAttachmentSummary(attachments) {
         const rows = Array.isArray(attachments) ? attachments : [];
-        return rows.map(item => compactText(item?.description || item?.name || item?.label, 500)).filter(Boolean).join('; ');
+        return rows.map(item => compactText(item?.description || item?.name || item?.label, 500)).filter(Boolean).join(';');
     }
 
     function phoneAttachmentTypeMeta(kind = 'file') {
@@ -12163,8 +12168,8 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const manage=Boolean(stateRuntime.phoneStickerManage);
         const emptyTitle=stateRuntime.phoneStickersLoading?'Đang đọc kho sticker':stateRuntime.phoneStickerLoadError?'Đọc kho sticker thất bại':stateRuntime.phoneStickersLoaded?'Không có sticker khớp':'Chưa đọc kho sticker';
         const emptyDetail=stateRuntime.phoneStickerLoadError
-            ? `${esc(compactText(stateRuntime.phoneStickerLoadError,180))}<button type="button" data-phone-sticker-retry>Đọc lại</button>`
-            : 'Đã có sẵn 360 ảnh, cũng có thể bấm vào thư mục để nhập hàng loạt PNG, JPG, WebP hoặc GIF';
+            ?`${esc(compactText(stateRuntime.phoneStickerLoadError,180))}<button type="button" data-phone-sticker-retry>Đọc lại</button>`
+            :'Đã có sẵn 360 ảnh, cũng có thể bấm vào thư mục để nhập hàng loạt PNG, JPG, WebP hoặc GIF';
         return `<section class="vvvtm-sticker-panel">
             <header><label><i class="fa-solid fa-magnifying-glass"></i><input id="vvvtm-sticker-search" value="${esc(stateRuntime.phoneStickerQuery||'')}" placeholder="Tìm sticker"></label><button data-phone-sticker-import title="Nhập sticker"><i class="fa-solid fa-folder-plus"></i></button><button class="${manage?'active':''}" data-phone-sticker-manage title="Quản lý sticker"><i class="fa-solid fa-pen"></i></button></header>
             <input data-phone-sticker-file type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
@@ -12177,15 +12182,15 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const attachmentHtml = phoneAttachmentsMarkup(item?.attachments);
         const stickerId=compactText(item?.stickerId,180);const sticker=stickerId?phoneStickerById(stickerId):null;
         const stickerHtml=stickerId?`<button type="button" class="vvvtm-chat-sticker" data-phone-sticker-preview="${esc(stickerId)}" title="${esc(sticker?.name||'Sticker')}"><img src="${esc(phoneStickerImageUrl(sticker||stickerId))}" alt="${esc(sticker?.name||'Sticker')}"></button>`:'';
-        return `${text ? `<span class="vvvtm-message-text">${esc(text)}</span>` : ''}${stickerHtml}${attachmentHtml}`;
+        return `${text ?`<span class="vvvtm-message-text">${esc(text)}</span>` :''}${stickerHtml}${attachmentHtml}`;
     }
 
     function phoneComposerMarkup(placeholder, { attachment = true } = {}) {
         const draft = stateRuntime.phoneDraftAttachment;
         const meta = phoneAttachmentTypeMeta(draft?.kind || 'text-described');
-        return `<footer class="vvvtm-phone-composer ${draft ? 'has-attachment' : ''} ${attachment ? 'with-attachment' : 'no-attachment'}">
-            ${draft ? `<div class="vvvtm-attachment-draft"><span class="vvvtm-attachment-icon">${meta.icon}</span><span class="vvvtm-attachment-draft-copy"><b>${esc(meta.label)}</b><small>${esc(compactText(draft.description,220))}</small></span><button data-phone-attachment-clear title="Bỏ tệp đính kèm">×</button></div>` : ''}
-            ${attachment ? `<button class="vvvtm-attach-button" data-phone-attachment title="Thêm tệp đính kèm">＋</button><button class="vvvtm-sticker-toggle ${stateRuntime.phoneStickerPanel?'active':''}" data-phone-sticker-toggle title="Sticker"><i class="fa-regular fa-face-smile"></i></button>` : ''}
+        return `<footer class="vvvtm-phone-composer ${draft ?'has-attachment' :''} ${attachment ?'with-attachment' :'no-attachment'}">
+            ${draft ?`<div class="vvvtm-attachment-draft"><span class="vvvtm-attachment-icon">${meta.icon}</span><span class="vvvtm-attachment-draft-copy"><b>${esc(meta.label)}</b><small>${esc(compactText(draft.description,220))}</small></span><button data-phone-attachment-clear title="Bỏ tệp đính kèm">×</button></div>` :''}
+            ${attachment ?`<button class="vvvtm-attach-button" data-phone-attachment title="Thêm tệp đính kèm">＋</button><button class="vvvtm-sticker-toggle ${stateRuntime.phoneStickerPanel?'active':''}" data-phone-sticker-toggle title="Sticker"><i class="fa-regular fa-face-smile"></i></button>` :''}
             <textarea id="vvvtm-phone-input" rows="1" placeholder="${esc(placeholder)}" ${stateRuntime.phoneSending?'disabled':''}></textarea>
             <button class="vvvtm-phone-send-button" data-phone-send ${stateRuntime.phoneSending?'disabled':''}>${stateRuntime.phoneSending?'…':'Gửi'}</button>
             ${phoneStickerPanelMarkup()}
@@ -12223,7 +12228,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         if (!dialog) return '';
         if(dialog.type==='sticker-edit'){
             const row=phoneStickerById(dialog.stickerId);if(!row)return '';
-            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-sticker-edit-sheet"><header><div><b>Sửa sticker</b><small>Tên, thẻ và mô tả sẽ giúp AI điện thoại chọn đúng ảnh</small></div><button data-phone-dialog-close>×</button></header><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'Sticker')}"><input id="vvvtm-sticker-name" maxlength="120" placeholder="Tên sticker" value="${esc(row.name||'')}"><input id="vvvtm-sticker-tags" maxlength="400" placeholder="Thẻ, phân tách bằng dấu phẩy" value="${esc((row.tags||[]).join('，'))}"><textarea id="vvvtm-sticker-description" maxlength="500" rows="4" placeholder="Mô tả sticker này hợp với giọng điệu và tình huống nào">${esc(row.description||'')}</textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="sticker-edit">Lưu</button></footer></section></div>`;
+            return `<div class="vvvtm-phone-sheet-backdrop" data-phone-dialog-backdrop><section class="vvvtm-phone-sheet vvvtm-sticker-edit-sheet"><header><div><b>Sửa sticker</b><small>Tên, thẻ và mô tả sẽ giúp AI điện thoại chọn đúng ảnh</small></div><button data-phone-dialog-close>×</button></header><img src="${esc(phoneStickerImageUrl(row))}" alt="${esc(row.name||'Sticker')}"><input id="vvvtm-sticker-name" maxlength="120" placeholder="Tên sticker" value="${esc(row.name||'')}"><input id="vvvtm-sticker-tags" maxlength="400" placeholder="Thẻ, phân tách bằng dấu phẩy" value="${esc((row.tags||[]).join(','))}"><textarea id="vvvtm-sticker-description" maxlength="500" rows="4" placeholder="Mô tả sticker này hợp với giọng điệu và tình huống nào">${esc(row.description||'')}</textarea><footer><button class="secondary" data-phone-dialog-close>Hủy</button><button data-phone-dialog-confirm="sticker-edit">Lưu</button></footer></section></div>`;
         }
         if(dialog.type==='sticker-preview'){
             const row=phoneStickerById(dialog.stickerId);if(!row)return '';
@@ -12368,7 +12373,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         }
         const profile = operationState.communicationProfile || {};
         if (profile.available === false || profile.communicationType === 'none') {
-            toast(`Hiện không liên lạc được: ${profile.reason || communicationLabel()}`, 'warning');
+            toast(`Hiện không liên lạc được: ${profile.reason || communicationLabel()}`,'warning');
             return;
         }
         stateRuntime.phoneDialog = null;
@@ -12518,12 +12523,12 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         prunePhoneSocialGraphToTrustedRoster();
         const selection = stateRuntime.phoneSelectedContact;
         const groupName = selectedGroupName(selection);
-        const contact = groupName ? '' : selection;
+        const contact = groupName ?'' : selection;
         if (groupName) {
             const thread = ensurePhoneGroupThread(groupName); const messages = visiblePhoneThreadMessages(thread.messages);
             const profile = phoneGroupProfile(groupName);
-            const memberText = (thread.members || profile?.members || []).slice(0, 12).map(phoneContactDisplayName).join('、');
-            const ecologyText = [profile?.type && profile.type !== 'other' ? profile.type : '', profile?.activityLevel ? `Độ hoạt động: ${profile.activityLevel}` : '', profile?.topic || '', memberText].filter(Boolean).join(' · ');
+            const memberText = (thread.members || profile?.members || []).slice(0, 12).map(phoneContactDisplayName).join(',');
+            const ecologyText = [profile?.type && profile.type !== 'other' ? profile.type :'', profile?.activityLevel ?`Độ hoạt động: ${profile.activityLevel}` :'', profile?.topic || '', memberText].filter(Boolean).join(' · ');
             return `<div class="vvvtm-phone-app-page vvvtm-chat-page"><header class="vvvtm-phone-app-head"><button data-phone-nav="wechat">‹</button><div><b>👥 Nhóm WeChat · ${esc(groupName)}</b><small>${esc(ecologyText || 'Chat nhóm nhiều người · khi bạn không nhìn điện thoại thì NPC vẫn nói chuyện tiếp')}</small></div><button data-phone-home>⌂</button></header>
             <main class="vvvtm-phone-chat-log">${messages.length?messages.map((item,index)=>`<article data-phone-message-id="${esc(phoneMessageDomId(item,index))}" class="${item.role==='user'?'mine':item.role==='system'?'system':'theirs'}"><small class="vvvtm-group-sender">${item.role==='user'?'Tôi':esc(phoneContactDisplayName(item.sender||'Thành viên nhóm'))}${item.mentionsUser?' · @bạn':''}</small>${phoneMessageContentMarkup(item)}<time>${esc(item.time||'')}</time></article>`).join(''):`<div class="vvvtm-phone-empty-chat"><span>👥</span><b>${esc(groupName)}</b><small>Thông báo và thảo luận nhóm của lớp, môn học, công việc, gia tộc, bạn bè… đều được lưu ở đây.</small></div>`}</main>
             ${phoneComposerMarkup(`Gửi vào ${groupName}`)}</div>`;
@@ -12544,7 +12549,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         for(const name of groups){
             const profile=phoneGroupProfile(name),thread=phoneGroupThread(name,profile?.homeWorldKey||stateRuntime.state?.communicationProfile?.worldKey||''),activity=phoneThreadLatestActivity(thread),last=activity.last,count=(thread?.members||profile?.members||[]).length;
             const quietMeta=[profile?.type&&profile.type!=='other'?profile.type:'Nhóm WeChat',profile?.activityLevel?`Độ hoạt động: ${profile.activityLevel}`:'',count?`${count} người`:''].filter(Boolean).join(' · ');
-            conversations.push({kind:'group',name,last,stamp:activity.stamp,html:`<button data-phone-contact="${esc(groupSelectionKey(name))}"><span class="vvvtm-contact-avatar group">👥</span><span><b>${esc(name)}</b><small>${esc(last?`${phoneContactDisplayName(last.sender||'Thành viên nhóm')}：${last.content||`[Sticker: ${phoneStickerById(last.stickerId)?.name||'Sticker'}]`}`:quietMeta)}</small></span><time>${esc(last?.time||'')}</time></button>`});
+            conversations.push({kind:'group',name,last,stamp:activity.stamp,html:`<button data-phone-contact="${esc(groupSelectionKey(name))}"><span class="vvvtm-contact-avatar group">👥</span><span><b>${esc(name)}</b><small>${esc(last?`${phoneContactDisplayName(last.sender||'Thành viên nhóm')}: ${last.content||`[Sticker: ${phoneStickerById(last.stickerId)?.name||'Sticker'}]`}`:quietMeta)}</small></span><time>${esc(last?.time||'')}</time></button>`});
         }
         for(const name of contacts){
             const thread=threads.find(item=>item.contact===name),activity=phoneThreadLatestActivity(thread),last=activity.last,display=phoneContactDisplayName(name);
@@ -12561,7 +12566,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
     function phoneChannelMarkup() {
         const profile=stateRuntime.state?.communicationProfile||{}; const currentKey=profile.worldKey||'';
         const groups=phoneGroupNames(); const threads=stateRuntime.state.phone?.groupThreads||[];
-        const rows=groups.map(name=>{const gp=phoneGroupProfile(name)||{};const thread=phoneGroupThread(name, gp.homeWorldKey || currentKey),activity=phoneThreadLatestActivity(thread),last=activity.last;const active=gp.availability==='active'&&(!gp.homeWorldKey||gp.homeWorldKey===currentKey);const status=active?'Khả dụng':gp.availability==='offline-origin'?'Thế giới gốc ngoại tuyến':'Không với tới được';return {name,last,stamp:activity.stamp,html:`<button data-phone-contact="${esc(groupSelectionKey(name))}" ${active?'':'disabled'}><span class="vvvtm-contact-avatar group">${active?'👥':'🔒'}</span><span><b>${esc(name)}</b><small>${esc([gp.channelType||profile.communicationType,status,last?`${last.sender||'Thành viên'}：${last.content||'[Sticker]'}`:gp.topic].filter(Boolean).join(' · '))}</small></span><time>${esc(last?.time||'')}</time></button>`};}).sort(phoneConversationSort).map(row=>row.html).join('');
+        const rows=groups.map(name=>{const gp=phoneGroupProfile(name)||{};const thread=phoneGroupThread(name, gp.homeWorldKey || currentKey),activity=phoneThreadLatestActivity(thread),last=activity.last;const active=gp.availability==='active'&&(!gp.homeWorldKey||gp.homeWorldKey===currentKey);const status=active?'Khả dụng':gp.availability==='offline-origin'?'Thế giới gốc ngoại tuyến':'Không với tới được';return {name,last,stamp:activity.stamp,html:`<button data-phone-contact="${esc(groupSelectionKey(name))}" ${active?'':'disabled'}><span class="vvvtm-contact-avatar group">${active?'👥':'🔒'}</span><span><b>${esc(name)}</b><small>${esc([gp.channelType||profile.communicationType,status,last?`${last.sender||'Thành viên'}: ${last.content||'[Sticker]'}`:gp.topic].filter(Boolean).join(' · '))}</small></span><time>${esc(last?.time||'')}</time></button>`};}).sort(phoneConversationSort).map(row=>row.html).join('');
         return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${communicationIcon(profile)} Nhóm / kênh</b><small>Liên lạc của thế giới hiện tại và quan hệ ngoại tuyến của thế giới gốc được lưu tách riêng</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-contact-list">${rows||'<div class="vvvtm-phone-empty-chat"><b>Hiện chưa có nhóm nào khả dụng</b><small>Chỉ khi cốt truyện nói rõ đã gia nhập trường học, tổ chức hay nơi làm việc bản địa thì mới lập kênh tương ứng.</small></div>'}</main></div>`;
     }
 
@@ -12601,9 +12606,9 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             item.likes = Array.isArray(item.likes) ? item.likes : [];
             item.comments = Array.isArray(item.comments) ? item.comments : [];
             const liked = item.likes.some(name => compactText(name,80) === userName);
-            const meta = [displayGeneratedEventTime(item), Number.isFinite(Number(item._floor ?? item.floor)) ? `Tầng ${item._floor ?? item.floor}` : item.manual ? 'Vừa xong' : ''].filter(Boolean).join(' · ');
-            const likes = item.likes.length ? `<div class="vvvtm-moment-likes"><span>♥</span>${item.likes.map(name=>esc(name)).join('，')}</div>` : '';
-            const comments = item.comments.length ? `<div class="vvvtm-moment-comments">${item.comments.map(comment=>`<p><b>${esc(comment.author||'')}</b>${esc(comment.content||'')}</p>`).join('')}</div>` : '';
+            const meta = [displayGeneratedEventTime(item), Number.isFinite(Number(item._floor ?? item.floor)) ?`Tầng ${item._floor ?? item.floor}` : item.manual ?'Vừa xong' :''].filter(Boolean).join(' · ');
+            const likes = item.likes.length ?`<div class="vvvtm-moment-likes"><span>♥</span>${item.likes.map(name=>esc(name)).join(',')}</div>` :'';
+            const comments = item.comments.length ?`<div class="vvvtm-moment-comments">${item.comments.map(comment=>`<p><b>${esc(comment.author||'')}</b>${esc(comment.content||'')}</p>`).join('')}</div>` :'';
             const attachments=phoneAttachmentsMarkup(item.attachments,'vvvtm-moment-attachment');
             return `<article class="vvvtm-moment-card"><div class="vvvtm-moment-avatar">${esc((item.author||'K').slice(0,1))}</div><div class="vvvtm-moment-main"><b class="vvvtm-moment-author">${esc(item.author||'Khoảnh khắc')}</b>${item.content?`<p class="vvvtm-moment-content">${esc(item.content)}</p>`:''}${attachments?`<div class="vvvtm-moment-attachments">${attachments}</div>`:''}<div class="vvvtm-moment-meta"><small>${esc(meta)}</small><span class="vvvtm-moment-actions"><button class="${liked?'liked':''}" data-phone-moment-like="${esc(item.id)}">${liked?'♥':'♡'} Thích</button><button data-phone-moment-comment="${esc(item.id)}">💬 Bình luận</button></span></div>${likes}${comments}</div></article>`;
         }).join('');
@@ -12618,7 +12623,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         };
         const def = defs[kind] || defs.diary;
         const list = (stateRuntime.state.storyExtras?.[kind] || []).slice().reverse();
-        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${def.icon} ${def.title}</b><small>${list.length} mục · đồng bộ với thẻ gập của chính văn</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-phone-feed story-extra ${esc(kind)}">${list.length ? list.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.author || def.title).slice(0,1))}</span><div><b>${esc(item.author || def.title)}</b><small>${esc([item.time, Number.isFinite(Number(item._floor ?? item.floor)) ? `Tầng ${item._floor ?? item.floor}` : item.manual ? 'Do tôi đăng' : ''].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.content || '')}</p></article>`).join('') : `<div class="vvvtm-phone-empty-chat"><b>${def.empty}</b><small>Lượt sau, nếu Bảy điều hậu trường sinh ra nội dung tương ứng, nó sẽ xuất hiện cả trong thẻ gập của chính văn lẫn trong điện thoại.</small></div>`}</main></div>`;
+        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>${def.icon} ${def.title}</b><small>${list.length} mục · đồng bộ với thẻ gập của chính văn</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-phone-feed story-extra ${esc(kind)}">${list.length ? list.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.author || def.title).slice(0,1))}</span><div><b>${esc(item.author || def.title)}</b><small>${esc([item.time, Number.isFinite(Number(item._floor ?? item.floor)) ?`Tầng ${item._floor ?? item.floor}` : item.manual ?'Do tôi đăng' :''].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.content || '')}</p></article>`).join('') :`<div class="vvvtm-phone-empty-chat"><b>${def.empty}</b><small>Lượt sau, nếu Bảy điều hậu trường sinh ra nội dung tương ứng, nó sẽ xuất hiện cả trong thẻ gập của chính văn lẫn trong điện thoại.</small></div>`}</main></div>`;
     }
 
     function phoneCallDisplayRows(calls=[]){
@@ -12636,7 +12641,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         s12ReconcileCallReceipts();
         const raw = stateRuntime.state.phone?.calls || [], list=phoneCallDisplayRows(raw);
         const labels = { incoming:'Cuộc gọi đến', ringing:'Đang gọi', waiting:'Đang chờ nghe máy', missed:'Cuộc gọi nhỡ', connected:'Đang gọi', ended:'Đã kết thúc', outgoing:'Đã gọi đi' };
-        return `<div class="vvvtm-phone-app-page vvvtm-calls-page"><header class="vvvtm-phone-app-head ios-call-head"><button data-phone-home aria-label="Quay lại">‹</button><div><b>Cuộc gọi gần đây</b><small>${raw.length} bản ghi · ${esc(communicationLabel())}</small></div><button class="vvvtm-call-add" data-phone-start-call title="Bấm số" aria-label="Bấm số">＋</button></header><main class="vvvtm-call-list">${list.length ? list.map(item => {const name=item._displayName,missed=item.status==='missed',duration=Number(item.durationSeconds||0),direction=item.direction==='outgoing'?'↗':missed?'!':'↙',detail=[labels[item.status]||'Cuộc gọi',item.time,duration?`${Math.floor(duration/60)} phút ${duration%60} giây`:item.status==='connected'?'Đã kết nối':''].filter(Boolean).join(' · '),count=item._count>1?` <em>(${item._count})</em>`:'';const actions=!s12CallIsResolved(item)?`<div class="vvvtm-call-actions"><button class="answer" data-phone-call-action="answer" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="Nghe máy" aria-label="Nghe máy"><i class="fa-solid fa-phone"></i></button><button class="danger-soft" data-phone-call-action="decline" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="Từ chối" aria-label="Từ chối"><i class="fa-solid fa-phone-slash"></i></button></div>`:item.status==='connected'?`<button class="vvvtm-call-back danger-soft" data-phone-call-action="end" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="Kết thúc cuộc gọi" aria-label="Kết thúc cuộc gọi"><i class="fa-solid fa-phone-slash"></i></button>`:`<button class="vvvtm-call-back" data-phone-start-call data-phone-call-contact="${esc(name)}" title="Gọi lại" aria-label="Gọi lại"><i class="fa-solid fa-phone"></i></button>`;return `<article class="vvvtm-call-row ${missed?'missed':''} ${item._active?'active':''}"><span class="vvvtm-call-avatar">${esc(name.slice(0,1))}</span><div><b>${esc(name)}${count}</b><small><i class="vvvtm-call-direction">${direction}</i>${esc(detail)}</small>${item.content?`<p>${esc(item.content)}</p>`:''}</div>${actions}</article>`}).join('') : '<div class="vvvtm-phone-empty-chat"><b>Chưa có nhật ký cuộc gọi</b><small>Bấm ＋ ở góc trên bên phải để gọi cho bất kỳ liên hệ hay NPC nào.</small></div>'}</main><button class="vvvtm-call-fab" data-phone-start-call><i class="fa-solid fa-phone"></i><span>Bấm số</span></button></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-calls-page"><header class="vvvtm-phone-app-head ios-call-head"><button data-phone-home aria-label="Quay lại">‹</button><div><b>Cuộc gọi gần đây</b><small>${raw.length} bản ghi · ${esc(communicationLabel())}</small></div><button class="vvvtm-call-add" data-phone-start-call title="Bấm số" aria-label="Bấm số">＋</button></header><main class="vvvtm-call-list">${list.length ? list.map(item => {const name=item._displayName,missed=item.status==='missed',duration=Number(item.durationSeconds||0),direction=item.direction==='outgoing'?'↗':missed?'!':'↙',detail=[labels[item.status]||'Cuộc gọi',item.time,duration?`${Math.floor(duration/60)} phút ${duration%60} giây`:item.status==='connected'?'Đã kết nối':''].filter(Boolean).join(' · '),count=item._count>1?` <em>(${item._count})</em>`:'';const actions=!s12CallIsResolved(item)?`<div class="vvvtm-call-actions"><button class="answer" data-phone-call-action="answer" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="Nghe máy" aria-label="Nghe máy"><i class="fa-solid fa-phone"></i></button><button class="danger-soft" data-phone-call-action="decline" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="Từ chối" aria-label="Từ chối"><i class="fa-solid fa-phone-slash"></i></button></div>`:item.status==='connected'?`<button class="vvvtm-call-back danger-soft" data-phone-call-action="end" data-phone-call-id="${esc(item.id)}" data-phone-call-contact="${esc(name)}" title="Kết thúc cuộc gọi" aria-label="Kết thúc cuộc gọi"><i class="fa-solid fa-phone-slash"></i></button>`:`<button class="vvvtm-call-back" data-phone-start-call data-phone-call-contact="${esc(name)}" title="Gọi lại" aria-label="Gọi lại"><i class="fa-solid fa-phone"></i></button>`;return `<article class="vvvtm-call-row ${missed?'missed':''} ${item._active?'active':''}"><span class="vvvtm-call-avatar">${esc(name.slice(0,1))}</span><div><b>${esc(name)}${count}</b><small><i class="vvvtm-call-direction">${direction}</i>${esc(detail)}</small>${item.content?`<p>${esc(item.content)}</p>`:''}</div>${actions}</article>`}).join('') :'<div class="vvvtm-phone-empty-chat"><b>Chưa có nhật ký cuộc gọi</b><small>Bấm ＋ ở góc trên bên phải để gọi cho bất kỳ liên hệ hay NPC nào.</small></div>'}</main><button class="vvvtm-call-fab" data-phone-start-call><i class="fa-solid fa-phone"></i><span>Bấm số</span></button></div>`;
     }
     function phoneActiveCall() {
         const id=stateRuntime.phoneActiveCallId;return (stateRuntime.state?.phone?.calls||[]).find(row=>row.id===id)||null;
@@ -12655,7 +12660,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const result=await callPhoneRealtimeApi({mode,contact,event:{callId:call.id,direction:call.direction,status:call.status,userText},history,maxTokens:1400,requireMessages:true,requiredActions:mode==='outgoing-call'?['answer-call','decline-call','miss-call']:[],allowEmptyForActions:mode==='outgoing-call'?['decline-call','miss-call']:[]});
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)return false;
         if(call.direction==='outgoing'&&opening){
-            if(result.action.type==='decline-call'||result.action.type==='miss-call'){call.status=result.action.type==='miss-call'?'missed':'ended';call.requiresAnswer=false;call.endedAt=Date.now();call.content=`${call.status==='missed'?'Lý do không nghe máy':'Lý do từ chối'}：${result.action.reason}`;recordPhoneRealtimeEvent('call',`${contact}${call.status==='missed'?'Không bắt máy':'đã từ chối'} cuộc gọi đến: ${result.action.reason}`,{relatedId:call.id,contact});await saveState({immediate:true,refresh:false,reason:'phone-realtime-call-unanswered'});if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)updatePromptInjection();return false;}
+            if(result.action.type==='decline-call'||result.action.type==='miss-call'){call.status=result.action.type==='miss-call'?'missed':'ended';call.requiresAnswer=false;call.endedAt=Date.now();call.content=`${call.status==='missed'?'Lý do không nghe máy':'Lý do từ chối'}: ${result.action.reason}`;recordPhoneRealtimeEvent('call',`${contact}${call.status==='missed'?'Không bắt máy':'đã từ chối'} cuộc gọi đến: ${result.action.reason}`,{relatedId:call.id,contact});await saveState({immediate:true,refresh:false,reason:'phone-realtime-call-unanswered'});if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState)updatePromptInjection();return false;}
             call.status='connected';call.connectedAt=Date.now();call.requiresAnswer=false;
         }
         for(const row of result.messages){call.transcript.push({id:uid('call-line-ai'),role:'character',sender:row.sender||contact,content:row.text||'',stickerId:row.stickerId||'',time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true});}
@@ -12675,7 +12680,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
 
     function phoneWorldMarkup() {
         const events = (stateRuntime.state.characterWorld?.events || []).slice().reverse();
-        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>📖 Bỉ Gian Tư Văn</b><small>Ngoài ống kính vẫn đang vận hành</small></div><button data-phone-open-world>↗</button></header><main class="vvvtm-phone-feed world">${events.length ? events.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.character || '?').slice(0,1))}</span><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.activity)}</p>${item.goal?`<footer>Mục tiêu: ${esc(item.goal)}</footer>`:''}</article>`).join('') : '<div class="vvvtm-phone-empty-chat"><b>Chưa có động thái Bỉ Gian Tư Văn</b></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>📖 Bỉ Gian Tư Văn</b><small>Ngoài ống kính vẫn đang vận hành</small></div><button data-phone-open-world>↗</button></header><main class="vvvtm-phone-feed world">${events.length ? events.map(item => `<article><header><span class="vvvtm-contact-avatar">${esc((item.character || '?').slice(0,1))}</span><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div></header><p>${esc(item.activity)}</p>${item.goal?`<footer>Mục tiêu: ${esc(item.goal)}</footer>`:''}</article>`).join('') :'<div class="vvvtm-phone-empty-chat"><b>Chưa có động thái Bỉ Gian Tư Văn</b></div>'}</main></div>`;
     }
 
     function phonePrivacyMarkup(){
@@ -12720,7 +12725,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         for(const item of phone.callReceipts||[])add(item.id,'Chứng từ cuộc gọi',item.contact,item.action,item.callId,'',item.floor,item.status,item.time);
         for(const item of phone.notifications||[])add(item.id,'Thông báo',item.title,item.content,item.relatedId,'','',item.read?'Đã đọc':'Chưa đọc',item.time);
         rows.sort((a,b)=>String(b.id).localeCompare(String(a.id)));
-        return `<div class="vvvtm-phone-app-page vvvtm-inspector-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>Trình kiểm tra sự kiện điện thoại</b><small>${rows.length} mục · dùng để đối chiếu xuyên lượt Trạng thái</small></div><button data-phone-app="privacy">Người biết</button></header><main>${rows.length?rows.slice(0,180).map(row=>{const knowers=[...new Set(knowledge.filter(k=>k.eventId===row.id||k.relatedId===row.id||k.eventId===row.relatedId||k.relatedId===row.relatedId).map(k=>k.npc))];return `<article><header><b>${esc(row.type)} · ${esc(row.title||'Sự kiện')}</b><span>${esc(row.status||'Đã lưu')}</span></header><p>${esc(row.detail||'')}</p><dl><div><dt>ID sự kiện</dt><dd>${esc(row.id||'—')}</dd></div>${row.relatedId?`<div><dt>ID liên kết</dt><dd>${esc(row.relatedId)}</dd></div>`:''}<div><dt>Vị trí/tầng</dt><dd>${esc(row.location||'Chưa ghi nhận')} · ${row.floor===''?'Chưa ghi nhận':`tầng ${esc(row.floor)}`}</dd></div><div><dt>Thời điểm lưu</dt><dd>${esc(row.time||'Chưa ghi nhận')}</dd></div><div><dt>NPC biết chuyện</dt><dd>${esc(knowers.join('、')||'Chưa ai được xác nhận là biết')}</dd></div></dl></article>`}).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có sự kiện</b></div>'}</main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-inspector-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>Trình kiểm tra sự kiện điện thoại</b><small>${rows.length} mục · dùng để đối chiếu xuyên lượt Trạng thái</small></div><button data-phone-app="privacy">Người biết</button></header><main>${rows.length?rows.slice(0,180).map(row=>{const knowers=[...new Set(knowledge.filter(k=>k.eventId===row.id||k.relatedId===row.id||k.eventId===row.relatedId||k.relatedId===row.relatedId).map(k=>k.npc))];return `<article><header><b>${esc(row.type)} · ${esc(row.title||'Sự kiện')}</b><span>${esc(row.status||'Đã lưu')}</span></header><p>${esc(row.detail||'')}</p><dl><div><dt>ID sự kiện</dt><dd>${esc(row.id||'—')}</dd></div>${row.relatedId?`<div><dt>ID liên kết</dt><dd>${esc(row.relatedId)}</dd></div>`:''}<div><dt>Vị trí/tầng</dt><dd>${esc(row.location||'Chưa ghi nhận')} · ${row.floor===''?'Chưa ghi nhận':`tầng ${esc(row.floor)}`}</dd></div><div><dt>Thời điểm lưu</dt><dd>${esc(row.time||'Chưa ghi nhận')}</dd></div><div><dt>NPC biết chuyện</dt><dd>${esc(knowers.join(',')||'Chưa ai được xác nhận là biết')}</dd></div></dl></article>`}).join(''):'<div class="vvvtm-phone-empty-chat"><b>Chưa có sự kiện</b></div>'}</main></div>`;
     }
 
     const PHONE_THEMES = {
@@ -13029,7 +13034,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                     const userName=compactText(context()?.name1 || '{{user}}',80) || '{{user}}';
                     const floor=Math.max(0,(context()?.chat?.length||1)-1);
                     stateRuntime.state.storyExtras ||= { moments:[], diary:[], anniversaries:[] };
-                    const moment={ id:uid('moment-user'), author:userName, content, attachments, mediaDescription:attachments.filter(att=>att.kind==='image').map(att=>att.description).join('; '), time:phoneClock().time, manual:true, visibility:'friends', reactionStatus:'pending', seenBy:[], publishedAtFloor:floor, _floor:floor, generatedAt:nowText(), likes:[], comments:[] };
+                    const moment={ id:uid('moment-user'), author:userName, content, attachments, mediaDescription:attachments.filter(att=>att.kind==='image').map(att=>att.description).join(';'), time:phoneClock().time, manual:true, visibility:'friends', reactionStatus:'pending', seenBy:[], publishedAtFloor:floor, _floor:floor, generatedAt:nowText(), likes:[], comments:[] };
                     stateRuntime.state.storyExtras.moments.push(moment);
                     stateRuntime.phoneMomentDraftAttachments=[];stateRuntime.phoneMomentDraftContent='';stateRuntime.phoneDialog=null; await saveState({immediate:true,refresh:false,reason:'moment-published'});if(!phoneEventStillCurrent())return;renderRolePhone();toast('Đã đăng Khoảnh khắc, đang đồng bộ hoạt động của bạn bè','success');try{await runPhoneMomentRealtime(moment);}catch(error){toast(`Đã đăng Khoảnh khắc, nhưng tương tác bạn bè thời gian thực thất bại: ${error.message}`,'warn');}if(!phoneEventStillCurrent())return;scheduleReindex();updatePromptInjection();renderRolePhone();if(stateRuntime.currentTab==='overview')renderCurrentTab();return;
                 }
@@ -13475,7 +13480,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             const replySummary=result.messages.map(row=>row.text||`[Sticker: ${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||'Đối phương tạm thời chưa trả lời';
             s39RecordStoryEvent({type:'communication',relatedId:outgoingId,participants:[userName,groupName||contact],channel:groupName?(useWechat?'Nhóm WeChat':(currentProfile.communicationType||'Liên lạc thời đại')):(useWechat?'WeChat':(currentProfile.communicationType||'Liên lạc điện thoại')),status:result.messages.length?'Đã liên lạc qua lại':'Đã gửi, chờ trả lời',summary:`${userName} gửi: ${compactText(content||'[tệp đính kèm/sticker]',300)}; đối phương: ${compactText(replySummary,500)}`,floor:anchorFloor,time:sentClock,source:'phone-realtime'});
             recordPhoneRealtimeEvent('message',`${userName} liên lạc thời gian thực với ${groupName?`nhóm chat ${groupName}`:contact}: ${replySummary}`,{relatedId:outgoingId,contact:groupName||contact});
-            logAudit('Trò chuyện trên thiết bị liên lạc', groupName ? `${userName} ↔ nhóm chat: ${groupName}` : `${userName} ↔ ${contact}`);
+            logAudit('Trò chuyện trên thiết bị liên lạc', groupName ?`${userName} ↔ nhóm chat: ${groupName}` :`${userName} ↔ ${contact}`);
             await saveState({immediate:true,refresh:false,reason:'phone-immediate-reply'});
             if(!stillCurrent())return false;
             updatePromptInjection();scheduleReindex();return true;
@@ -13606,14 +13611,14 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const allEvents = (world.events || []).filter(item => !filter || item.character === filter).slice().reverse();
         const page = pageSlice(allEvents,`world:${filter||'all'}`);
         const events = page.items;
-        const characterCards = (world.characters || []).slice().sort((a,b) => Number(b.lastFloor || 0) - Number(a.lastFloor || 0)).map(item => `<article class="world-character-card ${filter===item.name?'active':''}" data-world-filter="${esc(item.name)}"><div class="world-character-avatar">${esc(item.name.slice(0,1))}</div><div><b>${esc(item.name)}</b><small>${esc(item.location || 'Chưa rõ vị trí')}</small><p>${esc(item.activity || 'Chưa ghi nhận hoạt động hiện tại')}</p><em>${esc(item.goal ? `Mục tiêu: ${item.goal}` : '')}</em></div></article>`).join('');
-        return `<section class="vvvtm-world-dashboard"><article class="vvvtm-card world-overview"><div class="vvvtm-section-title"><div><h3>🌍 Bỉ Gian Tư Văn</h3><p>Mọi nhân vật từng xuất hiện đều tiếp tục sống ngoài ống kính, không cần chờ user kích hoạt.</p></div><div><button data-world-generate>✨ Dùng API riêng đẩy lượt này</button><button data-world-clear class="danger-soft">Xóa động thái thế giới</button></div></div><div class="world-stats"><span><b>${world.characters.length}</b> nhân vật đang hoạt động</span><span><b>${world.events.length}</b> động thái</span><span><b>${esc(world.lastFloor ?? -1)}</b> tầng cuối</span></div></article><section class="world-layout"><aside class="world-characters"><button class="world-all ${!filter?'active':''}" data-world-filter="">Tất cả nhân vật</button>${characterCards || '<div class="vvvtm-empty">Chờ lượt trả lời AI kế tiếp để lập trạng thái đời sống nhân vật</div>'}</aside><main class="world-feed">${pagerMarkup(page)}${events.length ? events.map(item => `<article class="world-event-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div><button class="danger-soft" data-world-delete="${esc(item.id)}">Xóa</button></header><p>${esc(item.activity)}</p><dl>${item.goal?`<div><dt>Mục tiêu</dt><dd>${esc(item.goal)}</dd></div>`:''}${item.mood?`<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>`:''}${item.social?`<div><dt>Giao tiếp</dt><dd>${esc(item.social)}</dd></div>`:''}${item.relationToMainPlot?`<div><dt>với mạch chính</dt><dd>${esc(item.relationToMainPlot)}</dd></div>`:''}</dl><footer>Nguồn: tầng ${esc(item.floor)} · ${esc(item.generatedAt || '')}</footer></article>`).join('') : '<div class="vvvtm-empty">Bộ lọc này chưa có động thái nào</div>'}${pagerMarkup(page)}</main></section></section>`;
+        const characterCards = (world.characters || []).slice().sort((a,b) => Number(b.lastFloor || 0) - Number(a.lastFloor || 0)).map(item => `<article class="world-character-card ${filter===item.name?'active':''}" data-world-filter="${esc(item.name)}"><div class="world-character-avatar">${esc(item.name.slice(0,1))}</div><div><b>${esc(item.name)}</b><small>${esc(item.location || 'Chưa rõ vị trí')}</small><p>${esc(item.activity || 'Chưa ghi nhận hoạt động hiện tại')}</p><em>${esc(item.goal ?`Mục tiêu: ${item.goal}` :'')}</em></div></article>`).join('');
+        return `<section class="vvvtm-world-dashboard"><article class="vvvtm-card world-overview"><div class="vvvtm-section-title"><div><h3>🌍 Bỉ Gian Tư Văn</h3><p>Mọi nhân vật từng xuất hiện đều tiếp tục sống ngoài ống kính, không cần chờ user kích hoạt.</p></div><div><button data-world-generate>✨ Dùng API riêng đẩy lượt này</button><button data-world-clear class="danger-soft">Xóa động thái thế giới</button></div></div><div class="world-stats"><span><b>${world.characters.length}</b> nhân vật đang hoạt động</span><span><b>${world.events.length}</b> động thái</span><span><b>${esc(world.lastFloor ?? -1)}</b> tầng cuối</span></div></article><section class="world-layout"><aside class="world-characters"><button class="world-all ${!filter?'active':''}" data-world-filter="">Tất cả nhân vật</button>${characterCards || '<div class="vvvtm-empty">Chờ lượt trả lời AI kế tiếp để lập trạng thái đời sống nhân vật</div>'}</aside><main class="world-feed">${pagerMarkup(page)}${events.length ? events.map(item => `<article class="world-event-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location].filter(Boolean).join(' · '))}</small></div><button class="danger-soft" data-world-delete="${esc(item.id)}">Xóa</button></header><p>${esc(item.activity)}</p><dl>${item.goal?`<div><dt>Mục tiêu</dt><dd>${esc(item.goal)}</dd></div>`:''}${item.mood?`<div><dt>Trạng thái</dt><dd>${esc(item.mood)}</dd></div>`:''}${item.social?`<div><dt>Giao tiếp</dt><dd>${esc(item.social)}</dd></div>`:''}${item.relationToMainPlot?`<div><dt>với mạch chính</dt><dd>${esc(item.relationToMainPlot)}</dd></div>`:''}</dl><footer>Nguồn: tầng ${esc(item.floor)} · ${esc(item.generatedAt || '')}</footer></article>`).join('') :'<div class="vvvtm-empty">Bộ lọc này chưa có động thái nào</div>'}${pagerMarkup(page)}</main></section></section>`;
     }
 
     function bindCharacterWorld(content) {
         content.querySelectorAll('[data-world-filter]').forEach(button => button.addEventListener('click', () => { stateRuntime.worldCharacter = button.dataset.worldFilter; renderCurrentTab(); }));
         content.querySelector('[data-world-generate]')?.addEventListener('click', async () => {
-            setBusy(true, 'Đang dùng API riêng của Bảy điều hậu trường để đẩy Bỉ Gian Tư Văn của lượt này…');
+            setBusy(true,'Đang dùng API riêng của Bảy điều hậu trường để đẩy Bỉ Gian Tư Văn của lượt này…');
             try { await generateCompanionOutputForLatest({ force: true }); renderCurrentTab(); }
             finally { setBusy(false); }
         });
@@ -13627,7 +13632,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             if (!confirm('Xóa động thái Bỉ Gian Tư Văn và trạng thái nhân vật của cuộc trò chuyện hiện tại? Thiết bị liên lạc và các ký ức khác sẽ không bị xóa.')) return;
             recordManualDeletion('characterWorld.events',stateRuntime.state.characterWorld.events||[]);
             recordManualDeletion('characterWorld.characters',stateRuntime.state.characterWorld.characters||[]);
-            stateRuntime.state.characterWorld = { characters: [], events: [], lastGeneratedAt: '', lastFloor: -1 };
+            stateRuntime.state.characterWorld = { characters: [], events: [], lastGeneratedAt:'', lastFloor: -1 };
             stateRuntime.worldCharacter = '';
             saveState({ immediate:true, refresh:true, reason:'user-explicit-delete', allowDestructive:true });
         });
@@ -13699,7 +13704,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                     if (!completed && promiseComplete.isConnected) promiseComplete.disabled = false;
                 } catch (error) {
                     promiseComplete.disabled = false;
-                    toast(`Hoàn thành lời hẹn thất bại: ${error?.message || error}`, 'error');
+                    toast(`Hoàn thành lời hẹn thất bại: ${error?.message || error}`,'error');
                 }
                 return;
             }
@@ -13713,7 +13718,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                 const body = fold?.querySelector('.vvvtm-info-fold-body');
                 const next = sectionToggle.getAttribute('aria-expanded') !== 'true';
                 sectionToggle.setAttribute('aria-expanded', String(next));
-                sectionToggle.textContent = next ? '－' : '＋';
+                sectionToggle.textContent = next ?'－' :'＋';
                 if (body) body.hidden = !next;
                 const ui = companionUiState(floor);
                 ui.sections[key] = next;
@@ -13731,8 +13736,8 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                 const body = fold?.querySelector('.vvvtm-world-fold-body');
                 const next = toggle.getAttribute('aria-expanded') !== 'true';
                 toggle.setAttribute('aria-expanded', String(next));
-                toggle.textContent = next ? '－' : '＋';
-                toggle.setAttribute('aria-label', next ? (phoneToggle ? `Thu gọn ${communicationLabel(sidecarPayloadForFloor(floor))}` : 'Thu gọn Bỉ Gian Tư Văn') : (phoneToggle ? `Mở ${communicationLabel(sidecarPayloadForFloor(floor))}` : 'Mở Bỉ Gian Tư Văn'));
+                toggle.textContent = next ?'－' :'＋';
+                toggle.setAttribute('aria-label', next ? (phoneToggle ?`Thu gọn ${communicationLabel(sidecarPayloadForFloor(floor))}` :'Thu gọn Bỉ Gian Tư Văn') : (phoneToggle ?`Mở ${communicationLabel(sidecarPayloadForFloor(floor))}` :'Mở Bỉ Gian Tư Văn'));
                 if (body) body.hidden = !next;
                 const ui = companionUiState(floor);
                 if (phoneToggle) ui.phoneExpanded = next;
@@ -13769,7 +13774,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             if (regen) {
                 event.preventDefault();
                 event.stopPropagation();
-                setBusy(true, 'Đang viết lại riêng phần động thái hậu trường; thao tác này sẽ gọi thêm một lần tới nguồn đang cấu hình…');
+                setBusy(true,'Đang viết lại riêng phần động thái hậu trường; thao tác này sẽ gọi thêm một lần tới nguồn đang cấu hình…');
                 try { await generateCompanionOutputForLatest({ force: true, targetFloor:Number(regen.dataset.vvvtmRegenerate) }); }
                 finally { setBusy(false); }
                 return;
@@ -13793,7 +13798,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const result = pool[Math.floor(Math.random() * pool.length)];
         stateRuntime.state.directorInstruction = result;
         stateRuntime.state.diceHistory.push({ result, time: nowText() });
-        saveState({ refresh: true }); toast(`Xúc xắc cốt truyện: ${result}`, 'success');
+        saveState({ refresh: true }); toast(`Xúc xắc cốt truyện: ${result}`,'success');
     }
 
     async function manualMigrate() {
@@ -13807,17 +13812,17 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                 migrated = migrateGaigai(candidates[0].data);
             }
         }
-        if (!migrated) {toast('Không tìm thấy dữ liệu ký ức cũ nào để di trú', 'warn');return false;}
+        if (!migrated) {toast('Không tìm thấy dữ liệu ký ức cũ nào để di trú','warn');return false;}
         if (countRows(operationState) && !confirm('Trung tâm Ký ức hiện đã có dữ liệu. Tiếp tục di trú sẽ lấy bảng cũ làm nền để ghi đè bảng hiện tại, bạn chắc chắn tiếp tục chứ?')) return false;
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)return false;
         const next=normalizeState(migrated);next.chatIdentity=scope.chatKey;next.chatAnchor=scope.chatAnchor;stateRuntime.state=next;s12ReconcileCallReceipts();
         await saveState({ immediate: true, refresh: true, reason:'manual-migrate', allowDestructive:true, forceSnapshot:true });
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==next)return false;
-        toast('Di trú ký ức cũ đã xong', 'success');return true;
+        toast('Di trú ký ức cũ đã xong','success');return true;
     }
 
     function exportData() {
-        const blob = new Blob([JSON.stringify(stateRuntime.state, null, 2)], { type: 'application/json;charset=utf-8' });
+        const blob = new Blob([JSON.stringify(stateRuntime.state, null, 2)], { type:'application/json;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -13838,9 +13843,9 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             const next=normalizeState(parsed);next.chatIdentity=scope.chatKey;next.chatAnchor=scope.chatAnchor;next.intentionalResetAt=0;stateRuntime.state=next;s12ReconcileCallReceipts();
             await saveState({ immediate: true, refresh: true, reason:'import-backup', allowDestructive:true, forceSnapshot:true });
             if(!chatScopeIsCurrent(scope)||stateRuntime.state!==next)return false;
-            toast('Nhập xong (trạng thái trước khi nhập đã được lưu vào ảnh chụp an toàn)', 'success');return true;
+            toast('Nhập xong (trạng thái trước khi nhập đã được lưu vào ảnh chụp an toàn)','success');return true;
         } catch (error) {
-            if(chatScopeIsCurrent(scope))toast(`Nhập thất bại: ${error.message}`, 'error');return false;
+            if(chatScopeIsCurrent(scope))toast(`Nhập thất bại: ${error.message}`,'error');return false;
         } finally {
             event.target.value = '';
         }
@@ -14100,8 +14105,8 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         // Những permanent-error như xác thực/quyền/mô hình không tồn tại/ngữ cảnh vượt hạn cứng thì không gửi thêm yêu cầu.
         const autoRecoveryScheduled=reason!=='permanent-error'&&schedulePostFallbackCoreRecovery(entry.index,entry.signature,scope,operationState,1,0);
         notifyPipelineDone(autoRecoveryScheduled
-            ? `Ký ức có cấu trúc của tầng ${entry.index} thất bại liên tiếp, đã lưu chính văn AI làm phương án đáy và xếp lịch tự dựng lại ở nền; không cần bấm “Dựng lại tầng này” thủ công.`
-            : `Ký ức có cấu trúc của tầng ${entry.index} thất bại liên tiếp, đã lưu chính văn AI làm phương án đáy và cho đi tiếp; hãy kiểm tra cấu hình API sắp xếp riêng.`,'error');
+            ?`Ký ức có cấu trúc của tầng ${entry.index} thất bại liên tiếp, đã lưu chính văn AI làm phương án đáy và xếp lịch tự dựng lại ở nền; không cần bấm “Dựng lại tầng này” thủ công.`
+            :`Ký ức có cấu trúc của tầng ${entry.index} thất bại liên tiếp, đã lưu chính văn AI làm phương án đáy và cho đi tiếp; hãy kiểm tra cấu hình API sắp xếp riêng.`,'error');
         runLaterForScope(scope,30,()=>drainAssistantMemoryQueue());
         return true;
     }
@@ -14192,7 +14197,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
 
     async function serverFetch(endpoint, options = {}) {
         const response = await fetch(`${SERVER_BASE}${endpoint}`, {
-            credentials: 'same-origin',
+            credentials:'same-origin',
             ...options,
             headers: { ...(await sillyTavernRequestHeaders({ getContext:context })), ...(options.headers || {}) },
         });
@@ -14389,7 +14394,7 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
     }
 
     async function createServerTask(type, payload) {
-        const data = await serverFetch('/tasks', { method: 'POST', body: JSON.stringify({ type, chatKey: serverChatKey(), ...payload }) });
+        const data = await serverFetch('/tasks', { method:'POST', body: JSON.stringify({ type, chatKey: serverChatKey(), ...payload }) });
         return data.task;
     }
 
@@ -14431,7 +14436,7 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
         const safeStart = Math.max(preserveFirst, Math.max(0, Number(start ?? 0)));
         const safeEnd = Math.min(Math.max(-1, chatLength - 1), Math.max(0, Number(end ?? safeStart)));
         if (safeEnd < safeStart) return null;
-        return { start: safeStart, end: safeEnd, label: `${safeStart}-${safeEnd}` };
+        return { start: safeStart, end: safeEnd, label:`${safeStart}-${safeEnd}` };
     }
 
     async function setPromptHiddenRange(start, end, hidden = true) {
@@ -14473,11 +14478,11 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
             row._hiddenRange = '';
             return null;
         }
-        row['Trạng thái ẩn'] = hidden ? 'Đã ẩn' : 'Chưa ẩn';
-        row._hiddenRange = hidden ? range.label : '';
+        row['Trạng thái ẩn'] = hidden ?'Đã ẩn' :'Chưa ẩn';
+        row._hiddenRange = hidden ? range.label :'';
         row._hiddenAt = hidden ? nowText() : null;
-        logAudit(hidden ? 'Ẩn các tầng đã tổng kết' : 'Khôi phục các tầng đã tổng kết', range.label);
-        if (!silent) toast(`${hidden ? 'Đã ẩn' : 'Đã khôi phục'} tầng ${range.label}`, 'success');
+        logAudit(hidden ?'Ẩn các tầng đã tổng kết' :'Khôi phục các tầng đã tổng kết', range.label);
+        if (!silent) toast(`${hidden ?'Đã ẩn' :'Đã khôi phục'} tầng ${range.label}`,'success');
         return range;
     }
 
@@ -14585,7 +14590,7 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
     }
 
     function memoryCollectionPrompt(part,partIndex,totalParts) {
-        const targets=part.targetFloors.join('、');
+        const targets=part.targetFloors.join(',');
         const sources=part.units.map(unit=>unit.text).join('\n\n');
         return `Bạn là người rà soát lại toàn bộ ký ức của “0-32 · Sân Khấu Không Bao Giờ Hạ Màn”. Bây giờ đang chạy lượt yêu cầu thứ ${partIndex+1}/${totalParts} trong chuỗi tiếp sức API gom ký ức. Yêu cầu này đã sát dung lượng an toàn của một lượt; chỉ xử lý mảnh này, không chờ và cũng không giả định gì về các mảnh khác.
 
@@ -14619,7 +14624,7 @@ ${sources}`;
             seen.add(floor);floorPayloads.push({floor,memory});
         }
         const missing=[...expected].filter(floor=>!seen.has(floor));
-        if(missing.length)throw new Error(`Bộ ký ức bỏ sót tầng mục tiêu: ${missing.join(', ')}`);
+        if(missing.length)throw new Error(`Bộ ký ức bỏ sót tầng mục tiêu: ${missing.join(',')}`);
         return {...result,floorPayloads};
     }
 
@@ -14661,8 +14666,8 @@ ${sources}`;
         const sourceChars=parts.reduce((sum,part)=>sum+part.sourceChars,0);
         const hiddenCount=(operationState.tables?.summaries||[]).filter(row=>(row?.['Loại']||row?.['Loại bảng'])==='Tổng kết giai đoạn'&&(row['Trạng thái ẩn']==='Đã ẩn'||row._hiddenRange)).length;
         const question=resumable
-            ? `Tiếp tục “gom ký ức” chứ?\n\nSẽ chạy tiếp từ lượt yêu cầu API thứ ${startPart+1}/${parts.length}. Cuộc trò chuyện hiện có ${assistantFloors} tầng AI, còn ${parts.length-startPart} lượt tự tiếp sức theo dung lượng. Trước khi bắt đầu vẫn chụp thêm một ảnh an toàn và bảo đảm mọi tầng đều hiện.`
-            : `Bắt đầu “gom ký ức” chứ?\n\nThống kê: ${context()?.chat?.length||0} tầng tổng cộng, trong đó ${assistantFloors} tầng AI, khoảng ${sourceChars.toLocaleString()} ký tự; theo dung lượng an toàn ${maxChars.toLocaleString()} ký tự mỗi lượt thì dự kiến gọi ${parts.length} lượt API. Số lần gọi không có giới hạn cố định, cuộc trò chuyện dài sẽ tiếp sức cho tới khi đọc hết.\n\nThao tác sẽ lưu ảnh chụp an toàn trước, rồi bỏ toàn bộ /hide (hiện phát hiện ${hiddenCount} giai đoạn đang ẩn), và bổ sung kết quả mới vào ký ức hiện có theo đúng tầng thật, không xóa ký ức cũ. Bạn có tiếp tục không?`;
+            ?`Tiếp tục “gom ký ức” chứ?\n\nSẽ chạy tiếp từ lượt yêu cầu API thứ ${startPart+1}/${parts.length}. Cuộc trò chuyện hiện có ${assistantFloors} tầng AI, còn ${parts.length-startPart} lượt tự tiếp sức theo dung lượng. Trước khi bắt đầu vẫn chụp thêm một ảnh an toàn và bảo đảm mọi tầng đều hiện.`
+            :`Bắt đầu “gom ký ức” chứ?\n\nThống kê: ${context()?.chat?.length||0} tầng tổng cộng, trong đó ${assistantFloors} tầng AI, khoảng ${sourceChars.toLocaleString()} ký tự; theo dung lượng an toàn ${maxChars.toLocaleString()} ký tự mỗi lượt thì dự kiến gọi ${parts.length} lượt API. Số lần gọi không có giới hạn cố định, cuộc trò chuyện dài sẽ tiếp sức cho tới khi đọc hết.\n\nThao tác sẽ lưu ảnh chụp an toàn trước, rồi bỏ toàn bộ /hide (hiện phát hiện ${hiddenCount} giai đoạn đang ẩn), và bổ sung kết quả mới vào ký ức hiện có theo đúng tầng thật, không xóa ký ức cũ. Bạn có tiếp tục không?`;
         if(!confirm(question))return false;
         const operationToken={scope:operationScope,state:operationState,at:Date.now()};
         stateRuntime.memoryCollectionRunning=true;stateRuntime.memoryCollectionAbort=false;stateRuntime.memoryCollectionOperationToken=operationToken;
@@ -14738,7 +14743,7 @@ ${sources}`;
         const stateAtStart=stateRuntime.state;
         const repairText=String(invalidOutput||'').trim();
         const requestPrompt=repairText
-            ? `${String(prompt||'')}\n\n【ĐẦU RA KHÔNG HỢP LỆ CỦA BẢN TRƯỚC | CHỈ DÙNG ĐỂ SỬA ĐỊNH DẠNG, KHÔNG PHẢI TƯ LIỆU CỐT TRUYỆN】\n${repairText.slice(0,16000)}\n\nHãy giữ nguyên các sự thật trong tư liệu lần này, chỉ sửa lại định dạng và cấu trúc đầu ra.`
+            ?`${String(prompt||'')}\n\n【ĐẦU RA KHÔNG HỢP LỆ CỦA BẢN TRƯỚC | CHỈ DÙNG ĐỂ SỬA ĐỊNH DẠNG, KHÔNG PHẢI TƯ LIỆU CỐT TRUYỆN】\n${repairText.slice(0,16000)}\n\nHãy giữ nguyên các sự thật trong tư liệu lần này, chỉ sửa lại định dạng và cấu trúc đầu ra.`
             : String(prompt||'');
         const promptHash=promptFingerprint(feature,requestPrompt);const chatIdentity=scope.chatKey;const generation=stateRuntime.dataGeneration;
         stateAtStart.summaryJobs||=[];
@@ -14816,7 +14821,7 @@ ${sources}`;
     }
 
     function requireSummaryQuality(value, kind='Tổng kết giai đoạn', minChars=80) {
-        const text=String(value?.text ?? value ?? '').trim();
+        const text=String(value?.text ?? value ??'').trim();
         const compact=text.replace(/\s+/g,'');
         if(compact.length < minChars) throw new Error(`${kind} không qua kiểm tra chất lượng: nội dung quá ngắn (${compact.length}<${minChars}), đã từ chối ghi/ẩn chính văn`);
         if(/^(?:null|undefined|\{\}|\[\]|không|chưa có|không có|không có nội dung|không có mục mới|n\/?a)$/i.test(compact)) throw new Error(`${kind} không qua kiểm tra chất lượng: trả về vỏ rỗng`);
@@ -14825,8 +14830,8 @@ ${sources}`;
     }
 
     function summaryValue(value,fallback='Chưa xác định') {
-        if(Array.isArray(value))value=value.map(item=>typeof item==='object'?Object.values(item).filter(Boolean).join('; '):item).filter(Boolean).join('、');
-        if(value&&typeof value==='object')value=Object.values(value).filter(Boolean).join('; ');
+        if(Array.isArray(value))value=value.map(item=>typeof item==='object'?Object.values(item).filter(Boolean).join(';'):item).filter(Boolean).join(',');
+        if(value&&typeof value==='object')value=Object.values(value).filter(Boolean).join(';');
         return compactText(value,4000)||fallback;
     }
 
@@ -14867,7 +14872,7 @@ ${sources}`;
         if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Kiểm tra cấu trúc tổng kết giai đoạn thất bại: tầng trên cùng không phải object JSON');
         const required=['timeScene','corePlotActions','peopleRelations','secretsKnowledge','items','promises','unresolved'];
         const missing=required.filter(key=>!Object.prototype.hasOwnProperty.call(raw,key));
-        if(missing.length)throw new Error(`Kiểm tra cấu trúc tổng kết giai đoạn thất bại: thiếu trường ${missing.join(', ')}`);
+        if(missing.length)throw new Error(`Kiểm tra cấu trúc tổng kết giai đoạn thất bại: thiếu trường ${missing.join(',')}`);
         const structured=normalizeStageSummaryPayload(raw,start,end);
         if(!structured.corePlotActions.length&&!structured.peopleRelations.length&&!structured.secretsKnowledge.length&&!structured.items.length&&!structured.promises.length&&!structured.unresolved.length)throw new Error('Kiểm tra cấu trúc tổng kết giai đoạn thất bại: cả năm khu nội dung đều trống, đã từ chối ghi và ẩn chính văn');
         const text=formatStageSummaryPayload(structured);
@@ -14938,18 +14943,18 @@ ${digests.join('\n\n')}`,{
     }
 
     function summaryRowFromJob(record, task) {
-        const type = record.kind === 'eraSummary' ? 'Tổng kết thời đại' : (record.kind === 'bigSummary' ? 'Tổng kết lớn' : 'Tổng kết giai đoạn');
+        const type = record.kind === 'eraSummary' ?'Tổng kết thời đại' : (record.kind === 'bigSummary' ?'Tổng kết lớn' :'Tổng kết giai đoạn');
         const minChars=record.kind==='eraSummary'?120:record.kind==='bigSummary'?100:80;
         const quality=requireSummaryQuality(task.result?.text||'',type,minChars);
         if(type==='Tổng kết giai đoạn'&&!isFixedStageSummaryText(String(quality?.text??quality)))throw new Error('Kết quả tác vụ tổng kết giai đoạn không theo định dạng cố định U1.6.1, đã từ chối ghi');
         return {
             'Loại': type,
-            'Trạng thái': 'Đã hoàn thành',
+            'Trạng thái':'Đã hoàn thành',
             'Nội dung tổng kết': String(quality?.text ?? quality).trim(),
-            'Tầng bao phủ': ['bigSummary','eraSummary'].includes(record.kind) ? record.rangeLabel : `${record.startFloor}-${record.endFloor}`,
+            'Tầng bao phủ': ['bigSummary','eraSummary'].includes(record.kind) ? record.rangeLabel :`${record.startFloor}-${record.endFloor}`,
             'Mô hình': task.model || record.model || 'API tổng kết riêng',
             'Thời điểm tạo': nowText(),
-            'Khóa': 'Không',
+            'Khóa':'Không',
             _id: record.summaryId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
             _taskId: record.id || '',
             _sourceSummaryIds: record.sourceSummaryIds || [],
@@ -15176,7 +15181,7 @@ ${digests.join('\n\n')}`,{
                     stateRuntime.state.progress.lastCompanionSignature = currentSignature;
                     // U1.7.2: khi tác vụ cũ đến muộn mà áp dụng thành công thì phải tắt ngay bộ hẹn giờ thử lại đã tạo trước đó do hết hạn thăm dò.
                     clearCompanionRetryForFloor(floor);
-                     logAudit('Bảy điều hậu trường viết', `Tầng ${floor}: ${payload.sourceLabel || 'API riêng của Bảy điều hậu trường'} đã tạo xong; liên lạc ${payload.phone.write ? 'có' : 'không'}, Bỉ Gian Tư Văn ${payload.world.events.length} mục`);
+                     logAudit('Bảy điều hậu trường viết',`Tầng ${floor}: ${payload.sourceLabel || 'API riêng của Bảy điều hậu trường'} đã tạo xong; liên lạc ${payload.phone.write ?'có' :'không'}, Bỉ Gian Tư Văn ${payload.world.events.length} mục`);
                      await saveChatExtras(operationScope);
                      if(!stillCurrent())return false;
                      bridgeCompanionToMainline(floor, currentSignature, operationScope);
@@ -15199,12 +15204,12 @@ ${digests.join('\n\n')}`,{
                 phone: { ...data, write:true },
                 world: { write:false, events:[] },
                 story: { moments:[], reactions:[], diary:[], anniversaries:[] },
-            }, floor, `manual-phone-${floor}`);
+            }, floor,`manual-phone-${floor}`);
             const phoneData = normalized.phone || {};
             const currentProfile = normalized.setting || stateRuntime.state?.communicationProfile || {};
             const originKey = stateRuntime.state?.worldTransit?.origin?.worldKey || 'origin-modern';
             const sameOrigin = currentWorldMatchesOrigin(currentProfile);
-            const localScope = sameOrigin ? 'origin' : 'local';
+            const localScope = sameOrigin ?'origin' :'local';
             const localHomeKey = sameOrigin ? originKey : (currentProfile.worldKey || 'current');
 
             for (const item of Array.isArray(data.contacts) ? data.contacts : []) {
@@ -15292,7 +15297,7 @@ ${digests.join('\n\n')}`,{
         record.model = task.model || record.model || '';
         record.usage = task.usage || null;
         record.updatedAt = Date.now();
-        logAudit('Áp dụng tác vụ phía máy chủ', `${record.kind} ${record.id}`);
+        logAudit('Áp dụng tác vụ phía máy chủ',`${record.kind} ${record.id}`);
         if(!stillCurrent())return false;
         await saveState({ immediate: true, refresh: false, reason:'apply-completed-job' });
         if(!stillCurrent())return false;
@@ -15407,8 +15412,8 @@ ${digests.join('\n\n')}`,{
 
     function memoryFeatureFinalInstruction(feature, jsonMode=false) {
         const format=jsonMode
-            ? 'Chỉ xuất đúng một object JSON hoàn chỉnh mà JSON.parse đọc được ngay; cấm Markdown, giải thích, viết tiếp chính văn và mọi chữ nằm ngoài object.'
-            : 'Chỉ xuất phần nội dung tổng kết chạy nền mà lượt này yêu cầu; cấm viết tiếp cốt truyện, viết thay user, thêm tiêu đề diễn giải hay in ra quá trình phân tích.';
+            ?'Chỉ xuất đúng một object JSON hoàn chỉnh mà JSON.parse đọc được ngay; cấm Markdown, giải thích, viết tiếp chính văn và mọi chữ nằm ngoài object.'
+            :'Chỉ xuất phần nội dung tổng kết chạy nền mà lượt này yêu cầu; cấm viết tiếp cốt truyện, viết thay user, thêm tiêu đề diễn giải hay in ra quá trình phân tích.';
         return `${MEMORY_IMPERSONATE_FINAL_CONTRACT}\n【TÍNH NĂNG HIỆN TẠI】${String(feature||'memory')}\n${format}`;
     }
 
@@ -15508,7 +15513,7 @@ ${digests.join('\n\n')}`,{
         const requiredFacts=detectTurnLifeDetailCandidates(entry.index);
         const coverageList=requiredFacts.length
             ? requiredFacts.map((item,index)=>`${index+1}. [${item.category}]【ĐỀU THUỘC VỀ TẦNG ${entry.index}】${item.text}`).join('\n')
-            : 'Lượt này không phát hiện sự thật nguyên tử nào cần ghi đè bắt buộc.';
+            :'Lượt này không phát hiện sự thật nguyên tử nào cần ghi đè bắt buộc.';
         const transcript=`【DANH SÁCH SỰ THẬT NGUYÊN TỬ CẦN BAO PHỦ CỦA LƯỢT NÀY | PHẢI GHI TỪNG MỤC VÀO anchors, RIÊNG commitment GHI THÊM VÀO promises】\n${coverageList}\n\n${assistantTurnTranscript(entry.index)}`;
         return `Bạn là người ghi chép ký ức có cấu trúc cho một câu chuyện nhập vai dài kỳ. Hiện đang dùng chế độ nghiêm ngặt “mỗi lượt trả lời của AI chạy một lần”.\n\n【QUY TẮC】\n1. Mục tiêu ghi nhớ duy nhất lần này là lượt trả lời của AI/nhân vật ở tầng ${entry.index}.\n2. Tin nhập của user ngay trước đó chỉ dùng để hiểu ngữ cảnh, tuyệt đối không được ghi thành sự kiện riêng, dòng thời gian riêng hay tầng riêng.\n3. mainline nhiều nhất xuất 1 mục; nếu không có sự kiện mới nào đáng vào dòng thời gian thì mainline=[].\n4. Mọi bản ghi mới có floor bắt buộc ghi ${entry.index}, cấm ghi tầng của user.\n5. Không đoán, không thêm hành động thay {{user}}; nếu lượt trả lời của AI xác nhận/tiếp nhận rõ ràng hành vi của user thì có thể ghi lại sự thật đã được lượt trả lời đó xác nhận, nhưng vẫn quy về tầng ${entry.index}.\n6. Địa điểm/tư thế/trang phục/vật đang giữ và các trạng thái khác được ghi theo thời khắc cuối cùng của lượt trả lời AI này.\n\nXuất JSON nghiêm ngặt, không dùng Markdown:\n{\n"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},\n"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"${entry.index}"}],\n"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"${entry.index}"}],\n"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"${entry.index}"}],\n"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"${entry.index}"}],\n"relations":[{"a":"","b":"","description":"","attitude":"","time":""}],\n"world":[{"name":"","type":"","description":"","scope":""}],\n"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],\n"promises":[{"time":"","content":"","characters":"","status":"","floor":"${entry.index}"}],\n"secrets":[{"subject":"","content":"","knowers":"","suspects":"","unknown":""}],\n"chapters":[{"title":"","startFloor":"${entry.index}","endFloor":"${entry.index}","summary":"","time":""}],\n"anchors":[{"date":"","time":"","floor":"${entry.index}","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],\n"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"${entry.index}"}]\n}\nKhông có mục mới thì trả về mảng rỗng. Trường chưa rõ thì để trống. Một hành vi đơn lẻ không được suy diễn thành sở thích lâu dài.\n\nTư liệu và mục tiêu duy nhất của lần này:\n${transcript}`;
     }
@@ -15711,7 +15716,7 @@ ${digests.join('\n\n')}`,{
         if(!standardStageRange(start,end) && !manual) return false;
         const operationScope=captureChatScope();const operationState=stateRuntime.state;const operationToken={scope:operationScope,start,end,at:Date.now()};
         stateRuntime.summaryOperationToken=operationToken;stateRuntime.summaryRunning=true;
-        setBusy(true, `Đang tổng kết trọn tầng ${start}-${end}…`);
+        setBusy(true,`Đang tổng kết trọn tầng ${start}-${end}…`);
         try {
             const existing=findStageSummaryByRange(start,end);
             if(existing && !replaceExisting){ toast(`Tầng ${start}-${end} đã có tổng kết giai đoạn, hãy dùng “Làm lại đoạn này” để ghi đè.`,'info'); return false; }
@@ -15748,13 +15753,13 @@ ${digests.join('\n\n')}`,{
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             }
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            notifyPipelineDone(`Đã tổng kết xong tầng ${start}-${end} (đã đọc trọn khoảng này), có thể tiếp tục mục sau.`, 'success');
+            notifyPipelineDone(`Đã tổng kết xong tầng ${start}-${end} (đã đọc trọn khoảng này), có thể tiếp tục mục sau.`,'success');
             if(!replaceExisting && !row._includedInBig){await maybeCreateBigSummary();if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;}
             return true;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             console.error('[vvv Sân Khấu Nhỏ] Tổng kết giai đoạn thất bại',error);
-            toast(`Tổng kết giai đoạn thất bại: ${error.message}`, 'error'); return false;
+            toast(`Tổng kết giai đoạn thất bại: ${error.message}`,'error'); return false;
         } finally {
             if(stateRuntime.summaryOperationToken===operationToken){stateRuntime.summaryOperationToken=null;stateRuntime.summaryRunning=false;}
             if(chatScopeIsCurrent(operationScope))setBusy(false);
@@ -15785,7 +15790,7 @@ ${digests.join('\n\n')}`,{
         recalculateSummaryProgress();
         await saveState({immediate:true,refresh:true,reason:chainOk?'summary-redo-chain':'summary-redo-chain-pending',forceSnapshot:true});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-        scheduleReindex();if(chainOk)toast(`Đã làm lại tại chỗ tầng ${range.start}-${range.end} và cập nhật đồng bộ tổng kết cấp trên`, 'success'); return true;
+        scheduleReindex();if(chainOk)toast(`Đã làm lại tại chỗ tầng ${range.start}-${range.end} và cập nhật đồng bộ tổng kết cấp trên`,'success'); return true;
     }
 
     async function restorePreviousSummaryVersion(row) {
@@ -15871,27 +15876,27 @@ ${digests.join('\n\n')}`,{
         const count = Math.max(2, Number(operationState.settings.stageSummariesPerBig || 5));
         const rows = contiguousSummaryGroup('Tổng kết giai đoạn','_includedInBig',count,{force});
         if (!rows.length) return false;
-        setBusy(true, 'Đang gộp tổng kết lớn…');
+        setBusy(true,'Đang gộp tổng kết lớn…');
         try {
             const sourceSummaryIds = rows.map(row => row._id).filter(Boolean);
             const sourceRanges = rows.map(row => row['Tầng bao phủ']);
             const result = await runFeature('bigSummary', bigSummaryPrompt(rows), {
-                kind: 'bigSummary', sourceSummaryIds, sourceRanges,
-                rangeLabel: `${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}`,
+                kind:'bigSummary', sourceSummaryIds, sourceRanges,
+                rangeLabel:`${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}`,
             });
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            const record = result.record || { id: '', kind: 'bigSummary', sourceSummaryIds, sourceRanges, chatIdentity:operationScope.chatKey,
-                rangeLabel: `${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}` };
+            const record = result.record || { id:'', kind:'bigSummary', sourceSummaryIds, sourceRanges, chatIdentity:operationScope.chatKey,
+                rangeLabel:`${parseRange(sourceRanges[0]).start}-${parseRange(sourceRanges.at(-1)).end}` };
             if (result.task && !(await applyCompletedJob(record, result.task))) return false;
-            else if(!(await applyCompletedJob(record, { status: 'completed', result: { text: result.text }, model: result.model, usage: result.usage })))return false;
+            else if(!(await applyCompletedJob(record, { status:'completed', result: { text: result.text }, model: result.model, usage: result.usage })))return false;
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast('Tổng kết lớn đã xong', 'success');
+            if (!quiet) toast('Tổng kết lớn đã xong','success');
             // R9: sau khi chạm ranh giới thời đại thì nén tiếp ở cấp ba. Tổng kết thời đại thất bại sẽ không hoàn tác các tổng kết lớn đã thành công.
             await maybeCreateEraSummary({ force:false, quiet:true });
             return chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast(`Tổng kết lớn thất bại: ${error.message}`, 'error');
+            if (!quiet) toast(`Tổng kết lớn thất bại: ${error.message}`,'error');
             if (throwOnError) throw error;
             return false;
         } finally { if(chatScopeIsCurrent(operationScope))setBusy(false); }
@@ -15957,15 +15962,15 @@ ${digests.join('\n\n')}`,{
         };
         const typeTags = Object.freeze({
             'timeline-event':['Dòng thời gian','Sự kiện'], relations:['Quan hệ','Quan hệ nhân vật'], promises:['Lời hẹn','Lời hứa'], secret:['Bí mật','Ranh giới người biết'],
-            appearance:['Ngoại hình','Trang phục'], 'character-world':['NPC','Đời sống hậu trường','Động thái thế giới'], 'episode-anchor':['Mốc neo sự kiện','Ký ức dài hạn'], 'episode-fact':['Sự kiện nhỏ','Sự thật nguyên tử','Quỹ đạo đời sống'],
-            'life-fact':['Nhận thức đời sống','Thói quen','Sở thích'], 'npc-identity':['NPC','Thân phận'], chapter:['Chương','Cốt truyện dài hạn'],
-            'phone-wechat':['WeChat','Liên lạc'], 'phone-sms':['SMS','Liên lạc'], 'phone-calls':['Điện thoại','Liên lạc'],
-            'phone-group':['Nhóm WeChat','Liên lạc'], 'phone-group-profile':['Nhóm WeChat','Hệ sinh thái nhóm'],
-            'phone-order':['Đơn hàng điện thoại','Chi tiêu','Quỹ đạo đời sống'], 'phone-order-event':['Tiến độ đơn hàng','Quỹ đạo đời sống'], 'phone-transaction':['Hóa đơn điện thoại','Chi tiêu'], 'phone-route':['Bản đồ','Tuyến đường','Đi lại'],
-            'story-moments':['Khoảnh khắc','Dấu vết đời sống'], 'story-diary':['Nhật ký','Dấu vết đời sống'], 'story-anniversaries':['Ngày kỷ niệm','Ngày quan trọng'],
-            'chat-floor':['Tầng gốc','Chính văn gốc'], 'important-message':['Tầng quan trọng','Chính văn gốc'], 'stage-summary':['Tổng kết giai đoạn'], 'big-summary':['Tổng kết lớn'], 'era-summary':['Tổng kết thời đại'],
+            appearance:['Ngoại hình','Trang phục'],'character-world':['NPC','Đời sống hậu trường','Động thái thế giới'],'episode-anchor':['Mốc neo sự kiện','Ký ức dài hạn'],'episode-fact':['Sự kiện nhỏ','Sự thật nguyên tử','Quỹ đạo đời sống'],
+            'life-fact':['Nhận thức đời sống','Thói quen','Sở thích'],'npc-identity':['NPC','Thân phận'], chapter:['Chương','Cốt truyện dài hạn'],
+            'phone-wechat':['WeChat','Liên lạc'],'phone-sms':['SMS','Liên lạc'],'phone-calls':['Điện thoại','Liên lạc'],
+            'phone-group':['Nhóm WeChat','Liên lạc'],'phone-group-profile':['Nhóm WeChat','Hệ sinh thái nhóm'],
+            'phone-order':['Đơn hàng điện thoại','Chi tiêu','Quỹ đạo đời sống'],'phone-order-event':['Tiến độ đơn hàng','Quỹ đạo đời sống'],'phone-transaction':['Hóa đơn điện thoại','Chi tiêu'],'phone-route':['Bản đồ','Tuyến đường','Đi lại'],
+            'story-moments':['Khoảnh khắc','Dấu vết đời sống'],'story-diary':['Nhật ký','Dấu vết đời sống'],'story-anniversaries':['Ngày kỷ niệm','Ngày quan trọng'],
+            'chat-floor':['Tầng gốc','Chính văn gốc'],'important-message':['Tầng quan trọng','Chính văn gốc'],'stage-summary':['Tổng kết giai đoạn'],'big-summary':['Tổng kết lớn'],'era-summary':['Tổng kết thời đại'],
         });
-        const cleanTag = value => compactText(String(value || '').replace(/[\n\r\t]+/g, ' ').trim(), 48);
+        const cleanTag = value => compactText(String(value || '').replace(/[\n\r\t]+/g,' ').trim(), 48);
         const tagList = (...groups) => [...new Set(groups.flat(Infinity).map(cleanTag).filter(tag => tag && tag.length <= 48))].slice(0, 32);
         const add = (type, title, text, floorStart = null, floorEnd = null, important = false, time = '', extra = {}) => {
             const safeText=sanitizeRetrievalDocumentText(text);
@@ -15976,7 +15981,7 @@ ${digests.join('\n\n')}`,{
             const tags = tagList(typeTags[type] || [], extra.tags || [], characters, safeTitle.length <= 28 ? [safeTitle] : []);
             const importanceWeight = Math.max(0, Math.min(1, Number(extra.importanceWeight ?? (important ? 0.9 : (type === 'life-fact' ? 0.65 : 0.25)))));
             documents.push({
-                id: `${type}-${documents.length}-${Math.abs([...source].reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0))}`,
+                id:`${type}-${documents.length}-${Math.abs([...source].reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0))}`,
                 type, title:safeTitle, text:safeText, floorStart, floorEnd, important, time,
                 tier: tierFor(floorEnd, important),
                 tags, characters, importanceWeight,
@@ -15994,16 +15999,16 @@ ${digests.join('\n\n')}`,{
                     if(!cleanSummary||recentEventSummaryLooksInternal(cleanSummary))continue;
                     const floor = Number.isFinite(Number(row['Tầng'])) ? Number(row['Tầng']) : range.end;
                     const title = compactText(cleanSummary || def.title, 220);
-                    const detail = `Ngày: ${row['Ngày'] || ''}；bắt đầu: ${row['Giờ bắt đầu'] || ''}；kết thúc: ${row['Giờ kết thúc'] || ''}；trạng thái: ${row['Trạng thái'] || ''}；sự kiện: ${cleanSummary}`;
-                    add('timeline-event', title, detail, floor, floor, /trọng đại|then chốt|cốt lõi|quan trọng/i.test(row['Mức quan trọng'] || ''), `${row['Ngày'] || ''} ${row['Giờ bắt đầu'] || ''}`.trim(), { timeline:true, tags:['Dòng thời gian', row['Trạng thái'] || '', row['Ngày'] || ''], importanceWeight:/trọng đại|then chốt|cốt lõi|quan trọng/i.test(row['Mức quan trọng'] || '') ? 1 : 0.55 });
+                    const detail = `Ngày: ${row['Ngày'] || ''}; bắt đầu: ${row['Giờ bắt đầu'] || ''}; kết thúc: ${row['Giờ kết thúc'] || ''}; trạng thái: ${row['Trạng thái'] || ''}; sự kiện: ${cleanSummary}`;
+                    add('timeline-event', title, detail, floor, floor, /trọng đại|then chốt|cốt lõi|quan trọng/i.test(row['Mức quan trọng'] || ''),`${row['Ngày'] || ''} ${row['Giờ bắt đầu'] || ''}`.trim(), { timeline:true, tags:['Dòng thời gian', row['Trạng thái'] || '', row['Ngày'] || ''], importanceWeight:/trọng đại|then chốt|cốt lõi|quan trọng/i.test(row['Mức quan trọng'] || '') ? 1 : 0.55 });
                     continue;
                 }
                 if (key === 'summaries') {
                     // Tổng kết cấp trên đang cần tính lại/thất bại/đã bị xóa thì tuyệt đối không được vào truy hồi nữa, nếu không AI sẽ đọc đồng thời cả giai đoạn mới lẫn tổng kết lớn cũ.
                     if (!/hoàn thành|thành công/i.test(String(row['Trạng thái'] || 'Đã hoàn thành')) || !String(row['Nội dung tổng kết'] || '').trim()) continue;
                     const summaryType = row['Loại'] || row['Loại bảng'] || 'Tổng kết giai đoạn';
-                    const type = summaryType === 'Tổng kết thời đại' ? 'era-summary' : (summaryType === 'Tổng kết lớn' ? 'big-summary' : 'stage-summary');
-                    add(type, `${summaryType} ${row['Tầng bao phủ'] || ''}`, row['Nội dung tổng kết'] || rowText(row, def.columns), range.start, range.end,
+                    const type = summaryType === 'Tổng kết thời đại' ?'era-summary' : (summaryType === 'Tổng kết lớn' ?'big-summary' :'stage-summary');
+                    add(type,`${summaryType} ${row['Tầng bao phủ'] || ''}`, row['Nội dung tổng kết'] || rowText(row, def.columns), range.start, range.end,
                         summaryType !== 'Tổng kết giai đoạn', row['Thời điểm tạo'] || '', { summaryType, tags:[summaryType], importanceWeight: summaryType === 'Tổng kết thời đại' ? 0.95 : (summaryType === 'Tổng kết lớn' ? 0.85 : 0.6) });
                     continue;
                 }
@@ -16017,13 +16022,13 @@ ${digests.join('\n\n')}`,{
             }
         }
 
-        s.secrets.filter(memoryRecordUsable).forEach(item => add('secret', item.subject, `${item.content}; người biết: ${item.knowers}; người nghi ngờ: ${item.suspects}; người không biết: ${item.unknown}`, Number(item._sourceFloor), Number(item._sourceFloor), true, item.updatedAt, { tags:['Bí mật',item.subject], characters:[item.subject], importanceWeight:1 }));
-        (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character, `${item.outfit}${item.hair ? `; kiểu tóc: ${item.hair}` : ''}${item.accessories ? `; phụ kiện: ${item.accessories}` : ''}${item.shoes ? `; giày dép: ${item.shoes}` : ''}${item.condition ? `; trạng thái: ${item.condition}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Ngoại hình','Trang phục',item.character], characters:[item.character], importanceWeight:0.5 }));
-        (s.characterWorld?.events || []).filter(memoryRecordUsable).forEach(item => add('character-world', item.character, `${item.activity}${item.goal ? `; mục tiêu: ${item.goal}` : ''}${item.social ? `; giao tiếp: ${item.social}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Đời sống hậu trường','Động thái thế giới',item.character], characters:[item.character], importanceWeight:0.45 }));
-        (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || 'Mốc neo sự kiện', `${item.date||''} ${item.time||''} | ${(item.people||[]).join(', ')} | ${item.event||''}${item.details?`; ${item.details}`:''}${item.rawFallbackText?`; chính văn phương án đáy: ${item.rawFallbackText}`:''}${item.tags?.length?`; thẻ: ${item.tags.join(', ')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance), `${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
-        (s.episodeFacts || []).filter(memoryRecordUsable).forEach(item => add('episode-fact', `Sự kiện nhỏ: ${item.category||'detail'}`, `Tầng ${item.floor??'?'} | ${(item.people||[]).join(', ')} | ${item.fact||''} | thực thể: ${(item.entities||[]).join(', ')} | bằng chứng: ${item.evidenceText||''}`, Number(item.floor), Number(item.floor), false, item.createdAt||'', { tags:['Sự kiện nhỏ',item.category,...(item.entities||[])], characters:item.people||[], importanceWeight:0.7, entityId:item.id, eventId:item.id, timeline:true }));
-        (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact', `Nhận thức đời sống: ${item.subject||''}`, `${item.subject||''} | ${item.category||''} | ${item.key||''}=${item.value||item.fact||''}; trạng thái: ${item.status||'observed'}; tầng bằng chứng: ${(item.evidenceFloors||[]).join(', ')}; ${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['Nhận thức đời sống',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
-        (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName, `${item.currentName}${item.aliases?.length?`; tên cũ: ${item.aliases.join(', ')}`:''}${item.identity?`; thân phận: ${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false, '', { tags:['NPC','Thân phận',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
+        s.secrets.filter(memoryRecordUsable).forEach(item => add('secret', item.subject,`${item.content}; người biết: ${item.knowers}; người nghi ngờ: ${item.suspects}; người không biết: ${item.unknown}`, Number(item._sourceFloor), Number(item._sourceFloor), true, item.updatedAt, { tags:['Bí mật',item.subject], characters:[item.subject], importanceWeight:1 }));
+        (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character,`${item.outfit}${item.hair ?`; kiểu tóc: ${item.hair}` :''}${item.accessories ?`; phụ kiện: ${item.accessories}` :''}${item.shoes ?`; giày dép: ${item.shoes}` :''}${item.condition ?`; trạng thái: ${item.condition}` :''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Ngoại hình','Trang phục',item.character], characters:[item.character], importanceWeight:0.5 }));
+        (s.characterWorld?.events || []).filter(memoryRecordUsable).forEach(item => add('character-world', item.character,`${item.activity}${item.goal ?`; mục tiêu: ${item.goal}` :''}${item.social ?`; giao tiếp: ${item.social}` :''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Đời sống hậu trường','Động thái thế giới',item.character], characters:[item.character], importanceWeight:0.45 }));
+        (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || 'Mốc neo sự kiện',`${item.date||''} ${item.time||''} | ${(item.people||[]).join(',')} | ${item.event||''}${item.details?`; ${item.details}`:''}${item.rawFallbackText?`; chính văn phương án đáy: ${item.rawFallbackText}`:''}${item.tags?.length?`; thẻ: ${item.tags.join(',')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance),`${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
+        (s.episodeFacts || []).filter(memoryRecordUsable).forEach(item => add('episode-fact',`Sự kiện nhỏ: ${item.category||'detail'}`,`Tầng ${item.floor??'?'} | ${(item.people||[]).join(',')} | ${item.fact||''} | thực thể: ${(item.entities||[]).join(',')} | bằng chứng: ${item.evidenceText||''}`, Number(item.floor), Number(item.floor), false, item.createdAt||'', { tags:['Sự kiện nhỏ',item.category,...(item.entities||[])], characters:item.people||[], importanceWeight:0.7, entityId:item.id, eventId:item.id, timeline:true }));
+        (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact',`Nhận thức đời sống: ${item.subject||''}`,`${item.subject||''} | ${item.category||''} | ${item.key||''}=${item.value||item.fact||''}; trạng thái: ${item.status||'observed'}; tầng bằng chứng: ${(item.evidenceFloors||[]).join(',')}; ${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['Nhận thức đời sống',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
+        (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName,`${item.currentName}${item.aliases?.length?`; tên cũ: ${item.aliases.join(',')}`:''}${item.identity?`; thân phận: ${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false,'', { tags:['NPC','Thân phận',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
         s.chapters.filter(memoryRecordUsable).forEach(item => add('chapter', item.title, item.summary, Number(item.startFloor), Number(item.endFloor), true, item.time, { tags:['Chương',item.title], importanceWeight:0.82 }));
 
         // R9: cuộc gọi/WeChat/SMS/Khoảnh khắc/nhật ký/ngày kỷ niệm cũ cũng vào truy hồi dài hạn, tránh cảnh sau vài nghìn tầng chỉ còn nhớ chính văn mà quên mất “dấu vết đời sống”.
@@ -16032,28 +16037,28 @@ ${digests.join('\n\n')}`,{
                 const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
                 const who = item.author || item.contact || item.caller || item.sender || '';
                 const body = item.content || item.caption || item.summary || item.status || '';
-                add(`phone-${key}`, `${key}:${who || 'Nhật ký liên lạc'}`, `${item.time || ''}｜${who}｜${body}`, floor, floor, key === 'calls', item.time || '', { tags:['Liên lạc', key === 'wechat' ? 'WeChat' : (key === 'sms' ? 'SMS' : 'Điện thoại'), who], characters:[who], importanceWeight:key === 'calls' ? 0.72 : 0.42 });
+                add(`phone-${key}`,`${key}:${who || 'Nhật ký liên lạc'}`,`${item.time || ''}｜${who}｜${body}`, floor, floor, key === 'calls', item.time || '', { tags:['Liên lạc', key === 'wechat' ?'WeChat' : (key === 'sms' ?'SMS' :'Điện thoại'), who], characters:[who], importanceWeight:key === 'calls' ? 0.72 : 0.42 });
             }
         }
         for (const item of s.phone?.groupProfiles || []) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-group-profile', `Hệ sinh thái nhóm/kênh: ${item.groupName || 'Nhóm'}`, `Loại: ${item.type || 'other'}; phạm vi: ${item.scope||'origin'}; thế giới: ${item.homeWorldKey||''}; phương tiện: ${item.channelType||'wechat'}; trạng thái: ${item.availability||'active'}; thành viên: ${(item.members || []).join(', ')}; chủ đề dài hạn: ${item.topic || ''}; độ hoạt động: ${item.activityLevel || 'medium'}; nguồn: ${item.source || ''}`, floor, floor, false, item.updatedAt || item.createdAt || '', { tags:['Hệ sinh thái nhóm',item.channelType,item.availability,item.groupName,item.topic], characters:item.members||[], importanceWeight:0.35 });
+            add('phone-group-profile',`Hệ sinh thái nhóm/kênh: ${item.groupName || 'Nhóm'}`,`Loại: ${item.type || 'other'}; phạm vi: ${item.scope||'origin'}; thế giới: ${item.homeWorldKey||''}; phương tiện: ${item.channelType||'wechat'}; trạng thái: ${item.availability||'active'}; thành viên: ${(item.members || []).join(',')}; chủ đề dài hạn: ${item.topic || ''}; độ hoạt động: ${item.activityLevel || 'medium'}; nguồn: ${item.source || ''}`, floor, floor, false, item.updatedAt || item.createdAt || '', { tags:['Hệ sinh thái nhóm',item.channelType,item.availability,item.groupName,item.topic], characters:item.members||[], importanceWeight:0.35 });
         }
         for (const item of (s.phone?.wechatGroups || []).filter(memoryRecordUsable)) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-group', `Nhóm WeChat: ${item.groupName || 'Nhóm WeChat'}`, `${item.time || ''} | ${item.sender || 'Thành viên nhóm'}: ${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Nhóm WeChat',item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
+            add('phone-group',`Nhóm WeChat: ${item.groupName || 'Nhóm WeChat'}`,`${item.time || ''} | ${item.sender || 'Thành viên nhóm'}: ${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Nhóm WeChat',item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
         }
         for (const item of (s.phone?.channelGroups || []).filter(memoryRecordUsable)) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-channel-group', `Kênh thời đại: ${item.groupName || 'Nhóm'}`, `${item.channelType||''} | ${item.time || ''} | ${item.sender || 'Thành viên'}: ${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Liên lạc thời đại',item.channelType,item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
+            add('phone-channel-group',`Kênh thời đại: ${item.groupName || 'Nhóm'}`,`${item.channelType||''} | ${item.time || ''} | ${item.sender || 'Thành viên'}: ${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Liên lạc thời đại',item.channelType,item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
         }
         for (const [key,label] of [['moments','Khoảnh khắc'],['diary','Nhật ký'],['anniversaries','Ngày kỷ niệm']]) {
             for (const item of (s.storyExtras?.[key] || []).filter(memoryRecordUsable)) {
                 const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
                 const body = item.content || item.text || item.caption || item.title || item.event || '';
                 const attachmentText=key==='moments'?phoneAttachmentSummary(item.attachments):'';
-                const reactionText=key==='moments'?`Thích: ${(item.likes||[]).join(', ')}; bình luận: ${(item.comments||[]).map(comment=>`${comment.author||''}: ${comment.content||''}`).join('; ')}`:'';
-                add(`story-${key}`, `${label}:${item.author || item.character || item.title || ''}`, `${item.time || item.date || ''} | ${body}${attachmentText?` | tệp đính kèm: ${attachmentText}`:''}${reactionText?` | ${reactionText}`:''}`, floor, floor, key === 'anniversaries', item.time || item.date || '', { tags:[label,item.author||item.character||'',item.title||'',...(item.likes||[])], characters:[item.author||item.character||'',...(item.likes||[])], importanceWeight:key === 'anniversaries' ? 0.82 : 0.38 });
+                const reactionText=key==='moments'?`Thích: ${(item.likes||[]).join(',')}; bình luận: ${(item.comments||[]).map(comment=>`${comment.author||''}: ${comment.content||''}`).join(';')}`:'';
+                add(`story-${key}`,`${label}:${item.author || item.character || item.title || ''}`,`${item.time || item.date || ''} | ${body}${attachmentText?` | tệp đính kèm: ${attachmentText}`:''}${reactionText?` | ${reactionText}`:''}`, floor, floor, key === 'anniversaries', item.time || item.date || '', { tags:[label,item.author||item.character||'',item.title||'',...(item.likes||[])], characters:[item.author||item.character||'',...(item.likes||[])], importanceWeight:key === 'anniversaries' ? 0.82 : 0.38 });
             }
         }
 
@@ -16065,14 +16070,14 @@ ${digests.join('\n\n')}`,{
         for (const order of phone.travel?.orders || []) phoneOrderRows.push({ ...order, platform:'travel' });
         for (const order of phoneOrderRows) {
             const floor = Number(order.sourceFloor ?? order._floor ?? order.floor);
-            const items = (order.items || []).map(item => `${item.name || 'Sản phẩm'}×${Number(item.qty || 1)}`).join('、');
+            const items = (order.items || []).map(item => `${item.name || 'Sản phẩm'}×${Number(item.qty || 1)}`).join(',');
             const title = `Đơn ${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform} ${order.storeName || order.destination || order.code || order.id || ''}`;
-            add('phone-order', title, `Mã đơn: ${order.id}; nền tảng: ${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}; trạng thái: ${s8OrderStatusLabel(order)}; số tiền: ${s8MoneyText(order.amount)}; chi tiết: ${items || order.title || 'Không'}; thời gian trong truyện: ${order.storyTime || order.time || ''}`, floor, floor, true, order.storyTime || order.time || '', { tags:['Đơn hàng điện thoại',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,s8OrderStatusLabel(order),order.storeName||order.destination||''], characters:[], importanceWeight:0.86, entityId:order.id, orderId:order.id, phoneEntityType:'order' });
-            for (const event of order.timeline || []) add('phone-order-event', `${title} · ${event.label || event.status}`, `${event.storyTime || event.time || ''}｜${event.detail || event.label || event.status}`, floor, floor, false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,event.status || ''], importanceWeight:0.62, entityId:order.id, orderId:order.id, eventId:event.id || `${order.id}:${event.status}`, phoneEntityType:'order-event' });
+            add('phone-order', title,`Mã đơn: ${order.id}; nền tảng: ${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}; trạng thái: ${s8OrderStatusLabel(order)}; số tiền: ${s8MoneyText(order.amount)}; chi tiết: ${items || order.title || 'Không'}; thời gian trong truyện: ${order.storyTime || order.time || ''}`, floor, floor, true, order.storyTime || order.time || '', { tags:['Đơn hàng điện thoại',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,s8OrderStatusLabel(order),order.storeName||order.destination||''], characters:[], importanceWeight:0.86, entityId:order.id, orderId:order.id, phoneEntityType:'order' });
+            for (const event of order.timeline || []) add('phone-order-event',`${title} · ${event.label || event.status}`,`${event.storyTime || event.time || ''}｜${event.detail || event.label || event.status}`, floor, floor, false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,event.status || ''], importanceWeight:0.62, entityId:order.id, orderId:order.id, eventId:event.id || `${order.id}:${event.status}`, phoneEntityType:'order-event' });
         }
-        for (const event of phone.orderEvents || []) add('phone-order-event', `${S8_ORDER_PLATFORM_LABELS[event.platform] || event.platform || 'Đơn hàng'} · ${event.label || event.status || 'Cập nhật trạng thái'}`, `${event.storyTime || event.time || ''} | đơn hàng: ${event.orderId || ''} | ${event.detail || ''}`, Number(event.sourceFloor), Number(event.sourceFloor), false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',event.platform || '',event.status || ''], importanceWeight:0.58, entityId:event.orderId, orderId:event.orderId, eventId:event.id, phoneEntityType:'order-event' });
-        for (const tx of phone.finance?.transactions || []) add('phone-transaction', tx.title || tx.counterparty || 'Giao dịch ví', `${tx.time || ''} | tài khoản: ${tx.account || ''} | số tiền: ${s8MoneyText(tx.amount)} | đối phương: ${tx.counterparty || ''} | nguồn: ${tx.source || ''}`, Number(tx._floor), Number(tx._floor), Boolean(tx._important), tx.time || '', { tags:['Hóa đơn điện thoại',tx.account || '',tx.category || '',tx.counterparty || ''], importanceWeight:0.58, entityId:tx.id, transactionId:tx.id, phoneEntityType:'transaction' });
-        for (const route of phone.maps?.history || []) add('phone-route', `Tuyến bản đồ: ${route.destination || 'Điểm đến chưa đặt tên'}`, `${route.time || ''} | từ: ${route.from || s.scene?.location || 'Vị trí hiện tại'} tới: ${route.destination || ''} | khoảng cách: ${route.km || ''} | phương thức: ${route.mode || ''}`, Number(route.floor ?? route._floor), Number(route.floor ?? route._floor), false, route.time || '', { tags:['Bản đồ','Tuyến đường',route.destination || ''], importanceWeight:0.42, entityId:route.id, phoneEntityType:'route' });
+        for (const event of phone.orderEvents || []) add('phone-order-event',`${S8_ORDER_PLATFORM_LABELS[event.platform] || event.platform || 'Đơn hàng'} · ${event.label || event.status || 'Cập nhật trạng thái'}`,`${event.storyTime || event.time || ''} | đơn hàng: ${event.orderId || ''} | ${event.detail || ''}`, Number(event.sourceFloor), Number(event.sourceFloor), false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',event.platform || '',event.status || ''], importanceWeight:0.58, entityId:event.orderId, orderId:event.orderId, eventId:event.id, phoneEntityType:'order-event' });
+        for (const tx of phone.finance?.transactions || []) add('phone-transaction', tx.title || tx.counterparty || 'Giao dịch ví',`${tx.time || ''} | tài khoản: ${tx.account || ''} | số tiền: ${s8MoneyText(tx.amount)} | đối phương: ${tx.counterparty || ''} | nguồn: ${tx.source || ''}`, Number(tx._floor), Number(tx._floor), Boolean(tx._important), tx.time || '', { tags:['Hóa đơn điện thoại',tx.account || '',tx.category || '',tx.counterparty || ''], importanceWeight:0.58, entityId:tx.id, transactionId:tx.id, phoneEntityType:'transaction' });
+        for (const route of phone.maps?.history || []) add('phone-route',`Tuyến bản đồ: ${route.destination || 'Điểm đến chưa đặt tên'}`,`${route.time || ''} | từ: ${route.from || s.scene?.location || 'Vị trí hiện tại'} tới: ${route.destination || ''} | khoảng cách: ${route.km || ''} | phương thức: ${route.mode || ''}`, Number(route.floor ?? route._floor), Number(route.floor ?? route._floor), false, route.time || '', { tags:['Bản đồ','Tuyến đường',route.destination || ''], importanceWeight:0.42, entityId:route.id, phoneEntityType:'route' });
 
         const chat = context()?.chat || [];
         const userNameKey=npcNameKey(context()?.name1||'{{user}}'),characterNameKey=npcNameKey(context()?.name2||context()?.characterName||'');
@@ -16091,7 +16096,7 @@ ${digests.join('\n\n')}`,{
         }
         for (const floor of s.importantFloors || []) {
             const message = chat[Number(floor)];
-            if (message) add('important-message', `Tầng ${floor} ${messageSpeaker(message)}`, memoryNarrativeText(message), Number(floor), Number(floor), true, '', { tags:['Tầng quan trọng',messageSpeaker(message)], characters:[messageSpeaker(message)], importanceWeight:1, retrievalEligible:false });
+            if (message) add('important-message',`Tầng ${floor} ${messageSpeaker(message)}`, memoryNarrativeText(message), Number(floor), Number(floor), true,'', { tags:['Tầng quan trọng',messageSpeaker(message)], characters:[messageSpeaker(message)], importanceWeight:1, retrievalEligible:false });
         }
         return documents;
     }
@@ -16111,7 +16116,7 @@ ${digests.join('\n\n')}`,{
     const MEMORY_QUERY_SYNONYM_GROUPS = Object.freeze([
         ['Tiền về','Ghi có','Thu tiền','Chuyển tiền','Gửi tiền','Chuyển khoản thành công','Tiền đã về'], ['Lương','Tiền lương','Mức lương','Lương tháng','Trả lương'],
         ['Bản vẽ','Nhuận bút','Tiền công viết','Đặt vẽ','Phí minh họa','Phí thiết kế'], ['Mua','đã mua','mua đồ','Đặt đơn','Đơn hàng'],
-        ['Giao đồ ăn','Gọi món','Ele.me','Meituan','Giao đồ ăn'], ['Điện thoại','Cuộc gọi đến','Cuộc gọi'], ['Khoảnh khắc','Bài đăng','Bảng tin bạn bè'],
+        ['Giao đồ ăn','Gọi món','Ele.me','Meituan','Giao tận nơi'], ['Điện thoại','Cuộc gọi đến','Cuộc gọi'], ['Khoảnh khắc','Bài đăng','Bảng tin bạn bè'],
         ['Lời hẹn','Lời hứa','Đồng ý','đã hẹn'], ['Tầng','tầng nào','tầng thứ mấy','lượt'], ['Lần đầu','Sớm nhất','Lần đầu tiên'], ['Lần cuối','Gần đây nhất','Lần trước'],
     ]);
 
@@ -16158,7 +16163,7 @@ ${digests.join('\n\n')}`,{
 
     function retrievalMemorySnippet(value='', max=620) {
         const safe=sanitizeRetrievalDocumentText(value);if(!safe)return '';
-        const parts=String(safe).replace(/\r\n?/g,'\n').split(/[\n。！？!?；;]+/).map(part=>compactText(part,900)).filter(Boolean);
+        const parts=String(safe).replace(/\r\n?/g,'\n').split(/[\n。！？!?；;]+|\.(?=\s|$)/).map(part=>compactText(part,900)).filter(Boolean);
         const seen=new Set(),out=[];let used=0;
         for(const part of parts){
             const key=part.toLowerCase().replace(/[\s，、：:,.“”"'‘’（）()【】\[\]_-]+/g,'').slice(0,220);
@@ -16169,7 +16174,7 @@ ${digests.join('\n\n')}`,{
             if(used>=max)break;
         }
         if(!out.length)return compactText(safe,max);
-        return out.join('; ').slice(0,max);
+        return out.join(';').slice(0,max);
     }
 
     function filterStructuredRetrievalHits(hits) {
@@ -16180,7 +16185,7 @@ ${digests.join('\n\n')}`,{
                 const raw=String(hit?.text||'');
                 const eventMatch=raw.match(/(?:^|;\s*)sự kiện:\s*([\s\S]*)$/i);
                 const clean=sanitizeTimelineSummary(eventMatch?.[1]??raw,360);
-                next.text=eventMatch?raw.replace(/(?:^|;\s*)sự kiện:[\s\S]*$/im,match=>`${match.startsWith(';')?'; ':''}sự kiện: ${clean}`):clean;
+                next.text=eventMatch?raw.replace(/(?:^|;\s*)sự kiện:[\s\S]*$/im,match=>`${match.startsWith(';')?';':''}sự kiện: ${clean}`):clean;
             }
             next.text=retrievalMemorySnippet(next.text,720);
             next.title=compactText(sanitizeRetrievalDocumentText(next.title)||String(next.type||'Ký ức'),220);
@@ -16196,7 +16201,7 @@ ${digests.join('\n\n')}`,{
         const timelineIntent = queryPlan.timelineIntent;
         const min = Number(stateRuntime.state.settings.retrievalMinScore || 0.18);
         return structuredRetrievalDocuments().map(doc => {
-            const d = localTokens(`tầng ${doc.floorStart ?? ''} tầng ${doc.floorEnd ?? ''}\n${doc.title}\n${doc.text}`);
+            const d = localTokens(`tầng ${doc.floorStart ??''} tầng ${doc.floorEnd ??''}\n${doc.title}\n${doc.text}`);
             const lexicalFor=queryTokens=>{
                 let overlap=0;queryTokens.forEach(token=>{if(d.has(token))overlap+=1;});
                 const cosineLike=queryTokens.size?overlap/Math.sqrt(queryTokens.size*Math.max(1,d.size)):0;
@@ -16246,7 +16251,7 @@ ${digests.join('\n\n')}`,{
         if (!stateRuntime.state?.settings?.retrievalEnabled) return false;
         const scope=captureChatScope();const capturedState=stateRuntime.state;
         const documents=structuredRetrievalDocuments();
-        if (!silent) setBusy(true, 'Đang dựng lại chỉ mục truy hồi kết hợp…');
+        if (!silent) setBusy(true,'Đang dựng lại chỉ mục truy hồi kết hợp…');
         try {
             const data=await serverFetch(`/indexes/${encodeURIComponent(scope.serverChatKey)}/rebuild`,{method:'POST',body:JSON.stringify({documents})});
             const task=await pollServerTask(data.task.id);
@@ -16396,10 +16401,10 @@ Bây giờ bạn đang viết lượt trả lời assistant bình thường củ
 3. Sự kiện đã hoàn thành thì không được diễn lại. Tổng kết cũ, truy hồi cũ, địa điểm cũ chỉ được coi là lịch sử; khi mâu thuẫn với user/assistant mới nhất thì luôn chọn hiện thực mới nhất.
 4. {{char}}/NPC được phép chủ động, đừng như con rối chờ user mớm lệnh; nhưng sự chủ động phải hợp tính cách nhân vật, giai đoạn quan hệ, thời đại/thế giới hiện tại, khoảng cách và ranh giới người biết.
 5. Khóa chủ quyền USER luôn cao hơn: không được thêm thoại, quyết định, hành động chủ động, kết luận tâm lý hay phản ứng cơ thể chủ động thay user; tới chỗ cần user đáp lại thì dừng.
-6. ${snap.explicitJump ? 'Tin mới nhất của user đã yêu cầu rõ ràng/gây ra thay đổi địa điểm hoặc thời gian: cho phép hoàn tất lần chuyển cảnh rõ ràng này và tiếp tục từ trạng thái mới.' : 'Tin mới nhất của user không yêu cầu rõ ràng một lần chuyển cảnh lớn: hãy giữ nguyên thời gian/địa điểm/nhân vật cốt lõi hiện tại, không tự dưng đổi cảnh.'}
-7. ${snap.directNeed ? 'Lượt này có tín hiệu hỏi rõ ràng/đang chờ hồi đáp: hãy đưa ra phản ứng thật của nhân vật trước, rồi mới cân nhắc thêm một bước tiến nhỏ.' : 'Nếu tương tác hiện tại đã giậm chân nhiều lượt liền, có thể thêm một biến số nhỏ ít ảnh hưởng và hợp thiết lập, hoặc một hành động chủ động của NPC; cấm nhồi tai nạn lớn chỉ để gây kích thích.'}
+6. ${snap.explicitJump ?'Tin mới nhất của user đã yêu cầu rõ ràng/gây ra thay đổi địa điểm hoặc thời gian: cho phép hoàn tất lần chuyển cảnh rõ ràng này và tiếp tục từ trạng thái mới.' :'Tin mới nhất của user không yêu cầu rõ ràng một lần chuyển cảnh lớn: hãy giữ nguyên thời gian/địa điểm/nhân vật cốt lõi hiện tại, không tự dưng đổi cảnh.'}
+7. ${snap.directNeed ?'Lượt này có tín hiệu hỏi rõ ràng/đang chờ hồi đáp: hãy đưa ra phản ứng thật của nhân vật trước, rồi mới cân nhắc thêm một bước tiến nhỏ.' :'Nếu tương tác hiện tại đã giậm chân nhiều lượt liền, có thể thêm một biến số nhỏ ít ảnh hưởng và hợp thiết lập, hoặc một hành động chủ động của NPC; cấm nhồi tai nạn lớn chỉ để gây kích thích.'}
 8. Đừng giải thích “quy tắc đạo diễn”, đừng xuất ra phân tích/kế hoạch/nhãn, hãy viết thẳng chính văn của nhân vật.
-${ledger ? `\n【RÀNG BUỘC MỀM/CỨNG ĐÃ CÓ Ở TẦNG ĐIỀU KHIỂN 0-32】\n${ledger}` : ''}
+${ledger ?`\n【RÀNG BUỘC MỀM/CỨNG ĐÃ CÓ Ở TẦNG ĐIỀU KHIỂN 0-32】\n${ledger}` :''}
 
 Nếu gợi ý đạo diễn này mâu thuẫn với ý định rõ ràng của user mới nhất, thẻ nhân vật, thiết lập cứng của sách thế giới hay khóa hiện thực hiện tại thì lấy những sự thật cụ thể hơn, ưu tiên cao hơn đó làm chuẩn.`;
     }
@@ -16424,18 +16429,18 @@ Nếu gợi ý đạo diễn này mâu thuẫn với ý định rõ ràng của 
 
     function scenePlaceCandidate(raw) {
         const value = String(raw || '')
-            .replace(/^[“”"'‘’\s]+|[“”"'‘’\s]+$/g, '')
-            .replace(/^(?:tới|về|hướng|vào|lại|một lần nữa|cái đó|cái này|căn đó|căn này)\s+/gi, '')
-            .replace(/\s*(?:ngồi xuống|nằm xuống|đứng lại|dừng lại|ngồi yên|đứng yên|ngồi vững|ngồi xổm|quỳ xuống|tựa xuống|đã ngồi xuống|đã nằm xuống)$/gi, '')
+            .replace(/^[“”"'‘’\s]+|[“”"'‘’\s]+$/g,'')
+            .replace(/^(?:tới|về|hướng|vào|lại|một lần nữa|cái đó|cái này|căn đó|căn này)\s+/gi,'')
+            .replace(/\s*(?:ngồi xuống|nằm xuống|đứng lại|dừng lại|ngồi yên|đứng yên|ngồi vững|ngồi xổm|quỳ xuống|tựa xuống|đã ngồi xuống|đã nằm xuống)$/gi,'')
             .trim();
         if (!value || value.length > 28) return '';
         // Chỉ coi những cụm rõ ràng là địa điểm/vị trí mới là địa điểm, tránh nhận nhầm kiểu “rời khỏi cô ấy/đi tới cuối cùng”.
         const locationHint = /(?:phòng|sảnh|gian|bên|cạnh|cửa|giường|sofa|ghế|bàn|lối vào|bếp|phòng khách|phòng ngủ|nhà tắm|nhà vệ sinh|vòi sen|hành lang|ban công|lầu|tầng|phố|đường|quán|tiệm|trạm|sân|nhà|trường|lớp học|ký túc xá|văn phòng|công viên|trong xe|chỗ ngồi|bến|sân bay|nhà ga|quảng trường|sân vườn|hang|trại|khách sạn|nhà nghỉ|bệnh viện|phòng khám|trung tâm thương mại|siêu thị|nhà hàng|quán cà phê|thư viện|ngoài cửa|ngoài nhà|ngoài trời|dưới nhà|trên lầu)\s*\S*$/i;
-        return locationHint.test(value) ? value : '';
+        return locationHint.test(value) ? value :'';
     }
 
     function deriveLatestUserSceneSignals(text) {
-        const value = String(text || '').replace(/\s+/g, ' ').trim();
+        const value = String(text || '').replace(/\s+/g,' ').trim();
         const left = [];
         const arrived = [];
         const completed = [];
@@ -16458,8 +16463,8 @@ Nếu gợi ý đạo diễn này mâu thuẫn với ý định rõ ràng của 
         for (const match of value.matchAll(/(?:quay lại|trở về|đi tới|bước tới|di chuyển tới|vào|bước vào|đến nơi|tới|ngồi vào|nằm xuống|đứng vào|tựa vào)\s+([^,.!?;]{1,28})/gi)) if (isCompletedMovement(match)) addUnique(arrived, match[1]);
 
         const donePatterns = [
-            [/(?:mặc xong|thay xong|cởi ra|cởi bỏ|đeo xong|thắt xong|bọc xong|quấn xong)[^,.!?;]{0,24}/gi, 'Thay đổi trang phục/trang bị đã hoàn tất'],
-            [/(?:ngồi xuống|nằm xuống|đứng dậy|trở dậy|đóng lại|mở ra|đặt xuống|cầm lên|cất đi|đi xuyên qua)[^,.!?;]{0,24}/gi, 'Hành động đã hoàn tất'],
+            [/(?:mặc xong|thay xong|cởi ra|cởi bỏ|đeo xong|thắt xong|bọc xong|quấn xong)[^,.!?;]{0,24}/gi,'Thay đổi trang phục/trang bị đã hoàn tất'],
+            [/(?:ngồi xuống|nằm xuống|đứng dậy|trở dậy|đóng lại|mở ra|đặt xuống|cầm lên|cất đi|đi xuyên qua)[^,.!?;]{0,24}/gi,'Hành động đã hoàn tất'],
         ];
         for (const [rx, label] of donePatterns) {
             if (rx.test(value) && !completed.includes(label)) completed.push(label);
@@ -16480,9 +16485,9 @@ Nếu gợi ý đạo diễn này mâu thuẫn với ý định rõ ràng của 
         const signals = deriveLatestUserSceneSignals(latestUser.text);
         const storedScene = stateRuntime.state?.scene || {};
         const inferred = [
-            signals.left.length ? `User mới nhất đã nói rõ là rời khỏi: ${signals.left.join(', ')}` : '',
-            signals.currentLocation ? `User mới nhất đã nói rõ là tới/đang ở: ${signals.currentLocation}` : '',
-            signals.completed.length ? `User mới nhất đã hoàn thành: ${signals.completed.join(', ')}` : '',
+            signals.left.length ?`User mới nhất đã nói rõ là rời khỏi: ${signals.left.join(',')}` :'',
+            signals.currentLocation ?`User mới nhất đã nói rõ là tới/đang ở: ${signals.currentLocation}` :'',
+            signals.completed.length ?`User mới nhất đã hoàn thành: ${signals.completed.join(',')}` :'',
         ].filter(Boolean).join('\n');
 
         return `【0-32 · KHÓA CHỐNG LÙI HIỆN THỰC HIỆN TẠI | ƯU TIÊN CAO NHẤT】
@@ -16494,7 +16499,7 @@ ${String(latestUser.text).slice(-5200)}
 【PHẦN CUỐI CỦA LƯỢT ASSISTANT TRƯỚC | CHỈ ĐỂ HIỂU LẦN NÀY USER TIẾP NỐI TỪ ĐÂU】
 ${String(previousAssistant?.text || '').slice(-1800)}
 
-${inferred ? `【CHUYỂN TRẠNG THÁI RÕ RÀNG MÀ MÃ NGUỒN NHẬN RA】\n${inferred}\n` : ''}【SỰ THẬT CỦA THẾ GIỚI ĐƠN NHẤT | ĐIỆN THOẠI/CHÍNH VĂN/BỈ GIAN TƯ VĂN ĐỀU LÀ HIỆN THỰC, DÙNG THEO RANH GIỚI NGƯỜI BIẾT】
+${inferred ?`【CHUYỂN TRẠNG THÁI RÕ RÀNG MÀ MÃ NGUỒN NHẬN RA】\n${inferred}\n` :''}【SỰ THẬT CỦA THẾ GIỚI ĐƠN NHẤT | ĐIỆN THOẠI/CHÍNH VĂN/BỈ GIAN TƯ VĂN ĐỀU LÀ HIỆN THỰC, DÙNG THEO RANH GIỚI NGƯỜI BIẾT】
 ${s39UnifiedStorylineBrief(20, previousAssistant?.text || '')}
 
 【SCENE CŨ CHỈ ĐỂ THAM KHẢO LỊCH SỬ】
@@ -16555,7 +16560,7 @@ Hãy viết thẳng từ nhịp kế tiếp.`;
         (Array.isArray(relay.ledgerTimed) ? relay.ledgerTimed : []).filter(item => Number(item?.expiresFloor || 0) > floor && String(item?.text || '').trim()).slice(0,40)
             .forEach(item => lines.push(`Tạm thời (còn ${Math.max(0,Number(item.expiresFloor)-floor)} tầng): ${String(item.text).trim()}`));
         // P33: thẻ số phận chỉ lo sinh ra một lượt tiếp sức của user; lượt assistant chính thức sẽ không tiêu thụ lại cùng một hạt giống cốt truyện.
-        return lines.length ? lines.map(line => `- ${line}`).join('\n') : '';
+        return lines.length ? lines.map(line => `- ${line}`).join('\n') :'';
     }
 
     function buildMemoryPrompt() {
@@ -16567,7 +16572,7 @@ Hãy viết thẳng từ nhịp kế tiếp.`;
         const realitySignals = deriveLatestUserSceneSignals(realityTurn.latestUser?.text || '');
         const effectiveScene = { ...(s.scene || {}) };
         if (realitySignals.currentLocation) effectiveScene.location = `${realitySignals.currentLocation} (user mới nhất đã nói rõ là đã tới, ghi đè scene cũ)`;
-        const scene=Object.entries(effectiveScene).filter(([,v])=>String(v??'').trim()).map(([k,v])=>`${k}:${v}`).join('; ');
+        const scene=Object.entries(effectiveScene).filter(([,v])=>String(v??'').trim()).map(([k,v])=>`${k}:${v}`).join(';');
         add('Cảnh hiện tại',scene,900,10);
         add('Mạch truyện đơn nhất của chính văn điện thoại',s39UnifiedStorylineBrief(24,realityTurn.previousAssistant?.text||''),2400,10);
         add('Sổ quy tắc 0-32 và ràng buộc số phận',controlLayerMemoryText(),1500,10);
@@ -16585,34 +16590,34 @@ Hãy viết thẳng từ nhịp kế tiếp.`;
         const relationshipRows=currentRelationshipRows(s,activeNames);
         relationshipRows.forEach(r=>{r['Nhân vật A']&&activeNames.add(r['Nhân vật A']);if(r['Nhân vật B']&&!/^(user|\{\{user\}\})$/i.test(String(r['Nhân vật B'])))activeNames.add(r['Nhân vật B']);});
         let people=(s.tables.people||[]).filter(memoryRecordUsable).filter(r=>activeNames.has(r['Họ tên'])).slice(-10);if(!people.length)people=(s.tables.people||[]).filter(memoryRecordUsable).slice(-6);
-        add('Nhân vật cốt lõi hiện tại',people.map(r=>`- ${r['Họ tên']}：${r['Thân phận']||''}；${r['Tuổi']||''}；Địa điểm=${r['Địa điểm']||''}；Tính cách=${compactText(r['Tính cách'],180)}；Ghi chú=${compactText(r['Ghi chú'],220)}`).join('\n'),1500,9);
+        add('Nhân vật cốt lõi hiện tại',people.map(r=>`- ${r['Họ tên']}: ${r['Thân phận']||''}; ${r['Tuổi']||''}; Địa điểm=${r['Địa điểm']||''}; Tính cách=${compactText(r['Tính cách'],180)}; Ghi chú=${compactText(r['Ghi chú'],220)}`).join('\n'),1500,9);
 
         const latestAppearance=new Map();for(const item of [...(s.appearances||[])].filter(memoryRecordUsable).reverse()){if(!item?.character||latestAppearance.has(item.character))continue;if(activeNames.size&&!activeNames.has(item.character))continue;latestAppearance.set(item.character,item);if(latestAppearance.size>=8)break;}
-        add('Ngoại hình nhân vật hiện tại',[...latestAppearance.values()].map(i=>`- ${i.character}：${i.outfit||''}${i.hair?`；Kiểu tóc: ${i.hair}`:''}${i.accessories?`；Phụ kiện: ${i.accessories}`:''}${i.shoes?`；Giày dép: ${i.shoes}`:''}${i.condition?`；Trạng thái:${i.condition}`:''}`).join('\n'),1200,8);
+        add('Ngoại hình nhân vật hiện tại',[...latestAppearance.values()].map(i=>`- ${i.character}: ${i.outfit||''}${i.hair?`; Kiểu tóc: ${i.hair}`:''}${i.accessories?`; Phụ kiện: ${i.accessories}`:''}${i.shoes?`; Giày dép: ${i.shoes}`:''}${i.condition?`; Trạng thái:${i.condition}`:''}`).join('\n'),1200,8);
         add('Quan hệ nhân vật hiện tại',relationshipRows.map(row=>`- ${rowText(row,TABLE_DEFS.relations.columns)}`).join('\n'),1800,10);
         add('Trạng thái nhân vật',compactTable('states',10),900,8);
         const activePromises=(s.tables.promises||[]).filter(memoryRecordUsable).filter(row=>!promiseClosedStatus(row['Trạng thái'])).slice(-10);
         add('Lời hẹn chờ thực hiện',activePromises.map(row=>`- Ghi lúc: ${promiseRecordedStamp(row)}｜ID=${promiseObjectId(row)||'Chưa phân công'}｜Thực hiện: ${row._due||row['Thời điểm hẹn']||'Chưa định'}｜${row['Nội dung lời hẹn']||''}｜Người liên quan: ${row['Nhân vật cốt lõi']||''}｜Trạng thái:${row['Trạng thái']||'Chờ thực hiện'}`).join('\n'),1100,9);
         const stableLifeFacts=(s.lifeFacts||[]).filter(memoryRecordUsable).filter(item=>['stable','confirmed'].includes(item.status)).filter(item=>item.status!=='historical').slice(-24);
-        add('Nhận thức đời sống dài hạn',stableLifeFacts.map(item=>`- ${item.subject}｜${item.key||item.category}：${item.value||item.fact}${item.fact&&item.value?`；${item.fact}`:''}（${item.status==='confirmed'?'nêu rõ ràng':'nhiều bằng chứng'}, tầng bằng chứng: ${(item.evidenceFloors||[]).slice(-6).join('、')||'?'}）`).join('\n'),1400,9);
+        add('Nhận thức đời sống dài hạn',stableLifeFacts.map(item=>`- ${item.subject}｜${item.key||item.category}: ${item.value||item.fact}${item.fact&&item.value?`; ${item.fact}`:''}（${item.status==='confirmed'?'nêu rõ ràng':'nhiều bằng chứng'}, tầng bằng chứng: ${(item.evidenceFloors||[]).slice(-6).join(',')||'?'}）`).join('\n'),1400,9);
         const recentEpisodes=(s.episodeFacts||[]).filter(memoryRecordUsable).slice(-16);
-        add('Sự kiện nhỏ nguyên tử gần đây',recentEpisodes.map(item=>`- tầng ${item.floor??'?'} | ${(item.people||[]).join(', ')} | ${compactText(item.fact,360)}`).join('\n'),1600,8);
+        add('Sự kiện nhỏ nguyên tử gần đây',recentEpisodes.map(item=>`- tầng ${item.floor??'?'} | ${(item.people||[]).join(',')} | ${compactText(item.fact,360)}`).join('\n'),1600,8);
 
         const allCore=(s.memoryAnchors||[]).filter(memoryRecordUsable).filter(i=>['core','high'].includes(i.importance));
         const priorityTypes=new Set(['relationship','intimacy','identity','promise']);
         const priority=allCore.filter(i=>priorityTypes.has(String(i.type||'').toLowerCase()));
         const selected=[...priority.slice(0,8),...priority.slice(-8),...allCore.slice(0,5),...allCore.slice(-5)].filter((i,n,a)=>a.findIndex(x=>(x.id&&i.id?x.id===i.id:`${x.floor}|${x.event}`===`${i.floor}|${i.event}`))===n).slice(0,18);
-        add('Mốc neo sự kiện cốt lõi cả đời',selected.map(i=>`- ${i.date||''} ${i.time||''} | tầng ${i.floor??'?'} | ${(i.people||[]).join(', ')} | ${compactText(i.event,300)}${i.details?`; ${compactText(i.details,260)}`:''}`).join('\n'),2200,10);
+        add('Mốc neo sự kiện cốt lõi cả đời',selected.map(i=>`- ${i.date||''} ${i.time||''} | tầng ${i.floor??'?'} | ${(i.people||[]).join(',')} | ${compactText(i.event,300)}${i.details?`; ${compactText(i.details,260)}`:''}`).join('\n'),2200,10);
 
         const eras=completedSummaryRows('Tổng kết thời đại').slice(-2),bigs=completedSummaryRows('Tổng kết lớn').slice(-2),stages=completedSummaryRows('Tổng kết giai đoạn').slice(-3);
-        add('Tổng kết thời đại',eras.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],1500)}`).join('\n'),1700,8);
-        add('Tổng kết lớn gần đây',bigs.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],1100)}`).join('\n'),1400,8);
-        add('Tổng kết giai đoạn gần đây',stages.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],800)}`).join('\n'),1200,7);
+        add('Tổng kết thời đại',eras.map(r=>`${r['Tầng bao phủ']}: ${compactText(r['Nội dung tổng kết'],1500)}`).join('\n'),1700,8);
+        add('Tổng kết lớn gần đây',bigs.map(r=>`${r['Tầng bao phủ']}: ${compactText(r['Nội dung tổng kết'],1100)}`).join('\n'),1400,8);
+        add('Tổng kết giai đoạn gần đây',stages.map(r=>`${r['Tầng bao phủ']}: ${compactText(r['Nội dung tổng kết'],800)}`).join('\n'),1200,7);
         add('Dòng thời gian gần đây',(s.tables.mainline||[]).filter(memoryRecordUsable).map(r=>({...r,_cleanTimelineSummary:sanitizeTimelineSummary(r['Tóm tắt sự kiện'],360)})).filter(r=>r._cleanTimelineSummary&&!recentEventSummaryLooksInternal(r._cleanTimelineSummary)).slice(-8).map(r=>`- ${timelineRowStamp(r)} | tầng ${r['Tầng']??'?'} | diễn ra: ${r._cleanTimelineSummary} | ${r['Trạng thái']||''}`).join('\n'),1450,9);
         add('Bí mật và ranh giới người biết',(s.secrets||[]).filter(memoryRecordUsable).slice(-10).map(i=>`- ${i.subject}: ${i.content}; người biết: ${i.knowers}; người nghi ngờ: ${i.suspects}; người không biết: ${i.unknown}`).join('\n'),1000,10);
         add('Thiết lập thế giới',compactTable('world',8),800,7);add('Vật phẩm then chốt',compactTable('items',8),800,7);
         const registry=(s.npcRegistry||[]).slice().sort((a,b)=>Number(b.lastSeenFloor||0)-Number(a.lastSeenFloor||0)).slice(0,24);
-        add('Thân phận NPC và cách gọi cũ',registry.map(i=>`- ${i.currentName}${i.aliases?.length?` (từng gọi: ${i.aliases.join(', ')})`:''}${i.identity?`: ${i.identity}`:''}`).join('\n'),900,8);
+        add('Thân phận NPC và cách gọi cũ',registry.map(i=>`- ${i.currentName}${i.aliases?.length?` (từng gọi: ${i.aliases.join(',')})`:''}${i.identity?`: ${i.identity}`:''}`).join('\n'),900,8);
         const phone=[...['wechat','sms','calls'].flatMap(type=>(s.phone?.[type]||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${type} | ${i.time||''} | ${i.author||i.contact||i.caller||''}: ${i.content||i.summary||i.status||''}`)),...(s.phone?.wechatGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- Nhóm WeChat “${i.groupName||''}” | ${i.sender||''}: ${i.content||''}`),...(s.phone?.channelGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${i.channelType||'Kênh thời đại'} “${i.groupName||''}” | ${i.sender||''}: ${i.content||''}`)].slice(-14);
         add('Liên lạc gần đây',phone.join('\n'),950,7);
         const realtimePhone=(s.phone?.realtimeEvents||[]).filter(row=>row?.handled&&row?.realtimeHandled&&!row?.privateInnerFiction).slice(-18).map(row=>`- ${row.time||''} | ${row.kind||'Sự kiện điện thoại'} | ${row.summary||''} | đã được API thời gian thực của điện thoại xử lý, Bảy điều hậu trường cấm trả lời lặp lại`);
@@ -16697,8 +16702,8 @@ Hãy viết thẳng từ nhịp kế tiếp.`;
         if (!pending.length) return 'Không có thao tác liên lạc nào chờ xử lý.';
         return pending.slice(-16).map(item => {
             const attachmentText = phoneAttachmentSummary(item.attachments);
-            const suffix = attachmentText ? ` | tệp đính kèm: ${attachmentText}` : '';
-            if (item.type === 'call-action') return `- pendingId=${item.id}｜Hành động cuộc gọi: ${item.action === 'answer' ? 'Nghe máy' : item.action==='end'?'Kết thúc cuộc gọi':'Cúp máy/từ chối'} ${item.contact || ''} gọi đến｜${item.time || ''}${suffix}`;
+            const suffix = attachmentText ?` | tệp đính kèm: ${attachmentText}` :'';
+            if (item.type === 'call-action') return `- pendingId=${item.id}｜Hành động cuộc gọi: ${item.action === 'answer' ?'Nghe máy' : item.action==='end'?'Kết thúc cuộc gọi':'Cúp máy/từ chối'} ${item.contact || ''} gọi đến｜${item.time || ''}${suffix}`;
             if (item.type === 'outgoing-call') return `- pendingId=${item.id}｜{{user}} chủ động gọi cho ${item.contact || 'Liên hệ chưa rõ'}｜${item.time || ''}｜Bắt buộc quyết định: nghe máy/từ chối/không bắt máy/máy bận, và ghi kết quả vào phone.calls${suffix}`;
             if (item.type === 'wechat-group' || item.type === 'channel-group' || item.groupName) return `- pendingId=${item.id} | ${item.sender || '{{user}}'} → ${item.type==='channel-group'?'Nhóm/kênh của thời đại hiện tại':'Nhóm WeChat'} “${item.groupName || item.contact}” | ${item.time || ''}: ${item.content || '[chỉ có tệp đính kèm]'}${suffix}`;
             return `- pendingId=${item.id} | loại=${item.type || 'wechat'} | ${item.sender || '{{user}}'} → ${item.contact} | ${item.time || ''}: ${item.content || '[chỉ có tệp đính kèm]'}${suffix}`;
@@ -16753,9 +16758,9 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
             signature,
             generatedAt: nowText(),
             source,
-            sourceLabel: String(source) === 'companion-independent-api' ? companionWritingSourceLabel() : '',
+            sourceLabel: String(source) === 'companion-independent-api' ? companionWritingSourceLabel() :'',
             parseStatus,
-            failureKind: '',
+            failureKind:'',
             setting: normalizeCommunicationProfile(stateRuntime.state?.communicationProfile || {}),
             scene: {},
             promises: [],
@@ -16802,7 +16807,7 @@ Lượt trả lời hiển thị lần này chỉ lo phần chính văn nhập v
         }
         message.extra = message.extra && typeof message.extra === 'object' ? message.extra : {};
         if (!existing || existing.signature !== signature) {
-            message.extra.vvvTheaterCompanion = emptyCompanionShell(index, signature, 'waiting-seven-api', companionPayloadSource());
+            message.extra.vvvTheaterCompanion = emptyCompanionShell(index, signature,'waiting-seven-api', companionPayloadSource());
             await saveChatExtras(operationScope);
             if(!stillCurrent())return false;
         }
@@ -16967,7 +16972,7 @@ Phán định theo từng tầng:
 4. memorySource chỉ được là structured, summary, anchor, raw_fallback, mixed, none. Trúng nhờ chính văn phương án đáy thì bắt buộc ghi raw_fallback, không được tính là trúng có cấu trúc.
 5. rememberedAs chỉ ghi nội dung mà bài kiểm mù vốn đã nhớ; missing và contradiction chỉ ghi những vấn đề phát hiện khi đối chiếu chính văn. Không được xuất ra quá trình suy nghĩ.
 
-Bắt buộc bao phủ các tầng sau: ${floors.map(row=>`${row.floor}:${row.role}`).join(', ')}
+Bắt buộc bao phủ các tầng sau: ${floors.map(row=>`${row.floor}:${row.role}`).join(',')}
 Chỉ xuất JSON:
 {"partSummary":"","floors":[{"floor":0,"role":"assistant|user|system","summary":"chính văn của tầng này đã xảy ra chuyện gì","status":"remembered|partial|missing|contradictory|context_only","memorySource":"structured|summary|anchor|raw_fallback|mixed|none","rememberedAs":"","missing":"","contradiction":"","evidenceClaimIds":[]}],"findings":[{"category":"identity|relationship|promise|item|small_event|money|food|shopping|travel|communication|appearance|secret|event|other","truth":"","status":"remembered|partial|missing|contradictory","rememberedAs":"","floorStart":0,"floorEnd":0,"people":[],"importance":"core|detail"}]}
 
@@ -16983,14 +16988,14 @@ ${part.text}`;
         if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.floors))throw new Error('Phần đối chiếu chính văn thiếu mảng floors');
         const expected=new Map(expectedFloors.map(row=>[Number(row.floor),row.role])),allowedStatus=new Set(Object.keys(MEMORY_REVIEW_STATUS_ORDER)),allowedSources=new Set(Object.keys(MEMORY_REVIEW_SOURCE_LABEL)),seen=new Set(),floors=[];
         for(const row of raw.floors){const floor=Number(row?.floor);if(!Number.isInteger(floor)||!expected.has(floor)||seen.has(floor))continue;const role=expected.get(floor),required=role==='assistant'?null:'context_only',status=required||String(row?.status||'missing');floors.push({floor,role,status:allowedStatus.has(status)?status:(role==='assistant'?'missing':'context_only'),memorySource:allowedSources.has(row?.memorySource)?row.memorySource:'none',summary:compactText(sanitizeRetrievalDocumentText(row?.summary),700)||'AI chưa đưa ra tóm lược cho tầng này',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),700),missing:compactText(sanitizeRetrievalDocumentText(row?.missing),700),contradiction:compactText(sanitizeRetrievalDocumentText(row?.contradiction),700),evidenceClaimIds:(Array.isArray(row?.evidenceClaimIds)?row.evidenceClaimIds:[]).map(String).slice(0,30)});seen.add(floor);}
-        const missingFloors=[...expected.keys()].filter(floor=>!seen.has(floor));if(missingFloors.length)throw new Error(`Việc đối chiếu chính văn bỏ sót tầng: ${missingFloors.join(', ')}`);
+        const missingFloors=[...expected.keys()].filter(floor=>!seen.has(floor));if(missingFloors.length)throw new Error(`Việc đối chiếu chính văn bỏ sót tầng: ${missingFloors.join(',')}`);
         const findings=(Array.isArray(raw.findings)?raw.findings:[]).map(row=>({category:compactText(row?.category||'other',40),truth:compactText(sanitizeRetrievalDocumentText(row?.truth),800),status:allowedStatus.has(row?.status)&&row.status!=='context_only'?row.status:'missing',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),600),floorStart:Number.isFinite(Number(row?.floorStart))?Number(row.floorStart):null,floorEnd:Number.isFinite(Number(row?.floorEnd))?Number(row.floorEnd):null,people:(Array.isArray(row?.people)?row.people:[]).map(value=>compactText(value,100)).filter(Boolean).slice(0,20),importance:row?.importance==='core'?'core':'detail'})).filter(row=>row.truth);
         return {...result,parsed:{partSummary:compactText(raw.partSummary,1200),floors,findings}};
     }
 
     function mergeMemoryReviewFloors(parts){
         const rows=new Map();
-        for(const part of parts)for(const row of part?.parsed?.floors||[]){const current=rows.get(row.floor);if(!current){rows.set(row.floor,{...row});continue;}const worse=(MEMORY_REVIEW_STATUS_ORDER[row.status]||0)>(MEMORY_REVIEW_STATUS_ORDER[current.status]||0)?row:current;rows.set(row.floor,{...worse,summary:[current.summary,row.summary].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join('; '),rememberedAs:[current.rememberedAs,row.rememberedAs].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join('; '),missing:[current.missing,row.missing].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join('; '),contradiction:[current.contradiction,row.contradiction].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join('; ')});}
+        for(const part of parts)for(const row of part?.parsed?.floors||[]){const current=rows.get(row.floor);if(!current){rows.set(row.floor,{...row});continue;}const worse=(MEMORY_REVIEW_STATUS_ORDER[row.status]||0)>(MEMORY_REVIEW_STATUS_ORDER[current.status]||0)?row:current;rows.set(row.floor,{...worse,summary:[current.summary,row.summary].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(';'),rememberedAs:[current.rememberedAs,row.rememberedAs].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(';'),missing:[current.missing,row.missing].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(';'),contradiction:[current.contradiction,row.contradiction].filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(';')});}
         return [...rows.values()].sort((a,b)=>a.floor-b.floor);
     }
 
@@ -17099,11 +17104,11 @@ ${JSON.stringify(evidence)}`;
         const running = (s.summaryJobs || []).filter(job => !job.applied && !['error','completed'].includes(job.status)).length;
         const index = stateRuntime.indexStatus || {};
         return `<section class="vvvtm-grid stats">
-            ${statCard('Mục ký ức', countRows(s), 'Số sự thật có cấu trúc, không phải số lượt trò chuyện')}
-            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length, `Tiến độ tới tầng ${maxSummarizedFloor()}`)}
-            ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length, 'Bối cảnh dài hạn cỡ nghìn tầng')}
-            ${statCard('Chỉ mục truy hồi', index.count ?? '—', index.vectorCount ? `Tài liệu truy hồi · vector ${index.vectorCount}` : 'Số tài liệu truy hồi, không phải số lượt trò chuyện')}
-            ${statCard('Tác vụ chạy nền', running, stateRuntime.serverHealth?.ok === false ? 'Chưa kết nối phía máy chủ' : 'Khóa màn hình vẫn chạy tiếp được')}
+            ${statCard('Mục ký ức', countRows(s),'Số sự thật có cấu trúc, không phải số lượt trò chuyện')}
+            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length,`Tiến độ tới tầng ${maxSummarizedFloor()}`)}
+            ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length,'Bối cảnh dài hạn cỡ nghìn tầng')}
+            ${statCard('Chỉ mục truy hồi', index.count ??'—', index.vectorCount ?`Tài liệu truy hồi · vector ${index.vectorCount}` :'Số tài liệu truy hồi, không phải số lượt trò chuyện')}
+            ${statCard('Tác vụ chạy nền', running, stateRuntime.serverHealth?.ok === false ?'Chưa kết nối phía máy chủ' :'Khóa màn hình vẫn chạy tiếp được')}
         </section>
         <p class="vvvtm-counter-note">“Mục ký ức” đếm các bản ghi có cấu trúc như cốt truyện chính, trạng thái, nhân vật, quan hệ, lời hẹn, bí mật, ngoại hình nhân vật; một lượt trò chuyện có thể tách thành nhiều mục, nên chạy 1 lượt hiện 3 mục hay trò chuyện lâu dài hiện vài chục mục đều là bình thường. “Chỉ mục truy hồi” đếm các đoạn tài liệu có thể tìm kiếm, cũng không phải số tầng.</p>
         ${(()=>{const p=s.progress||{};if(!p.extractRetryPending)return'';const remain=Math.max(0,Math.ceil((Number(p.extractRetryAt||0)-Date.now())/1000));return `<section class="vvvtm-card"><div class="vvvtm-section-title"><h3>⏳ Tầng ${Number(p.extractRetryFloor)} đang chờ thử lại việc sắp xếp ${Number(p.extractRetryAttempt||0)}/${extractRetryLimit()}</h3></div><p class="vvvtm-note">${remain?`Khởi động lượt tiếp theo sau ${remain} giây.`:'Đang khởi động lượt tiếp theo.'} Lỗi lần trước: ${esc(p.extractRetryReason||'Không trả về lỗi cụ thể')}</p><p class="vvvtm-note">Ký ức tức thời chỉ gửi lượt trả lời mục tiêu và một lượng tư liệu có hạn; khi thất bại chỉ thử lại trên đúng API riêng đó. Đạt tới giới hạn thì lưu chính văn làm phương án đáy và cho đi tiếp một cách rõ ràng.</p></section>`;})()}
@@ -17111,7 +17116,7 @@ ${JSON.stringify(evidence)}`;
             <article class="vvvtm-card scene-card"><div class="vvvtm-section-title"><h3>🎬 Cảnh hiện tại</h3><div><button data-overview-action="calibrate-time">🕒 Chỉnh giờ</button><button data-overview-action="save-scene">Lưu</button></div></div><div class="vvvtm-form-grid">${sceneInput('time','Thời gian')}${sceneInput('location','Địa điểm')}${sceneInput('weather','Thời tiết')}${sceneInput('mood','Không khí')}${sceneInput('pace','Nhịp')}${sceneInput('goal','Mục tiêu lượt này')}</div></article>
             <article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🧠 Luồng ký ức</h3><div><button data-memory-review-open>Nhìn lại 0 - hiện tại</button><button data-go-tab="summary">Trung tâm tổng kết</button></div></div>
                 <div class="vvvtm-pipeline"><span>Ký ức có cấu trúc đến <b>${Number(s.progress.lastExtractedMessage)>=0?`tầng ${s.progress.lastExtractedMessage}`:'Chưa bắt đầu'}</b></span><i>→</i><span>Tổng kết giai đoạn <b>${completedSummaryRows('Tổng kết giai đoạn').length}</b></span><i>→</i><span>Tổng kết lớn <b>${completedSummaryRows('Tổng kết lớn').length}</b></span><i>→</i><span>Tổng kết thời đại <b>${completedSummaryRows('Tổng kết thời đại').length}</b></span><i>→</i><span>Truy hồi nóng-nguội <b>${stateRuntime.retrievalHits.length}</b></span></div>
-                <p class="vvvtm-note">Sắp xếp/tổng kết: ${stateRuntime.serverConfig?.llm?.model || 'Chưa cấu hình'} · API riêng · tư liệu có hạn; ${esc(memoryPipelineAvailability().note)}; nguồn viết Bảy điều: ${esc(companionWritingSourceLabel())}; vector: ${stateRuntime.serverConfig?.embedding?.enabled ? stateRuntime.serverConfig.embedding.model : 'Chưa bật, tự dùng BM25'}。</p>
+                <p class="vvvtm-note">Sắp xếp/tổng kết: ${stateRuntime.serverConfig?.llm?.model || 'Chưa cấu hình'} · API riêng · tư liệu có hạn; ${esc(memoryPipelineAvailability().note)}; nguồn viết Bảy điều: ${esc(companionWritingSourceLabel())}; vector: ${stateRuntime.serverConfig?.embedding?.enabled ? stateRuntime.serverConfig.embedding.model :'Chưa bật, tự dùng BM25'}.</p>
             </article>
         </section>
         ${(()=>{const health=memoryHealthSummary(),pipeline=memoryPipelineAvailability();const pct=health.candidateCount?Math.round(health.covered/health.candidateCount*100):100;return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🩺 P13 Sức khỏe ký ức</h3><p class="vvvtm-note">U1.7.2: trước hết loại bỏ các “sót giả” như câu đề nghị/giả định/phủ định; nhiều mốc neo trong cùng một tầng có thể cùng bao phủ một sự thật. Việc bổ sung ở nền thử lại tối đa 3 lần, nếu vẫn thất bại thì dùng thẳng bằng chứng chính văn làm detail chắc chắn để giữ đáy; khi đổi cuộc trò chuyện nhanh, tác vụ cũ sẽ không ghi vào cuộc trò chuyện mới.${esc(pipeline.note)}${health.sidecarGaps?` Hiện có ${health.sidecarGaps} tầng ở trạng thái “Bảy điều hậu trường đã xong, ký ức chính chưa sắp xếp”.`:''}</p></div><div><button data-memory-repair-all ${health.repairableCount?'':'disabled'}>🩹 Sửa toàn bộ chỗ sót bằng một lần bấm${health.repairableCount?` (${health.repairableCount})`:''}</button></div></div><div class="vvvtm-grid stats">${statCard('20 lượt gần nhất đầy đủ',health.total?`${health.ok}/${health.total}`:'—',health.total?'Yêu cầu mọi chi tiết đời sống phát hiện được trong lượt đó đều đã được ghi nhận':'Chờ lượt truyện thật')}${statCard('Độ phủ chi tiết đời sống',health.candidateCount?`${health.covered}/${health.candidateCount}`:'—',health.candidateCount?`${pct}% · ứng viên đã khử trùng lặp và kiểm lại tức thời`:'Chưa thấy chi tiết đời sống rõ ràng')}${statCard('Tự bổ sung',health.pending?`${health.rescued} / chờ ${health.pending}`:health.rescued,health.pending?'Đang bổ sung ở nền, không chặn phần tiếp sức':(health.rescued?'Sau khi tự phát hiện chỗ sót đã bù lại':'Gần đây không cần tự bổ sung'))}${statCard('Nhận thức đời sống ổn định',health.stableFacts,health.manualRescued?`Sở thích rõ ràng/nhiều bằng chứng tích lũy · sửa tay thành công ${health.manualRescued} lượt`:'Sở thích rõ ràng hoặc bằng chứng lặp lại nhiều lần')}</div>${health.failures.length?`<div class="vvvtm-list">${health.failures.map(item=>`<div class="vvvtm-list-item"><span>Tầng ${item.floor} · ${item.status==='memory-missing'?'Ký ức có cấu trúc của cả lượt chưa được xác nhận':item.status==='pending-rescue'?'Đã phát hiện chỗ sót, đang bổ sung ở nền':'Chi tiết đời sống vẫn còn chỗ sót'}</span><small>${esc((item.missingAfter||[]).map(x=>x.text).join(' / ').slice(0,260))}</small><div class="vvvtm-row-actions"><button data-memory-reextract-floor="${item.floor}">${item.status==='memory-missing'?'Dựng lại tầng này':'Sửa chính xác'}</button></div></div>`).join('')}</div>`:(health.sidecarGaps?'<div class="vvvtm-empty">Bảy điều hậu trường đã tạo xong nhưng ký ức chính chưa được sắp xếp; hãy bấm “Sửa một chạm” ở trên để bù đủ tầng này.</div>':'<div class="vvvtm-empty">Gần đây không phát hiện chỗ nào bị bỏ sót.</div>')}<p class="vvvtm-note">“Sửa toàn bộ chỗ sót một chạm” trước tiên dọn tại chỗ những mục sót giả trong lịch sử, rồi sửa tuần tự những mục thiếu thật; khi AI thất bại liên tiếp thì dùng bằng chứng chính văn để bù máy móc làm phương án đáy, nhờ vậy quá trình hội tụ chứ không sửa vô hạn. Chi tiết đời sống không làm thay đổi cảnh hiện tại, quan hệ nhân vật, mạch chính và các bản tổng kết; yêu cầu sửa luôn dùng API sắp xếp riêng.</p></section>`;})()}
@@ -17124,7 +17129,7 @@ ${JSON.stringify(evidence)}`;
         const hiddenIds = new Set(s.hiddenSummaryIds || []);
         const all = s.tables.summaries.slice().reverse().filter(row => !hiddenIds.has(row._id));
         const rows = s.settings.hideCompletedSummaryCards ? all.filter(row => !/hoàn thành|thành công/i.test(row['Trạng thái'] || '')) : all;
-        const page = pageSlice(rows, 'summaries');
+        const page = pageSlice(rows,'summaries');
         const interval = Number(s.settings.summaryEvery || 20);
         const nextStart = Number(s.progress.nextSummaryStart || 0);
         const canNext = (context()?.chat?.length || 0) - nextStart >= interval;
@@ -17136,13 +17141,13 @@ ${JSON.stringify(evidence)}`;
         const collectionLabel=collectionStatus==='paused'||collectionStatus==='failed'?'Tiếp tục gom ký ức':'Gom ký ức';
         const collectionTone=collectionStatus==='failed'?'Thất bại, có thể chạy tiếp từ điểm dừng':collectionStatus==='paused'?'Đã tạm dừng, có thể chạy tiếp từ điểm dừng':collectionStatus==='running'?'Đang tiếp sức theo dung lượng':collectionStatus==='completed'?'Lần gần nhất đã hoàn tất':'Chưa chạy';
         return `<section class="vvvtm-summary-head vvvtm-grid stats">
-            ${statCard('Chỗ hổng/khoảng lần tới', `${nextStart}-${nextStart + interval - 1}`, canNext ? 'Có thể tổng kết' : 'Chờ thêm tầng')}
-            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length, `Mỗi ${s.settings.summaryEvery} tầng`)}
-            ${statCard('Tổng kết lớn', completedSummaryRows('Tổng kết lớn').length, `Mỗi ${s.settings.stageSummariesPerBig} lần tổng kết giai đoạn`)}
-            ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length, `Mỗi ${s.settings.bigSummariesPerEra || 10} lần tổng kết lớn`)}
-            ${statCard('Ảnh chụp an toàn', s.settings.safetySnapshots?'Bật':'Đóng', 'Máy chủ giữ vĩnh viễn, không tự cắt bớt')}${statCard('Thùng rác tổng kết', (s.summaryRecycleBin||[]).length, 'Sau khi xóa, việc dựng lại cùng khoảng sẽ tự nối lại các ID phụ thuộc')}
+            ${statCard('Chỗ hổng/khoảng lần tới',`${nextStart}-${nextStart + interval - 1}`, canNext ?'Có thể tổng kết' :'Chờ thêm tầng')}
+            ${statCard('Tổng kết giai đoạn', completedSummaryRows('Tổng kết giai đoạn').length,`Mỗi ${s.settings.summaryEvery} tầng`)}
+            ${statCard('Tổng kết lớn', completedSummaryRows('Tổng kết lớn').length,`Mỗi ${s.settings.stageSummariesPerBig} lần tổng kết giai đoạn`)}
+            ${statCard('Tổng kết thời đại', completedSummaryRows('Tổng kết thời đại').length,`Mỗi ${s.settings.bigSummariesPerEra || 10} lần tổng kết lớn`)}
+            ${statCard('Ảnh chụp an toàn', s.settings.safetySnapshots?'Bật':'Đóng','Máy chủ giữ vĩnh viễn, không tự cắt bớt')}${statCard('Thùng rác tổng kết', (s.summaryRecycleBin||[]).length,'Sau khi xóa, việc dựng lại cùng khoảng sẽ tự nối lại các ID phụ thuộc')}
         </section>
-        <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>Thao tác tổng kết · U1.7 định dạng cố định + P13 tự chữa/chống lẫn hồ sơ</h3><p class="vvvtm-note">Tổng kết giai đoạn được trình bày thống nhất bằng JSON có cấu trúc, cố định theo “thời gian và bối cảnh + năm khu nội dung”; nếu chất lượng không đạt, quá ngắn, JSON hỏng hay cache cũ bất thường thì hủy cache đó và tự gửi lại yêu cầu, tối đa 3 lần. Chỉ khi kiểm tra đạt mới ghi vào và ẩn chính văn. Nếu quá dài thì vẫn đọc trọn vẹn theo từng mảnh.</p></div><div><button data-summary-action="memory-collection" ${stateRuntime.memoryCollectionRunning?'disabled':''}>${stateRuntime.memoryCollectionRunning?'Bộ ký ức đang chạy':collectionLabel}</button><button data-summary-action="next" ${canNext ? '' : 'disabled'}>Tổng kết đoạn tiếp theo</button><button data-summary-action="catchup">Bù đủ tất cả</button><button data-summary-action="big">Tổng kết lớn ngay</button><button data-summary-action="era">Tổng kết thời đại ngay</button><button data-summary-action="refresh">Đồng bộ tác vụ</button></div></div>${archiveGuard}
+        <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>Thao tác tổng kết · U1.7 định dạng cố định + P13 tự chữa/chống lẫn hồ sơ</h3><p class="vvvtm-note">Tổng kết giai đoạn được trình bày thống nhất bằng JSON có cấu trúc, cố định theo “thời gian và bối cảnh + năm khu nội dung”; nếu chất lượng không đạt, quá ngắn, JSON hỏng hay cache cũ bất thường thì hủy cache đó và tự gửi lại yêu cầu, tối đa 3 lần. Chỉ khi kiểm tra đạt mới ghi vào và ẩn chính văn. Nếu quá dài thì vẫn đọc trọn vẹn theo từng mảnh.</p></div><div><button data-summary-action="memory-collection" ${stateRuntime.memoryCollectionRunning?'disabled':''}>${stateRuntime.memoryCollectionRunning?'Bộ ký ức đang chạy':collectionLabel}</button><button data-summary-action="next" ${canNext ?'' :'disabled'}>Tổng kết đoạn tiếp theo</button><button data-summary-action="catchup">Bù đủ tất cả</button><button data-summary-action="big">Tổng kết lớn ngay</button><button data-summary-action="era">Tổng kết thời đại ngay</button><button data-summary-action="refresh">Đồng bộ tác vụ</button></div></div>${archiveGuard}
         <div class="vvvtm-memory-collection-status"><b>Gom ký ức: ${esc(collectionTone)}</b><span>${collectionTotal?`${collectionDone}/${collectionTotal} lượt API · ${Number(collection.assistantFloors||0)} tầng AI`:'Sau khi bỏ toàn bộ phần ẩn, đọc lại theo kiểu tiếp sức vô hạn với dung lượng ngữ cảnh tới hạn của mỗi lượt'}</span>${collection.error?`<small>${esc(collection.error)}</small>`:''}</div>
         <div class="summary-custom-range"><label>Tầng bắt đầu<input id="summary-custom-start" type="number" min="0" value="${nextStart}"></label><label>Tầng kết thúc<input id="summary-custom-end" type="number" min="0" value="${Math.max(nextStart, (context()?.chat?.length || 1) - 1)}"></label><button data-summary-action="custom">Tổng kết khoảng đã chọn</button></div>
         <p class="vvvtm-note">“Gom ký ức” không xóa hay ghi đè ký ức cũ: trước tiên nó chụp ảnh an toàn, khôi phục toàn bộ /hide, rồi xếp đầy dung lượng an toàn của một lượt theo trọn các tầng AI; chạm ngưỡng thì khởi động lượt API kế tiếp, số lần gọi không giới hạn. Mỗi mảnh nghiệm thu xong là lưu tăng dần theo tầng thật ngay, thất bại vẫn chạy tiếp được. Khoảng chuẩn 20 tầng nếu đã có tổng kết thì làm lại tại chỗ; khoảng không chuẩn thì lưu dưới dạng bổ sung cục bộ.</p></section>
@@ -17152,13 +17157,13 @@ ${JSON.stringify(evidence)}`;
             const status = row['Trạng thái'] || 'Đã hoàn thành';
             const rowType = row['Loại'] || row['Loại bảng'] || 'Tổng kết';
             const isStage=rowType==='Tổng kết giai đoạn';
-            const rangeToggle = isStage ? `<button data-summary-range-toggle="${originalIndex}">${row['Trạng thái ẩn']==='Đã ẩn'?'Khôi phục tầng':'Ẩn tầng'}</button>` : '';
-            const redo = isStage ? `<button data-summary-redo="${originalIndex}">🔄 Làm lại đoạn này</button><button data-summary-delete-redo="${originalIndex}">🗑↻ Xóa và làm lại</button>` : '';
-            const restoreVersion = Array.isArray(row._history) && row._history.length ? `<button data-summary-restore-version="${originalIndex}">↩ Bản trước</button>` : '';
+            const rangeToggle = isStage ?`<button data-summary-range-toggle="${originalIndex}">${row['Trạng thái ẩn']==='Đã ẩn'?'Khôi phục tầng':'Ẩn tầng'}</button>` :'';
+            const redo = isStage ?`<button data-summary-redo="${originalIndex}">🔄 Làm lại đoạn này</button><button data-summary-delete-redo="${originalIndex}">🗑↻ Xóa và làm lại</button>` :'';
+            const restoreVersion = Array.isArray(row._history) && row._history.length ?`<button data-summary-restore-version="${originalIndex}">↩ Bản trước</button>` :'';
             const stale=row._staleReason?`<small class="vvvtm-warn">⚠ ${esc(row._staleReason)}</small>`:'';
             const legacyFormat=isStage&&!isFixedStageSummaryText(row['Nội dung tổng kết'])?'<small class="vvvtm-warn">⚠ Định dạng tự do của bản cũ; bấm “Làm lại đoạn này” để chuyển sang định dạng cố định U1.6.2.</small>':'';
             return `<article class="vvvtm-card summary-card ${/thất bại|cần tính lại/i.test(status)?'failed':''} ${rowType==='Tổng kết thời đại'?'era-summary-card':''}"><header><div><span class="summary-type">${esc(rowType)}</span><b>tầng ${esc(row['Tầng bao phủ'])}</b></div><span class="summary-status">${esc(status)}</span></header>${stale}${legacyFormat}<textarea data-summary-content="${originalIndex}" ${row['Khóa']==='Có'?'readonly':''}>${esc(row['Nội dung tổng kết'])}</textarea><footer><small>${esc(row['Mô hình'] || '')} · ${esc(row['Thời điểm tạo'] || '')} · ${esc(row['Trạng thái ẩn'] || 'Chưa ẩn')}</small><div><button data-jump="${esc(parseRange(row['Tầng bao phủ']).start)}">Chuyển tới</button>${rangeToggle}${redo}${restoreVersion}<button data-summary-save="${originalIndex}">Lưu</button><button data-summary-lock="${originalIndex}">${row['Khóa']==='Có'?'Mở khóa':'Khóa'}</button>${/thất bại/i.test(status)?`<button data-summary-retry="${originalIndex}">Thử lại</button>`:''}<button data-summary-hide="${originalIndex}">Ẩn thẻ</button><button class="danger-soft" data-summary-delete="${originalIndex}">Xóa</button></div></footer></article>`;
-        }).join('') : '<div class="vvvtm-empty big">Chưa có bản tổng kết.</div>'}</div><aside class="vvvtm-card task-rail"><h3>Hàng đợi tác vụ</h3>${tasks.length ? tasks.map(job => `<div class="task-row"><b>${esc(job.kind)}</b><span>${esc(job.status)}</span><small>${esc(job.startFloor ?? '')}${job.endFloor!==undefined?`-${esc(job.endFloor)}`:''} ${esc(job.error || '')}</small></div>`).join('') : '<div class="vvvtm-empty">Chưa có tác vụ</div>'}</aside></section>
+        }).join('') :'<div class="vvvtm-empty big">Chưa có bản tổng kết.</div>'}</div><aside class="vvvtm-card task-rail"><h3>Hàng đợi tác vụ</h3>${tasks.length ? tasks.map(job => `<div class="task-row"><b>${esc(job.kind)}</b><span>${esc(job.status)}</span><small>${esc(job.startFloor ??'')}${job.endFloor!==undefined?`-${esc(job.endFloor)}`:''} ${esc(job.error || '')}</small></div>`).join('') :'<div class="vvvtm-empty">Chưa có tác vụ</div>'}</aside></section>
         ${pagerMarkup(page)}`;
     }
 
@@ -17175,7 +17180,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-summary-action="custom"]')?.addEventListener('click', async () => {
             const start = Number(content.querySelector('#summary-custom-start')?.value || 0);
             const end = Number(content.querySelector('#summary-custom-end')?.value || start);
-            if (end < start) return toast('Tầng kết thúc không được nhỏ hơn tầng bắt đầu', 'warn');
+            if (end < start) return toast('Tầng kết thúc không được nhỏ hơn tầng bắt đầu','warn');
             const chatMax=(context()?.chat?.length||1)-1;if(end>chatMax)return toast(`Hiện cao nhất chỉ tới tầng ${chatMax}`,'warn');
             if(standardStageRange(start,end)){
                 const existing=findStageSummaryByRange(start,end);
@@ -17211,7 +17216,7 @@ ${JSON.stringify(evidence)}`;
             if(!operationScope||!operationState)return;
             const index = Number(button.dataset.summarySave); const row = operationState.tables.summaries[index];
             if(!row)return;
-            if (row['Khóa'] === 'Có') return toast('Hãy mở khóa trước rồi mới sửa', 'warn');
+            if (row['Khóa'] === 'Có') return toast('Hãy mở khóa trước rồi mới sửa','warn');
             const edited=content.querySelector(`[data-summary-content="${index}"]`)?.value.trim()||'';
             if((row['Loại']||row['Loại bảng'])==='Tổng kết giai đoạn'&&!isFixedStageSummaryText(edited))return toast('Tổng kết giai đoạn bắt buộc giữ các tiêu đề cố định “thời gian và bối cảnh + năm khu nội dung” của U1.6.2; hãy bổ sung đủ tiêu đề rồi mới lưu.','error');
             await createSafetySnapshot(`before-manual-summary-edit-${row['Tầng bao phủ']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
@@ -17236,19 +17241,19 @@ ${JSON.stringify(evidence)}`;
             scheduleReindex();
         }));
         content.querySelectorAll('[data-summary-lock]').forEach(button => button.addEventListener('click', () => {
-            const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryLock)]; row['Khóa'] = row['Khóa'] === 'Có' ? 'Không' : 'Có'; saveState({ refresh: true, reason:'summary-lock' });
+            const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryLock)]; row['Khóa'] = row['Khóa'] === 'Có' ?'Không' :'Có'; saveState({ refresh: true, reason:'summary-lock' });
         }));
         content.querySelectorAll('[data-summary-range-toggle]').forEach(button => button.addEventListener('click', async () => {
             const operationScope=captureChatScope();const operationState=stateRuntime.state;
             if(!operationScope||!operationState)return;
             const row = operationState.tables.summaries[Number(button.dataset.summaryRangeToggle)];
-            if (!row || (row['Loại'] || row['Loại bảng']) !== 'Tổng kết giai đoạn') return toast('Chỉ tổng kết giai đoạn mới hỗ trợ ẩn tầng gốc', 'warn');
+            if (!row || (row['Loại'] || row['Loại bảng']) !== 'Tổng kết giai đoạn') return toast('Chỉ tổng kết giai đoạn mới hỗ trợ ẩn tầng gốc','warn');
             try {
                 const shouldHide = row['Trạng thái ẩn'] !== 'Đã ẩn';
                 await applySummaryHideState(row, shouldHide);
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
                 await saveState({ immediate: true, refresh: true, reason:'summary-hide-range' });
-            } catch (error) { if(chatScopeIsCurrent(operationScope))toast(`Thao tác trên tầng thất bại: ${error.message}`, 'error'); }
+            } catch (error) { if(chatScopeIsCurrent(operationScope))toast(`Thao tác trên tầng thất bại: ${error.message}`,'error'); }
         }));
         content.querySelectorAll('[data-summary-hide]').forEach(button => button.addEventListener('click', () => {
             const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryHide)]; if (!row._id) row._id = uid('summary');
@@ -17256,7 +17261,7 @@ ${JSON.stringify(evidence)}`;
         }));
         content.querySelectorAll('[data-summary-retry]').forEach(button => button.addEventListener('click', async () => {
             const row = stateRuntime.state.tables.summaries[Number(button.dataset.summaryRetry)]; const range = parseRange(row['Tầng bao phủ']);
-            if (range.start === null || range.end === null) return toast('Không nhận diện được khoảng tầng của bản tổng kết', 'error');
+            if (range.start === null || range.end === null) return toast('Không nhận diện được khoảng tầng của bản tổng kết','error');
             if((row['Loại']||'')==='Tổng kết giai đoạn')await createStageSummary(range.start,range.end,{manual:true,replaceExisting:Boolean(findStageSummaryByRange(range.start,range.end))});else toast('Hãy dùng bản tổng kết cấp trên tương ứng để dựng lại','info'); renderCurrentTab();
         }));
         content.querySelectorAll('[data-summary-delete]').forEach(button => button.addEventListener('click', async () => {
@@ -17316,7 +17321,7 @@ ${JSON.stringify(evidence)}`;
         if (status === 'seven-api-failed') return { kind:'error', text:`Bảy điều hậu trường của tầng ${entry.index} tạo thất bại: ${compactText(shell.fallbackError || 'Lỗi chưa rõ', 180)}` };
         const p = shell.phone || {};
         const count = ['wechat','wechatGroups','channelGroups','sms','calls'].reduce((sum,key)=>sum+Number((p[key]||[]).length),0);
-        if (['ok','fallback-ok'].includes(status)) return { kind:'ok', text:count ? `Bảy điều hậu trường của tầng ${entry.index} đã xong, lượt này ghi ${count} mục liên lạc vào điện thoại.` : `Bảy điều hậu trường của tầng ${entry.index} đã xong; mô hình cho rằng lượt này không có liên lạc mới nào hợp lý.` };
+        if (['ok','fallback-ok'].includes(status)) return { kind:'ok', text:count ?`Bảy điều hậu trường của tầng ${entry.index} đã xong, lượt này ghi ${count} mục liên lạc vào điện thoại.` :`Bảy điều hậu trường của tầng ${entry.index} đã xong; mô hình cho rằng lượt này không có liên lạc mới nào hợp lý.` };
         return { kind:'idle', text:`Trạng thái điện thoại của tầng ${entry.index}: ${status || 'Chờ tạo'}.` };
     }
 
@@ -17376,7 +17381,7 @@ ${JSON.stringify(evidence)}`;
     function renderAppearance() {
         const rows=(stateRuntime.state.appearances||[]).slice().sort((a,b)=>Number(b.floor||0)-Number(a.floor||0));
         const cards=rows.map(item=>{
-            const reg=npcRegistryEntry(item.character); const alias=reg?.aliases?.length?`Từng gọi: ${reg.aliases.join(', ')}`:'';
+            const reg=npcRegistryEntry(item.character); const alias=reg?.aliases?.length?`Từng gọi: ${reg.aliases.join(',')}`:'';
             return `<article class="vvvtm-appearance-card"><header><div><b>${esc(item.character)}</b><small>${esc([item.time,item.location,item.floor!==undefined?`tầng ${item.floor}`:''].filter(Boolean).join(' · '))}</small>${alias?`<small>${esc(alias)}</small>`:''}</div><button class="danger-soft" data-appearance-delete="${esc(item.id)}">Xóa</button></header><p>${esc(item.outfit||'Chưa ghi nhận trang phục')}</p><dl>${item.hair?`<div><dt>Kiểu tóc</dt><dd>${esc(item.hair)}</dd></div>`:''}${item.accessories?`<div><dt>Phụ kiện</dt><dd>${esc(item.accessories)}</dd></div>`:''}${item.shoes?`<div><dt>Giày dép</dt><dd>${esc(item.shoes)}</dd></div>`:''}${item.condition?`<div><dt>Trạng thái</dt><dd>${esc(item.condition)}</dd></div>`:''}</dl></article>`;
         }).join('');
         return `<section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>👗 Ngoại hình hiện tại của nhân vật</h3><p class="vvvtm-note">Mỗi nhân vật chỉ giữ một thẻ hiện hành; ngoại hình lượt mới sẽ ghi đè cập nhật, bản cũ chỉ lưu trong lịch sử hoàn tác nội bộ, không bày kín trang nữa.</p></div><button class="danger-soft" data-appearance-clear>Xóa ngoại hình</button></div><section class="vvvtm-appearance-grid">${cards||'<div class="vvvtm-empty">Chưa có ngoại hình nhân vật</div>'}</section></section>`;
@@ -17427,10 +17432,10 @@ ${JSON.stringify(evidence)}`;
             runLaterForScope(scope,0,async()=>{await refreshServerState({config:true,index:true,tasks:true});if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState&&stateRuntime.currentTab==='api')renderCurrentTab();});
         }
         return `<section class="vvvtm-grid stats">${statCard('Phía máy chủ',health.ok===false?'Chưa kết nối':'Đã kết nối',health.version||health.error||'')}${statCard('API tổng kết',llm.model||'Chưa cấu hình',llm.apiKeyConfigured?'Khóa đã lưu trên máy chủ':'Chưa lưu khóa')}${statCard('API tiếp sức AI',relay.model||'Chưa cấu hình','Chọn mô hình riêng trong phần cài đặt Tiếp sức AI')}${statCard('Nguồn viết Bảy điều',companion.model||'Chưa cấu hình','API riêng · ranh giới tư liệu riêng')}${statCard('API thời gian thực của điện thoại',phone.model||'Chưa cấu hình',phone.apiKeyConfigured?'Khóa đã lưu trên máy chủ':'Dùng chung cho WeChat, cuộc gọi, dịch vụ và SillyTavern lớp trong')}${statCard('Mô hình vector',emb.enabled?(emb.model||'Đã bật'):'Chưa bật',emb.apiKeyConfigured?'Khóa đã lưu':'Tùy chọn')}${statCard('Giới hạn tài khoản',health.enabledAccount||health.account||'Tài khoản hiện tại','Máy chủ tách riêng lời gọi theo từng tài khoản')}</section>
-        <section class="vvvtm-api-layout"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🤖 API sắp xếp / tổng kết riêng</h3><div><button data-api-action="models">Lấy danh sách mô hình</button><button data-api-action="test">Kiểm tra toàn tuyến</button><button data-api-action="save">Lưu</button></div></div><p class="vvvtm-note"><b>Ngữ cảnh tối thiểu của ký ức: </b>Việc sắp xếp tức thời chỉ gửi lượt trả lời AI mục tiêu, một lượng tư liệu ký ức có hạn và bộ quy tắc nghiệm thu có cấu trúc; không đọc thẻ nhân vật, Persona, sách thế giới, preset của SillyTavern hay toàn bộ lịch sử trò chuyện. Khi thất bại chỉ thử lại có giới hạn trong chính API riêng đó, tuyệt đối không chuyển sang API chính của SillyTavern.</p><div class="api-grid">${selectField('api-provider','Loại giao diện API',llm.provider||'openai-compatible',[['openai-compatible','Tương thích OpenAI'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('api-base','Base URL',llm.baseUrl)}${inputField('api-key','API Key','', 'password','placeholder="Để trống nghĩa là giữ khóa cũ trên máy chủ"')}${inputField('api-model','Mô hình mặc định',llm.model,'text','list="vvvtm-model-list"')}${inputField('api-temp','Temperature',llm.temperature??0.15,'number','step="0.05" min="0" max="2"')}${inputField('api-max','Token xuất tối đa',llm.maxTokens??4000,'number','min="256" max="100000"')}${inputField('api-timeout','Số giây chờ tối đa của API riêng',llm.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="api-headers">${esc(JSON.stringify(llm.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-model-list"></datalist><h4>Mô hình cho từng tính năng (để trống thì dùng mô hình mặc định)</h4><div class="api-grid feature-models">${inputField('api-f-extract','Ghi nhanh tức thời',llm.featureModels?.extract)}${inputField('api-f-stage','Tổng kết giai đoạn',llm.featureModels?.stageSummary)}${inputField('api-f-big','Tổng kết lớn',llm.featureModels?.bigSummary)}${inputField('api-f-era','Tổng kết thời đại',llm.featureModels?.eraSummary)}${inputField('api-f-diag','Kiểm tra cốt truyện',llm.featureModels?.diagnostics)}${inputField('api-f-chapter','Sắp xếp chương',llm.featureModels?.chapter)}</div><pre id="vvvtm-api-result" class="api-result">Việc sắp xếp/tổng kết dùng ranh giới tư liệu riêng; khóa vẫn chỉ được lưu trong data/&lt;tài khoản&gt;/vvv-theater-memory/config.json của chính tài khoản đang đăng nhập.</pre></article>
-        <article class="vvvtm-card vvvtm-companion-api-card"><div class="vvvtm-section-title"><h3>🎭 API riêng của Bảy điều hậu trường</h3><div><button data-companion-api-action="models">Lấy mô hình riêng</button><button data-companion-api-action="test">Kiểm tra nguồn viết</button><button data-companion-api-action="save">Lưu</button></div></div><p class="vvvtm-note"><b>Ranh giới tư liệu riêng cố định: </b>Chỉ gửi chính văn vừa hoàn thành, ký ức có cấu trúc trong giới hạn, hồ sơ nhân vật đã xác nhận và trạng thái chương trình; không đọc preset của SillyTavern, sách thế giới của nhân vật, Persona hay Prompt Manager. Khi thất bại chỉ thử lại có giới hạn trong chính API riêng này.</p><div class="api-grid" data-companion-independent>${selectField('comp-provider','Loại giao diện API',companion.provider||'openai-compatible',[['openai-compatible','Tương thích OpenAI'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('comp-base','Base URL',companion.baseUrl)}${inputField('comp-key','API Key','', 'password','placeholder="Để trống nghĩa là giữ khóa cũ của Bảy điều hậu trường"')}${inputField('comp-model','Mô hình Bảy điều hậu trường',companion.model,'text','list="vvvtm-companion-model-list"')}${inputField('comp-temp','Temperature',companion.temperature??0.18,'number','step="0.05" min="0" max="2"')}${inputField('comp-max','Token xuất tối đa',companion.maxTokens??7000,'number','min="512" max="100000"')}${inputField('comp-timeout','Số giây chờ tối đa',companion.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="comp-headers">${esc(JSON.stringify(companion.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-companion-model-list"></datalist><pre id="vvvtm-companion-api-result" class="api-result">Chế độ hiện tại: API riêng của Bảy điều hậu trường; sẽ không gọi API chính của SillyTavern, cũng không kế thừa preset hay sách thế giới của SillyTavern.</pre></article>
-        <article class="vvvtm-card vvvtm-phone-api-card"><div class="vvvtm-section-title"><h3>📱 API thời gian thực của điện thoại nhỏ</h3><div><button data-phone-api-action="models">Lấy danh sách mô hình</button><button data-phone-api-action="test">Kiểm tra tuyến thời gian thực</button><button data-phone-api-action="save">Lưu</button></div></div><p class="vvvtm-note"><b>Một bộ API điện thoại, nhiều giao thức ứng dụng: </b>WeChat, SMS, cuộc gọi, chuyển khoản, dịch vụ giao đồ ăn/đặt xe và SillyTavern trong trình duyệt dùng chung bộ kết nối này; mỗi loại ứng dụng có bộ quy tắc cấu trúc riêng. Sự kiện điện thoại hoàn tất ngay lập tức và ở lượt sau được giao cho chính văn cùng Bảy điều hậu trường như những sự thật đã xử lý, cấm trả lời lặp lại.</p><div class="api-grid">${selectField('phone-provider','Loại giao diện API',phone.provider||'openai-compatible',[['openai-compatible','Tương thích OpenAI'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('phone-base','Base URL',phone.baseUrl)}${inputField('phone-key','API Key','', 'password','placeholder="Để trống nghĩa là giữ khóa cũ của API điện thoại"')}${inputField('phone-model','Mô hình thời gian thực của điện thoại',phone.model,'text','list="vvvtm-phone-model-list"')}${inputField('phone-temp','Temperature',phone.temperature??0.55,'number','step="0.05" min="0" max="2"')}${inputField('phone-max','Token xuất tối đa',phone.maxTokens??1200,'number','min="128" max="12000"')}${inputField('phone-timeout','Số giây chờ tối đa',phone.timeoutSeconds??90,'number','min="10" max="600"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="phone-headers">${esc(JSON.stringify(phone.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-phone-model-list"></datalist><pre id="vvvtm-phone-api-result" class="api-result">API thời gian thực của điện thoại hoàn toàn độc lập; không chờ chính văn lượt sau, cũng không dùng lại API tổng kết.</pre></article>
-        <article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🧬 Mô hình vector hóa</h3><div><button data-api-action="test-embedding">Kiểm tra vector</button><button data-api-action="rebuild">Lưu và dựng lại</button></div></div><label class="vvvtm-setting"><div><strong>Bật truy hồi bằng vector</strong><small>Khi tắt sẽ tự dùng truy hồi từ khóa BM25, không ảnh hưởng hoạt động của tiện ích.</small></div><input id="emb-enabled" type="checkbox" ${emb.enabled?'checked':''}></label><div class="api-grid">${selectField('emb-provider','Loại giao diện API',emb.provider||'openai-compatible',[['openai-compatible','Embeddings tương thích OpenAI'],['gemini','Gemini Embedding']])}${inputField('emb-base','Base URL',emb.baseUrl)}${inputField('emb-key','API Key','', 'password','placeholder="Để trống thì giữ khóa cũ"')}${inputField('emb-model','Mô hình vector',emb.model)}${inputField('emb-dim','Số chiều vector (0 = tự động)',emb.dimensions??0,'number','min="0"')}${inputField('emb-timeout','Số giây chờ tối đa',emb.timeoutSeconds??120,'number','min="10" max="1800"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="emb-headers">${esc(JSON.stringify(emb.extraHeaders||{},null,2))}</textarea></label></div><p class="vvvtm-note">Khuyến nghị: bật khi trò chuyện dài. Nội dung chỉ mục gồm ba cấp tổng kết, dòng thời gian bậc một, nhân vật/quan hệ, mốc neo sự kiện dài hạn, thân phận/tên gọi cũ của NPC, bí mật, cuộc gọi/WeChat/Khoảnh khắc/nhật ký/kỷ niệm, chương và những tầng quan trọng được đánh dấu thủ công; sẽ không vector hóa từng câu nói vu vơ. Với SiliconFlow, nếu để trống mô hình thì tự dùng BAAI/bge-m3.</p></article></section>`;
+        <section class="vvvtm-api-layout"><article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🤖 API sắp xếp / tổng kết riêng</h3><div><button data-api-action="models">Lấy danh sách mô hình</button><button data-api-action="test">Kiểm tra toàn tuyến</button><button data-api-action="save">Lưu</button></div></div><p class="vvvtm-note"><b>Ngữ cảnh tối thiểu của ký ức: </b>Việc sắp xếp tức thời chỉ gửi lượt trả lời AI mục tiêu, một lượng tư liệu ký ức có hạn và bộ quy tắc nghiệm thu có cấu trúc; không đọc thẻ nhân vật, Persona, sách thế giới, preset của SillyTavern hay toàn bộ lịch sử trò chuyện. Khi thất bại chỉ thử lại có giới hạn trong chính API riêng đó, tuyệt đối không chuyển sang API chính của SillyTavern.</p><div class="api-grid">${selectField('api-provider','Loại giao diện API',llm.provider||'openai-compatible',[['openai-compatible','Tương thích OpenAI'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('api-base','Base URL',llm.baseUrl)}${inputField('api-key','API Key','','password','placeholder="Để trống nghĩa là giữ khóa cũ trên máy chủ"')}${inputField('api-model','Mô hình mặc định',llm.model,'text','list="vvvtm-model-list"')}${inputField('api-temp','Temperature',llm.temperature??0.15,'number','step="0.05" min="0" max="2"')}${inputField('api-max','Token xuất tối đa',llm.maxTokens??4000,'number','min="256" max="100000"')}${inputField('api-timeout','Số giây chờ tối đa của API riêng',llm.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="api-headers">${esc(JSON.stringify(llm.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-model-list"></datalist><h4>Mô hình cho từng tính năng (để trống thì dùng mô hình mặc định)</h4><div class="api-grid feature-models">${inputField('api-f-extract','Ghi nhanh tức thời',llm.featureModels?.extract)}${inputField('api-f-stage','Tổng kết giai đoạn',llm.featureModels?.stageSummary)}${inputField('api-f-big','Tổng kết lớn',llm.featureModels?.bigSummary)}${inputField('api-f-era','Tổng kết thời đại',llm.featureModels?.eraSummary)}${inputField('api-f-diag','Kiểm tra cốt truyện',llm.featureModels?.diagnostics)}${inputField('api-f-chapter','Sắp xếp chương',llm.featureModels?.chapter)}</div><pre id="vvvtm-api-result" class="api-result">Việc sắp xếp/tổng kết dùng ranh giới tư liệu riêng; khóa vẫn chỉ được lưu trong data/&lt;tài khoản&gt;/vvv-theater-memory/config.json của chính tài khoản đang đăng nhập.</pre></article>
+        <article class="vvvtm-card vvvtm-companion-api-card"><div class="vvvtm-section-title"><h3>🎭 API riêng của Bảy điều hậu trường</h3><div><button data-companion-api-action="models">Lấy mô hình riêng</button><button data-companion-api-action="test">Kiểm tra nguồn viết</button><button data-companion-api-action="save">Lưu</button></div></div><p class="vvvtm-note"><b>Ranh giới tư liệu riêng cố định: </b>Chỉ gửi chính văn vừa hoàn thành, ký ức có cấu trúc trong giới hạn, hồ sơ nhân vật đã xác nhận và trạng thái chương trình; không đọc preset của SillyTavern, sách thế giới của nhân vật, Persona hay Prompt Manager. Khi thất bại chỉ thử lại có giới hạn trong chính API riêng này.</p><div class="api-grid" data-companion-independent>${selectField('comp-provider','Loại giao diện API',companion.provider||'openai-compatible',[['openai-compatible','Tương thích OpenAI'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('comp-base','Base URL',companion.baseUrl)}${inputField('comp-key','API Key','','password','placeholder="Để trống nghĩa là giữ khóa cũ của Bảy điều hậu trường"')}${inputField('comp-model','Mô hình Bảy điều hậu trường',companion.model,'text','list="vvvtm-companion-model-list"')}${inputField('comp-temp','Temperature',companion.temperature??0.18,'number','step="0.05" min="0" max="2"')}${inputField('comp-max','Token xuất tối đa',companion.maxTokens??7000,'number','min="512" max="100000"')}${inputField('comp-timeout','Số giây chờ tối đa',companion.timeoutSeconds??180,'number','min="10" max="1800"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="comp-headers">${esc(JSON.stringify(companion.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-companion-model-list"></datalist><pre id="vvvtm-companion-api-result" class="api-result">Chế độ hiện tại: API riêng của Bảy điều hậu trường; sẽ không gọi API chính của SillyTavern, cũng không kế thừa preset hay sách thế giới của SillyTavern.</pre></article>
+        <article class="vvvtm-card vvvtm-phone-api-card"><div class="vvvtm-section-title"><h3>📱 API thời gian thực của điện thoại nhỏ</h3><div><button data-phone-api-action="models">Lấy danh sách mô hình</button><button data-phone-api-action="test">Kiểm tra tuyến thời gian thực</button><button data-phone-api-action="save">Lưu</button></div></div><p class="vvvtm-note"><b>Một bộ API điện thoại, nhiều giao thức ứng dụng: </b>WeChat, SMS, cuộc gọi, chuyển khoản, dịch vụ giao đồ ăn/đặt xe và SillyTavern trong trình duyệt dùng chung bộ kết nối này; mỗi loại ứng dụng có bộ quy tắc cấu trúc riêng. Sự kiện điện thoại hoàn tất ngay lập tức và ở lượt sau được giao cho chính văn cùng Bảy điều hậu trường như những sự thật đã xử lý, cấm trả lời lặp lại.</p><div class="api-grid">${selectField('phone-provider','Loại giao diện API',phone.provider||'openai-compatible',[['openai-compatible','Tương thích OpenAI'],['anthropic','Anthropic'],['gemini','Gemini']])}${inputField('phone-base','Base URL',phone.baseUrl)}${inputField('phone-key','API Key','','password','placeholder="Để trống nghĩa là giữ khóa cũ của API điện thoại"')}${inputField('phone-model','Mô hình thời gian thực của điện thoại',phone.model,'text','list="vvvtm-phone-model-list"')}${inputField('phone-temp','Temperature',phone.temperature??0.55,'number','step="0.05" min="0" max="2"')}${inputField('phone-max','Token xuất tối đa',phone.maxTokens??1200,'number','min="128" max="12000"')}${inputField('phone-timeout','Số giây chờ tối đa',phone.timeoutSeconds??90,'number','min="10" max="600"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="phone-headers">${esc(JSON.stringify(phone.extraHeaders||{},null,2))}</textarea></label></div><datalist id="vvvtm-phone-model-list"></datalist><pre id="vvvtm-phone-api-result" class="api-result">API thời gian thực của điện thoại hoàn toàn độc lập; không chờ chính văn lượt sau, cũng không dùng lại API tổng kết.</pre></article>
+        <article class="vvvtm-card"><div class="vvvtm-section-title"><h3>🧬 Mô hình vector hóa</h3><div><button data-api-action="test-embedding">Kiểm tra vector</button><button data-api-action="rebuild">Lưu và dựng lại</button></div></div><label class="vvvtm-setting"><div><strong>Bật truy hồi bằng vector</strong><small>Khi tắt sẽ tự dùng truy hồi từ khóa BM25, không ảnh hưởng hoạt động của tiện ích.</small></div><input id="emb-enabled" type="checkbox" ${emb.enabled?'checked':''}></label><div class="api-grid">${selectField('emb-provider','Loại giao diện API',emb.provider||'openai-compatible',[['openai-compatible','Embeddings tương thích OpenAI'],['gemini','Gemini Embedding']])}${inputField('emb-base','Base URL',emb.baseUrl)}${inputField('emb-key','API Key','','password','placeholder="Để trống thì giữ khóa cũ"')}${inputField('emb-model','Mô hình vector',emb.model)}${inputField('emb-dim','Số chiều vector (0 = tự động)',emb.dimensions??0,'number','min="0"')}${inputField('emb-timeout','Số giây chờ tối đa',emb.timeoutSeconds??120,'number','min="10" max="1800"')}<label class="api-field wide"><span>Header bổ sung dạng JSON</span><textarea id="emb-headers">${esc(JSON.stringify(emb.extraHeaders||{},null,2))}</textarea></label></div><p class="vvvtm-note">Khuyến nghị: bật khi trò chuyện dài. Nội dung chỉ mục gồm ba cấp tổng kết, dòng thời gian bậc một, nhân vật/quan hệ, mốc neo sự kiện dài hạn, thân phận/tên gọi cũ của NPC, bí mật, cuộc gọi/WeChat/Khoảnh khắc/nhật ký/kỷ niệm, chương và những tầng quan trọng được đánh dấu thủ công; sẽ không vector hóa từng câu nói vu vơ. Với SiliconFlow, nếu để trống mô hình thì tự dùng BAAI/bge-m3.</p></article></section>`;
     }
 
     function readApiForm(content) {
@@ -17659,7 +17664,7 @@ ${JSON.stringify(evidence)}`;
         await withDestructiveSave(()=>saveState({immediate:true,refresh:false,reason:'wipe-reset',allowDestructive:true,forceSnapshot:true}));
         if(!chatScopeIsCurrent(scope)||stateRuntime.state!==next)return {serverErrors,switched:true};
         updatePromptInjection();applyUiCollapse();
-        if(!silent){toast(serverErrors.length?`Đã xóa sạch cuộc trò chuyện này; ${serverErrors.join('; ')} (ảnh chụp an toàn trước khi xóa vẫn khôi phục được)`:'Dữ liệu hoạt động vvv Sân Khấu Nhỏ của cuộc trò chuyện này đã được xóa; ảnh chụp an toàn trước khi xóa đã lưu vào hầm bảo hiểm',serverErrors.length?'warn':'success');renderCurrentTab();}
+        if(!silent){toast(serverErrors.length?`Đã xóa sạch cuộc trò chuyện này; ${serverErrors.join(';')} (ảnh chụp an toàn trước khi xóa vẫn khôi phục được)`:'Dữ liệu hoạt động vvv Sân Khấu Nhỏ của cuộc trò chuyện này đã được xóa; ảnh chụp an toàn trước khi xóa đã lưu vào hầm bảo hiểm',serverErrors.length?'warn':'success');renderCurrentTab();}
         return {serverErrors,switched:false};
     }
 
@@ -18151,7 +18156,7 @@ ${JSON.stringify(evidence)}`;
     };
     phoneRideMarkup=function(){
         const p=s9EnsureExtendedApps(),orders=(p.ride.orders||[]).slice().reverse(),pickup=compactText(stateRuntime.state.scene?.location||'Vị trí hiện tại',180)||'Vị trí hiện tại';
-        const rows=orders.length?orders.slice(0,30).map(order=>{const info={...s93RideSnapshotV2(order),...order};return '<article class="vvvtm-ride-trip" data-phone-order-open="'+esc(order.id)+'"><span class="vvvtm-ride-trip-icon">🚕</span><div><header><b>'+esc(info.destination||'Điểm đến')+'</b><small>'+esc(s8OrderStatusLabel(order))+'</small></header><p>'+esc(info.driverName||'Chờ phân tài xế')+' · '+esc(info.vehicle||'Đang xác nhận loại xe')+' · '+esc(info.plate||'Biển số chưa có')+'</p><small>Điểm đón: '+esc(info.pickup||pickup)+' · '+esc(order.carType||'Xe nhanh')+' · '+esc(order.time||'')+'</small></div><em>'+s8MoneyText(order.amount)+'</em>'+(['Tài xế nhận đơn','Tài xế đã tới','Đang trên đường'].includes(order.status)?'<button data-phone-order-action="rider" data-phone-order-id="'+esc(order.id)+'" title="Liên hệ tài xế">☎</button>':'')+'</article>';}).join(''):'<p class="vvvtm-ride-empty">Chưa có chuyến đi, nhập điểm đến là gọi được Didi.</p>';
+        const rows=orders.length?orders.slice(0,30).map(order=>{const info={...s93RideSnapshotV2(order),...order};return '<article class="vvvtm-ride-trip" data-phone-order-open="'+esc(order.id)+'"><span class="vvvtm-ride-trip-icon">🚕</span><div><header><b>'+esc(info.destination||'Điểm đến')+'</b><small>'+esc(s8OrderStatusLabel(order))+'</small></header><p>'+esc(info.driverName||'Chờ phân tài xế')+' · '+esc(info.vehicle||'Đang xác nhận loại xe')+' · '+esc(info.plate||'Biển số chưa có')+'</p><small>Điểm đón:'+esc(info.pickup||pickup)+' · '+esc(order.carType||'Xe nhanh')+' · '+esc(order.time||'')+'</small></div><em>'+s8MoneyText(order.amount)+'</em>'+(['Tài xế nhận đơn','Tài xế đã tới','Đang trên đường'].includes(order.status)?'<button data-phone-order-action="rider" data-phone-order-id="'+esc(order.id)+'" title="Liên hệ tài xế">☎</button>':'')+'</article>';}).join(''):'<p class="vvvtm-ride-empty">Chưa có chuyến đi, nhập điểm đến là gọi được Didi.</p>';
         return '<div class="vvvtm-phone-app-page vvvtm-ride-page"><header class="vvvtm-phone-app-head ride-head"><button data-phone-home>‹</button><div><b>Didi</b><small>Xe nhanh · Ưu hưởng · Xe riêng · Taxi · mô phỏng trong truyện</small></div><button data-phone-ride-new title="Gọi Didi">＋</button></header><main><section class="vvvtm-ride-map"><span>🚕</span><div><small>Điểm đón</small><b>'+esc(pickup)+'</b><small>Didi ước giá thời gian thực và trạng thái tài xế đón khách</small></div><button data-phone-ride-new>Nhập điểm đến</button></section><section class="vvvtm-didi-services"><button data-phone-ride-new="Xe nhanh">Xe nhanh<small>Đón nhanh</small></button><button data-phone-ride-new="Ưu hưởng">Ưu hưởng<small>Xe thoải mái</small></button><button data-phone-ride-new="Xe riêng">Xe riêng<small>Chuyến đi chất lượng</small></button></section><section class="vvvtm-ride-orders"><header><b>Nhật ký chuyến đi</b><small>'+orders.length+' chuyến · bấm để xem chi tiết</small></header>'+rows+'</section></main></div>';
     };
     const s13PhoneDialogMarkupBase=phoneDialogMarkup;
@@ -18233,10 +18238,15 @@ ${JSON.stringify(evidence)}`;
         return Math.min(a.length,b.length)>=3&&(a.includes(b)||b.includes(a));
     }
     function s15InteriorPlace(value=''){
-        const text=compactText(value,240).replace(/[·•，,。:：/\\|()（）\[\]【】]/g,''),match=text.match(/phòng ngủ chính|phòng ngủ phụ|phòng ngủ|phòng trẻ em|phòng cho khách|phòng làm việc|phòng khách|phòng sinh hoạt|phòng bếp|nhà bếp|phòng ăn|phòng tắm|nhà vệ sinh|nhà tắm|ban công|tiền sảnh|trên giường|cạnh giường/i);
+        const text=compactText(value,240).replace(/[·•，,。:：/\\|()（）\[\]【】]/g,'').trim(),match=text.match(/phòng ngủ chính|phòng ngủ phụ|phòng ngủ|phòng trẻ em|phòng cho khách|phòng làm việc|phòng khách|phòng sinh hoạt|phòng bếp|nhà bếp|phòng ăn|phòng tắm|nhà vệ sinh|nhà tắm|ban công|tiền sảnh|trên giường|cạnh giường|bếp/i);
         if(!match)return null;
-        let owner=text.slice(0,match.index).replace(/(?:Việt Nam\s*)?(?:tỉnh|thành phố|quận|huyện|phường|xã|thị trấn)\s+[\p{L}\p{M}0-9]+(?:\s+[\p{L}\p{M}0-9]+){0,2}/giu,'').replace(/(?:đường|phố|ngõ|hẻm|số nhà|khu)\s*[\p{L}\p{M}0-9]+(?:\s+[\p{L}\p{M}0-9]+){0,2}/giu,'').replace(/(?:\s*của)?\s*(?:trong nhà|ở nhà|nhà ở|căn nhà|căn hộ|ký túc xá|trong phòng|nơi ở|nhà)\s*$/gi,'');
-        owner=owner.slice(-16).replace(/^(?:tôi|của tôi|mình|bản thân)$/i,'self');
+        const strip=part=>String(part||'').replace(/(?:Việt Nam\s*)?(?:tỉnh|thành phố|quận|huyện|phường|xã|thị trấn)\s+[\p{L}\p{M}0-9]+(?:\s+[\p{L}\p{M}0-9]+){0,2}/giu,'').replace(/(?:đường|phố|ngõ|hẻm|số nhà|khu)\s*[\p{L}\p{M}0-9]+(?:\s+[\p{L}\p{M}0-9]+){0,2}/giu,'').replace(/^\s*(?:ở|tại|trong|ngoài|trên|dưới|bên|phía|của)\s+/gi,'').replace(/^\s*(?:nhà|căn hộ|căn nhà|ký túc xá|phòng trọ)\s+/gi,'').replace(/\s*(?:trong nhà|ở nhà|nhà ở|căn nhà|căn hộ|ký túc xá|trong phòng|nơi ở|nhà)\s*$/gi,'').trim();
+        let owner=strip(text.slice(0,match.index)).slice(-16).trim();
+        if(!owner){
+            const after=text.slice(match.index+match[0].length).replace(/^\s*(?:của|ở|tại|trong)?\s*(?:nhà|căn hộ|phòng trọ|ký túc xá|chỗ)\s*/i,'');
+            owner=strip(after).split(/[.,;:!?]/)[0].trim().split(/\s+/).slice(0,4).join(' ');
+        }
+        owner=owner.replace(/^(?:tôi|của tôi|mình|bản thân|tớ|em)$/i,'self');
         return {owner:owner||'self',token:match[0]};
     }
     function s15MapLandmarkName(value='',map={}){
@@ -18317,7 +18327,7 @@ ${JSON.stringify(evidence)}`;
     const s15BuildMemoryPromptBase=buildMemoryPrompt;
     buildMemoryPrompt=function(){
         const base=s15BuildMemoryPromptBase(),systems=s15EnsureSystems();if(!systems||!base)return base;
-        const map=systems.map,active=map.activeTravel,nearby=(map.locations||[]).filter(row=>row.discovered!==false).slice(-24).map(row=>`${row.name}(${row.type}${row.city?`/${row.city}`:''})`).join('、');
+        const map=systems.map,active=map.activeTravel,nearby=(map.locations||[]).filter(row=>row.discovered!==false).slice(-24).map(row=>`${row.name}(${row.type}${row.city?`/${row.city}`:''})`).join(',');
         const appendix=`\n\n[BẢN ĐỒ THẾ GIỚI CỐT TRUYỆN VÀ TRẠNG THÁI DI CHUYỂN | CHƯƠNG TRÌNH LÀ QUYỀN UY]\nThành phố hiện tại=${map.city||'Chưa rõ'}; địa điểm hiện tại=${map.currentLocation||stateRuntime.state?.scene?.location||'Chưa rõ'}; nơi ở=${map.locations.find(row=>row.id===map.residenceId)?.name||'Chưa xác nhận'}; địa điểm đã biết=${nearby||'Không'}${active?`; chuyến đi đã được phép=${active.from}→${active.destination}, trạng thái=${active.status}, ghi chú phương tiện/người đi cùng=${active.custom||'Chưa điền'}. Cú bấm đó tương đương việc user chủ động khởi hành, không được hiểu nhầm thành quyết định của NPC.`:''}\n\n[GƯƠNG VÀ GIÁ ĐỒ | NGOẠI HÌNH DO CHƯƠNG TRÌNH QUYẾT ĐỊNH]\n${s15AvatarPromptText(2600)}\nGương/giá đồ do user thao tác thủ công, thuộc về những sự thật ngoại hình và thay đồ đã được cho phép và đã xảy ra; chính văn có thể tiếp nối kết quả, nhưng không được thay user làm lại lần nữa.`;
         const limit=Math.max(5000,Number(stateRuntime.state?.settings?.maxInjectChars||12000));return `${base.slice(0,Math.max(0,limit-appendix.length))}${appendix}`.slice(0,limit);
     };
@@ -18325,7 +18335,7 @@ ${JSON.stringify(evidence)}`;
     renderCompanionInline=function(payload){
         let html=s15RenderCompanionInlineBase(payload);const systems=s15EnsureSystems(),map=systems?.map;if(!map)return html;
         const nearby=(map.locations||[]).filter(row=>row.id!==map.currentLocationId).slice(-4);const portrait=systems.studio.portraits.find(row=>Number(row.floor)===Number(payload?.floor));
-        const card=`<section class="vvvtm-inline-worldmap"><header><div><b>🗺 Bản đồ thế giới của cốt truyện</b><small>${esc(map.city||'Thành phố hiện tại')} · ${map.locations.length} địa điểm</small></div><button data-vvvtm-open-world-map>Bấm M để mở</button></header><p><strong>${esc(map.currentLocation||payload?.scene?.location||'Vị trí hiện tại')}</strong>${nearby.length?`<span>Gần đây: ${nearby.map(row=>esc(row.name)).join(', ')}</span>`:''}</p></section>${portrait?`<section class="vvvtm-inline-portrait">${s15PortraitImageMarkup(portrait,portrait.subjectName||'Chân dung cốt truyện')}<div><b>Chân dung cốt truyện lượt này</b><small>${esc(portrait.subjectName||'')} · Luồng ảnh tham chiếu NovelAI</small></div></section>`:''}`;
+        const card=`<section class="vvvtm-inline-worldmap"><header><div><b>🗺 Bản đồ thế giới của cốt truyện</b><small>${esc(map.city||'Thành phố hiện tại')} · ${map.locations.length} địa điểm</small></div><button data-vvvtm-open-world-map>Bấm M để mở</button></header><p><strong>${esc(map.currentLocation||payload?.scene?.location||'Vị trí hiện tại')}</strong>${nearby.length?`<span>Gần đây: ${nearby.map(row=>esc(row.name)).join(',')}</span>`:''}</p></section>${portrait?`<section class="vvvtm-inline-portrait">${s15PortraitImageMarkup(portrait,portrait.subjectName||'Chân dung cốt truyện')}<div><b>Chân dung cốt truyện lượt này</b><small>${esc(portrait.subjectName||'')} · Luồng ảnh tham chiếu NovelAI</small></div></section>`:''}`;
         if(portrait)setTimeout(()=>s15HydratePortraitImages(document),0);
         const index=html.lastIndexOf('</section>');return index>=0?`${html.slice(0,index)}${card}${html.slice(index)}`:`${html}${card}`;
     };
@@ -18341,7 +18351,7 @@ ${JSON.stringify(evidence)}`;
     function s15WorldMapOverlayMarkup(){
         const systems=s15EnsureSystems(),map=systems?.map;if(!map)return '';
         const selected=map.locations.find(row=>row.id===stateRuntime.worldMapSelectedId),zoom=Math.max(.55,Math.min(1.8,Number(stateRuntime.worldMapZoom||1)));
-        return `<div class="vvvtm-worldmap-shell"><header><div><small>0-32 · Sân Khấu Không Bao Giờ Hạ Màn</small><h1>${esc(map.city||'Thế giới cốt truyện')}</h1><p>Vị trí hiện tại：${esc(map.currentLocation||'Chưa rõ')} · ${map.locations.length} địa điểm đã biết</p></div><div class="map-tools"><button data-worldmap-zoom="out" title="Thu nhỏ">−</button><button data-worldmap-center title="Về vị trí hiện tại">⌖</button><button data-worldmap-zoom="in" title="Phóng to">＋</button><button data-worldmap-add title="Thêm địa điểm">＋Địa điểm</button><button data-worldmap-close title="Đóng bản đồ">×</button></div></header><main><section class="vvvtm-worldmap-viewport" data-worldmap-viewport><div class="vvvtm-worldmap-spacer" style="width:${Math.round(2400*zoom)}px;height:${Math.round(1640*zoom)}px"><div class="vvvtm-worldmap-plane" style="transform:scale(${zoom})">${map.locations.filter(row=>row.discovered!==false).map(row=>s15MapPlaceMarkup(row,map)).join('')}<div class="vvvtm-worldmap-road road-a"></div><div class="vvvtm-worldmap-road road-b"></div><div class="vvvtm-worldmap-district">${esc(map.city||'Thành phố hiện tại')}</div></div></div></section><aside>${s15WorldMapDetail(selected,map)}<section class="vvvtm-worldmap-legend"><span><i>Bạn</i>Vị trí hiện tại</span><span><i>⌂</i>Nơi ở</span><span><i>TL</i>Cửa hàng tiện lợi</span><span><i>ĂN</i>Quán ăn/hàng rong</span><span><i>MS</i>Siêu thị</span></section></aside></main></div>`;
+        return `<div class="vvvtm-worldmap-shell"><header><div><small>0-32 · Sân Khấu Không Bao Giờ Hạ Màn</small><h1>${esc(map.city||'Thế giới cốt truyện')}</h1><p>Vị trí hiện tại: ${esc(map.currentLocation||'Chưa rõ')} · ${map.locations.length} địa điểm đã biết</p></div><div class="map-tools"><button data-worldmap-zoom="out" title="Thu nhỏ">−</button><button data-worldmap-center title="Về vị trí hiện tại">⌖</button><button data-worldmap-zoom="in" title="Phóng to">＋</button><button data-worldmap-add title="Thêm địa điểm">＋Địa điểm</button><button data-worldmap-close title="Đóng bản đồ">×</button></div></header><main><section class="vvvtm-worldmap-viewport" data-worldmap-viewport><div class="vvvtm-worldmap-spacer" style="width:${Math.round(2400*zoom)}px;height:${Math.round(1640*zoom)}px"><div class="vvvtm-worldmap-plane" style="transform:scale(${zoom})">${map.locations.filter(row=>row.discovered!==false).map(row=>s15MapPlaceMarkup(row,map)).join('')}<div class="vvvtm-worldmap-road road-a"></div><div class="vvvtm-worldmap-road road-b"></div><div class="vvvtm-worldmap-district">${esc(map.city||'Thành phố hiện tại')}</div></div></div></section><aside>${s15WorldMapDetail(selected,map)}<section class="vvvtm-worldmap-legend"><span><i>Bạn</i>Vị trí hiện tại</span><span><i>⌂</i>Nơi ở</span><span><i>TL</i>Cửa hàng tiện lợi</span><span><i>ĂN</i>Quán ăn/hàng rong</span><span><i>MS</i>Siêu thị</span></section></aside></main></div>`;
     }
     function s15OpenWorldMap(placeId=''){
         s15EnsureSystems();stateRuntime.worldMapSelectedId=compactText(placeId,160)||stateRuntime.worldMapSelectedId||stateRuntime.state?.worldMap?.currentLocationId||'';stateRuntime.worldMapZoom=Math.max(.55,Math.min(1.8,Number(stateRuntime.worldMapZoom||1)));
@@ -18393,7 +18403,7 @@ ${JSON.stringify(evidence)}`;
                 const existingIndex=map.travelEvents.findIndex(row=>row?.id===event.id);
                 if(existingIndex>=0)map.travelEvents[existingIndex]={...event};else map.travelEvents.push({...event});
                 map.activeTravel=event;if(map.travelEvents.length>400)map.travelEvents.splice(0,map.travelEvents.length-400);
-                s8RecordPhoneActivity('world-map-travel','Bắt đầu chuyến đi từ bản đồ cốt truyện',`${event.from} → ${event.destination}${custom?`；${custom}`:''}`,{relatedId:event.id,route:'maps',floor});
+                s8RecordPhoneActivity('world-map-travel','Bắt đầu chuyến đi từ bản đồ cốt truyện',`${event.from} → ${event.destination}${custom?`; ${custom}`:''}`,{relatedId:event.id,route:'maps',floor});
                 await saveState({immediate:true,refresh:false,reason:'world-map-travel-departure-confirmed'});updatePromptInjection();s15CloseWorldMap();
             }catch(error){
                 if(generateButton){generateButton.disabled=false;generateButton.textContent='Tạo lại lượt tiếp sức xuất phát';}
@@ -18484,12 +18494,12 @@ ${JSON.stringify(evidence)}`;
     }
     function s15PortraitPrompt(subject,floor=-1,extra=''){
         const mirror=subject?.mirror||{},appearance=s15SubjectAppearance(subject),worn=s15WornGarments(subject),scene=stateRuntime.state?.scene||{};
-        const outfit=worn.length?worn.map(row=>row.description||row.name).join(', '):(mirror.outfit||appearance?.outfit||'');
+        const outfit=worn.length?worn.map(row=>row.description||row.name).join(','):(mirror.outfit||appearance?.outfit||'');
         const identity='same exact person as the root reference image, preserve exact facial geometry, eye shape, nose, lips, skin tone and distinctive identity, preserve reference piercings and signature details unless explicitly changed below';
-        return [identity,s15PortraitStylePrompt(subject),s15PortraitCompositionPrompt(subject),subject.basePrompt,mirror.face,mirror.hair,mirror.body,mirror.modifications,outfit&&`wearing ${outfit}`,mirror.accessories||appearance?.accessories,appearance?.condition,scene.location&&`location: ${scene.location}`,scene.weather&&`weather: ${scene.weather}`,extra].map(value=>compactText(value,4000)).filter(Boolean).join(', ').slice(0,15000);
+        return [identity,s15PortraitStylePrompt(subject),s15PortraitCompositionPrompt(subject),subject.basePrompt,mirror.face,mirror.hair,mirror.body,mirror.modifications,outfit&&`wearing ${outfit}`,mirror.accessories||appearance?.accessories,appearance?.condition,scene.location&&`location: ${scene.location}`,scene.weather&&`weather: ${scene.weather}`,extra].map(value=>compactText(value,4000)).filter(Boolean).join(',').slice(0,15000);
     }
     function s15PortraitNegativePrompt(subject){
-        return [stateRuntime.serverConfig?.image?.negativePrompt,subject?.negativePrompt,s15PortraitStyleNegative(subject),s15PortraitCompositionNegative(subject)].map(value=>compactText(value,12000)).filter(Boolean).join(', ').slice(0,12000);
+        return [stateRuntime.serverConfig?.image?.negativePrompt,subject?.negativePrompt,s15PortraitStyleNegative(subject),s15PortraitCompositionNegative(subject)].map(value=>compactText(value,12000)).filter(Boolean).join(',').slice(0,12000);
     }
     function s15PortraitImageMarkup(asset,alt='Chân dung cốt truyện'){
         const id=compactText(asset?.id,180),cached=id?stateRuntime.portraitObjectUrls.get(id):'';
@@ -18595,8 +18605,8 @@ ${JSON.stringify(evidence)}`;
         label.insertAdjacentHTML('afterend',`<label>Bố cục ảnh sinh ra<select data-avatar-composition>${options.map(([value,text])=>`<option value="${value}" ${mode===value?'selected':''}>${text}</option>`).join('')}</select><small>Ảnh gốc chỉ khóa danh tính nhân vật; phạm vi khung hình do đây quyết định riêng. Tải lên ảnh chân dung vẫn tạo được ảnh toàn thân và ảnh bối cảnh.</small></label><label>Phong cách vẽ<select data-avatar-style-profile>${styles.map(([value,text])=>`<option value="${value}" ${style===value?'selected':''}>${text}</option>`).join('')}</select><small>Mục tiêu mặc định là tranh nhân vật game Nhật hoàn thiện cao: mắt trong, tóc phân lớp, nét vẽ tinh, highlight chất liệu và tô màu sạch; đồng thời kìm bớt kiểu chibi, mắt to trẻ con, da nhựa và cảm giác 3D rẻ tiền.</small></label>`);
     }
     async function s15ApplyWornAppearance(subject,reason='Thay đồ từ giá'){
-        const worn=s15WornGarments(subject),mirror=subject.mirror||{},floor=Math.max(0,(context()?.chat?.length||1)-1),outfit=worn.length?worn.map(row=>row.description||row.name).join('; '):(mirror.outfit||'Chưa mặc món đồ nào trong giá');mirror.outfit=outfit;mirror.updatedAt=nowText();
-        upsertAppearanceSnapshot({character:subject.name,outfit,hair:mirror.hair,accessories:mirror.accessories,condition:`${reason}, do user thao tác rõ ràng trong Xưởng ngoại hình`,time:phoneClock().time,location:stateRuntime.state?.scene?.location||'',source:'mirror-hanger'},uid('avatar-change'),floor);s15EnsureSystems().studio.changeEvents.push({id:uid('avatar-change'),subjectId:subject.id,subjectName:subject.name,outfit,reason,floor,time:nowText(),createdAt:Date.now()});logAudit('Gương và giá đồ',`${subject.name}：${reason}；${outfit}`);updatePromptInjection();await saveState({immediate:true,refresh:false,reason:'mirror-hanger-change'});
+        const worn=s15WornGarments(subject),mirror=subject.mirror||{},floor=Math.max(0,(context()?.chat?.length||1)-1),outfit=worn.length?worn.map(row=>row.description||row.name).join(';'):(mirror.outfit||'Chưa mặc món đồ nào trong giá');mirror.outfit=outfit;mirror.updatedAt=nowText();
+        upsertAppearanceSnapshot({character:subject.name,outfit,hair:mirror.hair,accessories:mirror.accessories,condition:`${reason}, do user thao tác rõ ràng trong Xưởng ngoại hình`,time:phoneClock().time,location:stateRuntime.state?.scene?.location||'',source:'mirror-hanger'},uid('avatar-change'),floor);s15EnsureSystems().studio.changeEvents.push({id:uid('avatar-change'),subjectId:subject.id,subjectName:subject.name,outfit,reason,floor,time:nowText(),createdAt:Date.now()});logAudit('Gương và giá đồ',`${subject.name}: ${reason}; ${outfit}`);updatePromptInjection();await saveState({immediate:true,refresh:false,reason:'mirror-hanger-change'});
     }
     bindAppearance=function(content){
         const systems=s15EnsureSystems(),studio=systems.studio,active=s15Subject();s15HydratePortraitImages(content);s15InsertCompositionControl(content,active);content.querySelectorAll('.vvvtm-portrait-gallery figcaption').forEach(node=>{node.textContent=node.textContent.replace('Lùi biên độ thấp','Ảnh lỗi khi tham chiếu thân phận bản cũ');});content.querySelectorAll('[data-avatar-subject]').forEach(button=>button.addEventListener('click',()=>{stateRuntime.avatarSubjectId=button.dataset.avatarSubject;renderCurrentTab();}));
@@ -18613,7 +18623,7 @@ ${JSON.stringify(evidence)}`;
     };
     const s15RenderApiBase=renderApi;
     renderApi=function(){
-        const html=s15RenderApiBase(),image=stateRuntime.serverConfig?.image||{},mode=image.workflowMode||'strict-character-reference',card=`<article class="vvvtm-card vvvtm-image-api-card"><div class="vvvtm-section-title"><div><h3>🖼 API chân dung cốt truyện NovelAI</h3><p class="vvvtm-note">Ảnh gốc bạn tải lên là ảnh mẹ vĩnh viễn. Chế độ nghiêm ngặt dùng NovelAI 4.5 Character Reference để khóa nhân vật và phong cách; ảnh sinh ra trong thư viện cốt truyện sẽ không bao giờ quay lại làm ảnh tham chiếu cho đời sau.</p></div><div class="vvvtm-row-actions"><button data-image-api-action="test" title="Sẽ thật sự tạo một ảnh thử và tiêu hạn mức NovelAI; Character Reference thường tốn thêm điểm">Kiểm tra NovelAI (tốn hạn mức)</button><button data-image-api-action="save">Lưu NovelAI</button></div></div><label class="vvvtm-setting"><div><strong>Bật vẽ theo cốt truyện</strong><small>Sau khi Bảy điều hậu trường xong, nếu nhân vật của lượt này đã có ảnh tham chiếu thì tự tạo thêm một ảnh.</small></div><input id="image-enabled" type="checkbox" ${image.enabled?'checked':''}></label><div class="api-grid"><label class="api-field wide"><span>Luồng giữ nhân vật ổn định</span><select id="image-workflow"><option value="strict-character-reference" ${mode==='strict-character-reference'?'selected':''}>Giữ nghiêm ngặt nhân vật gốc (khuyến nghị, khóa nhân vật + phong cách)</option><option value="flexible-character-reference" ${mode==='flexible-character-reference'?'selected':''}>Giữ cùng một nhân vật (cho phép phong cách thay đổi nhẹ)</option><option value="img2img-redesign" ${mode==='img2img-redesign'?'selected':''}>Vẽ lại thường (chỉ dùng khi chủ động thiết kế lại)</option></select><small>Hai mục đầu cần NAI 4.5; nếu API từ chối tham chiếu nhân vật thì tự lùi về vẽ lại biên độ thấp và ghi rõ trong kết quả kiểm tra.</small></label>${inputField('image-base','NovelAI Base URL',image.baseUrl||'https://image.novelai.net')}${inputField('image-key','NovelAI API Token','', 'password','placeholder="Để trống thì giữ Token cũ trên máy chủ"')}${inputField('image-model','Mô hình (tham chiếu nhân vật bắt buộc 4.5)',image.model||'nai-diffusion-4-5-curated')}${inputField('image-sampler','Bộ lấy mẫu',image.sampler||'k_euler_ancestral')}${inputField('image-noise-schedule','Noise Schedule',image.noiseSchedule||'karras')}${inputField('image-seed','Seed (-1 = ngẫu nhiên)',Number.isFinite(Number(image.seed))?image.seed:-1,'number','min="-1" max="4294967295"')}${inputField('image-cfg-rescale','CFG Rescale',image.cfgRescale??0,'number','min="0" max="1" step="0.01"')}${inputField('image-width','Chiều rộng',image.width||832,'number','min="256" max="2048" step="64"')}${inputField('image-height','Chiều cao',image.height||1216,'number','min="256" max="2048" step="64"')}${inputField('image-steps','Số bước',image.steps||28,'number','min="1" max="50"')}${inputField('image-scale','Prompt Guidance',image.scale||5,'number','min="1" max="20" step="0.1"')}${inputField('image-identity-strength','Độ mạnh của khóa thân phận nhân vật',image.identityStrength??1,'number','min="0" max="2" step="0.05"')}${inputField('image-style-fidelity','Độ trung thực phong cách ảnh gốc',image.styleFidelity??.85,'number','min="0" max="2" step="0.05"')}${inputField('image-strength','Biên độ khi lùi biên độ thấp/vẽ lại thường',image.strength??.24,'number','min="0.01" max="0.99" step="0.01"')}${inputField('image-noise','Nhiễu khi lùi biên độ thấp/vẽ lại thường',image.noise??.03,'number','min="0" max="0.99" step="0.01"')}${inputField('image-timeout','Số giây chờ tối đa',image.timeoutSeconds||180,'number','min="20" max="900"')}<label class="api-field wide"><span>Prompt phủ định mặc định</span><textarea id="image-negative">${esc(image.negativePrompt||'')}</textarea></label></div><pre id="vvvtm-image-api-result" class="api-result">${image.apiKeyConfigured?'Token NovelAI đã được lưu trên máy chủ.':'Chưa lưu Token NovelAI.'} Hiện mặc định dùng ảnh gốc vĩnh viễn làm tham chiếu nhân vật; việc kiểm tra sẽ tiêu tốn hạn mức thật.</pre></article>`;
+        const html=s15RenderApiBase(),image=stateRuntime.serverConfig?.image||{},mode=image.workflowMode||'strict-character-reference',card=`<article class="vvvtm-card vvvtm-image-api-card"><div class="vvvtm-section-title"><div><h3>🖼 API chân dung cốt truyện NovelAI</h3><p class="vvvtm-note">Ảnh gốc bạn tải lên là ảnh mẹ vĩnh viễn. Chế độ nghiêm ngặt dùng NovelAI 4.5 Character Reference để khóa nhân vật và phong cách; ảnh sinh ra trong thư viện cốt truyện sẽ không bao giờ quay lại làm ảnh tham chiếu cho đời sau.</p></div><div class="vvvtm-row-actions"><button data-image-api-action="test" title="Sẽ thật sự tạo một ảnh thử và tiêu hạn mức NovelAI; Character Reference thường tốn thêm điểm">Kiểm tra NovelAI (tốn hạn mức)</button><button data-image-api-action="save">Lưu NovelAI</button></div></div><label class="vvvtm-setting"><div><strong>Bật vẽ theo cốt truyện</strong><small>Sau khi Bảy điều hậu trường xong, nếu nhân vật của lượt này đã có ảnh tham chiếu thì tự tạo thêm một ảnh.</small></div><input id="image-enabled" type="checkbox" ${image.enabled?'checked':''}></label><div class="api-grid"><label class="api-field wide"><span>Luồng giữ nhân vật ổn định</span><select id="image-workflow"><option value="strict-character-reference" ${mode==='strict-character-reference'?'selected':''}>Giữ nghiêm ngặt nhân vật gốc (khuyến nghị, khóa nhân vật + phong cách)</option><option value="flexible-character-reference" ${mode==='flexible-character-reference'?'selected':''}>Giữ cùng một nhân vật (cho phép phong cách thay đổi nhẹ)</option><option value="img2img-redesign" ${mode==='img2img-redesign'?'selected':''}>Vẽ lại thường (chỉ dùng khi chủ động thiết kế lại)</option></select><small>Hai mục đầu cần NAI 4.5; nếu API từ chối tham chiếu nhân vật thì tự lùi về vẽ lại biên độ thấp và ghi rõ trong kết quả kiểm tra.</small></label>${inputField('image-base','NovelAI Base URL',image.baseUrl||'https://image.novelai.net')}${inputField('image-key','NovelAI API Token','','password','placeholder="Để trống thì giữ Token cũ trên máy chủ"')}${inputField('image-model','Mô hình (tham chiếu nhân vật bắt buộc 4.5)',image.model||'nai-diffusion-4-5-curated')}${inputField('image-sampler','Bộ lấy mẫu',image.sampler||'k_euler_ancestral')}${inputField('image-noise-schedule','Noise Schedule',image.noiseSchedule||'karras')}${inputField('image-seed','Seed (-1 = ngẫu nhiên)',Number.isFinite(Number(image.seed))?image.seed:-1,'number','min="-1" max="4294967295"')}${inputField('image-cfg-rescale','CFG Rescale',image.cfgRescale??0,'number','min="0" max="1" step="0.01"')}${inputField('image-width','Chiều rộng',image.width||832,'number','min="256" max="2048" step="64"')}${inputField('image-height','Chiều cao',image.height||1216,'number','min="256" max="2048" step="64"')}${inputField('image-steps','Số bước',image.steps||28,'number','min="1" max="50"')}${inputField('image-scale','Prompt Guidance',image.scale||5,'number','min="1" max="20" step="0.1"')}${inputField('image-identity-strength','Độ mạnh của khóa thân phận nhân vật',image.identityStrength??1,'number','min="0" max="2" step="0.05"')}${inputField('image-style-fidelity','Độ trung thực phong cách ảnh gốc',image.styleFidelity??.85,'number','min="0" max="2" step="0.05"')}${inputField('image-strength','Biên độ khi lùi biên độ thấp/vẽ lại thường',image.strength??.24,'number','min="0.01" max="0.99" step="0.01"')}${inputField('image-noise','Nhiễu khi lùi biên độ thấp/vẽ lại thường',image.noise??.03,'number','min="0" max="0.99" step="0.01"')}${inputField('image-timeout','Số giây chờ tối đa',image.timeoutSeconds||180,'number','min="20" max="900"')}<label class="api-field wide"><span>Prompt phủ định mặc định</span><textarea id="image-negative">${esc(image.negativePrompt||'')}</textarea></label></div><pre id="vvvtm-image-api-result" class="api-result">${image.apiKeyConfigured?'Token NovelAI đã được lưu trên máy chủ.':'Chưa lưu Token NovelAI.'} Hiện mặc định dùng ảnh gốc vĩnh viễn làm tham chiếu nhân vật; việc kiểm tra sẽ tiêu tốn hạn mức thật.</pre></article>`;
         const index=html.lastIndexOf('</section>');return index>=0?`${html.slice(0,index)}${card}${html.slice(index)}`:`${html}${card}`;
     };
     const s15ReadApiFormBase=readApiForm;

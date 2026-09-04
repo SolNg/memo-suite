@@ -72,6 +72,7 @@ function storyParse(value=''){
   const text=String(value||'').trim();let year='',month='',day='',time='';
   const vi=[...text.matchAll(/ngày\s*(3[01]|[12]\d|0?[1-9])\s*(?:[-\/.]|tháng)\s*(1[0-2]|0?[1-9])(?:\s*(?:[-\/.]|năm)\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2})))?/gi)].at(-1);
   if(vi){day=String(Number(vi[1]));month=String(Number(vi[2]));year=vi[3]||''}
+  if(!month||!day){const dmy=[...text.matchAll(/\b(3[01]|[12]\d|0?[1-9])\s*[-\/.]\s*(1[0-2]|0?[1-9])\s*[-\/.]\s*((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\b/g)].at(-1);if(dmy){day=String(Number(dmy[1]));month=String(Number(dmy[2]));year=dmy[3]||year}}
   if(!month||!day){const iso=[...text.matchAll(/\b((?:1[0-9]\d{2}|20\d{2}|21\d{2}))\s*[-\/.]\s*(1[0-2]|0?[1-9])(?:\s*[-\/.]\s*(3[01]|[12]\d|0?[1-9]))?/g)].at(-1);if(iso){year=iso[1]||year;month=String(Number(iso[2]||0)||'');day=String(Number(iso[3]||0)||'')}}
   if(!month||!day){const dm=[...text.matchAll(/(?:^|\D)(3[01]|[12]\d|0?[1-9])\s*(?:[-\/.]|\s*tháng\s*)\s*(1[0-2]|0?[1-9])(?![\d\/-])/gi)].at(-1);if(dm){day=String(Number(dm[1]));month=String(Number(dm[2]))}}
   const c=[...text.matchAll(/(?:^|\D)([01]?\d|2[0-3])\s*(?::|gi[ờo]|h(?![A-Za-zÀ-ỹ]))\s*([0-5]?\d)?\s*(?:phút)?/gi)].at(-1);if(c)time=`${String(Number(c[1])).padStart(2,'0')}:${String(Number(c[2]||0)).padStart(2,'0')}`;
