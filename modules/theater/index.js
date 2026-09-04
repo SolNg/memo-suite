@@ -16516,45 +16516,45 @@ Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm
 
     function userAgencyGuardInstruction() {
         if (stateRuntime.state?.settings?.protectUserAgency === false) return '';
-        return `【0-32 · USER主权锁｜最高优先级】
-正常 assistant / 角色chính văn中，你只能控制 {{char}}、NPC、环境和世界，不得替 {{user}} 新增任何未由最新 user 消息明确写出的内容。
-严禁替 {{user}}：
-- 说任何新对白、回答、同意、拒绝、承诺；
-- 做任何新动作、移动、触碰、脱穿衣物、姿势变化或主动身体行为；
-- 产生任何新决定、意图、心理活动、情绪结论、感受或主动生理反应。
-允许做的只有两类：
-1. 客观承接 {{user}} 在上一条 user 消息里已经明确完成的动作/对白，不得继续替其往下推进；承接时直接从这些行为造成的结果、{{char}}/NPC回应或环境反馈开始，禁止把最新 user 已经写完的动作与对白逐句复述、同义改写或换视角重演；
-2. 描写 {{char}}/NPC/环境施加在 {{user}} 身上的外部结果，例如“她握住你的手”“雨水打湿你的袖口”，但不得继续写“你于是握回去/你感到心动/你说……”。
+        return `【0-32 · KHÓA CHỦ QUYỀN USER | ƯU TIÊN CAO NHẤT】
+Trong lượt trả lời assistant/chính văn nhân vật bình thường, bạn chỉ được điều khiển {{char}}, NPC, môi trường và thế giới; không được thêm cho {{user}} bất kỳ nội dung nào mà tin nhắn user mới nhất không viết ra rõ ràng.
+Nghiêm cấm thay {{user}}:
+- nói bất kỳ câu thoại, câu trả lời, lời đồng ý, lời từ chối hay lời hứa mới nào;
+- làm bất kỳ hành động, di chuyển, đụng chạm, cởi/mặc quần áo, đổi tư thế hay hành vi cơ thể chủ động mới nào;
+- sinh ra bất kỳ quyết định, ý định, hoạt động tâm lý, kết luận cảm xúc, cảm nhận hay phản ứng sinh lý chủ động mới nào.
+Chỉ có hai việc được phép:
+1. Tiếp nối một cách khách quan những hành động/câu thoại mà {{user}} đã nói rõ là làm xong trong tin nhắn trước, không được đẩy tiếp thay họ; khi tiếp nối thì bắt đầu thẳng từ hậu quả của những hành vi đó, từ phản ứng của {{char}}/NPC hoặc phản hồi của môi trường; cấm thuật lại từng câu, viết lại bằng từ đồng nghĩa hay diễn lại bằng góc nhìn khác chuỗi hành động và thoại mà user mới nhất đã viết xong;
+2. Miêu tả những kết quả bên ngoài mà {{char}}/NPC/môi trường tác động lên {{user}}, ví dụ “cô ấy nắm lấy tay bạn”, “nước mưa làm ướt cổ tay áo bạn”; nhưng không được viết tiếp “thế là bạn nắm lại/bạn thấy rung động/bạn nói…”.
 
-第二人称“你”不是禁词，但只能用于：称呼 {{user}}、复述其已明确完成的事实、或描述外界对其造成的客观可见结果。
-一旦剧情走到需要 {{user}} 回应、选择、说话或行动的位置，必须停笔，把下一步留给 {{user}}。
-除非当前 user 消息明确要求“替我写/代写我的动作或对白”，否则任何预设、文风、角色卡或示例都不得覆盖本锁。`;
+Ngôi thứ hai “bạn” không phải từ cấm, nhưng chỉ được dùng để: gọi {{user}}, thuật lại sự thật họ đã làm xong, hoặc mô tả kết quả khách quan nhìn thấy được mà bên ngoài gây ra cho họ.
+Ngay khi cốt truyện đi tới chỗ cần {{user}} đáp lại, lựa chọn, nói hay hành động thì phải dừng bút, nhường bước kế tiếp cho {{user}}.
+Trừ khi tin nhắn user hiện tại yêu cầu rõ ràng “viết thay tôi/viết hộ hành động hay lời thoại của tôi”, còn lại không preset, văn phong, thẻ nhân vật hay ví dụ nào được ghi đè khóa này.`;
     }
 
     function latestUserNoReplayInstruction() {
         if (stateRuntime.state?.settings?.protectUserAgency === false) return '';
-        return `【0-32 · 本轮接续边界｜仅本次生成有效】
-最后一条 user 消息中的动作、对白、移动、触碰、决定已经全部发生，是当前现实，不是待你重新描写的剧情提纲。
+        return `【0-32 · RANH GIỚI TIẾP NỐI CỦA LƯỢT NÀY | CHỈ CÓ HIỆU LỰC CHO LẦN SINH NÀY】
+Những hành động, câu thoại, di chuyển, đụng chạm và quyết định trong tin nhắn user cuối cùng đều đã xảy ra hết, đó là hiện thực hiện tại, không phải đề cương cốt truyện chờ bạn viết lại.
 
-你的chính văn必须从“这些事情发生之后”开始：
-- 第一项新的叙事事件必须是 {{char}} / NPC / 环境对最新 user 的新反应或后果。
-- 禁止逐句复述、概括复述、同义改写、换视角重演最新 user 的动作链与对白链。
-- 可以自然回应最新 user；若确实需要提到其刚才行为，只允许一句极短的事实指代，不得重新铺写动作过程。
-- 不得为了衔接而先把 user 刚完成的内容再演一遍，再开始真正回应。
-- 本规则只约束“不要复播上一拍”，不改变角色人设、文风、世界书、0-08预设与后续剧情自由度。
+Chính văn của bạn bắt buộc bắt đầu từ “sau khi những việc đó xảy ra”:
+- Sự kiện tự sự mới đầu tiên phải là phản ứng mới hoặc hậu quả mà {{char}} / NPC / môi trường dành cho user mới nhất.
+- Cấm thuật lại từng câu, thuật lại kiểu tóm lược, viết lại bằng từ đồng nghĩa hay diễn lại bằng góc nhìn khác chuỗi hành động và chuỗi thoại của user mới nhất.
+- Được phép đáp lại user mới nhất một cách tự nhiên; nếu thật sự cần nhắc tới hành vi vừa rồi của họ thì chỉ được một câu nhắc lại sự thật cực ngắn, không được kể lại quá trình hành động.
+- Không được vì muốn nối mạch mà diễn lại phần user vừa làm xong rồi mới bắt đầu đáp lời thật sự.
+- Quy tắc này chỉ ràng buộc việc “đừng phát lại nhịp trước”, không thay đổi tính cách nhân vật, văn phong, sách thế giới, preset 0-08 và độ tự do của cốt truyện về sau.
 
-直接从下一拍开始写。`;
+Hãy viết thẳng từ nhịp kế tiếp.`;
     }
 
     function controlLayerMemoryText() {
         const relay = relayControlSettingsForMemory();
         const floor = Math.max(0, (context()?.chat?.length || 1) - 1);
         const lines = [];
-        String(relay.ledgerLong || '').split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,60).forEach(rule => lines.push(`长期：${rule}`));
-        String(relay.ledgerChapter || '').split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,60).forEach(rule => lines.push(`本章：${rule}`));
+        String(relay.ledgerLong || '').split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,60).forEach(rule => lines.push(`Dài hạn: ${rule}`));
+        String(relay.ledgerChapter || '').split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,60).forEach(rule => lines.push(`Chương này: ${rule}`));
         (Array.isArray(relay.ledgerTimed) ? relay.ledgerTimed : []).filter(item => Number(item?.expiresFloor || 0) > floor && String(item?.text || '').trim()).slice(0,40)
-            .forEach(item => lines.push(`临时（剩${Math.max(0,Number(item.expiresFloor)-floor)}层）：${String(item.text).trim()}`));
-        // P33：命运卡只负责生成这一条user接力；正式assistant不再二次消费同一剧情种子。
+            .forEach(item => lines.push(`Tạm thời (còn ${Math.max(0,Number(item.expiresFloor)-floor)} tầng): ${String(item.text).trim()}`));
+        // P33: thẻ số phận chỉ lo sinh ra một lượt tiếp sức của user; lượt assistant chính thức sẽ không tiêu thụ lại cùng một hạt giống cốt truyện.
         return lines.length ? lines.map(line => `- ${line}`).join('\n') : '';
     }
 
@@ -16566,18 +16566,18 @@ Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm
         const realityTurn = latestRealityTurn();
         const realitySignals = deriveLatestUserSceneSignals(realityTurn.latestUser?.text || '');
         const effectiveScene = { ...(s.scene || {}) };
-        if (realitySignals.currentLocation) effectiveScene.location = `${realitySignals.currentLocation}（最新user已明确到达，覆盖旧scene）`;
+        if (realitySignals.currentLocation) effectiveScene.location = `${realitySignals.currentLocation} (user mới nhất đã nói rõ là đã tới, ghi đè scene cũ)`;
         const scene=Object.entries(effectiveScene).filter(([,v])=>String(v??'').trim()).map(([k,v])=>`${k}:${v}`).join('; ');
         add('Cảnh hiện tại',scene,900,10);
         add('Mạch truyện đơn nhất của chính văn điện thoại',s39UnifiedStorylineBrief(24,realityTurn.previousAssistant?.text||''),2400,10);
         add('Sổ quy tắc 0-32 và ràng buộc số phận',controlLayerMemoryText(),1500,10);
-        if(Number.isFinite(Number(s.progress?.historyMutationFloor)))add('Cảnh báo nhất quán lịch sử',`聊天历史从第${s.progress.historyMutationFloor}层起发生过${s.progress.historyMutationReason||'修改'}；该范围之后的旧派生记忆已冻结、旧总结已标记需重算。当前不要把被冻结旧事实当成有效依据。`,700,10);
+        if(Number.isFinite(Number(s.progress?.historyMutationFloor)))add('Cảnh báo nhất quán lịch sử',`Lịch sử trò chuyện từ tầng ${s.progress.historyMutationFloor} trở đi đã bị ${s.progress.historyMutationReason||'sửa đổi'}; các ký ức dẫn xuất cũ sau khoảng đó đã bị đóng băng, tổng kết cũ đã bị đánh dấu cần tính lại. Hiện tại đừng coi những sự thật cũ đã đóng băng là căn cứ hợp lệ.`,700,10);
 
-        // 本轮检索必须优先，避免“问20层时结果被后面的长人物表挤掉”。
+        // Truy hồi của lượt này phải được ưu tiên, tránh cảnh “hỏi về tầng 20 mà kết quả bị bảng nhân vật dài phía sau đẩy văng đi”.
         const hits=filterStructuredRetrievalHits(stateRuntime.retrievalHits).map(item=>{
             const text=sanitizeRetrievalDocumentText(item?.text);return text?{...item,text}:null;
         }).filter(Boolean).slice(0,Math.max(1,Number(s.settings.retrievalTopK||12)));
-        add('Truy hồi chính xác lượt này',hits.map(hit=>`- ${hit.title||hit.type}｜${hit.floorStart??'?'}-${hit.floorEnd??'?'}层｜${retrievalMemorySnippet(hit.text,520)}`).join('\n'),2400,10);
+        add('Truy hồi chính xác lượt này',hits.map(hit=>`- ${hit.title||hit.type} | tầng ${hit.floorStart??'?'}-${hit.floorEnd??'?'} | ${retrievalMemorySnippet(hit.text,520)}`).join('\n'),2400,10);
 
         const activeNames=new Set();const activeChar=compactText(context()?.name2||context()?.characterName||'',120);if(activeChar)activeNames.add(activeChar);
         recentlyMentionedPeople(s,recentTranscript(12)).forEach(name=>activeNames.add(name));
@@ -16596,24 +16596,24 @@ Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm
         const stableLifeFacts=(s.lifeFacts||[]).filter(memoryRecordUsable).filter(item=>['stable','confirmed'].includes(item.status)).filter(item=>item.status!=='historical').slice(-24);
         add('Nhận thức đời sống dài hạn',stableLifeFacts.map(item=>`- ${item.subject}｜${item.key||item.category}：${item.value||item.fact}${item.fact&&item.value?`；${item.fact}`:''}（${item.status==='confirmed'?'明确陈述':'多次证据'}，证据Tầng:${(item.evidenceFloors||[]).slice(-6).join('、')||'?'}）`).join('\n'),1400,9);
         const recentEpisodes=(s.episodeFacts||[]).filter(memoryRecordUsable).slice(-16);
-        add('Sự kiện nhỏ nguyên tử gần đây',recentEpisodes.map(item=>`- 第${item.floor??'?'}层｜${(item.people||[]).join('、')}｜${compactText(item.fact,360)}`).join('\n'),1600,8);
+        add('Sự kiện nhỏ nguyên tử gần đây',recentEpisodes.map(item=>`- tầng ${item.floor??'?'} | ${(item.people||[]).join(', ')} | ${compactText(item.fact,360)}`).join('\n'),1600,8);
 
         const allCore=(s.memoryAnchors||[]).filter(memoryRecordUsable).filter(i=>['core','high'].includes(i.importance));
         const priorityTypes=new Set(['relationship','intimacy','identity','promise']);
         const priority=allCore.filter(i=>priorityTypes.has(String(i.type||'').toLowerCase()));
         const selected=[...priority.slice(0,8),...priority.slice(-8),...allCore.slice(0,5),...allCore.slice(-5)].filter((i,n,a)=>a.findIndex(x=>(x.id&&i.id?x.id===i.id:`${x.floor}|${x.event}`===`${i.floor}|${i.event}`))===n).slice(0,18);
-        add('Mốc neo sự kiện cốt lõi cả đời',selected.map(i=>`- ${i.date||''} ${i.time||''}｜第${i.floor??'?'}层｜${(i.people||[]).join('、')}｜${compactText(i.event,300)}${i.details?`；${compactText(i.details,260)}`:''}`).join('\n'),2200,10);
+        add('Mốc neo sự kiện cốt lõi cả đời',selected.map(i=>`- ${i.date||''} ${i.time||''} | tầng ${i.floor??'?'} | ${(i.people||[]).join(', ')} | ${compactText(i.event,300)}${i.details?`; ${compactText(i.details,260)}`:''}`).join('\n'),2200,10);
 
         const eras=completedSummaryRows('Tổng kết thời đại').slice(-2),bigs=completedSummaryRows('Tổng kết lớn').slice(-2),stages=completedSummaryRows('Tổng kết giai đoạn').slice(-3);
         add('Tổng kết thời đại',eras.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],1500)}`).join('\n'),1700,8);
         add('Tổng kết lớn gần đây',bigs.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],1100)}`).join('\n'),1400,8);
         add('Tổng kết giai đoạn gần đây',stages.map(r=>`${r['Tầng bao phủ']}：${compactText(r['Nội dung tổng kết'],800)}`).join('\n'),1200,7);
         add('Dòng thời gian gần đây',(s.tables.mainline||[]).filter(memoryRecordUsable).map(r=>({...r,_cleanTimelineSummary:sanitizeTimelineSummary(r['Tóm tắt sự kiện'],360)})).filter(r=>r._cleanTimelineSummary&&!recentEventSummaryLooksInternal(r._cleanTimelineSummary)).slice(-8).map(r=>`- ${timelineRowStamp(r)}｜第${r['Tầng']??'?'}层｜发生:${r._cleanTimelineSummary}｜${r['Trạng thái']||''}`).join('\n'),1450,9);
-        add('Bí mật và ranh giới người biết',(s.secrets||[]).filter(memoryRecordUsable).slice(-10).map(i=>`- ${i.subject}：${i.content}；知道者:${i.knowers}；怀疑者:${i.suspects}；不知道者:${i.unknown}`).join('\n'),1000,10);
+        add('Bí mật và ranh giới người biết',(s.secrets||[]).filter(memoryRecordUsable).slice(-10).map(i=>`- ${i.subject}: ${i.content}; người biết: ${i.knowers}; người nghi ngờ: ${i.suspects}; người không biết: ${i.unknown}`).join('\n'),1000,10);
         add('Thiết lập thế giới',compactTable('world',8),800,7);add('Vật phẩm then chốt',compactTable('items',8),800,7);
         const registry=(s.npcRegistry||[]).slice().sort((a,b)=>Number(b.lastSeenFloor||0)-Number(a.lastSeenFloor||0)).slice(0,24);
-        add('Thân phận NPC và cách gọi cũ',registry.map(i=>`- ${i.currentName}${i.aliases?.length?`（曾称:${i.aliases.join('、')}）`:''}${i.identity?`：${i.identity}`:''}`).join('\n'),900,8);
-        const phone=[...['wechat','sms','calls'].flatMap(type=>(s.phone?.[type]||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${type}｜${i.time||''}｜${i.author||i.contact||i.caller||''}：${i.content||i.summary||i.status||''}`)),...(s.phone?.wechatGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- 微信群「${i.groupName||''}」｜${i.sender||''}：${i.content||''}`),...(s.phone?.channelGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${i.channelType||'Kênh của thời đại'}「${i.groupName||''}」｜${i.sender||''}：${i.content||''}`)].slice(-14);
+        add('Thân phận NPC và cách gọi cũ',registry.map(i=>`- ${i.currentName}${i.aliases?.length?` (từng gọi: ${i.aliases.join(', ')})`:''}${i.identity?`: ${i.identity}`:''}`).join('\n'),900,8);
+        const phone=[...['wechat','sms','calls'].flatMap(type=>(s.phone?.[type]||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${type} | ${i.time||''} | ${i.author||i.contact||i.caller||''}: ${i.content||i.summary||i.status||''}`)),...(s.phone?.wechatGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- 微信群「${i.groupName||''}」｜${i.sender||''}：${i.content||''}`),...(s.phone?.channelGroups||[]).filter(memoryRecordUsable).slice(-3).map(i=>`- ${i.channelType||'Kênh của thời đại'}「${i.groupName||''}」｜${i.sender||''}：${i.content||''}`)].slice(-14);
         add('Liên lạc gần đây',phone.join('\n'),950,7);
         const realtimePhone=(s.phone?.realtimeEvents||[]).filter(row=>row?.handled&&row?.realtimeHandled&&!row?.privateInnerFiction).slice(-18).map(row=>`- ${row.time||''}｜${row.kind||'Sự kiện điện thoại'}｜${row.summary||''}｜已由手机实时API处理，幕后七条禁止重复回复`);
         add('Sự kiện điện thoại thời gian thực đã hoàn thành',realtimePhone.join('\n'),1600,10);
@@ -16623,17 +16623,17 @@ Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm
         add('Sổ ghi ai biết sự kiện điện thoại của NPC',phoneKnowledgeBrief(30),1800,10);
         const transit=s.worldTransit||{};const cp=s.communicationProfile||{};
         add('Không - thời gian và liên lạc hiện tại',`原世界=${transit.origin?.worldType||'Chưa rõ'} ${transit.origin?.era||''}；当前=${cp.worldType||transit.current?.worldType||'Chưa rõ'} ${cp.era||''} ${cp.location||''}；当前载体=${cp.deviceLabel||''}；原世界网络=${cp.originReachable?'可达':'Không với tới được'}；原设备=${cp.personalDeviceLabel||''}${cp.personalDeviceAvailable?'Khả dụng':'离线/不可用'}`,900,10);
-        const worldLines=(s.characterWorld?.events||[]).filter(memoryRecordUsable).slice(-12).map(i=>`- ${i.time||''}｜${i.character||'世界'}@${i.location||''}：${i.activity||''}${i.goal?`；目标:${i.goal}`:''}${i.social?`；社交:${i.social}`:''}`);
+        const worldLines=(s.characterWorld?.events||[]).filter(memoryRecordUsable).slice(-12).map(i=>`- ${i.time||''} | ${i.character||'Thế giới'}@${i.location||''}: ${i.activity||''}${i.goal?`; mục tiêu: ${i.goal}`:''}${i.social?`; giao tiếp: ${i.social}`:''}`);
         add('Sự thật ngoài ống kính cùng thế giới chạy nền (theo mức biết của người tham gia)',worldLines.join('\n'),1100,8);
         if(s.directorInstruction)add('Chỉ thị đạo diễn lượt này',s.directorInstruction,700,10);
 
-        const head='以下是「0-32 · 永不落幕的剧场·记忆中枢」长期记忆。聊天可以到2万层以上，但每轮只注入固定预算：本轮召回、当前Quan hệ nhân vật、终身核心事件、三级总结、Dòng thời gian和世界动态都各自保底，不允许某一块过长把其它关键记忆挤没。严格遵守角色知情边界，不复述记忆表。手机、现实chính văn、彼间私文与NPC后台行动全部共用同一世界总账、同一条Dòng thời gian；彼间私文不是番外，只是发生在{{user}}看不到的位置。镜头外事件参与者知道自己经历过什么，未参与者与{{user}}默认不知道，直到真实目击/消息/告知发生。Đơn hàng điện thoại/支付是系统事实；最新订单的店铺、商品、数量、规格与金额是一级真值，chính văn必须逐字沿用，任何旧摘要冲突时最新订单优先（例如订单为米线就绝不能写成辣汤面）。订单事实不代表所有NPC知道：对具体手机事件，只有知情账本或单一世界总账knownBy中列名的人可以知道。支付宝成功转账固定为收款人账户自动到账，禁止写成等待点击接收；只有微信转账卡才需要接收或退还。远处NPC禁止全知。NPC日记只授予日记作者知情；彼间私文只授予实际参与/目击者知情，但两者都必须作为真实世界历史影响参与NPC后续行为。USER主权锁开启时，正常assistantchính văn绝不能替{{user}}新增对白、动作、决定、心理或主动身体反应。';
+        const head='Dưới đây là ký ức dài hạn của “0-32 · Sân Khấu Không Bao Giờ Hạ Màn · Trung tâm Ký ức”. Cuộc trò chuyện có thể lên tới hơn hai vạn tầng, nhưng mỗi lượt chỉ nạp một ngân sách cố định: truy hồi của lượt này, quan hệ nhân vật hiện tại, sự kiện cốt lõi cả đời, ba cấp tổng kết, dòng thời gian và động thái thế giới đều có phần bảo đảm riêng, không cho phép một khối quá dài đẩy các ký ức then chốt khác ra ngoài. Hãy tuân thủ nghiêm ngặt ranh giới người biết của nhân vật, không thuật lại bảng ký ức. Điện thoại, chính văn hiện thực, Bỉ Gian Tư Văn và hành động hậu trường của NPC đều dùng chung một sổ tổng thế giới, một dòng thời gian; Bỉ Gian Tư Văn không phải ngoại truyện, chỉ là xảy ra ở nơi {{user}} không nhìn thấy. Người tham gia sự kiện ngoài ống kính biết mình đã trải qua chuyện gì, còn người không tham gia và {{user}} mặc định là không biết, cho tới khi thật sự chứng kiến/nhận tin/告知发生。Đơn hàng điện thoại/支付是系统事实；最新订单的店铺、商品、数量、规格与金额是一级真值，chính văn必须逐字沿用，任何旧摘要冲突时最新订单优先（例如订单为米线就绝不能写成辣汤面）。订单事实不代表所有NPC知道：对具体手机事件，只有知情账本或单一世界总账knownBy中列名的人可以知道。支付宝成功转账固定为收款人账户自动到账，禁止写成等待点击接收；只有微信转账卡才需要接收或退还。远处NPC禁止全知。NPC日记只授予日记作者知情；彼间私文只授予实际参与/目击者知情，但两者都必须作为真实世界历史影响参与NPC后续行为。USER主权锁开启时，正常assistantchính văn绝不能替{{user}}新增对白、动作、决定、心理或主动身体反应。';
         const headCost=head.length+4;let remaining=Math.max(1000,maxChars-headCost);
-        // 高优先级先分配，且每个模块最多使用自己的预算。
+        // Ưu tiên cao được cấp trước, và mỗi mô-đun chỉ dùng tối đa ngân sách của chính nó.
         const ordered=slots.slice().sort((a,b)=>b.priority-a.priority);
         const rendered=[];
-        for(const slot of ordered){if(remaining<120)break;const budget=Math.min(slot.budget,Math.max(100,remaining-20));const body=slot.text.length>budget?`${slot.text.slice(0,Math.max(0,budget-12))}\n…[本区截短]`:slot.text;const block=`[${slot.title}]\n${body}`;if(block.length<=remaining){rendered.push({title:slot.title,block,priority:slot.priority});remaining-=block.length+2;}}
-        // 输出时按更自然的剧情阅读顺序，而不是预算排序。
+        for(const slot of ordered){if(remaining<120)break;const budget=Math.min(slot.budget,Math.max(100,remaining-20));const body=slot.text.length>budget?`${slot.text.slice(0,Math.max(0,budget-12))}\n…[khu này đã cắt bớt]`:slot.text;const block=`[${slot.title}]\n${body}`;if(block.length<=remaining){rendered.push({title:slot.title,block,priority:slot.priority});remaining-=block.length+2;}}
+        // Khi xuất ra thì sắp theo trình tự đọc cốt truyện tự nhiên hơn, chứ không theo thứ tự ngân sách.
         const order=['Cảnh hiện tại','Mạch truyện đơn nhất của chính văn điện thoại','Sự thật về đơn hàng trực tuyến và hàng đã tới','Sự thật cố định về chuyển khoản trên điện thoại','Sổ quy tắc 0-32 và ràng buộc số phận','Cảnh báo nhất quán lịch sử','Truy hồi chính xác lượt này','Sự kiện điện thoại thời gian thực đã hoàn thành','Sổ ghi ai biết sự kiện điện thoại của NPC','Khoảnh khắc và tương tác bạn bè gần đây','Nhân vật cốt lõi hiện tại','Ngoại hình nhân vật hiện tại','Quan hệ nhân vật hiện tại','Trạng thái nhân vật','Lời hẹn chờ thực hiện','Nhận thức đời sống dài hạn','Sự kiện nhỏ nguyên tử gần đây','Mốc neo sự kiện cốt lõi cả đời','Tổng kết thời đại','Tổng kết lớn gần đây','Tổng kết giai đoạn gần đây','Dòng thời gian gần đây','Bí mật và ranh giới người biết','Thiết lập thế giới','Vật phẩm then chốt','Thân phận NPC và cách gọi cũ','Không - thời gian và liên lạc hiện tại','Liên lạc gần đây','Sự thật ngoài ống kính cùng thế giới chạy nền (theo mức biết của người tham gia)','Chỉ thị đạo diễn lượt này'];
         rendered.sort((a,b)=>order.indexOf(a.title)-order.indexOf(b.title));
         return `${head}\n\n${rendered.map(x=>x.block).join('\n\n')}`.slice(0,maxChars);
@@ -16685,7 +16685,7 @@ Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm
     function generationRetrievalNote(chat) {
         const hits=filterStructuredRetrievalHits(stateRuntime.retrievalHits).slice(0,Math.max(1,Number(stateRuntime.state?.settings?.retrievalTopK||12)));
         if(!hits.length)return null;
-        const text=`【本轮精准记忆召回｜结构化记录优先】\n下列记录只来自结构化记忆、事件锚点、Dòng thời gian、总结或生活账本，不再把完整聊天chính văn塞回检索。回答“哪一层、何时、是否已经发生”时，优先采用带准确Tầng与Đã hoàn thànhTrạng thái的结构化记录；若旧总结与较新的结构化事实冲突，以较新的Đã hoàn thànhTrạng thái为准。\n${hits.map(hit=>`- 来源:${hit.type||'memory'}｜第${hit.floorStart??'?'}${hit.floorEnd!==null&&hit.floorEnd!==undefined&&hit.floorEnd!==hit.floorStart?`-${hit.floorEnd}`:''}层｜${compactText(hit.text,900)}`).join('\n')}`.slice(0,3200);
+        const text=`【TRUY HỒI KÝ ỨC CHÍNH XÁC CỦA LƯỢT NÀY | ƯU TIÊN BẢN GHI CÓ CẤU TRÚC】\nCác bản ghi dưới đây chỉ đến từ ký ức có cấu trúc, mốc neo sự kiện, dòng thời gian, bản tổng kết hoặc sổ đời sống; không nhét lại toàn bộ chính văn cuộc trò chuyện vào truy hồi nữa. Khi trả lời “tầng nào, lúc nào, đã xảy ra chưa”, hãy ưu tiên dùng bản ghi có cấu trúc kèm số tầng chính xác và trạng thái đã hoàn thành; nếu tổng kết cũ mâu thuẫn với sự thật có cấu trúc mới hơn thì lấy trạng thái đã hoàn thành mới hơn làm chuẩn.\n${hits.map(hit=>`- nguồn: ${hit.type||'memory'} | tầng ${hit.floorStart??'?'}${hit.floorEnd!==null&&hit.floorEnd!==undefined&&hit.floorEnd!==hit.floorStart?`-${hit.floorEnd}`:''}层｜${compactText(hit.text,900)}`).join('\n')}`.slice(0,3200);
         const sample=Array.isArray(chat)&&chat.length?chat[chat.length-1]:{};
         return Object.prototype.hasOwnProperty.call(sample,'role')||Object.prototype.hasOwnProperty.call(sample,'content')
             ? {role:'system',content:text}
@@ -16697,7 +16697,7 @@ Trừ khi chính user mới nhất yêu cầu rõ ràng quay về địa điểm
         if (!pending.length) return 'Không có thao tác liên lạc nào chờ xử lý.';
         return pending.slice(-16).map(item => {
             const attachmentText = phoneAttachmentSummary(item.attachments);
-            const suffix = attachmentText ? `｜附件：${attachmentText}` : '';
+            const suffix = attachmentText ? ` | tệp đính kèm: ${attachmentText}` : '';
             if (item.type === 'call-action') return `- pendingId=${item.id}｜通话动作：${item.action === 'answer' ? 'Nghe máy' : item.action==='end'?'Kết thúc cuộc gọi':'Cúp máy/từ chối'} ${item.contact || ''} 的来电｜${item.time || ''}${suffix}`;
             if (item.type === 'outgoing-call') return `- pendingId=${item.id}｜{{user}} 主动拨打 ${item.contact || 'Liên hệ chưa rõ'}｜${item.time || ''}｜必须决定：接通/拒接/未接/占线，并在phone.calls写结果${suffix}`;
             if (item.type === 'wechat-group' || item.type === 'channel-group' || item.groupName) return `- pendingId=${item.id}｜${item.sender || '{{user}}'} → ${item.type==='channel-group'?'Nhóm/kênh của thời đại hiện tại':'Nhóm WeChat'}「${item.groupName || item.contact}」｜${item.time || ''}：${item.content || '[仅附件]'}${suffix}`;
