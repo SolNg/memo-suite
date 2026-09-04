@@ -16018,12 +16018,12 @@ ${digests.join('\n\n')}`,{
         }
 
         s.secrets.filter(memoryRecordUsable).forEach(item => add('secret', item.subject, `${item.content}; người biết: ${item.knowers}; người nghi ngờ: ${item.suspects}; người không biết: ${item.unknown}`, Number(item._sourceFloor), Number(item._sourceFloor), true, item.updatedAt, { tags:['Bí mật',item.subject], characters:[item.subject], importanceWeight:1 }));
-        (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character, `${item.outfit}${item.hair ? `；发型：${item.hair}` : ''}${item.accessories ? `；配饰：${item.accessories}` : ''}${item.shoes ? `；鞋履：${item.shoes}` : ''}${item.condition ? `；Trạng thái：${item.condition}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Ngoại hình','Trang phục',item.character], characters:[item.character], importanceWeight:0.5 }));
+        (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character, `${item.outfit}${item.hair ? `; kiểu tóc: ${item.hair}` : ''}${item.accessories ? `; phụ kiện: ${item.accessories}` : ''}${item.shoes ? `; giày dép: ${item.shoes}` : ''}${item.condition ? `; trạng thái: ${item.condition}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Ngoại hình','Trang phục',item.character], characters:[item.character], importanceWeight:0.5 }));
         (s.characterWorld?.events || []).filter(memoryRecordUsable).forEach(item => add('character-world', item.character, `${item.activity}${item.goal ? `; mục tiêu: ${item.goal}` : ''}${item.social ? `; giao tiếp: ${item.social}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Đời sống hậu trường','Động thái thế giới',item.character], characters:[item.character], importanceWeight:0.45 }));
-        (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || 'Mốc neo sự kiện', `${item.date||''} ${item.time||''} | ${(item.people||[]).join(', ')} | ${item.event||''}${item.details?`; ${item.details}`:''}${item.rawFallbackText?`; chính văn phương án đáy: ${item.rawFallbackText}`:''}${item.tags?.length?`；标签:${item.tags.join('、')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance), `${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
+        (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || 'Mốc neo sự kiện', `${item.date||''} ${item.time||''} | ${(item.people||[]).join(', ')} | ${item.event||''}${item.details?`; ${item.details}`:''}${item.rawFallbackText?`; chính văn phương án đáy: ${item.rawFallbackText}`:''}${item.tags?.length?`; thẻ: ${item.tags.join(', ')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance), `${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
         (s.episodeFacts || []).filter(memoryRecordUsable).forEach(item => add('episode-fact', `Sự kiện nhỏ: ${item.category||'detail'}`, `Tầng ${item.floor??'?'} | ${(item.people||[]).join(', ')} | ${item.fact||''} | thực thể: ${(item.entities||[]).join(', ')} | bằng chứng: ${item.evidenceText||''}`, Number(item.floor), Number(item.floor), false, item.createdAt||'', { tags:['小事件',item.category,...(item.entities||[])], characters:item.people||[], importanceWeight:0.7, entityId:item.id, eventId:item.id, timeline:true }));
-        (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact', `生活认知:${item.subject||''}`, `${item.subject||''}｜${item.category||''}｜${item.key||''}=${item.value||item.fact||''}；Trạng thái:${item.status||'observed'}；证据Tầng:${(item.evidenceFloors||[]).join('、')}；${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['Nhận thức đời sống',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
-        (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName, `${item.currentName}${item.aliases?.length?`；旧称:${item.aliases.join('、')}`:''}${item.identity?`；Thân phận:${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false, '', { tags:['NPC','Thân phận',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
+        (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact', `Nhận thức đời sống: ${item.subject||''}`, `${item.subject||''} | ${item.category||''} | ${item.key||''}=${item.value||item.fact||''}; trạng thái: ${item.status||'observed'}; tầng bằng chứng: ${(item.evidenceFloors||[]).join(', ')}; ${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['Nhận thức đời sống',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
+        (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName, `${item.currentName}${item.aliases?.length?`; tên cũ: ${item.aliases.join(', ')}`:''}${item.identity?`; thân phận: ${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false, '', { tags:['NPC','Thân phận',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
         s.chapters.filter(memoryRecordUsable).forEach(item => add('chapter', item.title, item.summary, Number(item.startFloor), Number(item.endFloor), true, item.time, { tags:['Chương',item.title], importanceWeight:0.82 }));
 
         // R9: cuộc gọi/WeChat/SMS/Khoảnh khắc/nhật ký/ngày kỷ niệm cũ cũng vào truy hồi dài hạn, tránh cảnh sau vài nghìn tầng chỉ còn nhớ chính văn mà quên mất “dấu vết đời sống”.
@@ -16037,27 +16037,27 @@ ${digests.join('\n\n')}`,{
         }
         for (const item of s.phone?.groupProfiles || []) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-group-profile', `群/频道生态:${item.groupName || 'Nhóm'}`, `Loại:${item.type || 'other'}；范围:${item.scope||'origin'}；世界:${item.homeWorldKey||''}；载体:${item.channelType||'wechat'}；Trạng thái:${item.availability||'active'}；成员:${(item.members || []).join('、')}；长期话题:${item.topic || ''}；活跃度:${item.activityLevel || 'medium'}；来源:${item.source || ''}`, floor, floor, false, item.updatedAt || item.createdAt || '', { tags:['Hệ sinh thái nhóm',item.channelType,item.availability,item.groupName,item.topic], characters:item.members||[], importanceWeight:0.35 });
+            add('phone-group-profile', `Hệ sinh thái nhóm/kênh: ${item.groupName || 'Nhóm'}`, `Loại: ${item.type || 'other'}; phạm vi: ${item.scope||'origin'}; thế giới: ${item.homeWorldKey||''}; phương tiện: ${item.channelType||'wechat'}; trạng thái: ${item.availability||'active'}; thành viên: ${(item.members || []).join(', ')}; chủ đề dài hạn: ${item.topic || ''}; độ hoạt động: ${item.activityLevel || 'medium'}; nguồn: ${item.source || ''}`, floor, floor, false, item.updatedAt || item.createdAt || '', { tags:['Hệ sinh thái nhóm',item.channelType,item.availability,item.groupName,item.topic], characters:item.members||[], importanceWeight:0.35 });
         }
         for (const item of (s.phone?.wechatGroups || []).filter(memoryRecordUsable)) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-group', `微信群:${item.groupName || 'Nhóm WeChat'}`, `${item.time || ''}｜${item.sender || 'Thành viên nhóm'}：${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Nhóm WeChat',item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
+            add('phone-group', `Nhóm WeChat: ${item.groupName || 'Nhóm WeChat'}`, `${item.time || ''} | ${item.sender || 'Thành viên nhóm'}: ${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Nhóm WeChat',item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
         }
         for (const item of (s.phone?.channelGroups || []).filter(memoryRecordUsable)) {
             const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
-            add('phone-channel-group', `时代频道:${item.groupName || 'Nhóm'}`, `${item.channelType||''}｜${item.time || ''}｜${item.sender || 'Thành viên'}：${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Liên lạc thời đại',item.channelType,item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
+            add('phone-channel-group', `Kênh thời đại: ${item.groupName || 'Nhóm'}`, `${item.channelType||''} | ${item.time || ''} | ${item.sender || 'Thành viên'}: ${item.content || ''}`, floor, floor, false, item.time || '', { tags:['Liên lạc thời đại',item.channelType,item.groupName,item.sender], characters:[item.sender], importanceWeight:0.35 });
         }
         for (const [key,label] of [['moments','Khoảnh khắc'],['diary','Nhật ký'],['anniversaries','Ngày kỷ niệm']]) {
             for (const item of (s.storyExtras?.[key] || []).filter(memoryRecordUsable)) {
                 const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
                 const body = item.content || item.text || item.caption || item.title || item.event || '';
                 const attachmentText=key==='moments'?phoneAttachmentSummary(item.attachments):'';
-                const reactionText=key==='moments'?`点赞:${(item.likes||[]).join('、')}；评论:${(item.comments||[]).map(comment=>`${comment.author||''}:${comment.content||''}`).join('; ')}`:'';
-                add(`story-${key}`, `${label}:${item.author || item.character || item.title || ''}`, `${item.time || item.date || ''}｜${body}${attachmentText?`｜附件:${attachmentText}`:''}${reactionText?`｜${reactionText}`:''}`, floor, floor, key === 'anniversaries', item.time || item.date || '', { tags:[label,item.author||item.character||'',item.title||'',...(item.likes||[])], characters:[item.author||item.character||'',...(item.likes||[])], importanceWeight:key === 'anniversaries' ? 0.82 : 0.38 });
+                const reactionText=key==='moments'?`Thích: ${(item.likes||[]).join(', ')}; bình luận: ${(item.comments||[]).map(comment=>`${comment.author||''}: ${comment.content||''}`).join('; ')}`:'';
+                add(`story-${key}`, `${label}:${item.author || item.character || item.title || ''}`, `${item.time || item.date || ''} | ${body}${attachmentText?` | tệp đính kèm: ${attachmentText}`:''}${reactionText?` | ${reactionText}`:''}`, floor, floor, key === 'anniversaries', item.time || item.date || '', { tags:[label,item.author||item.character||'',item.title||'',...(item.likes||[])], characters:[item.author||item.character||'',...(item.likes||[])], importanceWeight:key === 'anniversaries' ? 0.82 : 0.38 });
             }
         }
 
-        // 手机实体是 VCP 检索的一等来源：订单、Trạng thái事件、商户、交易和路线必须能被剧情问答直接召回。
+        // Thực thể điện thoại là nguồn hạng nhất của truy hồi VCP: đơn hàng, sự kiện trạng thái, cửa hàng, giao dịch và tuyến đường đều phải gọi lại được trực tiếp khi hỏi đáp về cốt truyện.
         const phone = s.phone || {};
         const phoneOrderRows = [];
         for (const platform of ['taobao','jd','eleme','meituan']) for (const order of phone.commerce?.[platform]?.orders || []) phoneOrderRows.push({ ...order, platform });
@@ -16066,13 +16066,13 @@ ${digests.join('\n\n')}`,{
         for (const order of phoneOrderRows) {
             const floor = Number(order.sourceFloor ?? order._floor ?? order.floor);
             const items = (order.items || []).map(item => `${item.name || 'Sản phẩm'}×${Number(item.qty || 1)}`).join('、');
-            const title = `${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}订单 ${order.storeName || order.destination || order.code || order.id || ''}`;
-            add('phone-order', title, `订单号:${order.id}；平台:${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}；Trạng thái:${s8OrderStatusLabel(order)}；金额:${s8MoneyText(order.amount)}；明细:${items || order.title || 'Không'}；故事时间:${order.storyTime || order.time || ''}`, floor, floor, true, order.storyTime || order.time || '', { tags:['Đơn hàng điện thoại',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,s8OrderStatusLabel(order),order.storeName||order.destination||''], characters:[], importanceWeight:0.86, entityId:order.id, orderId:order.id, phoneEntityType:'order' });
+            const title = `Đơn ${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform} ${order.storeName || order.destination || order.code || order.id || ''}`;
+            add('phone-order', title, `Mã đơn: ${order.id}; nền tảng: ${S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform}; trạng thái: ${s8OrderStatusLabel(order)}; số tiền: ${s8MoneyText(order.amount)}; chi tiết: ${items || order.title || 'Không'}; thời gian trong truyện: ${order.storyTime || order.time || ''}`, floor, floor, true, order.storyTime || order.time || '', { tags:['Đơn hàng điện thoại',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,s8OrderStatusLabel(order),order.storeName||order.destination||''], characters:[], importanceWeight:0.86, entityId:order.id, orderId:order.id, phoneEntityType:'order' });
             for (const event of order.timeline || []) add('phone-order-event', `${title} · ${event.label || event.status}`, `${event.storyTime || event.time || ''}｜${event.detail || event.label || event.status}`, floor, floor, false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',S8_ORDER_PLATFORM_LABELS[order.platform] || order.platform,event.status || ''], importanceWeight:0.62, entityId:order.id, orderId:order.id, eventId:event.id || `${order.id}:${event.status}`, phoneEntityType:'order-event' });
         }
-        for (const event of phone.orderEvents || []) add('phone-order-event', `${S8_ORDER_PLATFORM_LABELS[event.platform] || event.platform || 'Đơn hàng'} · ${event.label || event.status || 'Cập nhật trạng thái'}`, `${event.storyTime || event.time || ''}｜订单:${event.orderId || ''}｜${event.detail || ''}`, Number(event.sourceFloor), Number(event.sourceFloor), false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',event.platform || '',event.status || ''], importanceWeight:0.58, entityId:event.orderId, orderId:event.orderId, eventId:event.id, phoneEntityType:'order-event' });
-        for (const tx of phone.finance?.transactions || []) add('phone-transaction', tx.title || tx.counterparty || 'Giao dịch ví', `${tx.time || ''}｜账户:${tx.account || ''}｜金额:${s8MoneyText(tx.amount)}｜对方:${tx.counterparty || ''}｜来源:${tx.source || ''}`, Number(tx._floor), Number(tx._floor), Boolean(tx._important), tx.time || '', { tags:['Hóa đơn điện thoại',tx.account || '',tx.category || '',tx.counterparty || ''], importanceWeight:0.58, entityId:tx.id, transactionId:tx.id, phoneEntityType:'transaction' });
-        for (const route of phone.maps?.history || []) add('phone-route', `地图路线:${route.destination || 'Điểm đến chưa đặt tên'}`, `${route.time || ''}｜从:${route.from || s.scene?.location || 'Vị trí hiện tại'}到:${route.destination || ''}｜距离:${route.km || ''}｜方式:${route.mode || ''}`, Number(route.floor ?? route._floor), Number(route.floor ?? route._floor), false, route.time || '', { tags:['Bản đồ','Tuyến đường',route.destination || ''], importanceWeight:0.42, entityId:route.id, phoneEntityType:'route' });
+        for (const event of phone.orderEvents || []) add('phone-order-event', `${S8_ORDER_PLATFORM_LABELS[event.platform] || event.platform || 'Đơn hàng'} · ${event.label || event.status || 'Cập nhật trạng thái'}`, `${event.storyTime || event.time || ''} | đơn hàng: ${event.orderId || ''} | ${event.detail || ''}`, Number(event.sourceFloor), Number(event.sourceFloor), false, event.storyTime || event.time || '', { tags:['Tiến độ đơn hàng',event.platform || '',event.status || ''], importanceWeight:0.58, entityId:event.orderId, orderId:event.orderId, eventId:event.id, phoneEntityType:'order-event' });
+        for (const tx of phone.finance?.transactions || []) add('phone-transaction', tx.title || tx.counterparty || 'Giao dịch ví', `${tx.time || ''} | tài khoản: ${tx.account || ''} | số tiền: ${s8MoneyText(tx.amount)} | đối phương: ${tx.counterparty || ''} | nguồn: ${tx.source || ''}`, Number(tx._floor), Number(tx._floor), Boolean(tx._important), tx.time || '', { tags:['Hóa đơn điện thoại',tx.account || '',tx.category || '',tx.counterparty || ''], importanceWeight:0.58, entityId:tx.id, transactionId:tx.id, phoneEntityType:'transaction' });
+        for (const route of phone.maps?.history || []) add('phone-route', `Tuyến bản đồ: ${route.destination || 'Điểm đến chưa đặt tên'}`, `${route.time || ''} | từ: ${route.from || s.scene?.location || 'Vị trí hiện tại'} tới: ${route.destination || ''} | khoảng cách: ${route.km || ''} | phương thức: ${route.mode || ''}`, Number(route.floor ?? route._floor), Number(route.floor ?? route._floor), false, route.time || '', { tags:['Bản đồ','Tuyến đường',route.destination || ''], importanceWeight:0.42, entityId:route.id, phoneEntityType:'route' });
 
         const chat = context()?.chat || [];
         const userNameKey=npcNameKey(context()?.name1||'{{user}}'),characterNameKey=npcNameKey(context()?.name2||context()?.characterName||'');
@@ -16081,17 +16081,17 @@ ${digests.join('\n\n')}`,{
             const role=String(message?.role||'').toLowerCase();
             let speaker=message?.is_user?'{{user}}':compactText(message?.name||message?.speaker||'',120);
             let indexable=message?.is_user===true||role==='user'||role==='assistant'||(!message?.is_system&&role!=='system');
-            // SillyTavern 的 /hide 可能把原角色Tầng标成 is_system；Họ tên仍是角色/用户时保留原文索引。
+            // Lệnh /hide của SillyTavern có thể đánh dấu tầng của nhân vật gốc thành is_system; khi họ tên vẫn là nhân vật/người dùng thì vẫn giữ chỉ mục chính văn.
             const speakerKey=npcNameKey(speaker);
             if(!indexable&&message?.is_system&&speakerKey&&(speakerKey===userNameKey||speakerKey===characterNameKey))indexable=true;
-            if(!indexable||role==='system'||/^(?:系统|system|vvv记忆中枢|0-32剧情导演|0-32本轮接续边界)$/i.test(speaker))continue;
+            if(!indexable||role==='system'||/^(?:Hệ thống|system|Trung tâm Ký ức vvv|Đạo diễn cốt truyện 0-32|Ranh giới tiếp nối lượt này của 0-32)$/i.test(speaker))continue;
             if(!speaker)speaker=message?.is_user?'{{user}}':'Nhân vật';
             const floorRole=message?.is_user||role==='user'?'user':'assistant';
-            add('chat-floor',`${floor}层 ${speaker}`,text,floor,floor,false,compactText(message?.send_date||message?.date||'',120),{tags:['Tầng gốc',`${floor}层`,floorRole,speaker],characters:[speaker],importanceWeight:0.46,timeline:true,vectorEligible:false,retrievalEligible:false,sourceRole:floorRole,sourceSpeaker:speaker});
+            add('chat-floor',`Tầng ${floor} ${speaker}`,text,floor,floor,false,compactText(message?.send_date||message?.date||'',120),{tags:['Tầng gốc',`Tầng ${floor}`,floorRole,speaker],characters:[speaker],importanceWeight:0.46,timeline:true,vectorEligible:false,retrievalEligible:false,sourceRole:floorRole,sourceSpeaker:speaker});
         }
         for (const floor of s.importantFloors || []) {
             const message = chat[Number(floor)];
-            if (message) add('important-message', `${floor}层 ${messageSpeaker(message)}`, memoryNarrativeText(message), Number(floor), Number(floor), true, '', { tags:['Tầng quan trọng',messageSpeaker(message)], characters:[messageSpeaker(message)], importanceWeight:1, retrievalEligible:false });
+            if (message) add('important-message', `Tầng ${floor} ${messageSpeaker(message)}`, memoryNarrativeText(message), Number(floor), Number(floor), true, '', { tags:['Tầng quan trọng',messageSpeaker(message)], characters:[messageSpeaker(message)], importanceWeight:1, retrievalEligible:false });
         }
         return documents;
     }
@@ -16123,24 +16123,24 @@ ${digests.join('\n\n')}`,{
     }
 
     function chineseNumeralToNumber(value) {
-        const text=String(value||'').replace(/[\s第层]/g,'').replace(/两/g,'二');if(!text)return NaN;
-        const digits={'零':0,'〇':0,'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'chín':9};
-        if([...text].every(char=>Object.hasOwn(digits,char)))return Number([...text].map(char=>digits[char]).join(''));
-        const units={'十':10,'trăm':100,'nghìn':1000},parts=text.split('万');let total=0;
-        const parseSection=section=>{let result=0,current=0;for(const char of section){if(Object.hasOwn(digits,char)){current=digits[char];continue;}const unit=units[char];if(unit){result+=(current||1)*unit;current=0;}}return result+current;};
-        if(parts.length>1){total=parseSection(parts.shift())*10000+parseSection(parts.join(''));}else total=parseSection(text);
+        const text=String(value||'').toLowerCase().replace(/\b(?:tầng|thứ)\b/g,' ').replace(/\s+/g,' ').trim();if(!text)return NaN;
+        const digits={'không':0,'linh':0,'một':1,'mốt':1,'hai':2,'ba':3,'bốn':4,'tư':4,'năm':5,'lăm':5,'sáu':6,'bảy':7,'tám':8,'chín':9};
+        if(/^\d+$/.test(text))return Number(text);
+        const units={'mười':10,'mươi':10,'chục':10,'trăm':100,'nghìn':1000,'ngàn':1000},parts=text.split(/\bvạn\b/);let total=0;
+        const parseSection=section=>{let result=0,current=0,pending=false;for(const word of section.split(' ').filter(Boolean)){if(Object.hasOwn(digits,word)){if(pending){result+=current;current=0;}current=digits[word];pending=true;continue;}const unit=units[word];if(unit){result+=(pending?current:1)*unit;current=0;pending=false;}}return result+(pending?current:0);};
+        if(parts.length>1){total=parseSection(parts.shift())*10000+parseSection(parts.join(' '));}else total=parseSection(text);
         return Number.isFinite(total)?total:NaN;
     }
 
     function queryFloorRefs(query) {
         const value = String(query || '');
         const refs = [];
-        for (const match of value.matchAll(/(?:第\s*)?(\d{1,6})\s*层/g)) refs.push(Number(match[1]));
+        for (const match of value.matchAll(/tầng\s*(\d{1,6})/gi)) refs.push(Number(match[1]));
         const addRange=(start,end)=>{if(!Number.isFinite(start)||!Number.isFinite(end))return;const low=Math.min(start,end),high=Math.max(start,end);if(high-low<=80)for(let floor=low;floor<=high;floor+=1)refs.push(floor);else refs.push(start,end);};
-        for(const match of value.matchAll(/(?:第\s*)?(\d{1,6})\s*(?:到|至|[-~—–])\s*(?:第\s*)?(\d{1,6})\s*层/g))addRange(Number(match[1]),Number(match[2]));
-        for(const match of value.matchAll(/(?:第\s*)?([零〇一二两三四五六七八九十百千万]+)\s*(?:到|至|[-~—–])\s*(?:第\s*)?([零〇一二两三四五六七八九十百千万]+)\s*层/g))addRange(chineseNumeralToNumber(match[1]),chineseNumeralToNumber(match[2]));
-        for(const match of value.matchAll(/(?:第\s*)?([零〇一二两三四五六七八九十百千万]+)\s*层/g)){
-            const raw=match[1];if(!String(match[0]).includes('第')&&/^[一二三四五六七八九]{2}$/.test(raw)){refs.push(chineseNumeralToNumber(raw[0]),chineseNumeralToNumber(raw[1]));continue;}refs.push(chineseNumeralToNumber(raw));
+        for(const match of value.matchAll(/tầng\s*(\d{1,6})\s*(?:đến|tới|[-~—–])\s*(?:tầng\s*)?(\d{1,6})/gi))addRange(Number(match[1]),Number(match[2]));
+        for(const match of value.matchAll(/tầng\s*((?:không|linh|một|mốt|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười|mươi|chục|trăm|nghìn|ngàn|vạn)(?:\s+(?:không|linh|một|mốt|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười|mươi|chục|trăm|nghìn|ngàn|vạn))*)\s*(?:đến|tới|[-~—–])\s*(?:tầng\s*)?((?:không|linh|một|mốt|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười|mươi|chục|trăm|nghìn|ngàn|vạn)(?:\s+(?:không|linh|một|mốt|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười|mươi|chục|trăm|nghìn|ngàn|vạn))*)/gi))addRange(chineseNumeralToNumber(match[1]),chineseNumeralToNumber(match[2]));
+        for(const match of value.matchAll(/tầng\s*((?:không|linh|một|mốt|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười|mươi|chục|trăm|nghìn|ngàn|vạn)(?:\s+(?:không|linh|một|mốt|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười|mươi|chục|trăm|nghìn|ngàn|vạn))*)/gi)){
+            refs.push(chineseNumeralToNumber(match[1]));
         }
         return [...new Set(refs.filter(Number.isFinite))];
     }
@@ -16178,9 +16178,9 @@ ${digests.join('\n\n')}`,{
             if(String(hit?.type||'')==='timeline-event'){
                 next.title=sanitizeTimelineSummary(hit?.title,220)||'Sự kiện dòng thời gian';
                 const raw=String(hit?.text||'');
-                const eventMatch=raw.match(/(?:^|；)事件:([\s\S]*)$/);
+                const eventMatch=raw.match(/(?:^|;\s*)sự kiện:\s*([\s\S]*)$/i);
                 const clean=sanitizeTimelineSummary(eventMatch?.[1]??raw,360);
-                next.text=eventMatch?raw.replace(/(?:^|；)事件:[\s\S]*$/m,match=>`${match.startsWith('；')?'；':''}事件:${clean}`):clean;
+                next.text=eventMatch?raw.replace(/(?:^|;\s*)sự kiện:[\s\S]*$/im,match=>`${match.startsWith(';')?'; ':''}sự kiện: ${clean}`):clean;
             }
             next.text=retrievalMemorySnippet(next.text,720);
             next.title=compactText(sanitizeRetrievalDocumentText(next.title)||String(next.type||'Ký ức'),220);
@@ -16203,8 +16203,8 @@ ${digests.join('\n\n')}`,{
                 const queryCoverage=queryTokens.size?overlap/queryTokens.size:0;
                 return Math.max(cosineLike,queryCoverage*0.55);
             };
-            // NoDraw2：本地 BM25 兜底不可因为“查询很短、文档较长”把精确旧关键词压到阈值以下。
-            // 服务器索引正常时仍优先走服务器 BM25/向量；这里只增强服务器不可用时的 1万+ 层冷记忆召回。
+            // NoDraw2: phương án đáy BM25 tại chỗ không được vì “truy vấn ngắn, tài liệu dài” mà dìm những từ khóa cũ chính xác xuống dưới ngưỡng.
+            // Khi chỉ mục trên máy chủ vẫn tốt thì vẫn ưu tiên BM25/vector của máy chủ; ở đây chỉ tăng cường việc gọi lại ký ức nguội ở quy mô hơn một vạn tầng khi máy chủ không dùng được.
             const lexicalScore = Math.max(lexicalFor(rawQ),lexicalFor(q));
             const exactFloor = floorRefs.some(floor => {
                 const a = Number(doc.floorStart), b = Number(doc.floorEnd);
@@ -16256,10 +16256,10 @@ ${digests.join('\n\n')}`,{
             capturedState.progress.indexDocumentSchemaRevision=INDEX_DOCUMENT_SCHEMA_REVISION;
             await saveState({immediate:true,refresh:false,reason:'rebuild-index'});
             if(!chatScopeIsCurrent(scope))return false;
-            if(!silent)toast(`索引完成：${task.result?.count||0} 条，向量 ${task.result?.vectorCount||0} 条`,'success');
+            if(!silent)toast(`Lập chỉ mục xong: ${task.result?.count||0} mục, vector ${task.result?.vectorCount||0} mục`,'success');
             return true;
         } catch (error) {
-            if(chatScopeIsCurrent(scope)&&!silent)toast(`索引失败：${error.message}`,'error');
+            if(chatScopeIsCurrent(scope)&&!silent)toast(`Lập chỉ mục thất bại: ${error.message}`,'error');
             return false;
         } finally { if(chatScopeIsCurrent(scope)&&!silent)setBusy(false); }
     }
@@ -16268,7 +16268,7 @@ ${digests.join('\n\n')}`,{
         const scope=captureChatScope();
         const operationState=stateRuntime.state;
         if (!scope || !operationState?.settings?.autoReindex || !operationState.settings.retrievalEnabled) return;
-        // R9超长接管时禁止每20层全量重建一次索引；2万层接管只在收尾统一重建。
+        // Khi R9 tiếp quản một hồ sơ siêu dài thì cấm dựng lại toàn bộ chỉ mục sau mỗi 20 tầng; với hai vạn tầng chỉ dựng lại một lần lúc kết thúc.
         if (stateRuntime.takeoverRunning || operationState.takeover?.resumeWanted) {
             stateRuntime.archiveReindexDeferred = true;
             return;
@@ -16313,7 +16313,7 @@ ${digests.join('\n\n')}`,{
                 hits=mergeMemorySearchHits(data.results||[],localHits,text);
             }else hits=localHits;
         }catch{
-            // 切聊天后禁止拿新聊天state去做旧聊天的本地fallback。
+            // Sau khi đổi cuộc trò chuyện thì cấm lấy state của cuộc mới để làm phương án đáy tại chỗ cho cuộc cũ.
             if(!chatScopeIsCurrent(scope))return [];
             hits=localHits;
         }
@@ -16359,8 +16359,8 @@ ${digests.join('\n\n')}`,{
         const changeCount = (recentText.match(/离开|到达|回来|回到|决定|发现|确认|开始|结束|冲突|答应|拒绝|Lời hẹn|任务|出门|回家|上课|下课|出发|抵达/g) || []).length;
         const latestUser = [...chat].reverse().find(message => message.is_user);
         const latestUserText = compactText(messageText(latestUser), 900);
-        const explicitJump = /第二天|几小时后|数日后|后来|时间推进|出发|旅行|跨城|回到|来到|进入|离开|前往|抵达|转场|跳到/.test(latestUserText);
-        const directNeed = /[？?]|请|帮我|告诉我|回答|解释|为什么|怎么|能不能|要不要|看着|等着|问/.test(latestUserText);
+        const explicitJump = /hôm sau|mấy tiếng sau|mấy ngày sau|về sau|thời gian trôi|xuất phát|đi du lịch|sang thành phố khác|quay lại|đi tới|bước vào|rời đi|hướng tới|đến nơi|chuyển cảnh|nhảy tới/i.test(latestUserText);
+        const directNeed = /[?]|làm ơn|giúp tôi|nói cho tôi|trả lời|giải thích|tại sao|thế nào|có thể|có nên|nhìn|chờ|hỏi/i.test(latestUserText);
         let stage = 'Cảnh hiện tại đang tiến triển bình thường';
         if (recent.length <= 4) stage = 'Mở màn/cảnh ngắn';
         else if (recentText.length > 4500 && changeCount < 3) stage = 'Tương tác ổn định nhưng hơi giậm chân';
