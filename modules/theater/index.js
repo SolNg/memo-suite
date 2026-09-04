@@ -14513,7 +14513,7 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
         const flush = () => { if (current.text.trim()) parts.push({ ...current, text:current.text.trim() }); current={ startFloor:current.endFloor+1, endFloor:current.endFloor+1, text:'' }; };
         for (let floor=a; floor<=b; floor+=1) {
             const message=chat[floor]; if(!message) continue;
-            const head=`【${floor}层｜${messageSpeaker(message)}】`;
+            const head=`【Tầng ${floor} | ${messageSpeaker(message)}】`;
             const body=memoryNarrativeText(message);
             const full=`${head}${body}\n\n`;
             if(full.length<=maxChars){
@@ -14522,11 +14522,11 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
                 current.endFloor=floor; current.text+=full;
                 continue;
             }
-            // 单层本身极长时也绝不截断，按同一Tầng分片并标明片段序号。
+            // Ngay cả khi một tầng cực dài cũng tuyệt đối không cắt bớt, mà chia mảnh trong cùng tầng và ghi rõ số thứ tự mảnh.
             if(current.text) flush();
             const room=Math.max(8000,maxChars-head.length-80);
             const slices=[]; for(let pos=0;pos<body.length;pos+=room)slices.push(body.slice(pos,pos+room));
-            slices.forEach((slice,index)=>parts.push({startFloor:floor,endFloor:floor,text:`${head}【超长消息片段${index+1}/${slices.length}】${slice}`}));
+            slices.forEach((slice,index)=>parts.push({startFloor:floor,endFloor:floor,text:`${head}【Mảnh tin siêu dài ${index+1}/${slices.length}】${slice}`}));
             current={startFloor:floor+1,endFloor:floor+1,text:''};
         }
         if(current.text.trim()) parts.push({ ...current, text:current.text.trim() });
@@ -14551,7 +14551,7 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
             const previous=previousUserEntryForAssistant(floor);
             const previousBody=previous?memoryNarrativeText(previous.message):'';
             const contextCap=Math.max(1800,Math.min(12000,Math.floor(maxChars*.22)));
-            const userContext=previousBody?`【仅供理解的user上下文｜第${previous.index}层｜禁止单独记忆】\n${previousBody.slice(0,contextCap)}\n\n`:'';
+            const userContext=previousBody?`【NGỮ CẢNH CỦA USER CHỈ ĐỂ HIỂU | TẦNG ${previous.index} | CẤM GHI NHỚ RIÊNG】\n${previousBody.slice(0,contextCap)}\n\n`:'';
             const assistantBody=memoryNarrativeText(entry.message);
             const fixedLength=userContext.length+260;
             const room=Math.max(4000,maxChars-fixedLength);
@@ -14564,7 +14564,7 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
                     floor,
                     sliceIndex,
                     sliceTotal:slices.length,
-                    text:`${userContext}【唯一记忆目标：AI/角色回复｜第${floor}层${sliceLabel}】\n${slices[sliceIndex]}`,
+                    text:`${userContext}【MỤC TIÊU GHI NHỚ DUY NHẤT: LƯỢT TRẢ LỜI CỦA AI/NHÂN VẬT | TẦNG ${floor}${sliceLabel}】\n${slices[sliceIndex]}`,
                 });
             }
         }
@@ -14587,33 +14587,33 @@ Khi chế độ là nested-tavern, đây là câu chuyện cấp hai hư cấu n
     function memoryCollectionPrompt(part,partIndex,totalParts) {
         const targets=part.targetFloors.join('、');
         const sources=part.units.map(unit=>unit.text).join('\n\n');
-        return `你是“0-32·永不落幕的剧场”的全量记忆复检员。现在执行记忆集合 API 接力的第${partIndex+1}/${totalParts}次请求。本请求已经贴近单次安全容量；只处理本片，不等待也不假设其他片。
+        return `Bạn là người rà soát lại toàn bộ ký ức của “0-32 · Sân Khấu Không Bao Giờ Hạ Màn”. Bây giờ đang chạy lượt yêu cầu thứ ${partIndex+1}/${totalParts} trong chuỗi tiếp sức API gom ký ức. Yêu cầu này đã sát dung lượng an toàn của một lượt; chỉ xử lý mảnh này, không chờ và cũng không giả định gì về các mảnh khác.
 
-【目标AITầng】${targets}
-【任务】逐层重新详细读取原文，提取可以直接确认的剧情事实。已有正确记忆由程序保留，本次结果只做去重补充和有证据的Trạng thái更新，禁止删除、覆盖成空或凭空改写旧事实。
+【CÁC TẦNG AI MỤC TIÊU】${targets}
+【NHIỆM VỤ】Đọc lại chính văn thật kỹ theo từng tầng, trích ra những sự thật cốt truyện xác nhận được ngay. Ký ức đúng vốn có đã do chương trình giữ lại; kết quả lần này chỉ bổ sung phần chưa trùng và cập nhật trạng thái có bằng chứng, cấm xóa, cấm ghi đè thành rỗng hay tự viết lại sự thật cũ.
 
-严格规则：
+Quy tắc nghiêm ngặt:
 1. floors数组必须为每个目标AITầng各返回且只返回一项，floor必须是上面的真实数字；userTầng只供理解，禁止单独建记忆。
 2. 每个Tầng只记录该AI/角色回复明确发生、确认或承接的事实；不得把更早Tầng、写作指令、思维链、提示词或分析过程当剧情。
 3. mainline只要有实质剧情就写1条60至260字概括；其余栏目尽量详细保留时间、地点、行动、心理/关系变化、Lời hẹn生命周期、秘密知情边界、物品流转、金钱、饮食、购物、出行、穿着和长期偏好证据。
-4. 所有带floor的记录统一写所属AITầng。一次行为不得脑补成永久喜好。promises只写明确成立的Lời hẹn，并区分Chờ thực hiện、Đang diễn ra、默认已履行、Đã thực hiện、长期有效、条件未触发、逾期未确认、Hủy。
-5. 没有内容用空数组，Chưa rõ字符串留空；不得省略memory顶层字段。只输出JSON对象，不要Markdown、解释或续写chính văn。
+4. Mọi bản ghi có floor đều ghi thống nhất tầng AI mà nó thuộc về. Một hành vi đơn lẻ không được suy diễn thành sở thích lâu dài. promises chỉ ghi những lời hẹn rõ ràng đã thành lập, và phân biệt Chờ thực hiện, Đang diễn ra, Mặc định đã thực hiện, Đã thực hiện, Có hiệu lực lâu dài, Điều kiện chưa kích hoạt, Quá hạn chưa xác nhận, Hủy.
+5. Không có nội dung thì dùng mảng rỗng, chuỗi chưa rõ thì để trống; không được bỏ sót trường ở tầng trên cùng của memory. Chỉ xuất object JSON, không dùng Markdown, không giải thích và không viết tiếp chính văn.
 
-输出结构：
+Cấu trúc đầu ra:
 {"floors":[{"floor":0,"memory":{"scene":{"time":"","location":"","weather":"","mood":"","pace":"","goal":""},"mainline":[{"date":"","start":"","end":"","summary":"","status":"Đã hoàn thành","floor":"0"}],"branches":[{"status":"","name":"","start":"","end":"","tracking":"","npcs":"","floor":"0"}],"states":[{"name":"","change":"","time":"","reason":"","location":"","floor":"0"}],"people":[{"name":"","aliases":[],"identityRevealed":false,"source":"","age":"","identity":"","location":"","personality":"","note":"","floor":"0"}],"relations":[{"a":"","b":"","description":"","attitude":"","psychologyChange":"","time":""}],"world":[{"name":"","type":"","description":"","scope":""}],"items":[{"itemId":"","name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}],"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"Chờ thực hiện","floor":"0"}],"secrets":[{"secretId":"","subject":"","content":"","knowers":"","suspects":"","unknown":""}],"chapters":[{"title":"","startFloor":"0","endFloor":"0","summary":"","time":""}],"anchors":[{"date":"","time":"","floor":"0","type":"relationship|intimacy|meal|promise|identity|shopping|travel|clothing|money|event|detail","people":[],"event":"","details":"","tags":[],"importance":"core|high|normal|detail"}],"lifeFacts":[{"subject":"","category":"food|drink|shopping|travel|clothing|habit|preference|routine|other","key":"","value":"","fact":"","explicit":false,"evidence":"","time":"","floor":"0"}]}}]}
 
-本片原文：
+Chính văn của mảnh này:
 ${sources}`;
     }
 
     function parseMemoryCollectionResult(result,expectedFloors=[]) {
-        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`记忆集合JSON解析失败：${error.message}`);}
+        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`Phân tích JSON gom ký ức thất bại: ${error.message}`);}
         if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.floors))throw new Error('JSON gom ký ức thiếu mảng floors');
         const expected=new Set(expectedFloors.map(Number));const seen=new Set();const floorPayloads=[];
         for(const row of raw.floors){
             const floor=Number(row?.floor);
             if(!Number.isInteger(floor)||!expected.has(floor))throw new Error(`记忆集合返回了非目标Tầng：${String(row?.floor)}`);
-            if(seen.has(floor))throw new Error(`记忆集合重复返回第 ${floor} 层`);
+            if(seen.has(floor))throw new Error(`Gom ký ức trả về trùng tầng ${floor}`);
             const memory=validateExtractionPayload(row?.memory);
             for(const key of ['mainline','branches','states','people','promises','anchors','lifeFacts'])for(const item of memory[key]||[])if(item&&typeof item==='object')item.floor=String(floor);
             seen.add(floor);floorPayloads.push({floor,memory});
@@ -14661,8 +14661,8 @@ ${sources}`;
         const sourceChars=parts.reduce((sum,part)=>sum+part.sourceChars,0);
         const hiddenCount=(operationState.tables?.summaries||[]).filter(row=>(row?.['Loại']||row?.['Loại bảng'])==='Tổng kết giai đoạn'&&(row['Trạng thái ẩn']==='Đã ẩn'||row._hiddenRange)).length;
         const question=resumable
-            ? `继续“记忆集合”吗？\n\n将从第 ${startPart+1}/${parts.length} 次API请求继续。当前聊天共 ${assistantFloors} 个AITầng，剩余 ${parts.length-startPart} 次按容量自动接力。开始前仍会再做安全快照，并确保全部Tầng可见。`
-            : `开始“记忆集合”吗？\n\n统计：${context()?.chat?.length||0} 个总Tầng，其中 ${assistantFloors} 个AITầng，约 ${sourceChars.toLocaleString()} 字符；按单次 ${maxChars.toLocaleString()} 字符安全容量预计调用 ${parts.length} 次API。调用次数没有固定上限，长聊天会一直接力到全部读完。\n\n操作会先保存安全快照，再解除全部 /hide（当前检测到 ${hiddenCount} 个隐藏阶段），并把新结果按真实Tầng增量补入现有记忆，不删除旧记忆。是否继续？`;
+            ? `Tiếp tục “gom ký ức” chứ?\n\nSẽ chạy tiếp từ lượt yêu cầu API thứ ${startPart+1}/${parts.length}. Cuộc trò chuyện hiện có ${assistantFloors} tầng AI, còn ${parts.length-startPart} lượt tự tiếp sức theo dung lượng. Trước khi bắt đầu vẫn chụp thêm một ảnh an toàn và bảo đảm mọi tầng đều hiện.`
+            : `Bắt đầu “gom ký ức” chứ?\n\nThống kê: ${context()?.chat?.length||0} tầng tổng cộng, trong đó ${assistantFloors} tầng AI, khoảng ${sourceChars.toLocaleString()} ký tự; theo dung lượng an toàn ${maxChars.toLocaleString()} ký tự mỗi lượt thì dự kiến gọi ${parts.length} lượt API. Số lần gọi không có giới hạn cố định, cuộc trò chuyện dài sẽ tiếp sức cho tới khi đọc hết.\n\nThao tác sẽ lưu ảnh chụp an toàn trước, rồi bỏ toàn bộ /hide (hiện phát hiện ${hiddenCount} giai đoạn đang ẩn), và bổ sung kết quả mới vào ký ức hiện có theo đúng tầng thật, không xóa ký ức cũ. Bạn có tiếp tục không?`;
         if(!confirm(question))return false;
         const operationToken={scope:operationScope,state:operationState,at:Date.now()};
         stateRuntime.memoryCollectionRunning=true;stateRuntime.memoryCollectionAbort=false;stateRuntime.memoryCollectionOperationToken=operationToken;
@@ -14678,17 +14678,17 @@ ${sources}`;
             if(!await unhideEntireCurrentChat(operationScope))throw new Error('Không bỏ ẩn được toàn bộ các tầng, đã ngừng đọc lại');
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('Đã đổi cuộc trò chuyện, việc gom ký ức đã dừng');
             const visibleRows=clearSummaryHiddenStateAfterCollection(operationState);stateRuntime.uiExpanded=true;applyUiCollapse();
-            logAudit('Gom ký ức bỏ toàn bộ phần ẩn',`恢复 ${visibleRows} 个阶段标记；计划 ${parts.length} 次容量接力`);
+            logAudit('Gom ký ức bỏ toàn bộ phần ẩn',`Đã khôi phục ${visibleRows} dấu giai đoạn; dự kiến ${parts.length} lượt tiếp sức theo dung lượng`);
             await saveState({immediate:true,refresh:false,reason:'memory-collection-unhidden',forceSnapshot:true});
             for(let index=startPart;index<parts.length;index+=1){
                 if(stateRuntime.memoryCollectionAbort){progress.status='paused';break;}
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('Đã đổi cuộc trò chuyện, kết quả của cuộc cũ sẽ không ghi vào cuộc hiện tại');
                 const part=parts[index];
-                memoryCollectionBusy(`记忆集合 API 接力 ${index+1}/${parts.length} · 第 ${part.startFloor}-${part.endFloor} 层…`);
+                memoryCollectionBusy(`Tiếp sức API gom ký ức ${index+1}/${parts.length} · tầng ${part.startFloor}-${part.endFloor}…`);
                 const result=await runValidatedTransientLlm('extract',memoryCollectionPrompt(part,index,parts.length),{
                     jsonMode:true,
                     workflowMeta:{workflow:'memoryCollection',partIndex:index,totalParts:parts.length,startFloor:part.startFloor,endFloor:part.endFloor,sourceFingerprint},
-                    validate:value=>parseMemoryCollectionResult(value,part.targetFloors),maxAttempts:3,label:`记忆集合第${index+1}片`,
+                    validate:value=>parseMemoryCollectionResult(value,part.targetFloors),maxAttempts:3,label:`Mảnh gom ký ức thứ ${index+1}`,
                 });
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)throw new Error('Đã đổi cuộc trò chuyện, kết quả của cuộc cũ sẽ không ghi vào cuộc hiện tại');
                 const splitFloors=new Set(part.units.filter(unit=>unit.sliceTotal>1).map(unit=>unit.floor));
@@ -14698,26 +14698,26 @@ ${sources}`;
                 }
                 ensureAssistantFloorMainlineCoverage({state:operationState,chat:context()?.chat||[]});
                 progress.nextPart=index+1;progress.completedParts=index+1;progress.updatedAt=Date.now();progress.error='';
-                logAudit('Đã xong một mảnh của việc gom ký ức',`${index+1}/${parts.length} · 第${part.startFloor}-${part.endFloor}层 · ${part.sourceChars}字符`);
+                logAudit('Đã xong một mảnh của việc gom ký ức',`${index+1}/${parts.length} · tầng ${part.startFloor}-${part.endFloor} · ${part.sourceChars} ký tự`);
                 await saveState({immediate:true,refresh:false,reason:`memory-collection-part-${index+1}`,forceSnapshot:false});
             }
             if(progress.status==='paused'){
                 progress.updatedAt=Date.now();progress.error='Người dùng yêu cầu tạm dừng sau khi xong mảnh hiện tại';
                 await saveState({immediate:true,refresh:true,reason:'memory-collection-paused',forceSnapshot:true});
-                toast(`记忆集合已暂停；下次会从第 ${progress.nextPart+1}/${parts.length} 次API继续`,'info');
+                toast(`Đã tạm dừng gom ký ức; lần sau sẽ chạy tiếp từ lượt API thứ ${progress.nextPart+1}/${parts.length}`,'info');
                 return false;
             }
             progress.status='completed';progress.completedAt=Date.now();progress.updatedAt=Date.now();progress.error='';
-            runDiagnostics();logAudit('Gom ký ức đã xong',`${assistantFloors}个AITầng · ${parts.length}次API容量接力 · 仅增量补充`);
+            runDiagnostics();logAudit('Gom ký ức đã xong',`${assistantFloors} tầng AI · ${parts.length} lượt tiếp sức API theo dung lượng · chỉ bổ sung tăng dần`);
             await saveState({immediate:true,refresh:true,reason:'memory-collection-completed',forceSnapshot:true});
             scheduleReindex();scheduleContextRefresh();
-            notifyPipelineDone(`记忆集合完成：已用 ${parts.length} 次API重读 ${assistantFloors} 个AITầng并增量补充`,'success',{fullscreen:true});
+            notifyPipelineDone(`Gom ký ức đã xong: đã dùng ${parts.length} lượt API để đọc lại ${assistantFloors} tầng AI và bổ sung tăng dần`,'success',{fullscreen:true});
             return true;
         }catch(error){
             if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState){
                 progress.status='failed';progress.error=compactText(error?.message||error,1000);progress.updatedAt=Date.now();
                 await saveState({immediate:true,refresh:true,reason:'memory-collection-failed',forceSnapshot:true});
-                toast(`记忆集合已在断点停止：${progress.error}`,'error');
+                toast(`Gom ký ức đã dừng ở điểm dừng: ${progress.error}`,'error');
             }
             return false;
         }finally{
@@ -14738,7 +14738,7 @@ ${sources}`;
         const stateAtStart=stateRuntime.state;
         const repairText=String(invalidOutput||'').trim();
         const requestPrompt=repairText
-            ? `${String(prompt||'')}\n\n【上一版无效输出｜仅用于格式修复，不是剧情资料】\n${repairText.slice(0,16000)}\n\n请保留本次资料事实，只修复输出格式和结构。`
+            ? `${String(prompt||'')}\n\n【ĐẦU RA KHÔNG HỢP LỆ CỦA BẢN TRƯỚC | CHỈ DÙNG ĐỂ SỬA ĐỊNH DẠNG, KHÔNG PHẢI TƯ LIỆU CỐT TRUYỆN】\n${repairText.slice(0,16000)}\n\nHãy giữ nguyên các sự thật trong tư liệu lần này, chỉ sửa lại định dạng và cấu trúc đầu ra.`
             : String(prompt||'');
         const promptHash=promptFingerprint(feature,requestPrompt);const chatIdentity=scope.chatKey;const generation=stateRuntime.dataGeneration;
         stateAtStart.summaryJobs||=[];
@@ -14764,11 +14764,11 @@ ${sources}`;
             await saveState({immediate:true,refresh:false,reason:'transient-task-failed'});
             throw error;
         }
-        // 最关键的异步边界：服务器请求完成时如果用户已经切到别的聊天，不准再调用通用saveState。
-        // 原聊天metadata里已经保存了queued/running记录；切回来后resumeServerJobs会接回服务器结果。
+        // Ranh giới bất đồng bộ quan trọng nhất: nếu khi yêu cầu tới máy chủ hoàn tất mà người dùng đã chuyển sang cuộc trò chuyện khác thì không được gọi saveState dùng chung nữa.
+        // Metadata của cuộc trò chuyện gốc đã lưu bản ghi queued/running; khi quay lại thì resumeServerJobs sẽ nhận lại kết quả từ máy chủ.
         if(!chatScopeIsCurrent(scope)||stateRuntime.dataGeneration!==generation)throw new Error('Đã đổi cuộc trò chuyện: kết quả tổng kết được giữ trên máy chủ, chưa ghi vào cuộc hiện tại');
         record.status=completed?.status||'error';record.error=completed?.error||null;record.updatedAt=Date.now();
-        if(completed?.status!=='completed'){await saveState({immediate:true,refresh:false,reason:'transient-task-failed'});throw new Error(completed?.error||`${feature}任务未完成`);}
+        if(completed?.status!=='completed'){await saveState({immediate:true,refresh:false,reason:'transient-task-failed'});throw new Error(completed?.error||`Tác vụ ${feature} chưa hoàn tất`);}
         record.resultText=String(completed.result?.text||'');record.model=completed.model||'';record.usage=completed.usage||null;record.applied=true;record.consumedAt=Date.now();
         await saveState({immediate:true,refresh:false,reason:'transient-task-result-cached'});
         return {text:record.resultText,model:record.model,usage:record.usage,task:completed,record};
@@ -14805,22 +14805,22 @@ ${sources}`;
                 await rejectTransientQuality(data?.record,error,{reason:'summary-quality-rejected'});
                 const retryPayload={invalidOutput:data.text};
                 invalidOutput=retryPayload.invalidOutput;
-                if(attempt<attempts)setBusy(true,`${label}质量不合格，正在重新请求 ${attempt+1}/${attempts}…`);
+                if(attempt<attempts)setBusy(true,`${label} không đạt chất lượng, đang gửi lại yêu cầu ${attempt+1}/${attempts}…`);
             }
         }
-        throw new Error(`${label}连续${attempts}次质量校验失败：${lastError?.message||lastError||'Lỗi chưa rõ'}`);
+        throw new Error(`${label} không qua kiểm tra chất lượng ${attempts} lần liên tiếp: ${lastError?.message||lastError||'Lỗi chưa rõ'}`);
     }
 
     function rangePartSummaryPrompt(start,end,text) {
-        return `你是长篇剧情记忆编辑。以下是第${start}-${end}层中的一个完整原文分片。请做高密度“分片摘要”，不能遗漏精确时间、地点、人物行动/情绪、关系变化、Lời hẹn、物品、秘密知情边界、未解决伏笔。禁止续写、禁止脑补。只输出摘要chính văn。\n\n${text}`;
+        return `Bạn là biên tập viên ký ức cho một câu chuyện dài. Dưới đây là một mảnh chính văn hoàn chỉnh nằm trong khoảng tầng ${start}-${end}. Hãy viết một “bản tóm tắt mảnh” dày đặc thông tin, không được bỏ sót thời gian chính xác, địa điểm, hành động/cảm xúc nhân vật, thay đổi quan hệ, lời hẹn, vật phẩm, ranh giới người biết bí mật và những manh mối chưa được giải. Cấm viết tiếp, cấm suy diễn. Chỉ xuất phần nội dung tóm tắt.\n\n${text}`;
     }
 
     function requireSummaryQuality(value, kind='Tổng kết giai đoạn', minChars=80) {
         const text=String(value?.text ?? value ?? '').trim();
         const compact=text.replace(/\s+/g,'');
-        if(compact.length < minChars) throw new Error(`${kind}质量校验失败：内容过短（${compact.length}<${minChars}），已拒绝写入/隐藏原文`);
-        if(/^(?:null|undefined|\{\}|\[\]|无|Chưa có|没有|无内容|无新增|n\/?a)$/i.test(compact)) throw new Error(`${kind}质量校验失败：返回为空壳`);
-        if(/(?:抱歉|无法提供|不能提供|无法完成|I\s*(?:can(?:not|'t)|am unable))/i.test(text) && compact.length < 220) throw new Error(`${kind}质量校验失败：疑似模型拒答/错误文本`);
+        if(compact.length < minChars) throw new Error(`${kind} không qua kiểm tra chất lượng: nội dung quá ngắn (${compact.length}<${minChars}), đã từ chối ghi/ẩn chính văn`);
+        if(/^(?:null|undefined|\{\}|\[\]|không|chưa có|không có|không có nội dung|không có mục mới|n\/?a)$/i.test(compact)) throw new Error(`${kind} không qua kiểm tra chất lượng: trả về vỏ rỗng`);
+        if(/(?:xin lỗi|không thể cung cấp|không cung cấp được|không thể hoàn thành|I\s*(?:can(?:not|'t)|am unable))/i.test(text) && compact.length < 220) throw new Error(`${kind} không qua kiểm tra chất lượng: nghi là mô hình từ chối trả lời/văn bản lỗi`);
         return value && typeof value==='object' ? {...value,text} : text;
     }
 
@@ -14863,11 +14863,11 @@ ${sources}`;
     }
 
     function parseStageSummaryResult(result,start,end) {
-        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`阶段总结结构解析失败：${error.message}`);}
+        let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`Phân tích cấu trúc tổng kết giai đoạn thất bại: ${error.message}`);}
         if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Kiểm tra cấu trúc tổng kết giai đoạn thất bại: tầng trên cùng không phải object JSON');
         const required=['timeScene','corePlotActions','peopleRelations','secretsKnowledge','items','promises','unresolved'];
         const missing=required.filter(key=>!Object.prototype.hasOwnProperty.call(raw,key));
-        if(missing.length)throw new Error(`阶段总结结构校验失败：缺少字段 ${missing.join('、')}`);
+        if(missing.length)throw new Error(`Kiểm tra cấu trúc tổng kết giai đoạn thất bại: thiếu trường ${missing.join(', ')}`);
         const structured=normalizeStageSummaryPayload(raw,start,end);
         if(!structured.corePlotActions.length&&!structured.peopleRelations.length&&!structured.secretsKnowledge.length&&!structured.items.length&&!structured.promises.length&&!structured.unresolved.length)throw new Error('Kiểm tra cấu trúc tổng kết giai đoạn thất bại: cả năm khu nội dung đều trống, đã từ chối ghi và ẩn chính văn');
         const text=formatStageSummaryPayload(structured);
@@ -14880,18 +14880,18 @@ ${sources}`;
         if(!parts.length) throw new Error('Khoảng đã chọn không có nội dung trò chuyện nào để tổng kết');
         const validateFinal=result=>requireSummaryQuality(parseStageSummaryResult(result,start,end),'Tổng kết giai đoạn',120);
         if(parts.length===1){
-            const prompt=`你是长篇剧情记忆编辑。完整读取原聊天并提取长期记忆。必须保留精确时间/相对时间、地点变化、每个人物的行动与情绪/心理变化、关系变化、Lời hẹn生命周期、物品流转、秘密知情边界及未解决伏笔。不能因为某类信息很多就省略其它栏目。
+            const prompt=`Bạn là biên tập viên ký ức cho một câu chuyện dài. Hãy đọc trọn cuộc trò chuyện gốc và trích ra ký ức dài hạn. Bắt buộc giữ lại thời gian chính xác/thời gian tương đối, thay đổi địa điểm, hành động cùng cảm xúc/biến đổi tâm lý của từng nhân vật, thay đổi quan hệ, vòng đời của lời hẹn, sự luân chuyển vật phẩm, ranh giới người biết bí mật và những manh mối chưa được giải. Không được vì một loại thông tin quá nhiều mà lược bỏ các mục khác.
 
 ${stageSummaryJsonInstruction(start,end)}
 
-原聊天：
+Cuộc trò chuyện gốc:
 ${parts[0].text}`;
-            return await runValidatedTransientLlm('stageSummary',prompt,{jsonMode:true,workflowMeta:{workflow:'stageSummary',startFloor:start,endFloor:end},validate:validateFinal,maxAttempts:3,label:`第${start}-${end}层阶段总结`});
+            return await runValidatedTransientLlm('stageSummary',prompt,{jsonMode:true,workflowMeta:{workflow:'stageSummary',startFloor:start,endFloor:end},validate:validateFinal,maxAttempts:3,label:`Tổng kết giai đoạn tầng ${start}-${end}`});
         }
         const digests=[]; let model='';
         try {
             for(let i=0;i<parts.length;i+=1){
-                setBusy(true,`完整读取 ${start}-${end} 层 · 分片 ${i+1}/${parts.length}`);
+                setBusy(true,`Đọc trọn tầng ${start}-${end} · mảnh ${i+1}/${parts.length}`);
                 const result=await runValidatedTransientLlm('stageSummary',rangePartSummaryPrompt(parts[i].startFloor,parts[i].endFloor,parts[i].text),{
                     workflowMeta:{workflow:'stageSummary-part',startFloor:start,endFloor:end,partIndex:i,partStart:parts[i].startFloor,partEnd:parts[i].endFloor},
                     validate:value=>requireSummaryQuality(value,`阶段分片${i+1}`,70),maxAttempts:3,label:`阶段分片${i+1}`
