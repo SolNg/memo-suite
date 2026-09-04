@@ -10786,8 +10786,8 @@ ${messageText(message).slice(0,10000)}`;
         for(let i=0;i<total;i++){ const p=s9Product(platform,i); const hitCat=!category||category==='Tất cả'||p.category===category; const hay=`${p.name} ${p.store} ${p.brand} ${p.category} ${p.tags.join(' ')}`.toLowerCase(); if(hitCat&&(!q||hay.includes(q))) out.push(i); }
         if(q){
             const common=s93CommonMatches(q,category);
-            // 常用品是可寻址的真实 SKU：置于生成目录之前，保证“酱油/老抽”
-            // 等口语查询在第一页就能打开详情，而不是被泛化商品淹没。
+            // Đồ dùng thường ngày là SKU thật, địa chỉ hóa được: đặt trước danh mục sinh tự động để những truy vấn
+            // khẩu ngữ như “nước tương/xì dầu đậm” mở được trang chi tiết ngay ở trang đầu, thay vì bị hàng chung chung nhấn chìm.
             const commonRefs=[]; for(const good of common) for(let ordinal=0;ordinal<3;ordinal++) commonRefs.push('common:'+good.key+':'+ordinal);
             const fallback=s93AdHocProduct(platform,q,category);
             if(!commonRefs.length&&!out.length&&fallback) out.push('adhoc:'+fallback.id.slice((platform+'-adhoc-').length));
@@ -10814,11 +10814,11 @@ ${messageText(message).slice(0,10000)}`;
         const platformOffset=platform==='meituan'?3:0;
         const stores=Array.isArray(profile?.stores)&&profile.stores.length?profile.stores:null;
         const base=stores?stores[(ordinal+platformOffset)%stores.length]:`${S91_STORE_ROOTS[(ordinal+categoryIndex*3+platformOffset)%S91_STORE_ROOTS.length]}${S92_FOOD_TYPE[cat]||'Quán nhỏ'}`;
-        const modifier=platform==='meituan'?s9Pick(['鲜作','甄选','匠心','好味'],ordinal+categoryIndex*7):'';
+        const modifier=platform==='meituan'?s9Pick(['Tươi Làm','Tuyển Chọn','Khéo Tay','Ngon Vị'],ordinal+categoryIndex*7):'';
         const brand=modifier?`${base}·${modifier}`:base;
         const groupSize=stores?stores.length:S91_STORE_ROOTS.length;
         const district=S91_DISTRICTS[(Math.floor(ordinal/groupSize)+categoryIndex+platformOffset*2)%S91_DISTRICTS.length];
-        return {brand,name:`${brand}（${district}店）`};
+        return {brand,name:`${brand} (chi nhánh ${district})`};
     }
     function s92FoodItemName(platform,cat,profile,brand,index,j){
         const base=profile.menu[j%profile.menu.length];
@@ -10859,9 +10859,9 @@ ${messageText(message).slice(0,10000)}`;
         const average=Math.max(12,Math.round(menu.slice(0,8).reduce((sum,item)=>sum+item.price,0)/8));
         const monthlySales=300+(seed%5700);
         const etaMinutes=18+(seed%34);
-        const promotions=[`${20+(seed%4)*5}减${5+(seed%9)}`,`${35+(seed%5)*5}减${10+(seed%12)}`,seed%3===0?'新客立减8元':'领3元店铺券'];
-        const badges=[seed%4===0?'附近上新':seed%4===1?'品牌商户':seed%4===2?'堂食店':'口碑好店',seed%3===0?'近期好评多':'Khách quen hay gọi'];
-        return {id:`${platform}-store-${index}`,name:identity.name,brand:identity.brand,category:cat,score:(4.4+(seed%58)/100).toFixed(1),delivery,deliveryFee:delivery,minOrder,average,monthlySales,eta:`${etaMinutes}分钟`,etaMinutes,distance,distanceKm:distanceValue,icon:profile.icon,tags:[cat,...badges],badges,promotions,review:`近7日${80+(seed%920)}人下单`,rank:`${S91_DISTRICTS[(seed>>>12)%S91_DISTRICTS.length]}${cat}热销榜第${1+(seed%9)}名`,menu};
+        const promotions=[`Giảm ${5+(seed%9)} cho đơn từ ${20+(seed%4)*5}`,`Giảm ${10+(seed%12)} cho đơn từ ${35+(seed%5)*5}`,seed%3===0?'Khách mới giảm ngay 8 tệ':'Nhận voucher 3 tệ của quán'];
+        const badges=[seed%4===0?'Mới mở gần đây':seed%4===1?'Quán thương hiệu':seed%4===2?'Quán ăn tại chỗ':'Quán được khen',seed%3===0?'Gần đây nhiều đánh giá tốt':'Khách quen hay gọi'];
+        return {id:`${platform}-store-${index}`,name:identity.name,brand:identity.brand,category:cat,score:(4.4+(seed%58)/100).toFixed(1),delivery,deliveryFee:delivery,minOrder,average,monthlySales,eta:`${etaMinutes} phút`,etaMinutes,distance,distanceKm:distanceValue,icon:profile.icon,tags:[cat,...badges],badges,promotions,review:`${80+(seed%920)} người đặt trong 7 ngày qua`,rank:`Hạng ${1+(seed%9)} bảng bán chạy ${cat} khu ${S91_DISTRICTS[(seed>>>12)%S91_DISTRICTS.length]}`,menu};
     }
     function s9FoodStoreById(id){ const m=String(id||'').match(/^(eleme|meituan)-store-(\d+)$/); return m?s9FoodStore(m[1],Number(m[2])):null; }
     function s9FoodSortState(platform){stateRuntime.phoneCatalogSort||={};return ['sales','distance'].includes(stateRuntime.phoneCatalogSort[platform])?stateRuntime.phoneCatalogSort[platform]:'default';}
@@ -10907,28 +10907,28 @@ ${messageText(message).slice(0,10000)}`;
     function isWechatPaymentSms(item={}) {
         const sender=compactText(item?.author||item?.contact||item?.smsAuthor,120);
         const content=compactText(item?.content||item?.smsText,800);
-        return /微信支付|微信钱包|微信收款|财付通/i.test(sender)
-            || (String(item?.category||'').toLowerCase()==='payment' && /微信支付|微信零钱|零钱余额|微信钱包/i.test(content))
-            || (/微信支付|微信零钱|零钱余额|微信钱包|财付通/i.test(content) && /支出|收入|付款|转账|收款|退款|到账|余额/i.test(content));
+        return /WeChat Pay|Ví WeChat|WeChat thu tiền|Tenpay/i.test(sender)
+            || (String(item?.category||'').toLowerCase()==='payment' && /WeChat Pay|Tiền lẻ WeChat|Số dư tiền lẻ|Ví WeChat/i.test(content))
+            || (/WeChat Pay|Tiền lẻ WeChat|Số dư tiền lẻ|Ví WeChat|Tenpay/i.test(content) && /chi ra|thu vào|trả tiền|chuyển khoản|nhận tiền|hoàn tiền|tiền về|số dư/i.test(content));
     }
     function s9CategoryBar(platform,categories){ const active=s9CategoryState(platform); return `<div class="vvvtm-mega-cats" data-phone-horizontal-scroll>${['Tất cả',...categories].map(c=>`<button class="${active===c?'active':''}" data-phone-catalog-category="${platform}" data-phone-category="${esc(c)}">${esc(c)}</button>`).join('')}</div>`; }
     function s9FoodSortBar(platform){
         const sort=s9FoodSortState(platform),filterCount=s9FoodFilterCount(platform);
-        return `<section class="vvvtm-food-filter-row ${platform}"><button class="${sort==='default'?'active':''}" data-phone-food-sort="default" data-phone-food-platform="${platform}">综合排序</button><button class="${sort==='sales'?'active':''}" data-phone-food-sort="sales" data-phone-food-platform="${platform}">销量优先</button><button class="${sort==='distance'?'active':''}" data-phone-food-sort="distance" data-phone-food-platform="${platform}">距离最近</button><button class="${filterCount?'active':''}" data-phone-food-filter="${platform}">筛选${filterCount?`(${filterCount})`:''}</button></section>`;
+        return `<section class="vvvtm-food-filter-row ${platform}"><button class="${sort==='default'?'active':''}" data-phone-food-sort="default" data-phone-food-platform="${platform}">Sắp xếp tổng hợp</button><button class="${sort==='sales'?'active':''}" data-phone-food-sort="sales" data-phone-food-platform="${platform}">Ưu tiên bán chạy</button><button class="${sort==='distance'?'active':''}" data-phone-food-sort="distance" data-phone-food-platform="${platform}">Gần nhất</button><button class="${filterCount?'active':''}" data-phone-food-filter="${platform}">Lọc${filterCount?`(${filterCount})`:''}</button></section>`;
     }
     function s9EnsureExtendedApps(){
         const phone=ensurePhoneEcosystem(); if(!phone)return null;
         phone.commerce.jd ||= {cart:[],orders:[]}; phone.commerce.jd.cart=Array.isArray(phone.commerce.jd.cart)?phone.commerce.jd.cart:[];phone.commerce.jd.orders=Array.isArray(phone.commerce.jd.orders)?phone.commerce.jd.orders:[];
         phone.commerce.meituan ||= {cart:[],orders:[]}; phone.commerce.meituan.cart=Array.isArray(phone.commerce.meituan.cart)?phone.commerce.meituan.cart:[];phone.commerce.meituan.orders=Array.isArray(phone.commerce.meituan.orders)?phone.commerce.meituan.orders:[];
-        phone.bank = phone.bank&&typeof phone.bank==='object'?phone.bank:{openingBalance:5000,transactions:[],cards:[{id:'card-1',name:'剧情储蓄卡',last4:'8888'}]}; phone.bank.transactions=Array.isArray(phone.bank.transactions)?phone.bank.transactions:[]; phone.bank.cards=Array.isArray(phone.bank.cards)?phone.bank.cards:[];
+        phone.bank = phone.bank&&typeof phone.bank==='object'?phone.bank:{openingBalance:5000,transactions:[],cards:[{id:'card-1',name:'Thẻ tiết kiệm cốt truyện',last4:'8888'}]}; phone.bank.transactions=Array.isArray(phone.bank.transactions)?phone.bank.transactions:[]; phone.bank.cards=Array.isArray(phone.bank.cards)?phone.bank.cards:[];
         phone.mail = phone.mail&&typeof phone.mail==='object'?phone.mail:{inbox:[],sent:[]}; phone.mail.inbox=Array.isArray(phone.mail.inbox)?phone.mail.inbox:[];phone.mail.sent=Array.isArray(phone.mail.sent)?phone.mail.sent:[];
         phone.browser = phone.browser&&typeof phone.browser==='object'?phone.browser:{history:[],bookmarks:['校园门户','Thời tiết','Bản đồ','Taobao','JD']}; phone.browser.history=Array.isArray(phone.browser.history)?phone.browser.history:[];
         phone.maps = phone.maps&&typeof phone.maps==='object'?phone.maps:{history:[],saved:[]}; phone.maps.history=Array.isArray(phone.maps.history)?phone.maps.history:[];
         phone.ride = phone.ride&&typeof phone.ride==='object'?phone.ride:{orders:[]};phone.ride.orders=Array.isArray(phone.ride.orders)?phone.ride.orders:[];phone.ride.serviceName='Didi';phone.ride.hotline=compactText(phone.ride.hotline||'400-000-0999',40);
         phone.travel = phone.travel&&typeof phone.travel==='object'?phone.travel:{orders:[],passengers:[]};phone.travel.orders=Array.isArray(phone.travel.orders)?phone.travel.orders:[];
         phone.campus = phone.campus&&typeof phone.campus==='object'?phone.campus:{notices:[],courses:[],grades:[],cardBalance:120};phone.campus.notices=Array.isArray(phone.campus.notices)?phone.campus.notices:[];phone.campus.courses=Array.isArray(phone.campus.courses)?phone.campus.courses:[];phone.campus.grades=Array.isArray(phone.campus.grades)?phone.campus.grades:[];
-        if(!phone.campus.courses.length)phone.campus.courses=[{day:'周一',time:'08:30',name:'专业设计课',room:'设计楼A203'},{day:'周二',time:'14:00',name:'植物景观',room:'园林楼B105'},{day:'周三',time:'10:20',name:'景观工程',room:'综合楼C302'},{day:'周四',time:'15:40',name:'城市设计',room:'设计楼A401'},{day:'周五',time:'09:30',name:'专业英语',room:'综合楼D208'}];
-        if(!phone.campus.notices.length)phone.campus.notices=[{id:'campus-n1',title:'校园通知',content:'本周课程与活动以剧情实际发生内容为准。',time:phoneClock().time}];
+        if(!phone.campus.courses.length)phone.campus.courses=[{day:'Thứ hai',time:'08:30',name:'Thiết kế chuyên ngành',room:'Nhà Thiết Kế A203'},{day:'Thứ ba',time:'14:00',name:'Cảnh quan thực vật',room:'Nhà Lâm Viên B105'},{day:'Thứ tư',time:'10:20',name:'Kỹ thuật cảnh quan',room:'Nhà Tổng Hợp C302'},{day:'Thứ năm',time:'15:40',name:'Thiết kế đô thị',room:'Nhà Thiết Kế A401'},{day:'Thứ sáu',time:'09:30',name:'Tiếng Anh chuyên ngành',room:'Nhà Tổng Hợp D208'}];
+        if(!phone.campus.notices.length)phone.campus.notices=[{id:'campus-n1',title:'Thông báo trường học',content:'Lịch học và hoạt động tuần này lấy theo nội dung thực tế diễn ra trong cốt truyện.',time:phoneClock().time}];
         return phone;
     }
     function s9BankBalance(){ const p=s9EnsureExtendedApps(); return Math.round((s8Money(p.bank.openingBalance)+(p.bank.transactions||[]).reduce((a,b)=>a+s8Money(b.amount),0))*100)/100; }
@@ -10961,7 +10961,7 @@ ${messageText(message).slice(0,10000)}`;
             }
             const eventKey=compactText(row.id,140),known=phone.knowledgeLedger.some(old=>npcNameKey(old?.npc)===npcNameKey(to)&&compactText(old?.eventId||old?.relatedId,140)===eventKey);
             if(!known){
-                const summary=account==='alipay'?`${sender}通过支付宝转账 ${s8MoneyText(row.amount)}；支付宝已自动到账，无需领取或点击接收`:`${sender}发来微信转账卡 ${s8MoneyText(row.amount)}；当前等待接收或退还`;
+                const summary=account==='alipay'?`${sender} chuyển khoản qua Alipay ${s8MoneyText(row.amount)}; Alipay đã tự động vào tài khoản, không cần lĩnh hay bấm nhận`:`${sender} gửi thẻ chuyển tiền WeChat ${s8MoneyText(row.amount)}; đang chờ nhận hoặc hoàn lại`;
                 phone.knowledgeLedger.push({id:uid('knowledge'),eventId:eventKey,relatedId:eventKey,subject:account==='alipay'?'Chuyển khoản Alipay đã vào tài khoản':'Thẻ chuyển tiền WeChat',summary,npc:to,method:'message',channel,location:compactText(stateRuntime.state?.scene?.location||'',180),floor:row.floor,source:'wallet-transfer-migration',time:row.time,createdAt:Date.now()});
             }
         }
@@ -10987,7 +10987,7 @@ ${messageText(message).slice(0,10000)}`;
         for(const key of ['favorites','bookings','checkins','reviews','deals'])phone.dianping[key]=Array.isArray(phone.dianping[key])?phone.dianping[key]:[];
         phone.walletTools = phone.walletTools && typeof phone.walletTools==='object' ? phone.walletTools : {};
         for(const key of ['transfers','redPackets','splitBills','subscriptions','creditBills'])phone.walletTools[key]=Array.isArray(phone.walletTools[key])?phone.walletTools[key]:[];
-        // 微信支付属于微信服务会话/微信通知，旧版本误写进短信的副本直接清掉。
+        // WeChat Pay thuộc về hội thoại dịch vụ/thông báo của WeChat; bản sao mà bản cũ ghi nhầm vào SMS thì xóa thẳng.
         phone.sms = Array.isArray(phone.sms) ? phone.sms.filter(item=>!isWechatPaymentSms(item)) : [];
         phone.finance = phone.finance && typeof phone.finance === 'object' ? phone.finance : {};
         phone.finance.openingBalances = phone.finance.openingBalances && typeof phone.finance.openingBalances === 'object' ? phone.finance.openingBalances : {alipay:0,wechat:0};
@@ -11027,11 +11027,11 @@ ${messageText(message).slice(0,10000)}`;
         if(phone.activityEvents.length>300)phone.activityEvents.splice(0,phone.activityEvents.length-300);
         return row;
     }
-    const S12_KNOWLEDGE_METHODS=Object.freeze({witnessed:'同场目击',told:'当面告知',message:'消息告知',received:'代收/共同参与',moment:'朋友圈刷到'});
+    const S12_KNOWLEDGE_METHODS=Object.freeze({witnessed:'Chứng kiến tại chỗ',told:'Nói trực tiếp',message:'Báo qua tin nhắn',received:'Nhận hộ/cùng tham gia',moment:'Thấy trên Khoảnh khắc'});
     function s12RecordKnowledge({eventId='',relatedId='',subject='',summary='',npc='',method='witnessed',channel='',location='',floor=-1,source='phone'}={}){
         const phone=ensurePhoneEcosystem();if(!phone)return null;
         const name=relationPartyName(npc);const safeSource=compactText(source,60).toLowerCase();
-        if(!name||/diary|world|彼间私文|日记/.test(safeSource))return null;
+        if(!name||/diary|world|Bỉ Gian Tư Văn|Nhật ký/i.test(safeSource))return null;
         const normalizedMethod=Object.prototype.hasOwnProperty.call(S12_KNOWLEDGE_METHODS,method)?method:'witnessed';
         const row={id:uid('knowledge'),eventId:compactText(eventId,140),relatedId:compactText(relatedId,140),subject:compactText(subject,180),summary:compactText(summary,700),npc:name,method:normalizedMethod,channel:compactText(channel,80),location:compactText(location||stateRuntime.state?.scene?.location||'',180),floor:Number.isFinite(Number(floor))&&Number(floor)>=0?Number(floor):Math.max(0,(context()?.chat?.length||1)-1),source:safeSource||'phone',time:phoneClock().time,createdAt:Date.now()};
         const duplicate=phone.knowledgeLedger.some(old=>npcNameKey(old?.npc)===npcNameKey(row.npc)&&compactText(old?.eventId||old?.relatedId,140)===compactText(row.eventId||row.relatedId,140)&&old?.method===row.method);
@@ -11049,10 +11049,10 @@ ${messageText(message).slice(0,10000)}`;
     }
 
     // fixed39：手机与chính văn不再是两条松散剧情。所有跨媒介关键事件统一写入同一故事账本，
-    // 金额、人物是否认识、线上聊天史与线下见面史都作为不可改写事实注入主AI和手机AI。
-    const S39_SERVICE_CONTACT_RE=/(?:微信支付|支付宝|运营商|系统|客服|官方|通知|银行|快递|物流|外卖|骑手|网约车|滴滴|淘宝|京东|美团|饿了么|航旅|校园|物业|前台|群成员|其他成员|匿名|陌生人|某人)/i;
+    // Số tiền, việc hai bên có quen nhau chưa, lịch sử trò chuyện trực tuyến và lịch sử gặp mặt ngoài đời đều được đưa vào AI chính và AI điện thoại như những sự thật không được sửa.
+    const S39_SERVICE_CONTACT_RE=/(?:WeChat Pay|Alipay|nhà mạng|hệ thống|chăm sóc khách hàng|chính thức|thông báo|ngân hàng|chuyển phát nhanh|vận chuyển|giao đồ ăn|tài xế|xe công nghệ|Didi|Taobao|JD|Meituan|Ele\.me|hàng không|trường học|ban quản lý|lễ tân|thành viên nhóm|thành viên khác|ẩn danh|người lạ|một người nào đó)/i;
     function s39StoryFloor(value=-1){const n=Number(value);return Number.isFinite(n)&&n>=0?n:Math.max(0,(context()?.chat?.length||1)-1);}
-    function s39StoryParticipantName(value){const name=relationPartyName(value);if(!name||S39_SERVICE_CONTACT_RE.test(name)||/^(?:我|本人|用户|user|\{\{user\}\})$/i.test(name))return '';return name;}
+    function s39StoryParticipantName(value){const name=relationPartyName(value);if(!name||S39_SERVICE_CONTACT_RE.test(name)||/^(?:tôi|bản thân|người dùng|user|\{\{user\}\})$/i.test(name))return '';return name;}
     function s39RecordStoryEvent({type='event',relatedId='',participants=[],knownBy=[],userKnows=null,channel='',amount=0,status='',summary='',floor=-1,time='',location='',source='phone'}={}){
         const phone=stateRuntime.state?.phone;if(!phone)return null;
         phone.storyLedger=Array.isArray(phone.storyLedger)?phone.storyLedger:[];
@@ -11080,7 +11080,7 @@ ${messageText(message).slice(0,10000)}`;
         const f=s39StoryFloor(floor),ch=compactText(channel,60)||'phone';
         if(!row){row={id:uid('acquaintance'),npc:name,channels:[],firstContactFloor:f,lastContactFloor:f,firstOfflineFloor:-1,lastOfflineFloor:-1,phoneContactCount:0,offlineMet:false,evidence:'',createdAt:Date.now()};phone.acquaintanceLedger.push(row);}
         row.npc=name;row.channels=[...new Set([...(row.channels||[]),ch])].slice(0,12);row.lastContactFloor=Math.max(Number(row.lastContactFloor||-1),f);
-        if(/phone|wechat|微信|短信|电话|call|message|转账/i.test(ch))row.phoneContactCount=Math.max(0,Number(row.phoneContactCount||0))+1;
+        if(/phone|wechat|WeChat|SMS|điện thoại|call|message|chuyển khoản/i.test(ch))row.phoneContactCount=Math.max(0,Number(row.phoneContactCount||0))+1;
         else row.phoneContactCount=Math.max(0,Number(row.phoneContactCount||0));
         if(offline){row.offlineMet=true;if(Number(row.firstOfflineFloor)<0)row.firstOfflineFloor=f;row.lastOfflineFloor=Math.max(Number(row.lastOfflineFloor||-1),f);row.coPresent=true;row.lastPresenceFloor=f;row.presenceLocation=compactText(stateRuntime.state?.scene?.location||'',180);if(!row.channels.includes('线下现实'))row.channels.push('线下现实');}
         if(evidence)row.evidence=compactText(evidence,500);row.updatedAt=Date.now();if(phone.acquaintanceLedger.length>300)phone.acquaintanceLedger.splice(0,phone.acquaintanceLedger.length-300);return row;
@@ -11092,7 +11092,7 @@ ${messageText(message).slice(0,10000)}`;
         for(const thread of phone.threads||[]){
             const contact=s39StoryParticipantName(thread?.contact),messages=Array.isArray(thread?.messages)?thread.messages:[];if(!contact||!messages.length)continue;
             const last=messages.at(-1)||{},floor=Number(last?._floor??last?._anchorFloor??-1);
-            s39MarkAcquaintance(contact,{channel:'微信/手机历史',floor,evidence:'历史手机会话已存在'});
+            s39MarkAcquaintance(contact,{channel:'WeChat/lịch sử điện thoại',floor,evidence:'Hội thoại điện thoại lịch sử đã tồn tại'});
             const sampled=[...messages.slice(0,4),...messages.slice(-4)].filter((item,index,arr)=>arr.findIndex(x=>(x?.id&&item?.id?x.id===item.id:x===item))===index);
             const history=sampled.map(item=>`${compactText(item?.sender||item?.role,60)||'Tin nhắn'}：${compactText(item?.content||phoneStickerById(item?.stickerId)?.name||'[Sticker]',140)}`).filter(Boolean).join(' / ');
             s39RecordStoryEvent({type:'communication-history',relatedId:`thread:${npcNameKey(contact)}`,participants:[userName,contact],channel:'手机历史',status:'Đã xảy ra',summary:`既往手机聊天：${history}`,floor,time:last?.time||'',source:'fixed39-migration'});
@@ -11113,18 +11113,18 @@ ${messageText(message).slice(0,10000)}`;
         for(const row of stateRuntime.state?.npcRegistry||[])if(row?.currentName)names.add(row.currentName);
         const active=compactText(context()?.name2||context()?.characterName||'',100);if(active)names.add(active);
         const result=[];
-        const physical=/(?:身边|面前|旁边|对面|眼前|同桌|同处|同场|房间里|屋里|店里|办公室里|工作室里|走进|走来|来到|站在|坐在|靠在|蹲在|躺在|抬手|伸手|递给|接过|拍了|碰了|看着|望着|抬眼|回头|进门|出现在)/;
-        const remote=/(?:微信|短信|电话|手机|消息|语音|视频|聊天框|屏幕|来电|发来|回复了消息)/;
-        for(const raw of names){const name=compactText(raw,100);if(!name)continue;let start=0,hit=false;while((start=source.indexOf(name,start))>=0){const win=source.slice(Math.max(0,start-100),Math.min(source.length,start+name.length+120));if(physical.test(win)&&!(remote.test(win)&&!/(?:身边|面前|旁边|同场|走进|来到|站在|坐在|递给|接过|看着|抬手)/.test(win))){hit=true;break;}start+=name.length;}if(hit)result.push(name);}
+        const physical=/(?:bên cạnh|trước mặt|kế bên|đối diện|ngay trước mắt|cùng bàn|cùng chỗ|cùng nơi|trong phòng|trong nhà|trong quán|trong văn phòng|trong xưởng|bước vào|đi tới|đến bên|đứng ở|ngồi ở|tựa vào|ngồi xổm|nằm ở|đưa tay|chìa tay|đưa cho|đón lấy|vỗ vào|chạm vào|nhìn|dõi theo|ngước mắt|quay đầu|vào cửa|xuất hiện ở)/i;
+        const remote=/(?:WeChat|SMS|điện thoại|di động|tin nhắn|tin thoại|video|khung chat|màn hình|cuộc gọi đến|gửi tới|đã trả lời tin)/i;
+        for(const raw of names){const name=compactText(raw,100);if(!name)continue;let start=0,hit=false;while((start=source.indexOf(name,start))>=0){const win=source.slice(Math.max(0,start-100),Math.min(source.length,start+name.length+120));if(physical.test(win)&&!(remote.test(win)&&!/(?:bên cạnh|trước mặt|kế bên|cùng chỗ|bước vào|đi tới|đứng ở|ngồi ở|đưa cho|đón lấy|nhìn|đưa tay)/i.test(win))){hit=true;break;}start+=name.length;}if(hit)result.push(name);}
         return [...new Set(result)].slice(0,20);
     }
     function s39NarrativeExplicitPhoneUse(name,text=''){
-        const source=compactText(text,12000),target=compactText(name,100);if(!source||!target)return false;const idx=source.indexOf(target);if(idx<0)return false;const win=source.slice(Math.max(0,idx-120),Math.min(source.length,idx+target.length+160));return /(?:拿起|掏出|低头看|点开|打开).{0,16}(?:手机|微信)|(?:发|回|发送|回复).{0,16}(?:微信|消息|短信)|(?:拨|打).{0,10}(?:电话|号码)|(?:手机|微信|短信).{0,20}(?:发|回|发送|回复|拨)/.test(win);
+        const source=compactText(text,12000),target=compactText(name,100);if(!source||!target)return false;const idx=source.indexOf(target);if(idx<0)return false;const win=source.slice(Math.max(0,idx-120),Math.min(source.length,idx+target.length+160));return /(?:cầm lên|rút ra|cúi xuống nhìn|bấm mở|mở).{0,16}(?:điện thoại|WeChat)|(?:gửi|trả lời|nhắn).{0,16}(?:WeChat|tin nhắn|SMS)|(?:bấm|gọi).{0,10}(?:điện thoại|số máy)|(?:điện thoại|WeChat|SMS).{0,20}(?:gửi|trả lời|nhắn|bấm)/i.test(win);
     }
     function s39RefreshOfflineAcquaintance(text='',floor=-1){
         const source=compactText(text,16000),phone=stateRuntime.state?.phone;if(!source||!phone)return [];
         const f=s39StoryFloor(floor),present=s39PhysicalPresenceNames(source),presentKeys=new Set(present.map(npcNameKey));
-        const departure=/(?:离开了?|离场|告辞|先走了?|走出(?:去|门|房间|办公室|工作室)?|出了门|回去了?|回家了?|转身离去|转身走开|下楼离开|上车离开|开车离开|关门离开|消失在)/;
+        const departure=/(?:rời đi|rời khỏi|xin phép về|đi trước|bước ra(?: ngoài| cửa| khỏi phòng| khỏi văn phòng| khỏi xưởng)?|ra khỏi cửa|quay về|về nhà|quay người bỏ đi|quay lưng bước đi|xuống lầu rời đi|lên xe rời đi|lái xe rời đi|đóng cửa rời đi|biến mất ở)/i;
         for(const name of present)s39MarkAcquaintance(name,{channel:'线下现实',floor:f,evidence:'chính văn中已同场现实登场',offline:true});
         for(const row of phone.acquaintanceLedger||[]){
             const name=compactText(row?.npc,100);if(!name)continue;
@@ -11163,18 +11163,18 @@ ${messageText(message).slice(0,10000)}`;
 ${knownText}
 【同一世界中Đã xảy ra、但${viewer==='main'?'{{user}}当前不知道':`${viewerName||'NPC hiện tại'}当前不知道`}的事实】
 ${hiddenText}
-【跨媒介人物认识史】
+【LỊCH SỬ QUEN BIẾT NHÂN VẬT XUYÊN PHƯƠNG TIỆN】
 ${s39AcquaintanceBrief(20,viewer==='main'?'main':viewerName)}
-【当前线下同场NPC】
-${present.length?present.join('、'):'Chưa có明确检测'}
-【硬规则】
-1. 手机、现实chính văn、彼间私文、NPC后台行动全部是同一个世界、同一条Dòng thời gian；区别只在于谁看见、谁知道。镜头外事件不是番外，也不能被后续剧情当作没发生。
-2. “不知道”不等于“没发生”：镜头外事件可以真实改变参与NPC的地点、目标、心情、关系和后续选择；但在合理告知/目击发生前，禁止把其具体内容直接泄露给{{user}}或不知情NPC。
-3. 同一个NPC在微信/短信/电话和现实里始终是同一个人。线上聊过绝不能在线下登场时失忆成陌生人；线下见过后手机端也必须保留见面史。
-4. 金额、付款人、收款人、渠道、订单商品、数量、规格和Trạng thái只认总账精确值；18.89绝不能写成18、19或“十几块”。
-5. 已在线下同场的NPC，后台不得凭空让TA同时远程发微信/短信/打电话；只有现实中明确拿手机发送/拨号，或TA已经离场后才允许远程通讯。
-6. 手机Đã hoàn thành事件立即属于现实；彼间私文完成的镜头外事件也立即属于现实；chính văn已经发生的现实事件必须回写同一总账。绝不允许三套互相矛盾的剧情。
-7. 微信/支付宝/银行卡的到账、打款、退款、结算不能由chính văn凭空抢跑；没有总账中Đã xảy ra的数字账变，就不得自行写成已到账。`;
+【NPC ĐANG CÓ MẶT NGOÀI ĐỜI】
+${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
+【QUY TẮC CỨNG】
+1. Điện thoại, chính văn hiện thực, Bỉ Gian Tư Văn và hành động hậu trường của NPC đều thuộc cùng một thế giới, cùng một dòng thời gian; khác biệt chỉ nằm ở ai nhìn thấy, ai biết. Sự kiện ngoài ống kính không phải ngoại truyện, và cốt truyện về sau cũng không được coi như nó chưa từng xảy ra.
+2. “Không biết” không có nghĩa là “không xảy ra”: sự kiện ngoài ống kính có thể thật sự thay đổi địa điểm, mục tiêu, tâm trạng, quan hệ và lựa chọn về sau của NPC tham gia; nhưng trước khi có việc báo tin/chứng kiến hợp lý, cấm tiết lộ nội dung cụ thể của nó cho {{user}} hay NPC chưa biết.
+3. Cùng một NPC trên WeChat/SMS/điện thoại và ngoài đời luôn là một người. Đã trò chuyện trực tuyến thì tuyệt đối không được mất trí nhớ thành người lạ khi xuất hiện ngoài đời; sau khi gặp mặt thì phía điện thoại cũng phải giữ lại lịch sử gặp gỡ.
+4. Số tiền, người trả, người nhận, kênh, món hàng trong đơn, số lượng, quy cách và trạng thái chỉ lấy giá trị chính xác trong sổ tổng; 18,89 tuyệt đối không được viết thành 18, 19 hay “mười mấy đồng”.
+5. NPC đang có mặt ngoài đời thì hậu trường không được tự dưng cho họ đồng thời nhắn WeChat/SMS/gọi điện từ xa; chỉ khi trong hiện thực họ rõ ràng cầm điện thoại gửi/bấm số, hoặc họ đã rời đi thì mới cho phép liên lạc từ xa.
+6. Sự kiện điện thoại đã hoàn tất lập tức thuộc về hiện thực; sự kiện ngoài ống kính hoàn tất trong Bỉ Gian Tư Văn cũng lập tức thuộc về hiện thực; sự kiện hiện thực đã xảy ra trong chính văn bắt buộc phải ghi ngược về cùng một sổ tổng. Tuyệt đối không cho phép ba mạch truyện mâu thuẫn nhau.
+7. Việc tiền về, chuyển tiền, hoàn tiền, tất toán của WeChat/Alipay/thẻ ngân hàng không được chính văn tự ý chạy trước; khi sổ tổng chưa có biến động số liệu đã xảy ra thì không được tự viết thành đã vào tài khoản.`;
     }
 
     function s39FinanceEvidenceParts(payload){
@@ -11186,17 +11186,17 @@ ${present.length?present.join('、'):'Chưa có明确检测'}
     }
     function s39MoneyTextHasExactCompleted(text,amount){
         const source=compactText(text,9000);if(!source||!promiseMoneyAmounts(source).some(value=>Math.abs(Number(value)-amount)<=0.001))return false;
-        return /(?:到账|入账|已收款|收到了?款|已打款|打款成功|汇款成功|已汇款|已转账|转账成功|已结算|结算完成|已发放|发放成功|已支付|支付成功|已付款|付款成功|已退款|退款成功|已扣款|扣款成功|收到(?:一笔|了)?[^。！；]{0,30}(?:元|块|¥|￥)|账户收到|余额增加|余额减少)/.test(source);
+        return /(?:tiền về|vào tài khoản|đã nhận tiền|nhận được (?:khoản )?tiền|đã chuyển tiền|chuyển tiền thành công|gửi tiền thành công|đã gửi tiền|đã chuyển khoản|chuyển khoản thành công|đã tất toán|tất toán xong|đã chi trả|chi trả thành công|đã thanh toán|thanh toán thành công|đã trả tiền|trả tiền thành công|đã hoàn tiền|hoàn tiền thành công|đã trừ tiền|trừ tiền thành công|nhận được[^.!;]{0,30}(?:đồng|tệ|¥|￥)|tài khoản nhận được|số dư tăng|số dư giảm)/i.test(source);
     }
     function s39FinanceEventHasVisibleEvidence(event,payload){
         const amount=Math.abs(s8Money(event?.amount));if(!amount)return false;const parts=s39FinanceEvidenceParts(payload);
-        // fixed39：数字账变的“首个真值源”只能来自 user 明确动作/到账陈述，或同一轮手机消息。
-        // assistant chính văn单独第一次写“到账”不能反向制造手机流水，否则又会回到两条剧情互相追认的旧问题。
+        // fixed39: “nguồn sự thật đầu tiên” của một biến động số liệu chỉ có thể là hành động/lời khẳng định tiền về rõ ràng của user, hoặc tin nhắn điện thoại trong cùng lượt.
+        // Việc chính văn của assistant lần đầu tự viết “tiền về” không được ngược lại tạo ra giao dịch trong điện thoại, nếu không lại quay về vấn đề cũ là hai mạch truyện tự công nhận lẫn nhau.
         if(s39MoneyTextHasExactCompleted(parts.phone,amount))return true;
         if(s39MoneyTextHasExactCompleted(parts.user,amount))return true;
-        const explicitUserAction=promiseMoneyAmounts(parts.user).some(value=>Math.abs(Number(value)-amount)<=0.001)&&/(?:我|user|用户).{0,24}(?:给|向).{0,20}(?:转账|付款|支付|汇款)/i.test(parts.user)&&!/(?:准备|打算|以后|之后再|稍后|明天|下次|可能|计划|预算)/.test(parts.user);
+        const explicitUserAction=promiseMoneyAmounts(parts.user).some(value=>Math.abs(Number(value)-amount)<=0.001)&&/(?:tôi|user|người dùng).{0,24}(?:cho|tới|đến).{0,20}(?:chuyển khoản|trả tiền|thanh toán|gửi tiền)/i.test(parts.user)&&!/(?:chuẩn bị|định|sau này|lát nữa rồi|lát nữa|ngày mai|lần sau|có thể|kế hoạch|dự trù)/i.test(parts.user);
         if(explicitUserAction)return true;
-        const canonical=(stateRuntime.state?.phone?.storyLedger||[]).some(row=>['transfer','finance'].includes(String(row?.type||''))&&Math.abs(Number(row?.amount||0)-amount)<=0.001&&/(?:accepted|credited|已入账|已支出|Đã xảy ra|已收款)/i.test(String(row?.status||'')));
+        const canonical=(stateRuntime.state?.phone?.storyLedger||[]).some(row=>['transfer','finance'].includes(String(row?.type||''))&&Math.abs(Number(row?.amount||0)-amount)<=0.001&&/(?:accepted|credited|Đã vào tài khoản|Đã chi ra|Đã xảy ra|Đã nhận tiền)/i.test(String(row?.status||'')));
         return canonical&&s39MoneyTextHasExactCompleted(parts.assistant,amount);
     }
     function s39FilterCompanionPhoneForCoPresent(phone,floor){
