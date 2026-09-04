@@ -1063,7 +1063,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             const raw = localStorage.getItem(localKey(chatKey));
             return raw ? JSON.parse(raw) : null;
         } catch (error) {
-            console.warn('[Trung tâm Ký ức vvv] Đọc dữ liệu cục bộ thất bại', error);
+            console.warn('[vvv Trung tâm Ký ức] Đọc dữ liệu cục bộ thất bại', error);
             return null;
         }
     }
@@ -1201,7 +1201,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 const stream=new Blob([rawBytes]).stream().pipeThrough(new CompressionStream('gzip'));
                 const zipped=new Uint8Array(await new Response(stream).arrayBuffer());
                 if(zipped.length < rawBytes.length * 0.92) return { bytes:zipped, encoding:'gzip-base64' };
-            } catch(error) { console.warn('[Trung tâm Ký ức vvv] Không dùng được ảnh chụp gzip của trình duyệt, chuyển sang gửi từng mảnh thô',error); }
+            } catch(error) { console.warn('[vvv Trung tâm Ký ức] Không dùng được ảnh chụp gzip của trình duyệt, chuyển sang gửi từng mảnh thô',error); }
         }
         return { bytes:rawBytes, encoding:'utf8-base64' };
     }
@@ -1252,7 +1252,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             }
             return data?.snapshot || null;
         } catch (error) {
-            console.warn('[Trung tâm Ký ức vvv] Ảnh chụp an toàn thất bại, không ảnh hưởng tới lần lưu hiện tại', error);
+            console.warn('[vvv Trung tâm Ký ức] Ảnh chụp an toàn thất bại, không ảnh hưởng tới lần lưu hiện tại', error);
             return null;
         }
     }
@@ -1609,7 +1609,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
 
         const destructiveAllowed=allowDestructive||stateRuntime.destructiveSaveDepth>0;
         if(!destructiveAllowed&&previous&&catastrophicShrink(previous,stateRuntime.state)){
-            console.error('[Trung tâm Ký ức vvv] Đã chặn một lần lưu làm teo dữ liệu bất thường',stateContentMetrics(previous),stateContentMetrics(stateRuntime.state),reason);
+            console.error('[vvv Trung tâm Ký ức] Đã chặn một lần lưu làm teo dữ liệu bất thường',stateContentMetrics(previous),stateContentMetrics(stateRuntime.state),reason);
             stateRuntime.state=normalizeState(clone(previous));
             s12ReconcileCallReceipts();
             stateRuntime.state.chatIdentity=scope.chatKey;
@@ -1637,7 +1637,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             try{
                 if(serialized.length<=3000000)localStorage.setItem(scope.localStorageKey,serialized);
                 else localStorage.removeItem(scope.localStorageKey);
-            }catch(error){console.warn('[Trung tâm Ký ức vvv] Lưu bản sao cục bộ thất bại',error);}
+            }catch(error){console.warn('[vvv Trung tâm Ký ức] Lưu bản sao cục bộ thất bại',error);}
 
             // saveMetadata/saveChat của SillyTavern hướng tới “cuộc trò chuyện đang hoạt động”. Khi đã chuyển sang chat khác thì cấm gọi,
             // dữ liệu của chat cũ vẫn được ghi đầy đủ nhờ bản sao cục bộ riêng ở trên cộng với hồ sơ vĩnh viễn/ảnh chụp an toàn ở dưới.
@@ -1648,7 +1648,7 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     else if(typeof ctx.saveMetadataDebounced==='function')ctx.saveMetadataDebounced();
                     else if(typeof ctx.saveChat==='function')await ctx.saveChat();
                 }catch(error){
-                    console.warn('[Trung tâm Ký ức vvv] Lưu metadata thất bại, đang dựa vào ảnh chụp an toàn/bản sao cục bộ',error);
+                    console.warn('[vvv Trung tâm Ký ức] Lưu metadata thất bại, đang dựa vào ảnh chụp an toàn/bản sao cục bộ',error);
                 }
             }
 
@@ -3046,15 +3046,15 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                 if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)return;
                 success=Boolean(repaired?.success)&&assistantMainlineHasValidRow(operationState,target,entry.message);
                 if(success){
-                    const health=await auditLatestTurnMemoryHealth(target,sig).catch(error=>{console.warn('[Trung tâm Ký ức vvv] Kiểm tra lại sức khỏe sau khi tự dựng lại thất bại',error);return null;});
+                    const health=await auditLatestTurnMemoryHealth(target,sig).catch(error=>{console.warn('[vvv Trung tâm Ký ức] Kiểm tra lại sức khỏe sau khi tự dựng lại thất bại',error);return null;});
                     if(health)scheduleLifeDetailRescueAfterSettled(health);
                     stateRuntime.memoryPipelineNotice='';
                     await saveState({immediate:true,refresh:false,reason:`core-memory-auto-recovered-${target}`}).catch(()=>{});
                     scheduleReindex();
-                    console.info(`[Trung tâm Ký ức vvv] Ký ức chính của tầng ${target} đã được tự dựng lại ở nền, không cần bấm tay.`);
+                    console.info(`[vvv Trung tâm Ký ức] Ký ức chính của tầng ${target} đã được tự dựng lại ở nền, không cần bấm tay.`);
                 }
             }catch(error){
-                console.warn(`[Trung tâm Ký ức vvv] Lần tự dựng lại ký ức chính ở nền cho tầng ${target} (${cappedAttempt}/2) thất bại`,error);
+                console.warn(`[vvv Trung tâm Ký ức] Lần tự dựng lại ký ức chính ở nền cho tầng ${target} (${cappedAttempt}/2) thất bại`,error);
             }finally{
                 stateRuntime.coreMemoryRecoveryInFlight?.delete?.(target);
             }
@@ -7198,7 +7198,7 @@ ${scene.mood||''}`,12000);
                 if(!stillCurrent())return {attempted:true,success:false,covered:original.length-remaining.length,missing:remaining,attempts:attemptsUsed,error:'Đã đổi cuộc trò chuyện trong lúc quét bù'};
                 if(result?.record)markRepairTaskApplied(result.record,result.task,{mode:'life-detail-only',error:error?.message||error});
                 lastError=compactText(error?.message||error,400)||'Lỗi không rõ';
-                console.warn(`[Trung tâm Ký ức vvv] Lần quét bù chi tiết đời sống P13 thứ ${attempt}/${attemptLimit} thất bại`,error);
+                console.warn(`[vvv Trung tâm Ký ức] Lần quét bù chi tiết đời sống P13 thứ ${attempt}/${attemptLimit} thất bại`,error);
             }
             if(attempt<attemptLimit){
                 const delay=Math.min(12000,baseDelay*(2**(attempt-1)));
@@ -7349,7 +7349,7 @@ ${scene.mood||''}`,12000);
             rescueAttempted:Boolean(existing?.rescueAttempted||coverage.applied), rescueSuccess:Boolean((existing?.rescueAttempted||coverage.applied)&&missing.length===0),
             rescueSource:coverage.applied?'deterministic-source-evidence':existing?.rescueSource, fallbackApplied:Number(existing?.fallbackApplied||0)+Number(coverage.applied||0), extractedThrough,
         });
-        if(['missing','memory-missing'].includes(status))console.warn('[Trung tâm Ký ức vvv] Kiểm tra sức khỏe ký ức P13 phát hiện chỗ bị bỏ sót',entry);
+        if(['missing','memory-missing'].includes(status))console.warn('[vvv Trung tâm Ký ức] Kiểm tra sức khỏe ký ức P13 phát hiện chỗ bị bỏ sót',entry);
         return entry;
     }
 
@@ -7394,7 +7394,7 @@ ${scene.mood||''}`,12000);
         const scope=captureChatScope();
         runLaterForScope(scope,0,()=>{
             if(getChatKey()!==expectedChatIdentity)return;
-            return rescueMemoryHealthAttempt(attempt.id).catch(error=>console.warn('[Trung tâm Ký ức vvv] Quét bù chi tiết đời sống P13 ở nền gặp lỗi',error));
+            return rescueMemoryHealthAttempt(attempt.id).catch(error=>console.warn('[vvv Trung tâm Ký ức] Quét bù chi tiết đời sống P13 ở nền gặp lỗi',error));
         });
     }
 
@@ -7442,7 +7442,7 @@ ${scene.mood||''}`,12000);
         reconcileMemoryHealthForFloors([target]);
         await saveState({immediate:true,refresh:false,reason:`p13-full-reextract-floor-${target}`});
         if(!stillCurrent())return {mode:'full',floor:target,success:false,missing:0,stale:true};
-        const memoryHealthAttempt=await auditLatestTurnMemoryHealth(target,entry.signature).catch(error=>{console.warn('[Trung tâm Ký ức vvv] Kiểm tra lại P13 sau khi dựng lại thất bại',error);return null;});
+        const memoryHealthAttempt=await auditLatestTurnMemoryHealth(target,entry.signature).catch(error=>{console.warn('[vvv Trung tâm Ký ức] Kiểm tra lại P13 sau khi dựng lại thất bại',error);return null;});
         if(memoryHealthAttempt)scheduleLifeDetailRescueAfterSettled(memoryHealthAttempt);
         stateRuntime.memoryPipelineNotice='';
         scheduleReindex();const after=liveMemoryHealthAttempt(memoryHealthAttempt||memoryHealthAttemptForFloor(target));
@@ -8643,7 +8643,7 @@ ${messageText(message).slice(0,10000)}`;
             reactionStatus:moment.reactionStatus||'',reactionProcessedAt:moment.reactionProcessedAt||'',reactionFloor:moment.reactionFloor,
         });
         moment.seenBy = [...new Set([...(moment.seenBy||[]), ...(reaction.seenBy||[]), ...(reaction.likes||[]), ...(reaction.comments||[]).map(item=>item.author)].map(name=>relationPartyName(name)).filter(Boolean))].slice(0,120);
-        for(const npc of moment.seenBy)if(!priorSeen.has(npcNameKey(npc)))s12RecordKnowledge({eventId:moment.id,relatedId:moment.id,subject:'朋友圈动态',summary:`${moment.content||'[无文字]'}${phoneAttachmentSummary(moment.attachments)?` · 附件:${phoneAttachmentSummary(moment.attachments)}`:''}`,npc,method:'moment',channel:'Khoảnh khắc',floor:payload?.floor??-1,source:'moment'});
+        for(const npc of moment.seenBy)if(!priorSeen.has(npcNameKey(npc)))s12RecordKnowledge({eventId:moment.id,relatedId:moment.id,subject:'朋友圈动态',summary:`${moment.content||'[không có chữ]'}${phoneAttachmentSummary(moment.attachments)?` · 附件:${phoneAttachmentSummary(moment.attachments)}`:''}`,npc,method:'moment',channel:'Khoảnh khắc',floor:payload?.floor??-1,source:'moment'});
         moment.likes = [...new Set([...(moment.likes||[]), ...(reaction.likes||[])].map(name=>relationPartyName(name)).filter(Boolean))].slice(0,80);
         moment.comments = Array.isArray(moment.comments) ? moment.comments : [];
         const seen = new Set(moment.comments.map(item=>`${npcNameKey(item?.author)}|${compactText(item?.content,500)}`));
@@ -10366,17 +10366,17 @@ ${messageText(message).slice(0,10000)}`;
     // R9S1P41-S8: tầng hệ sinh thái điện thoại hoàn chỉnh. Mọi số dư, đơn hàng, mật khẩu thanh toán đều là mô phỏng cốt truyện của 0-32,
     // không kết nối tới Taobao/Ele.me/Alipay/WeChat Pay thật, và tuyệt đối không được nhập mật khẩu thanh toán thật.
     const S8_TAOBAO_PRODUCTS = [
-        {id:'tb-case17',store:'Viện Đồ Số',name:'iPhone17ProMax 透明防摔壳',price:39.9,category:'Đồ số',icon:'📱',sold:'20.000+'},
-        {id:'tb-cable',store:'Viện Đồ Số',name:'USB-C 编织快充线 2m',price:29.9,category:'Đồ số',icon:'🔌',sold:'5万+'},
+        {id:'tb-case17',store:'Viện Đồ Số',name:'Ốp trong chống sốc iPhone17ProMax',price:39.9,category:'Đồ số',icon:'📱',sold:'20.000+'},
+        {id:'tb-cable',store:'Viện Đồ Số',name:'Cáp sạc nhanh USB-C bọc dù 2m',price:29.9,category:'Đồ số',icon:'🔌',sold:'50.000+'},
         {id:'tb-lightbar',store:'Viện Bàn Làm Việc',name:'智能屏幕挂灯 Pro',price:299,category:'Đồ số',icon:'💡',sold:'8000+'},
-        {id:'tb-power',store:'Viện Bàn Làm Việc',name:'10000mAh 磁吸移动电源',price:129,category:'Đồ số',icon:'🔋',sold:'3万+'},
-        {id:'tb-sketch',store:'Kho Đồ Vẽ',name:'A4 速写本 160g',price:32,category:'Văn phòng phẩm',icon:'📒',sold:'10.000+'},
+        {id:'tb-power',store:'Viện Bàn Làm Việc',name:'Sạc dự phòng nam châm 10000mAh',price:129,category:'Đồ số',icon:'🔋',sold:'30.000+'},
+        {id:'tb-sketch',store:'Kho Đồ Vẽ',name:'Sổ ký họa A4 160g',price:32,category:'Văn phòng phẩm',icon:'📒',sold:'10.000+'},
         {id:'tb-marker',store:'Kho Đồ Vẽ',name:'双头马克笔 60色',price:128,category:'Văn phòng phẩm',icon:'🖍️',sold:'9000+'},
         {id:'tb-hoodie',store:'衣橱研究社',name:'重磅宽松连帽卫衣',price:159,category:'Trang phục',icon:'👕',sold:'10.000+'},
-        {id:'tb-umbrella',store:'Tiệm bách hóa hằng ngày',name:'晴雨两用折叠伞',price:49,category:'Đồ dùng hằng ngày',icon:'☂️',sold:'4万+'},
-        {id:'tb-cup',store:'Tiệm bách hóa hằng ngày',name:'316不锈钢保温杯',price:69,category:'Đồ dùng hằng ngày',icon:'🥤',sold:'20.000+'},
+        {id:'tb-umbrella',store:'Tiệm bách hóa hằng ngày',name:'晴雨两用折叠伞',price:49,category:'Đồ dùng hằng ngày',icon:'☂️',sold:'40.000+'},
+        {id:'tb-cup',store:'Tiệm bách hóa hằng ngày',name:'Bình giữ nhiệt thép 316',price:69,category:'Đồ dùng hằng ngày',icon:'🥤',sold:'20.000+'},
         {id:'tb-travelbag',store:'Cửa hàng tiện lợi du lịch',name:'旅行收纳袋六件套',price:45.8,category:'Du lịch',icon:'🧳',sold:'20.000+'},
-        {id:'tb-simjp',store:'Cửa hàng tiện lợi du lịch',name:'日本旅行高速上网卡',price:59,category:'Du lịch',icon:'🗾',sold:'6万+'},
+        {id:'tb-simjp',store:'Cửa hàng tiện lợi du lịch',name:'日本旅行高速上网卡',price:59,category:'Du lịch',icon:'🗾',sold:'60.000+'},
         {id:'tb-headphone',store:'Viện Đồ Số',name:'无线降噪耳机',price:219,category:'Đồ số',icon:'🎧',sold:'10.000+'},
     ];
     const S8_ELEME_STORES = [
@@ -11155,8 +11155,8 @@ ${messageText(message).slice(0,10000)}`;
         const fmt=row=>`- ${row.type}｜事件ID:${row.relatedId||row.id}｜人物:${(row.participants||[]).join('↔')||'Chưa ghi nhận'}｜渠道:${row.channel||'现实'}${Number(row.amount)>0?`｜精确金额:${s8MoneyText(row.amount)}（禁止取整/近似/改写）`:''}${row.status?`｜Trạng thái:${row.status}`:''}${row.location?`｜地点:${row.location}`:''}｜${row.summary||''}｜Tầng:${row.floor}`;
         const known=rows.filter(row=>viewer==='main'?Boolean(row.userKnows):s39StoryEventKnownTo(row,viewerName));
         const hidden=rows.filter(row=>!known.includes(row));
-        const knownText=known.map(fmt).join('\n')||'- Chưa có新的已知跨媒介关键事件。';
-        const hiddenText=hidden.map(row=>`${fmt(row)}｜知情者:${(row.knownBy||row.participants||[]).join('、')||'仅事件参与者'}`).join('\n')||'- Chưa có新的镜头外世界事件。';
+        const knownText=known.map(fmt).join('\n')||'- Chưa có sự kiện then chốt xuyên phương tiện nào mới được biết.';
+        const hiddenText=hidden.map(row=>`${fmt(row)}｜知情者:${(row.knownBy||row.participants||[]).join('、')||'仅事件参与者'}`).join('\n')||'- Chưa có sự kiện thế giới ngoài ống kính nào mới.';
         const text=narrativeText||messageText([...(context()?.chat||[])].reverse().find(m=>!m?.is_user&&!m?.is_system)||{}),present=s39CurrentCoPresentNames(text);
         return `【fixed39 单一世界总账｜只有一个Dòng thời gian】
 【${viewer==='main'?'{{user}}已知/亲历事实':`${viewerName||'NPC hiện tại'}可知事实`}】
@@ -11344,12 +11344,12 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         const f=Number(floor);if(!Number.isInteger(f)||f<0)return false;
         const payload={id:`fixed39-immediate-${f}`,floor:f,signature:compactText(signature,220)||messageSignature(f,context()?.chat?.[f]),generatedAt:nowText()};
         let changed=false;
-        try{if(s39NarrativeShoppingOrders(payload).length)changed=true;}catch(error){console.warn('[fixed39单一世界] chính văn网购即时同步失败',error);}
-        try{const foods=s37NarrativeFoodOrderCreates(payload);if(foods.length){s12ApplyOrderCreates(foods,payload);changed=true;}}catch(error){console.warn('[fixed39单一世界] chính văn外卖即时同步失败',error);}
+        try{if(s39NarrativeShoppingOrders(payload).length)changed=true;}catch(error){console.warn('[fixed39 thế giới đơn nhất] Đồng bộ tức thời đơn mua online từ chính văn thất bại',error);}
+        try{const foods=s37NarrativeFoodOrderCreates(payload);if(foods.length){s12ApplyOrderCreates(foods,payload);changed=true;}}catch(error){console.warn('[fixed39 thế giới đơn nhất] Đồng bộ tức thời đơn giao đồ ăn từ chính văn thất bại',error);}
         try{
             const chat=context()?.chat||[],text=messageText(chat[f]||{}),previousUser=f>0&&chat[f-1]?.is_user?messageText(chat[f-1]):'',presenceText=compactText(`${previousUser}\n${text}`,20000),present=s39RefreshOfflineAcquaintance(presenceText,f),userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}';
             if(text)s39RecordStoryEvent({type:'narrative',relatedId:`assistant-floor:${f}`,participants:[userName,...present],knownBy:[userName,...present],userKnows:true,channel:'Hiện thực chính văn',status:'Đã xảy ra',summary:compactText(sanitizeRetrievalDocumentText(text),1100),floor:f,time:compactText(stateRuntime.state?.scene?.time||'',120),location:compactText(stateRuntime.state?.scene?.location||'',180),source:'main-narrative-immediate'});
-        }catch(error){console.warn('[fixed39单一世界] chính văn世界事实即时登记失败',error);}
+        }catch(error){console.warn('[fixed39 thế giới đơn nhất] Ghi nhận tức thời sự thật thế giới từ chính văn thất bại',error);}
         return changed;
     }
 
@@ -12057,7 +12057,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const phone=ensurePhoneEcosystem();const names=[...new Set((people||[]).map(name=>relationPartyName(name)).filter(Boolean))];if(!phone||!title||!names.length||s8Money(total)<=0)return null;
         const row={id:uid('split-bill'),title:compactText(title,140),total:s8Money(total),people:names,share:Math.round(s8Money(total)/names.length*100)/100,account:account==='alipay'?'alipay':'wechat',status:'collecting',createdAt:Date.now(),floor:Math.max(0,(context()?.chat?.length||1)-1),time:phoneClock().time};phone.walletTools.splitBills.push(row);
         const user=compactText(context()?.name1||'{{user}}',80)||'{{user}}';for(const npc of names){phone.pendingOutgoing.push({id:uid('pending-aa'),type:'wechat',sender:user,contact:npc,content:`[Chia tiền] ${row.title}, cần trả ${s8MoneyText(row.share)}`,time:row.time,createdAt:Date.now()});s12RecordKnowledge({relatedId:row.id,subject:'Chia tiền',summary:`${row.title} · ${s8MoneyText(row.share)}`,npc,method:'message',channel:'WeChat',source:'wallet'});}
-        s8AddNotification('Ví','AA收款已发起',`${row.title} · ${names.length}人 · 每人${s8MoneyText(row.share)}`,{route:'wechatpay',relatedId:row.id});return row;
+        s8AddNotification('Ví','Đã tạo yêu cầu chia tiền',`${row.title} · ${names.length}人 · 每人${s8MoneyText(row.share)}`,{route:'wechatpay',relatedId:row.id});return row;
     }
     function s12AddSubscription({title='',amount=0,account='alipay',intervalFloors=4}={}){
         const phone=ensurePhoneEcosystem();if(!phone||!title||s8Money(amount)<=0)return null;const floor=Math.max(0,(context()?.chat?.length||1)-1);const row={id:uid('subscription'),title:compactText(title,140),counterparty:compactText(title,120),amount:Math.abs(s8Money(amount)),account:account==='wechat'?'wechat':'alipay',intervalFloors:Math.max(1,Number(intervalFloors||4)),nextFloor:floor+Math.max(1,Number(intervalFloors||4)),active:true,createdAt:Date.now()};phone.walletTools.subscriptions.push(row);s12ScheduleCalendar({id:`subscription-calendar-${row.id}`,title:`Chi phí định kỳ · ${row.title}`,note:`Dự kiến trừ ${s8MoneyText(row.amount)}`,source:'wallet',relatedId:row.id,route:row.account==='wechat'?'wechatpay':'alipay',dueFloor:row.nextFloor});return row;
@@ -12116,7 +12116,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             apps += `${app('diary','📔','Nhật ký','cream')}${app('anniversaries','🗓️','Ngày quan trọng','pink')}${app('world','📖','Bỉ Gian Tư Văn','cream')}${app('api','⚙️','Cài đặt API','cream')}${app('settings','⚙️','Cài đặt','cream')}`;
             if (available) dock = `${app('sms','📨',periodLabel,'blue')}${liveCalls ? app('calls','☎️','Liên lạc','green') : ''}`;
         }
-        const unavailable = !available ? `<div class="vvvtm-phone-era-note"><b>Khu vực hiện tại chưa có phương tiện liên lạc từ xa khả dụng</b><small>${esc(profile.reason || 'AI会在下一轮根据新的地点、时代和当前chính văn重新判断。')}</small></div>` : '';
+        const unavailable = !available ? `<div class="vvvtm-phone-era-note"><b>Khu vực hiện tại chưa có phương tiện liên lạc từ xa khả dụng</b><small>${esc(profile.reason || 'AI sẽ phán đoán lại ở lượt sau dựa trên địa điểm, thời đại mới và chính văn hiện tại.')}</small></div>` : '';
         const originDevice = profile.personalDeviceType==='smartphone' && !isSmartphone ? `<div class="vvvtm-phone-era-note origin-device"><b>Thiết bị thế giới gốc: ${esc(profile.personalDeviceLabel||'iPhone17Promax')}</b><small>${originOnline?'Đã kết nối mạng xuyên thế giới: WeChat của thế giới gốc dùng được; liên lạc bản địa vẫn chạy độc lập theo thời đại hiện tại.':'Thiết bị vẫn có thể mang theo, nhưng thế giới/thời đại hiện tại không kết nối được mạng của thế giới gốc. Nhóm lớp, nhóm bạn cũ sẽ không bị xóa, chỉ bị đánh dấu ngoại tuyến.'}</small></div>` : '';
         return `<div class="vvvtm-os-home ${preview?'preview':''}" data-vvvtm-theme="${esc(stateRuntime.state.phone?.themeStore?.active || 'classic')}">
             <div class="vvvtm-os-status"><b>${clock.time}</b><span>${isSmartphone ? '▮▮▮ ᯤ 🔋' : '✦'}</span></div><div class="vvvtm-os-device-label">${esc(device)}</div>
@@ -12554,7 +12554,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
         const conversationRows=conversations.map(row=>row.html).join('');
         const worldBookCount=(stateRuntime.sourceCharacterRoster||[]).filter(row=>sourceRosterBookEligibleForPhone({source:row?.source})||/角色卡|独立API人物建档/.test(String(row?.source||''))).length;
         const rosterAi=stateRuntime.state?.sourceRosterAi||{},aiRosterCount=Array.isArray(rosterAi.rows)?rosterAi.rows.length:0;
-        const aiRosterLabel=rosterAi.status==='complete'?`AI名册 ${aiRosterCount} 人`:rosterAi.status==='running'?'AI名册扫描中':rosterAi.status==='failed'?'AI名册失败·正则兜底':rosterAi.status==='unavailable'?'AI名册待配置独立API':'AI名册待首轮';
+        const aiRosterLabel=rosterAi.status==='complete'?`AI名册 ${aiRosterCount} 人`:rosterAi.status==='running'?'Đang quét danh sách bằng AI':rosterAi.status==='failed'?'Lập danh sách bằng AI thất bại · dự phòng bằng regex':rosterAi.status==='unavailable'?'Danh sách AI đang chờ cấu hình API riêng':'Danh sách AI chờ lượt đầu tiên';
         return `<div class="vvvtm-phone-app-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>💚 WeChat</b><small>${groups.length} 个群聊 · ${contacts.length} 位联系人 · ${esc(aiRosterLabel)} · 当前可信 ${worldBookCount} 人</small></div><span class="vvvtm-phone-head-actions"><button data-phone-roster-ai-refresh title="Dùng API riêng của Bảy điều hậu trường quét lại nhân vật trong thẻ nhân vật/sách thế giới">AI↻</button><button data-phone-app="wechatpay" title="WeChat Pay">Thanh toán</button><button data-phone-add-contact>＋</button></span></header><main class="vvvtm-contact-list">${conversationRows || '<div class="vvvtm-phone-empty-chat"><b>Chưa có hội thoại WeChat</b><small>Sau khi chính văn lượt đầu kết thúc sẽ dùng API riêng để lập danh sách quan hệ xã hội của nhân vật; chỉ khi thất bại mới dùng phân tích bằng chứng thuận tại chỗ để dự phòng.</small></div>'}</main></div>`;
     }
 
@@ -13107,7 +13107,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
                     const to=relationPartyName(overlay.querySelector('#vvvtm-redpacket-to')?.value||''),amount=s8Money(overlay.querySelector('#vvvtm-redpacket-amount')?.value||0),note=compactText(overlay.querySelector('#vvvtm-redpacket-note')?.value||'Chúc phát tài',120);if(!to||amount<=0){toast('请输入收件人和正确金额。','info');return;}const account=stateRuntime.phoneDialog?.account==='alipay'?'alipay':'wechat';stateRuntime.phoneDialog=null;s8BeginPayment({kind:'redpacket',account,amount,to,note,title:`Lì xì · ${to}`});return;
                 }
                 if(action==='wallet-split'){
-                    const title=compactText(overlay.querySelector('#vvvtm-split-title')?.value||'',140),total=s8Money(overlay.querySelector('#vvvtm-split-total')?.value||0),people=String(overlay.querySelector('#vvvtm-split-people')?.value||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);if(!title||total<=0||!people.length){toast('请填写事项、总金额和参与NPC。','info');return;}s12CreateSplitBill({title,total,people,account:stateRuntime.phoneDialog?.account||'wechat'});stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast('AA收款已发出','success');return;
+                    const title=compactText(overlay.querySelector('#vvvtm-split-title')?.value||'',140),total=s8Money(overlay.querySelector('#vvvtm-split-total')?.value||0),people=String(overlay.querySelector('#vvvtm-split-people')?.value||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);if(!title||total<=0||!people.length){toast('请填写事项、总金额和参与NPC。','info');return;}s12CreateSplitBill({title,total,people,account:stateRuntime.phoneDialog?.account||'wechat'});stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast('Đã gửi yêu cầu chia tiền','success');return;
                 }
                 if(action==='wallet-subscription'){
                     const title=compactText(overlay.querySelector('#vvvtm-subscription-title')?.value||'',140),amount=s8Money(overlay.querySelector('#vvvtm-subscription-amount')?.value||0),intervalFloors=Math.max(1,Number(overlay.querySelector('#vvvtm-subscription-interval')?.value||4));if(!title||amount<=0){toast('请填写名称和正确金额。','info');return;}s12AddSubscription({title,amount,intervalFloors,account:stateRuntime.phoneDialog?.account||'alipay'});stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast('固定支出已加入日历','success');return;
@@ -13473,7 +13473,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             if(!stillCurrent())return false;
             for(const row of result.messages)appendPhoneRealtimeIncoming({contact,groupName,useWechat,text:row.text,stickerId:row.stickerId,anchorFloor,sender:row.sender});
             const replySummary=result.messages.map(row=>row.text||`[Sticker: ${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||'对方暂未回复';
-            s39RecordStoryEvent({type:'communication',relatedId:outgoingId,participants:[userName,groupName||contact],channel:groupName?(useWechat?'Nhóm WeChat':(currentProfile.communicationType||'Liên lạc thời đại')):(useWechat?'WeChat':(currentProfile.communicationType||'Liên lạc điện thoại')),status:result.messages.length?'已互相通讯':'已发送待回复',summary:`${userName}发送：${compactText(content||'[附件/表情]',300)}；对方：${compactText(replySummary,500)}`,floor:anchorFloor,time:sentClock,source:'phone-realtime'});
+            s39RecordStoryEvent({type:'communication',relatedId:outgoingId,participants:[userName,groupName||contact],channel:groupName?(useWechat?'Nhóm WeChat':(currentProfile.communicationType||'Liên lạc thời đại')):(useWechat?'WeChat':(currentProfile.communicationType||'Liên lạc điện thoại')),status:result.messages.length?'已互相通讯':'已发送待回复',summary:`${userName}发送：${compactText(content||'[tệp đính kèm/sticker]',300)}；对方：${compactText(replySummary,500)}`,floor:anchorFloor,time:sentClock,source:'phone-realtime'});
             recordPhoneRealtimeEvent('message',`${userName} 与 ${groupName?`群聊${groupName}`:contact} 实时通讯：${replySummary}`,{relatedId:outgoingId,contact:groupName||contact});
             logAudit('通讯终端聊天', groupName ? `${userName} ↔ 群聊:${groupName}` : `${userName} ↔ ${contact}`);
             await saveState({immediate:true,refresh:false,reason:'phone-immediate-reply'});
@@ -13566,7 +13566,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             recordPhoneRealtimeEvent('parent-pulse',`${target.name} 主动发来日常微信：${result.messages.map(row=>row.text||'[Sticker]').join(' / ')}`,{contact:target.name});
             await saveState({immediate:true,refresh:false,reason:'parent-wechat-pulse'});if(!stillCurrent())return false;updatePromptInjection();scheduleReindex();return true;
         }catch(error){
-            console.warn('[0-32·父母微信脉冲] AI主动消息生成失败，使用低风险本地家常话兜底',error);
+            console.warn('[0-32 · Nhịp WeChat của bố mẹ] Tạo tin nhắn chủ động bằng AI thất bại, dùng câu chuyện thường ngày ít rủi ro tại chỗ để dự phòng',error);
             if(stillCurrent()){
                 const fallbackPool=['最近忙不忙？别忘了按时吃饭，有空回个消息。','这两天天气变化挺快的，出门记得看看天气，别忙起来什么都不顾。','家里没什么事，就是想起来问问你最近怎么样，忙完了跟我说一声。','别总熬太晚，事情做不完就明天再做，身体要紧。'];
                 const fallback=fallbackPool[s9Hash(`${getChatKey()}|${target.name}|${floor}`)%fallbackPool.length];
@@ -14072,7 +14072,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             floor:entry.index,type:'raw-fallback',
             event:compactText(rawText,1000)||`第${entry.index}层AI回复原文保底`,
             details:compactText(rawText,1600),rawFallbackText:rawText,
-            tags:['主记忆提取失败','AI原文保底','待结构化重建'],importance:'normal',source:'extract-fallback',
+            tags:['主记忆提取失败','AI dùng chính văn làm phương án đáy','待结构化重建'],importance:'normal',source:'extract-fallback',
         }],entry.index);
         const prior=memoryHealthAttemptForFloor(entry.index);
         recordMemoryHealthAttempt({
@@ -14248,7 +14248,7 @@ ${activities.join('\n')||'- Chưa có bản ghi'}`;
             }catch(error){
                 stateRuntime.phoneStickersLoaded=false;
                 stateRuntime.phoneStickerLoadError=error?.name==='AbortError'?'读取超过15秒，已停止等待':compactText(error?.message||error,220)||'Lỗi chưa rõ';
-                console.warn('[vvv小手机] 表情库读取失败',error);
+                console.warn('[vvv Điện Thoại Nhỏ] Đọc kho sticker thất bại',error);
                 return stateRuntime.phoneStickers||[];
             }finally{
                 clearTimeout(timer);stateRuntime.phoneStickersLoading=false;stateRuntime.phoneStickerLoadPromise=null;
@@ -14850,8 +14850,8 @@ ${sources}`;
     }
 
     function formatStageSummaryPayload(payload) {
-        const p=payload||normalizeStageSummaryPayload({},0,0);const bullets=(rows,format,empty='- 无新增。')=>rows.length?rows.map(row=>`- ${format(row)}`).join('\n'):empty;
-        return `【时间与场景】\nNgày：${p.timeScene.date}\n时段：${p.timeScene.period}\n地点：${p.timeScene.location}\n天气/氛围：${p.timeScene.weatherAtmosphere}\n\n【1. 核心剧情与行动】\n${bullets(p.corePlotActions,row=>`${row.fact}；起因：${row.cause}；结果：${row.result}；依据Tầng：${row.floors}`)}\n\n【2. 人物Trạng thái与关系变化】\n${bullets(p.peopleRelations,row=>`${row.person}：阶段内变化：${row.stageChange}；心理变化：${row.psychologyChange}；关系变化：${row.relationChange}；截至本阶段末：${row.currentState}；依据Tầng：${row.evidenceFloors}`)}\n\n【3. 秘密与知情边界】\n${bullets(p.secretsKnowledge,row=>`秘密：${row.secret}\n  已知者：${row.knowers}\n  Chưa rõ者：${row.unknown}\n  怀疑者：${row.suspects}\n  阶段变化：${row.change}\n  依据Tầng：${row.evidenceFloors}`,'- 秘密：无新增。\n  已知者：无。\n  Chưa rõ者：无。')}\n\n【4. 关键物品与Lời hẹn】\n${bullets(p.items,row=>`物品：${row.item}；阶段流转：${row.changes}；截至本阶段末：${row.currentState}；当前持有/位置：${row.holder}；依据Tầng：${row.evidenceFloors}`,'- 物品：无新增。')}\n${bullets(p.promises,row=>`Lời hẹn：${row.promise}；相关人：${row.parties}；截至本阶段末Trạng thái：${row.status}；判断依据：${row.basis}；依据Tầng：${row.evidenceFloors}`,'- Lời hẹn：无新增。')}\n\n【5. 伏笔与未解决事项】\n${bullets(p.unresolved,row=>`${row.matter}；截至本阶段末：${row.currentState}；下一触发/确认条件：${row.nextTrigger}；依据Tầng：${row.evidenceFloors}`)}`;
+        const p=payload||normalizeStageSummaryPayload({},0,0);const bullets=(rows,format,empty='- Không có mục mới.')=>rows.length?rows.map(row=>`- ${format(row)}`).join('\n'):empty;
+        return `【时间与场景】\nNgày：${p.timeScene.date}\n时段：${p.timeScene.period}\n地点：${p.timeScene.location}\n天气/氛围：${p.timeScene.weatherAtmosphere}\n\n【1. 核心剧情与行动】\n${bullets(p.corePlotActions,row=>`${row.fact}；起因：${row.cause}；结果：${row.result}；依据Tầng：${row.floors}`)}\n\n【2. 人物Trạng thái与关系变化】\n${bullets(p.peopleRelations,row=>`${row.person}：阶段内变化：${row.stageChange}；心理变化：${row.psychologyChange}；关系变化：${row.relationChange}；截至本阶段末：${row.currentState}；依据Tầng：${row.evidenceFloors}`)}\n\n【3. 秘密与知情边界】\n${bullets(p.secretsKnowledge,row=>`秘密：${row.secret}\n  已知者：${row.knowers}\n  Chưa rõ者：${row.unknown}\n  怀疑者：${row.suspects}\n  阶段变化：${row.change}\n  依据Tầng：${row.evidenceFloors}`,'- Bí mật: không có mục mới.\n  Người biết: không có.\n  Người không biết: không có.')}\n\n【4. 关键物品与Lời hẹn】\n${bullets(p.items,row=>`物品：${row.item}；阶段流转：${row.changes}；截至本阶段末：${row.currentState}；当前持有/位置：${row.holder}；依据Tầng：${row.evidenceFloors}`,'- Vật phẩm: không có mục mới.')}\n${bullets(p.promises,row=>`Lời hẹn：${row.promise}；相关人：${row.parties}；截至本阶段末Trạng thái：${row.status}；判断依据：${row.basis}；依据Tầng：${row.evidenceFloors}`,'- Lời hẹn: không có mục mới.')}\n\n【5. 伏笔与未解决事项】\n${bullets(p.unresolved,row=>`${row.matter}；截至本阶段末：${row.currentState}；下一触发/确认条件：${row.nextTrigger}；依据Tầng：${row.evidenceFloors}`)}`;
     }
 
     function isFixedStageSummaryText(text) {
@@ -14975,7 +14975,7 @@ ${digests.join('\n\n')}`,{
             record.status = 'stale-chat';
             record.applied = true;
             record.error = '任务完成时已切换到另一条聊天，结果已丢弃，防止旧记忆串入新聊天。';
-            console.warn('[vvv记忆中枢] 已丢弃跨聊天异步任务', record.kind, record.id);
+            console.warn('[vvv Trung tâm Ký ức] Đã loại bỏ tác vụ bất đồng bộ xuyên cuộc trò chuyện', record.kind, record.id);
             return false;
         }
         if(record.kind==='recentEventRerun'){
@@ -15030,7 +15030,7 @@ ${digests.join('\n\n')}`,{
                 if(record.assistantOnce){
                     await markAssistantMemoryDone(floor,entry.signature);
                     if(!stillCurrent())return false;
-                    const postWriteHealth=await auditLatestTurnMemoryHealth(floor,entry.signature).catch(error=>{console.warn('[vvv记忆中枢] 主记忆写入后健康同步失败',error);return null;});
+                    const postWriteHealth=await auditLatestTurnMemoryHealth(floor,entry.signature).catch(error=>{console.warn('[vvv Trung tâm Ký ức] Đồng bộ sức khỏe sau khi ghi ký ức chính thất bại',error);return null;});
                     if(postWriteHealth)scheduleLifeDetailRescueAfterSettled(postWriteHealth);
                     if(extractRetryTargetMatches(operationState.progress,floor,entry.signature))clearExtractRetryState();
                     const queue=operationState.progress?.assistantMemoryQueue;
@@ -15073,7 +15073,7 @@ ${digests.join('\n\n')}`,{
                     if(!stillCurrent())return false;
                     summaryRow['Trạng thái ẩn'] = `隐藏失败：${error.message}`;
                     await saveState({ immediate:true, refresh:false, reason:'stage-summary-hide-failed' });
-                    if(stillCurrent())console.warn('[vvv记忆中枢] 自动 /hide 失败', error);
+                    if(stillCurrent())console.warn('[vvv Trung tâm Ký ức] Tự động /hide thất bại', error);
                 }
             }
         } else if (record.kind === 'bigSummary') {
@@ -15274,7 +15274,7 @@ ${digests.join('\n\n')}`,{
         } else if (record.kind === 'diagnostics') {
             const data = parseGeneratedJson(task.result?.text || '{}');
             const issues = Array.isArray(data) ? data : data.issues || [];
-            issues.forEach(item => addDiagnostic(item.type || 'AI体检', item.detail || item.description || '', item.floor ?? (context()?.chat?.length || 1) - 1));
+            issues.forEach(item => addDiagnostic(item.type || 'Khám bằng AI', item.detail || item.description || '', item.floor ?? (context()?.chat?.length || 1) - 1));
         } else if (record.kind === 'chapter') {
             const data = parseGeneratedJson(task.result?.text || '{}');
             const chapters = Array.isArray(data) ? data : data.chapters || [];
@@ -15321,7 +15321,7 @@ ${digests.join('\n\n')}`,{
             if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)return;
             try {
                 if (record.kind === 'legacyTakeover' && capturedState?.takeover?.userInitiated !== true) {
-                    record.status='stale-no-consent';record.applied=true;record.error='R9S1已阻止Chưa xác định授权的旧档任务自动续跑';record.updatedAt=Date.now();continue;
+                    record.status='stale-no-consent';record.applied=true;record.error='R9S1 đã chặn các tác vụ hồ sơ cũ chưa được cho phép rõ ràng tự chạy tiếp';record.updatedAt=Date.now();continue;
                 }
                 let task=(await serverFetch(`/tasks/${encodeURIComponent(record.id)}`)).task;
                 if(!chatScopeIsCurrent(scope)||stateRuntime.state!==capturedState)return;
@@ -15391,7 +15391,7 @@ ${digests.join('\n\n')}`,{
             try{
                 const applied=await applyCompletedJob(record,task);
                 changed=changed||Boolean(applied)||Boolean(record.applied);
-            }catch(error){console.warn('[vvv记忆中枢] 恢复Đã hoàn thành主记忆任务失败',error);}
+            }catch(error){console.warn('[vvv Trung tâm Ký ức] Khôi phục tác vụ ký ức chính đã hoàn thành thất bại',error);}
         }
         if(changed&&chatScopeIsCurrent(scope)&&stateRuntime.state===operationState){
             await saveState({immediate:true,refresh:false,reason:'restore-completed-memory-jobs'});
@@ -15446,7 +15446,7 @@ ${digests.join('\n\n')}`,{
             &&['queued','running'].includes(String(record.status||'')))||null;
     }
 
-    async function runFeature(feature, prompt, meta = {}, { jsonMode = false, busyLabel = 'AI处理中…', timeoutMs = 12 * 60 * 1000 } = {}) {
+    async function runFeature(feature, prompt, meta = {}, { jsonMode = false, busyLabel = 'AI đang xử lý…', timeoutMs = 12 * 60 * 1000 } = {}) {
         if(!independentApiReady())throw new Error('独立整理/总结API尚未配置');
         const scope=captureChatScope();
         const taskGeneration=stateRuntime.dataGeneration;
@@ -15516,7 +15516,7 @@ ${digests.join('\n\n')}`,{
     function extractionPromptV16(targetFloor=null) {
         const prompt = extractionPrompt(targetFloor)
             .replace('3. mainline最多输出1条；没有值得进入Dòng thời gian的新事件则mainline=[]。','3. 目标AI回复只要包含实质剧情、动作、对话结果或Trạng thái变化，mainline必须且只能输出1条60至260字概括；只有纯问候、纯占位或确实没有任何剧情事实时才可mainline=[]。')
-            .replace('6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。','6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n7. 所有输出字段都必须直接取证于本次目标AI回复；不得把较早Tầng、已有Lời hẹn或其他记忆改写成本层事件。')
+            .replace('6. Các trạng thái như địa điểm/tư thế/trang phục/vật mang theo được ghi theo khoảnh khắc cuối cùng của lượt trả lời AI này.','6. 地点/姿势/衣着/持有物等Trạng thái按本AI回复最后时刻记录。\n7. 所有输出字段都必须直接取证于本次目标AI回复；不得把较早Tầng、已有Lời hẹn或其他记忆改写成本层事件。')
             .replace('"relations":[{"a":"","b":"","description":"","attitude":"","time":""}]','"relations":[{"a":"","b":"","description":"","attitude":"写清当前心理态度","psychologyChange":"本轮心理变化","time":""}]')
             .replace('"items":[{"name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}]','"items":[{"itemId":"","name":"","description":"","location":"","holder":"","status":"","importance":"","note":""}]')
             .replace('"promises":[{"time":"","content":"","characters":"","status":"","floor":','"promises":[{"promiseId":"","kind":"routine|dated|conditional|long-term","due":"","time":"","content":"","characters":"","status":"Chờ thực hiện|Đang diễn ra|默认已履行|Đã thực hiện|长期有效|条件未触发|逾期未确认|Hủy","floor":')
@@ -15596,16 +15596,16 @@ ${digests.join('\n\n')}`,{
             const result=await runFeature('extract',extractionPromptV16(entry.index),{kind:'extract',floor:entry.index,sourceMessageSignature:entry.signature,assistantOnce:true,dedupeKey:extractTaskDedupeKey(entry.index,entry.signature)},{jsonMode:true,timeoutMs:95000});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             if(result.record?.chatIdentity&&result.record.chatIdentity!==getChatKey()){clearExtractRetryState();return false;}
-            if(result.record){const applied=await applyCompletedJob(result.record,result.task);if(!applied){const status=String(result.record.status||'');if(['stale-chat','discarded-after-reset','stale','skipped'].includes(status)){clearExtractRetryState();return false;}throw new Error(result.record.error||'AI整理结果未成功写入');}}
+            if(result.record){const applied=await applyCompletedJob(result.record,result.task);if(!applied){const status=String(result.record.status||'');if(['stale-chat','discarded-after-reset','stale','skipped'].includes(status)){clearExtractRetryState();return false;}throw new Error(result.record.error||'Kết quả sắp xếp của AI chưa ghi vào thành công');}}
             else mergeExtraction(parseExtractionResult(result.text),entry.index);
             await markAssistantMemoryDone(entry.index,entry.signature);if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if(!result.record){const postWriteHealth=await auditLatestTurnMemoryHealth(entry.index,entry.signature).catch(error=>{console.warn('[vvv记忆中枢] 直接主记忆写入后健康同步失败',error);return null;});if(postWriteHealth)scheduleLifeDetailRescueAfterSettled(postWriteHealth);}
+            if(!result.record){const postWriteHealth=await auditLatestTurnMemoryHealth(entry.index,entry.signature).catch(error=>{console.warn('[vvv Trung tâm Ký ức] Đồng bộ sức khỏe sau khi ghi trực tiếp ký ức chính thất bại',error);return null;});if(postWriteHealth)scheduleLifeDetailRescueAfterSettled(postWriteHealth);}
             await maybeCreateSummaries();if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;clearExtractRetryState();
             const q=operationState.progress?.assistantMemoryQueue;if(Array.isArray(q)&&q.length&&Number(q[0]?.floor)===entry.index&&q[0]?.signature===entry.signature)q.shift();
             await saveState({immediate:true,refresh:true,reason:'assistant-memory-once'});if(!chatScopeIsCurrent(operationScope))return false;scheduleReindex();notifyPipelineDone(`第 ${entry.index} 层记忆整理完成，可以继续下一条。`,'success',{fullscreen:true});runLaterForScope(operationScope,30,()=>drainAssistantMemoryQueue());return true;
         }catch(error){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            console.error('[vvv记忆中枢] 单AITầng整理失败',error);
+            console.error('[vvv Trung tâm Ký ức] Sắp xếp một tầng AI thất bại',error);
             if(isPermanentAiRetryError(error))return finalizeFailedAssistantMemory(error,{targetFloor:entry.index,targetSignature:entry.signature,reason:'permanent-error'});
             const scheduled=scheduleExtractRetry(error,{targetFloor:entry.index,targetSignature:entry.signature});
             if(!scheduled)return finalizeFailedAssistantMemory(error,{targetFloor:entry.index,targetSignature:entry.signature,reason:'retry-limit'});
@@ -15735,13 +15735,13 @@ ${digests.join('\n\n')}`,{
                     row['Trạng thái ẩn']=`隐藏失败：${error.message}`;
                     await saveState({immediate:true,refresh:true,reason:'summary-hide-failed'});
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-                    console.warn('[vvv小剧场] 阶段总结已保存，但自动hide失败',error);
+                    console.warn('[vvv Sân Khấu Nhỏ] Đã lưu tổng kết giai đoạn, nhưng tự động hide thất bại',error);
                 }
             }
             scheduleReindex();
             if(row._restoredFromRecycle){
                 // 真正删除后再单独总结同一范围：复用原ID，因此旧的大总结/时代总结依赖链可以安全接回。
-                try{await rebuildDependentSummaryChain(row,operationScope,operationState);}catch(error){if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState){console.warn('[vvv小剧场] 回收站阶段恢复后的上级链暂未重算',error);toast(`本段已重新总结；上级总结等待重算：${error.message}`,'warn');}}
+                try{await rebuildDependentSummaryChain(row,operationScope,operationState);}catch(error){if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState){console.warn('[vvv Sân Khấu Nhỏ] Chuỗi cấp trên sau khi khôi phục giai đoạn từ thùng rác tạm chưa được tính lại',error);toast(`本段已重新总结；上级总结等待重算：${error.message}`,'warn');}}
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
                 delete row._restoredFromRecycle;
                 await saveState({immediate:true,refresh:true,reason:'summary-recreate-from-recycle',forceSnapshot:true});
@@ -15753,7 +15753,7 @@ ${digests.join('\n\n')}`,{
             return true;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            console.error('[vvv小剧场] 阶段总结失败',error);
+            console.error('[vvv Sân Khấu Nhỏ] Tổng kết giai đoạn thất bại',error);
             toast(`阶段总结失败：${error.message}`, 'error'); return false;
         } finally {
             if(stateRuntime.summaryOperationToken===operationToken){stateRuntime.summaryOperationToken=null;stateRuntime.summaryRunning=false;}
@@ -15779,7 +15779,7 @@ ${digests.join('\n\n')}`,{
         setBusy(true,'正在同步重算受影响的大总结/时代总结…');
         let chainOk=true;
         try{const rebuilt=await rebuildDependentSummaryChain(row,operationScope,operationState);if(!rebuilt)return false;}
-        catch(error){if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;chainOk=false;console.warn('[vvv小剧场] 上级总结链重算失败，已保留需重算标记',error);toast(`本段已重做成功；上级总结暂未重算成功：${error.message}`,'warn');}
+        catch(error){if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;chainOk=false;console.warn('[vvv Sân Khấu Nhỏ] Tính lại chuỗi tổng kết cấp trên thất bại, đã giữ lại dấu cần tính lại',error);toast(`本段已重做成功；上级总结暂未重算成功：${error.message}`,'warn');}
         finally{if(chatScopeIsCurrent(operationScope))setBusy(false);}
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         recalculateSummaryProgress();
@@ -15808,7 +15808,7 @@ ${digests.join('\n\n')}`,{
             markDependentSummariesStale(row._id,'阶段总结恢复了历史版本');
             await saveState({immediate:true,refresh:true,reason:'summary-version-restore-mark-stale',forceSnapshot:true});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            try{const rebuilt=await rebuildDependentSummaryChain(row,operationScope,operationState);if(!rebuilt)return false;}catch(error){if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;chainOk=false;console.warn('[vvv小剧场] 恢复历史版本后的上级重算失败',error);toast(`已恢复本段历史版本；上级总结等待重算：${error.message}`,'warn');}
+            try{const rebuilt=await rebuildDependentSummaryChain(row,operationScope,operationState);if(!rebuilt)return false;}catch(error){if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;chainOk=false;console.warn('[vvv Sân Khấu Nhỏ] Tính lại cấp trên sau khi khôi phục bản lịch sử thất bại',error);toast(`已恢复本段历史版本；上级总结等待重算：${error.message}`,'warn');}
         }
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         await saveState({immediate:true,refresh:true,reason:chainOk?'summary-version-restored':'summary-version-restored-pending',forceSnapshot:true});
@@ -15838,7 +15838,7 @@ ${digests.join('\n\n')}`,{
             if(type==='Tổng kết giai đoạn'){
                 markDependentSummariesStale(row._id,'上游阶段总结已删除');
                 if(range.start!==null&&range.end!==null&&row['Trạng thái ẩn']==='Đã ẩn'){
-                    try{await applySummaryHideState(row,false,{silent:true});}catch(error){if(chatScopeIsCurrent(operationScope))console.warn('[vvv小剧场] 删除总结时恢复原Tầng失败',error);}
+                    try{await applySummaryHideState(row,false,{silent:true});}catch(error){if(chatScopeIsCurrent(operationScope))console.warn('[vvv Sân Khấu Nhỏ] Khôi phục tầng gốc khi xóa bản tổng kết thất bại',error);}
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
                 }
             } else if(type==='Tổng kết lớn'){
@@ -16689,7 +16689,7 @@ mood=${storedScene.mood || ''}
         const sample=Array.isArray(chat)&&chat.length?chat[chat.length-1]:{};
         return Object.prototype.hasOwnProperty.call(sample,'role')||Object.prototype.hasOwnProperty.call(sample,'content')
             ? {role:'system',content:text}
-            : {name:'0-32精准记忆召回',is_user:false,is_system:true,mes:text,send_date:Date.now()};
+            : {name:'Truy hồi ký ức chính xác 0-32',is_user:false,is_system:true,mes:text,send_date:Date.now()};
     }
 
     function pendingPhonePrompt() {
@@ -16741,7 +16741,7 @@ mood=${storedScene.mood || ''}
             ctx.setExtensionPrompt(AGENCY_PROMPT_KEY, userAgencyGuardInstruction(), 1, 0, false, 0);
             ctx.setExtensionPrompt(COMPANION_PROMPT_KEY, mainCompanionInstruction(), 1, 0, false, 0);
         }
-        catch (error) { console.warn('[vvv记忆中枢] 注入失败', error); }
+        catch (error) { console.warn('[vvv Trung tâm Ký ức] Nạp vào thất bại', error); }
     }
 
     function emptyCompanionShell(index, signature, parseStatus, source = 'legacy-main-api') {
@@ -16982,7 +16982,7 @@ ${part.text}`;
         let raw;try{raw=parseGeneratedJson(result?.text||'{}');}catch(error){throw new Error(`原文核验JSON解析失败：${error.message}`);}
         if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.floors))throw new Error('原文核验缺少 floors 数组');
         const expected=new Map(expectedFloors.map(row=>[Number(row.floor),row.role])),allowedStatus=new Set(Object.keys(MEMORY_REVIEW_STATUS_ORDER)),allowedSources=new Set(Object.keys(MEMORY_REVIEW_SOURCE_LABEL)),seen=new Set(),floors=[];
-        for(const row of raw.floors){const floor=Number(row?.floor);if(!Number.isInteger(floor)||!expected.has(floor)||seen.has(floor))continue;const role=expected.get(floor),required=role==='assistant'?null:'context_only',status=required||String(row?.status||'missing');floors.push({floor,role,status:allowedStatus.has(status)?status:(role==='assistant'?'missing':'context_only'),memorySource:allowedSources.has(row?.memorySource)?row.memorySource:'none',summary:compactText(sanitizeRetrievalDocumentText(row?.summary),700)||'AI未给出本层概括',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),700),missing:compactText(sanitizeRetrievalDocumentText(row?.missing),700),contradiction:compactText(sanitizeRetrievalDocumentText(row?.contradiction),700),evidenceClaimIds:(Array.isArray(row?.evidenceClaimIds)?row.evidenceClaimIds:[]).map(String).slice(0,30)});seen.add(floor);}
+        for(const row of raw.floors){const floor=Number(row?.floor);if(!Number.isInteger(floor)||!expected.has(floor)||seen.has(floor))continue;const role=expected.get(floor),required=role==='assistant'?null:'context_only',status=required||String(row?.status||'missing');floors.push({floor,role,status:allowedStatus.has(status)?status:(role==='assistant'?'missing':'context_only'),memorySource:allowedSources.has(row?.memorySource)?row.memorySource:'none',summary:compactText(sanitizeRetrievalDocumentText(row?.summary),700)||'AI chưa đưa ra tóm lược cho tầng này',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),700),missing:compactText(sanitizeRetrievalDocumentText(row?.missing),700),contradiction:compactText(sanitizeRetrievalDocumentText(row?.contradiction),700),evidenceClaimIds:(Array.isArray(row?.evidenceClaimIds)?row.evidenceClaimIds:[]).map(String).slice(0,30)});seen.add(floor);}
         const missingFloors=[...expected.keys()].filter(floor=>!seen.has(floor));if(missingFloors.length)throw new Error(`原文核验漏掉Tầng：${missingFloors.join('、')}`);
         const findings=(Array.isArray(raw.findings)?raw.findings:[]).map(row=>({category:compactText(row?.category||'other',40),truth:compactText(sanitizeRetrievalDocumentText(row?.truth),800),status:allowedStatus.has(row?.status)&&row.status!=='context_only'?row.status:'missing',rememberedAs:compactText(sanitizeRetrievalDocumentText(row?.rememberedAs),600),floorStart:Number.isFinite(Number(row?.floorStart))?Number(row.floorStart):null,floorEnd:Number.isFinite(Number(row?.floorEnd))?Number(row.floorEnd):null,people:(Array.isArray(row?.people)?row.people:[]).map(value=>compactText(value,100)).filter(Boolean).slice(0,20),importance:row?.importance==='core'?'core':'detail'})).filter(row=>row.truth);
         return {...result,parsed:{partSummary:compactText(raw.partSummary,1200),floors,findings}};
@@ -17034,7 +17034,7 @@ ${JSON.stringify(evidence)}`;
         return `<header><div><small>0-32 · Kiểm tra ký ức AI</small><h2>Nhìn lại · kiểm mù và đối chiếu chính văn</h2><p>Trước tiên cho AI chỉ đọc kho ký ức thật, rồi đối chiếu với cuộc trò chuyện gốc; kết quả không ghi vào lịch sử trò chuyện, cũng không vào chính văn lượt sau.</p></div><div><button data-memory-review-abort>${progress.failed?'Thử lại':'完成当前请求后停止'}</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-progress"><div><span>${esc(progress.label||'正在准备资料…')}</span><b>${esc(progress.current||0)} / ${esc(progress.total||0)}</b></div><i><span style="width:${pct}%"></span></i><p>${progress.failed?`体检停止：${esc(progress.error||'Lỗi chưa rõ')}`:`已实际调用 ${Number(progress.apiCalls||0)} 次API${progress.cached?`，复用 ${Number(progress.cached)} 个Đã hoàn thành结果`:''}。切换聊天或点击停止后，不会把旧结果写到新聊天。`}</p></section>`;
     }
 
-    function memoryReviewList(title,values,empty='AI没有列出相关内容'){
+    function memoryReviewList(title,values,empty='AI không liệt kê nội dung liên quan'){
         const rows=(Array.isArray(values)?values:[]).filter(Boolean);return `<details class="vvvtm-memory-review-section"><summary>${esc(title)} <small>${rows.length}</small></summary><div>${rows.length?rows.map(value=>`<article><p>${esc(typeof value==='string'?value:(value.detail||value.title||JSON.stringify(value)))}</p></article>`).join(''):`<p>${esc(empty)}</p>`}</div></details>`;
     }
 
@@ -17042,7 +17042,7 @@ ${JSON.stringify(evidence)}`;
         const result=stateRuntime.memoryReviewResult;if(!result||result.chatKey!==getChatKey())return memoryReviewProgressMarkup({label:'等待开始AI体检'});
         const floors=result.floors||[],stats=result.stats||memoryReviewStats(floors),summary=result.final||{},pageSize=80,totalPages=Math.max(1,Math.ceil(floors.length/pageSize)),current=Math.max(0,Math.min(totalPages-1,Number(page)||0)),start=current*pageSize,rows=floors.slice(start,start+pageSize);
         const tone=row=>row.status==='remembered'?'covered':row.status==='partial'?'partial':row.status==='contradictory'?'contradictory':row.status==='missing'?'fallback':'context';
-        return `<header><div><small>0-32 · Kiểm tra ký ức AI</small><h2>回顾 · 第 0-${Math.max(0,result.totalFloors-1)} 层</h2><p>${esc(summary.verdict||'AIĐã hoàn thành盲测与原文核验。')} 本报告不是聊天消息，不进入下一轮上下文。</p></div><div><button data-memory-review-refresh>Kiểm tra lại</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-stats"><span><b>${stats.score}%</b>Độ phủ ký ức</span><span><b>${stats.counts.remembered}</b>Nhớ đầy đủ</span><span class="${stats.counts.partial?'warn':''}"><b>${stats.counts.partial}</b>Nhớ một phần</span><span class="${stats.counts.missing?'warn':''}"><b>${stats.counts.missing}</b>Bỏ sót</span><span class="${stats.counts.contradictory?'danger':''}"><b>${stats.counts.contradictory}</b>Nhớ sai</span><span><b>${result.apiCalls}</b>Lượt gọi API</span></section><section class="vvvtm-memory-review-overview"><h3>Nhận xét chung của AI</h3><p>${esc(summary.overview||'')}</p><div>${Object.entries(summary.scores||{}).map(([key,value])=>`<span><b>${esc(value)}%</b>${esc({coverage:'记忆覆盖',detail:'细节记忆',consistency:'一致性',retrievalReadiness:'日常召回准备度'}[key]||key)}</span>`).join('')}</div><small>${esc(summary.caveat||'')}</small></section><nav><button data-memory-review-page="${current-1}" ${current<=0?'disabled':''}>Đoạn trước</button><span>AI逐层核验 · 第 ${current+1}/${totalPages} 页</span><button data-memory-review-page="${current+1}" ${current>=totalPages-1?'disabled':''}>Đoạn sau</button></nav><section class="vvvtm-memory-review-timeline">${rows.map(row=>`<button data-memory-review-jump="${row.floor}" class="${tone(row)}"><span>第 ${row.floor} 层</span><b>${esc(MEMORY_REVIEW_STATUS_LABEL[row.status]||row.status)}</b><em>${esc(MEMORY_REVIEW_SOURCE_LABEL[row.memorySource]||row.memorySource)}</em><p>${esc(row.summary)}</p>${row.rememberedAs?`<small>原本记住：${esc(row.rememberedAs)}</small>`:''}${row.missing?`<small class="missing">漏掉：${esc(row.missing)}</small>`:''}${row.contradiction?`<small class="contradiction">记错：${esc(row.contradiction)}</small>`:''}</button>`).join('')}</section><section class="vvvtm-memory-review-ledgers">${memoryReviewList('记得好的内容',summary.rememberedExamples)}${memoryReviewList('只记住一部分',summary.partialExamples)}${memoryReviewList('明确漏记',summary.missingExamples)}${memoryReviewList('矛盾与串档',summary.contradictions)}${memoryReviewList('人物与关系核验',summary.relationships)}${memoryReviewList('Lời hẹn与物品核验',summary.promisesItems)}${memoryReviewList('AI建议的加强方向',summary.recommendations)}</section>`;
+        return `<header><div><small>0-32 · Kiểm tra ký ức AI</small><h2>回顾 · 第 0-${Math.max(0,result.totalFloors-1)} 层</h2><p>${esc(summary.verdict||'AI đã hoàn tất kiểm mù và đối chiếu chính văn.')} 本报告不是聊天消息，不进入下一轮上下文。</p></div><div><button data-memory-review-refresh>Kiểm tra lại</button><button data-memory-review-close>Đóng</button></div></header><section class="vvvtm-memory-review-stats"><span><b>${stats.score}%</b>Độ phủ ký ức</span><span><b>${stats.counts.remembered}</b>Nhớ đầy đủ</span><span class="${stats.counts.partial?'warn':''}"><b>${stats.counts.partial}</b>Nhớ một phần</span><span class="${stats.counts.missing?'warn':''}"><b>${stats.counts.missing}</b>Bỏ sót</span><span class="${stats.counts.contradictory?'danger':''}"><b>${stats.counts.contradictory}</b>Nhớ sai</span><span><b>${result.apiCalls}</b>Lượt gọi API</span></section><section class="vvvtm-memory-review-overview"><h3>Nhận xét chung của AI</h3><p>${esc(summary.overview||'')}</p><div>${Object.entries(summary.scores||{}).map(([key,value])=>`<span><b>${esc(value)}%</b>${esc({coverage:'记忆覆盖',detail:'细节记忆',consistency:'一致性',retrievalReadiness:'日常召回准备度'}[key]||key)}</span>`).join('')}</div><small>${esc(summary.caveat||'')}</small></section><nav><button data-memory-review-page="${current-1}" ${current<=0?'disabled':''}>Đoạn trước</button><span>AI逐层核验 · 第 ${current+1}/${totalPages} 页</span><button data-memory-review-page="${current+1}" ${current>=totalPages-1?'disabled':''}>Đoạn sau</button></nav><section class="vvvtm-memory-review-timeline">${rows.map(row=>`<button data-memory-review-jump="${row.floor}" class="${tone(row)}"><span>第 ${row.floor} 层</span><b>${esc(MEMORY_REVIEW_STATUS_LABEL[row.status]||row.status)}</b><em>${esc(MEMORY_REVIEW_SOURCE_LABEL[row.memorySource]||row.memorySource)}</em><p>${esc(row.summary)}</p>${row.rememberedAs?`<small>原本记住：${esc(row.rememberedAs)}</small>`:''}${row.missing?`<small class="missing">漏掉：${esc(row.missing)}</small>`:''}${row.contradiction?`<small class="contradiction">记错：${esc(row.contradiction)}</small>`:''}</button>`).join('')}</section><section class="vvvtm-memory-review-ledgers">${memoryReviewList('记得好的内容',summary.rememberedExamples)}${memoryReviewList('只记住一部分',summary.partialExamples)}${memoryReviewList('明确漏记',summary.missingExamples)}${memoryReviewList('矛盾与串档',summary.contradictions)}${memoryReviewList('人物与关系核验',summary.relationships)}${memoryReviewList('Lời hẹn与物品核验',summary.promisesItems)}${memoryReviewList('Hướng cải thiện AI đề xuất',summary.recommendations)}</section>`;
     }
 
     function bindMemoryReviewReport(report,page=0){
@@ -17067,7 +17067,7 @@ ${JSON.stringify(evidence)}`;
     }
 
     async function runMemoryReviewAudit(){
-        if(stateRuntime.memoryReviewRunning){toast('AI记忆体检已经在运行','info');return false;}
+        if(stateRuntime.memoryReviewRunning){toast('Việc khám ký ức bằng AI đang chạy','info');return false;}
         if(!independentApiReady()){toast('Hãy cấu hình API sắp xếp/tổng kết riêng trước','warn');return false;}
         const scope=captureChatScope(),operationState=stateRuntime.state;if(!scope||!operationState)throw new Error('Cuộc trò chuyện hiện tại chưa nạp xong');
         const source=buildMemoryReviewData(),memoryParts=memoryReviewDocumentParts(source.documents),transcriptParts=transcriptRangeParts(0,Math.max(0,source.totalFloors-1),18000);if(!transcriptParts.length){toast('当前聊天没有可体检的内容','warn');return false;}
@@ -17085,7 +17085,7 @@ ${JSON.stringify(evidence)}`;
             const finalResult=await runValidatedTransientLlm('diagnostics',memoryReviewFinalPrompt(floors,findings,blindConflicts,{memoryDocuments:source.documents.length,totalFloors:source.totalFloors,excludedRaw:source.excludedRaw}),{jsonMode:true,workflowMeta:{workflow:'memoryReviewFinal',chatKey:scope.chatKey,startFloor:0,endFloor:Math.max(0,source.totalFloors-1)},validate:value=>parseMemoryReviewFinalResult(value,stats),maxAttempts:3,label:'记忆体检总评'});if(!memoryReviewOperationCurrent(token))throw new Error('Đã dừng kiểm tra hoặc đã đổi cuộc trò chuyện');apiCalls+=Number(finalResult._apiCalls||0);cached+=Number(finalResult._cachedReads||0);completed+=1;
             stateRuntime.memoryReviewResult={chatKey:scope.chatKey,createdAt:Date.now(),totalFloors:source.totalFloors,memoryDocuments:source.documents.length,excludedRaw:source.excludedRaw,apiCalls,cached,floors,stats,findings,final:finalResult.parsed};renderMemoryReviewInChat(0);toast(`AI记忆体检完成：覆盖 ${stats.score}% · 漏记 ${stats.counts.missing} 层 · 记错 ${stats.counts.contradictory} 层`,'success');return true;
         }catch(error){
-            if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState&&!stateRuntime.memoryReviewReportClosed){ensureMemoryReviewReport(memoryReviewProgressMarkup({failed:true,error:error?.message||String(error),label:'AI记忆体检未完成',current:completed,total:estimate,percent:completed/estimate*100,apiCalls,cached}));toast(`AI记忆体检停止：${error.message}`,'error');}return false;
+            if(chatScopeIsCurrent(scope)&&stateRuntime.state===operationState&&!stateRuntime.memoryReviewReportClosed){ensureMemoryReviewReport(memoryReviewProgressMarkup({failed:true,error:error?.message||String(error),label:'Việc khám ký ức bằng AI chưa xong',current:completed,total:estimate,percent:completed/estimate*100,apiCalls,cached}));toast(`AI记忆体检停止：${error.message}`,'error');}return false;
         }finally{if(stateRuntime.memoryReviewOperationToken===token){stateRuntime.memoryReviewOperationToken=null;stateRuntime.memoryReviewRunning=false;stateRuntime.memoryReviewAbort=false;}}
     }
 
@@ -17227,7 +17227,7 @@ ${JSON.stringify(evidence)}`;
                 try{await rebuildDependentSummaryChain(row,operationScope,operationState);}
                 catch(error){
                     if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
-                    chainOk=false;console.warn('[vvv小剧场] 手动编辑后的上级总结链重算失败',error);toast(`本段已保存；上级总结等待重算：${error.message}`,'warn');
+                    chainOk=false;console.warn('[vvv Sân Khấu Nhỏ] Tính lại chuỗi tổng kết cấp trên sau khi sửa thủ công thất bại',error);toast(`本段已保存；上级总结等待重算：${error.message}`,'warn');
                 }
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return;
             }
@@ -17408,7 +17408,7 @@ ${JSON.stringify(evidence)}`;
     function bindDiagnostics(content) {
         content.querySelector('[data-diag-run]')?.addEventListener('click',()=>{runDiagnostics();renderCurrentTab();toast('本地检查完成','success');});
         content.querySelector('[data-diag-clear]')?.addEventListener('click',()=>{recordManualDeletion('diagnostics',stateRuntime.state.diagnostics||[]);stateRuntime.state.diagnostics=[];saveState({immediate:true,refresh:true,reason:'user-explicit-delete',allowDestructive:true});});
-        content.querySelector('[data-diag-ai]')?.addEventListener('click',async()=>{setBusy(true,'AI正在检查剧情连续性…');try{const promptText=`检查以下聊天是否存在：替{{user}}做决定、人物OOC、Dòng thời gian矛盾、地点瞬移、角色知道不该知道的秘密、物品凭空出现、称呼错误、重复内容、剧情长期不推进。只输出JSON：{"issues":[{"type":"","detail":"","floor":0}]}。没有问题返回空数组。\n\n结构化记忆：\n${buildMemoryPrompt()}\n\n聊天：\n${recentTranscript(16)}`;const result=await runFeature('diagnostics',promptText,{kind:'diagnostics'},{jsonMode:true});const record=result.record||{kind:'diagnostics'};if(result.task)await applyCompletedJob(record,result.task);else await applyCompletedJob(record,{status:'completed',result:{text:result.text},model:result.model});renderCurrentTab();toast('AI体检完成','success');}catch(error){toast(`体检失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-diag-ai]')?.addEventListener('click',async()=>{setBusy(true,'AI đang kiểm tra tính liền mạch của cốt truyện…');try{const promptText=`检查以下聊天是否存在：替{{user}}做决定、人物OOC、Dòng thời gian矛盾、地点瞬移、角色知道不该知道的秘密、物品凭空出现、称呼错误、重复内容、剧情长期不推进。只输出JSON：{"issues":[{"type":"","detail":"","floor":0}]}。没有问题返回空数组。\n\n结构化记忆：\n${buildMemoryPrompt()}\n\n聊天：\n${recentTranscript(16)}`;const result=await runFeature('diagnostics',promptText,{kind:'diagnostics'},{jsonMode:true});const record=result.record||{kind:'diagnostics'};if(result.task)await applyCompletedJob(record,result.task);else await applyCompletedJob(record,{status:'completed',result:{text:result.text},model:result.model});renderCurrentTab();toast('Khám bằng AI đã xong','success');}catch(error){toast(`体检失败：${error.message}`,'error');}finally{setBusy(false);}});
     }
 
     function inputField(id,label,value,type='text',extra='') { return `<label class="api-field"><span>${label}</span><input id="${id}" type="${type}" value="${esc(value||'')}" ${extra}></label>`; }
@@ -17510,7 +17510,7 @@ ${JSON.stringify(evidence)}`;
         const companionResult = message => { const node=content.querySelector('#vvvtm-companion-api-result');if(node)node.textContent=typeof message==='string'?message:JSON.stringify(message,null,2); };
         const phoneResult = message => { const node=content.querySelector('#vvvtm-phone-api-result');if(node)node.textContent=typeof message==='string'?message:JSON.stringify(message,null,2); };
         const save = async () => { const config=readApiForm(content);const data=await serverFetch('/config',{method:'POST',body:JSON.stringify(config)});stateRuntime.serverConfig=data.config;stateRuntime.state.settings.aiMode='server';await saveState({immediate:true});return data.config; };
-        content.querySelector('[data-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存API配置…');await save();result('保存成功。密钥仅存于宝塔服务器。');toast('API配置已保存','success');}catch(error){result(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存API配置…');await save();result('保存成功。密钥仅存于宝塔服务器。');toast('Đã lưu cấu hình API','success');}catch(error){result(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试整理/总结完整链路…');await save();const data=await runFeature('extract','这是0-32整理/总结完整链路Kiểm tra kết nối。只输出合法JSON对象：{"ok":true,"source":"memory-connection-test"}',{kind:'memoryConnectionTest'},{jsonMode:true,timeoutMs:95000});const parsed=parseGeneratedJson(data.text||'');if(data.record){data.record.applied=true;data.record.status='test-completed';await saveState({immediate:true,refresh:false,reason:'memory-connection-test'});}result({ok:true,source:data.source||data.record?.source||'memory-independent-api',response:parsed,promptPipeline:data.record?.promptPipeline||data.task?.promptPipeline||null});toast('整理/总结完整链路连接成功','success');}catch(error){result(error.message);toast(`测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取模型列表…');await save();const data=await serverFetch('/models');const list=content.querySelector('#vvvtm-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');result(`获取到 ${(data.models||[]).length} 个模型。`);toast('模型列表已载入','success');}catch(error){result(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-companion-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存幕后七条独立API…');await save();companionResult('幕后七条独立API已保存；固定使用独立资料边界。');toast('幕后七条独立API已保存','success');}catch(error){companionResult(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
@@ -17519,7 +17519,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-phone-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存小手机实时API…');await save();phoneResult('小手机实时API已保存。微信、电话、转账、服务会话和里层酒馆会共用这一连接。');toast('小手机实时API已保存','success');}catch(error){phoneResult(error.message);toast(`保存失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="test"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试小手机实时链路…');await save();const data=await serverFetch('/phone/test',{method:'POST',body:JSON.stringify({})});phoneResult({ok:true,source:data.source,model:data.model,response:parseGeneratedJson(data.text||'{}')});toast('小手机实时API连接成功','success');}catch(error){phoneResult(error.message);toast(`手机API测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-phone-api-action="models"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在获取手机API模型列表…');await save();const data=await serverFetch('/phone/models');const list=content.querySelector('#vvvtm-phone-model-list');if(list)list.innerHTML=(data.models||[]).map(model=>`<option value="${esc(model)}"></option>`).join('');phoneResult(`获取到 ${(data.models||[]).length} 个模型。`);toast('手机API模型列表已载入','success');}catch(error){phoneResult(error.message);toast(`获取失败：${error.message}`,'error');}finally{setBusy(false);}});
-        content.querySelector('[data-api-action="test-embedding"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试向量模型…');await save();const data=await serverFetch('/test-embedding',{method:'POST',body:JSON.stringify({text:'0-32永不落幕的剧场向量Kiểm tra kết nối'})});result(data);toast(`向量连接成功，维度 ${data.dimensions}`,'success');}catch(error){result(error.message);toast(`向量测试失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-api-action="test-embedding"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在测试向量模型…');await save();const data=await serverFetch('/test-embedding',{method:'POST',body:JSON.stringify({text:'Kiểm tra kết nối vector của 0-32 Sân Khấu Không Bao Giờ Hạ Màn'})});result(data);toast(`向量连接成功，维度 ${data.dimensions}`,'success');}catch(error){result(error.message);toast(`向量测试失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-api-action="rebuild"]')?.addEventListener('click',async()=>{try{setBusy(true,'保存配置并重建索引…');await save();await rebuildIndex({silent:true});await refreshServerState({config:true,index:true});toast('配置已保存，索引已重建','success');renderCurrentTab();}catch(error){result(error.message);toast(`操作失败：${error.message}`,'error');}finally{setBusy(false);}});
     }
 
@@ -17600,7 +17600,7 @@ ${JSON.stringify(evidence)}`;
                 if(typeof chats.hideChatMessageRange!=='function')throw slashError;
                 await chats.hideChatMessageRange(0,end,true,'');
                 return chatScopeIsCurrent(scope);
-            }catch(error){console.warn('[vvv小剧场] 全量恢复隐藏Tầng失败',error);return false;}
+            }catch(error){console.warn('[vvv Sân Khấu Nhỏ] Khôi phục toàn bộ các tầng bị ẩn thất bại',error);return false;}
         }
     }
 
@@ -17674,8 +17674,8 @@ ${JSON.stringify(evidence)}`;
         };
         const number=(key,label,min,max,step=1)=>{if(key==='companionRetryMaxAttempts')max=8;return `<label class="vvvtm-setting"><div><strong>${label}</strong></div><input type="number" min="${min}" max="${max}" step="${step}" data-setting-number="${key}" value="${esc(s[key])}"></label>`;};
         return `<section class="vvvtm-settings-columns"><article class="vvvtm-card"><h3>🧠 Luồng ký ức</h3><label class="vvvtm-setting"><div><strong>Nguồn AI cho ký ức và tổng kết</strong><small>Việc sắp xếp, tổng kết giai đoạn, tổng kết lớn và tổng kết thời đại luôn dùng API riêng với tư liệu có hạn; không đọc preset của SillyTavern, sách thế giới hay Persona, cũng không chuyển sang API chính của SillyTavern.</small></div><select data-setting-select="aiMode" disabled><option value="server" selected>API riêng · ranh giới tư liệu riêng</option></select></label>${toggle('autoExtract','即时简记 · 每条AI回复一次','正常游玩时每完成1条AI/角色回复就运行1次主记忆；user发送只作为上下文，绝不单独触发，也不生成userDòng thời gian。')}<div class="vvvtm-note">Chiến lược cố định: 1 lượt trả lời của AI = 1 lần chạy luồng ký ức; kết quả sắp xếp chỉ ghi vào ký ức chạy nền, không sinh thêm lượt trả lời thứ hai trong khung chat.</div>${toggle('detailRescueEnabled','生活细节漏记保底','主记忆负责anchors/lifeFacts；本地健康检查发现明确漏项后，在settled之后自动补抓。幕后七条成功与否都不会阻止补漏。')}${number('detailRescueMaxCandidates','每轮生活细节保底上限',4,24)}${number('detailRescueTimeoutMs','后台补抓超时（毫秒）',10000,60000,1000)}${number('detailRescueMaxAttempts','P13自动补抓最大尝试',1,5)}${number('detailRescueRetryBaseMs','P13重试基础等待（毫秒）',250,10000,250)}${number('lifeFactStabilityEvidence','习惯沉淀证据次数',2,8)}${toggle('autoSummary','自动阶段总结','按固定Tầng边界总结，失败不会跳过。')}${toggle('autoHideSummarized','总结成功后自动 /hide','阶段总结完成后自动执行 /hide 开始Tầng-结束Tầng；原消息仍可见，但不再进入AI提示词。')}${number('memoryCollectionMaxChars','记忆集合单次原文安全容量（字符）',12000,240000,1000)}${number('summaryEvery','每次阶段总结Tầng',5,200)}${number('stageSummariesPerBig','每几次阶段总结合并大总结',2,20)}${number('bigSummariesPerEra','每几次大总结合并时代总结',2,50)}${toggle('parseMemoryTags','读取 <Memory> JSON标签','回复中自带结构化记忆时直接导入。')}</article>
-        <article class="vvvtm-card"><h3>🔎 Truy hồi và nạp vào</h3>${toggle('ultraLongArchiveMode','2万层长期档案模式','启用三级总结、冷热记忆与超长列表分页；不会把全部旧聊天塞给chính vănAI。')}${toggle('injectMemory','注入记忆','发送当前人物/关系、终身核心事件、三级总结，以及按当前剧情从冷档案召回的精确旧细节。')}${toggle('strongWorldBookRead','强读世界书（推荐）','每次正常角色回复前，额外读取当前角色主世界书、角色附加世界书、聊天世界书与已启用全局世界书；常驻/命中条目优先，其余绑定条目按预算补读。不修改世界书本身。')}${number('strongWorldBookMaxChars','强读世界书最大字符',2000,30000,1000)}${toggle('protectSceneContinuity','当前现实/场景防回滚锁（强烈推荐）','最新user的地点、姿势、衣着、物品与Đã hoàn thành动作拥有最高优先级；旧scene/旧记忆不得把剧情拉回已经离开的地点。')}${toggle('protectUserAgency','USER主权锁（强烈推荐）','正常角色chính văn只允许AI控制char/NPC/环境；禁止替user新增对白、动作、决定、心理和主动身体反应。Tiếp sức cốt truyện bằng AI代写user时不受此开关限制。')}${number('maxInjectChars','每轮最大记忆注入字符',1000,30000)}${number('hotMemoryFloors','热记忆窗口（最近Tầng）',50,3000)}${toggle('retrievalEnabled','启用混合检索','Dòng thời gian、总结、Quan hệ nhân vật、电话/微信/朋友圈/日记/纪念日都可检索；向量未配置时用BM25。')}${toggle('vcpMemoryEnabled','VCP式联想记忆（推荐）','不复制VCP源码；服务器会把人物、事件、物品、地点、关系、Lời hẹn、秘密、通讯与生活痕迹构成标签关联图，再做跨Loại联想与核心记忆重排。')}${number('vcpTagWeight','直接标签权重',0,.5,.01)}${number('vcpGraphWeight','跨记忆联想权重',0,.5,.01)}${number('vcpCoreWeight','核心记忆引力',0,.3,.01)}${number('vcpMaxExpandedTags','每轮最多联想标签',2,24,1)}${toggle('autoReindex','记忆变化后自动重建索引','正常聊天自动异步重建；大型后台任务由独立统一队列调度。')}${number('retrievalTopK','召回数量',1,30)}${number('retrievalMinScore','最低相关度',0,1,.01)}${number('vectorWeight','向量权重',0,1,.05)}${number('lexicalWeight','关键词权重',0,1,.05)}</article>
-        <article class="vvvtm-card"><h3>🙈 Thu gọn và nén ngữ cảnh</h3>${toggle('uiCollapseSummarized','界面折叠已总结Tầng','只影响你肉眼看到的聊天，不影响AI。')}${toggle('compressSummarizedContext','上下文压缩已总结Tầng','AI不再收到旧原文，改发总结和检索记忆。')}${number('preserveFirst','始终保留开头Tầng',0,30)}${number('keepLast','始终保留最近Tầng',5,300)}${toggle('preserveImportant','保留手动标记的重要Tầng','重要消息不会折叠或压缩。')}${toggle('keepRetrievedFloors','保留本轮检索命中的Tầng','便于AI读取原始细节。')}<div class="vvvtm-row-actions"><button data-setting-action="expand-ui">Tạm mở tất cả</button><button data-setting-action="mark-current">Đánh dấu tầng hiện tại là quan trọng</button></div></article>
+        <article class="vvvtm-card"><h3>🔎 Truy hồi và nạp vào</h3>${toggle('ultraLongArchiveMode','Chế độ hồ sơ dài hạn 20.000 tầng','启用三级总结、冷热记忆与超长列表分页；不会把全部旧聊天塞给chính vănAI。')}${toggle('injectMemory','注入记忆','发送当前人物/关系、终身核心事件、三级总结，以及按当前剧情从冷档案召回的精确旧细节。')}${toggle('strongWorldBookRead','强读世界书（推荐）','每次正常角色回复前，额外读取当前角色主世界书、角色附加世界书、聊天世界书与已启用全局世界书；常驻/命中条目优先，其余绑定条目按预算补读。不修改世界书本身。')}${number('strongWorldBookMaxChars','强读世界书最大字符',2000,30000,1000)}${toggle('protectSceneContinuity','当前现实/场景防回滚锁（强烈推荐）','最新user的地点、姿势、衣着、物品与Đã hoàn thành动作拥有最高优先级；旧scene/旧记忆不得把剧情拉回已经离开的地点。')}${toggle('protectUserAgency','USER主权锁（强烈推荐）','正常角色chính văn只允许AI控制char/NPC/环境；禁止替user新增对白、动作、决定、心理和主动身体反应。Tiếp sức cốt truyện bằng AI代写user时不受此开关限制。')}${number('maxInjectChars','每轮最大记忆注入字符',1000,30000)}${number('hotMemoryFloors','热记忆窗口（最近Tầng）',50,3000)}${toggle('retrievalEnabled','启用混合检索','Dòng thời gian、总结、Quan hệ nhân vật、电话/微信/朋友圈/日记/纪念日都可检索；向量未配置时用BM25。')}${toggle('vcpMemoryEnabled','VCP式联想记忆（推荐）','不复制VCP源码；服务器会把人物、事件、物品、地点、关系、Lời hẹn、秘密、通讯与生活痕迹构成标签关联图，再做跨Loại联想与核心记忆重排。')}${number('vcpTagWeight','直接标签权重',0,.5,.01)}${number('vcpGraphWeight','跨记忆联想权重',0,.5,.01)}${number('vcpCoreWeight','核心记忆引力',0,.3,.01)}${number('vcpMaxExpandedTags','每轮最多联想标签',2,24,1)}${toggle('autoReindex','记忆变化后自动重建索引','正常聊天自动异步重建；大型后台任务由独立统一队列调度。')}${number('retrievalTopK','召回数量',1,30)}${number('retrievalMinScore','最低相关度',0,1,.01)}${number('vectorWeight','向量权重',0,1,.05)}${number('lexicalWeight','关键词权重',0,1,.05)}</article>
+        <article class="vvvtm-card"><h3>🙈 Thu gọn và nén ngữ cảnh</h3>${toggle('uiCollapseSummarized','界面折叠已总结Tầng','只影响你肉眼看到的聊天，不影响AI。')}${toggle('compressSummarizedContext','上下文压缩已总结Tầng','AI không còn nhận chính văn cũ nữa, thay vào đó gửi bản tổng kết và ký ức truy hồi được.')}${number('preserveFirst','始终保留开头Tầng',0,30)}${number('keepLast','始终保留最近Tầng',5,300)}${toggle('preserveImportant','保留手动标记的重要Tầng','重要消息不会折叠或压缩。')}${toggle('keepRetrievedFloors','保留本轮检索命中的Tầng','便于AI读取原始细节。')}<div class="vvvtm-row-actions"><button data-setting-action="expand-ui">Tạm mở tất cả</button><button data-setting-action="mark-current">Đánh dấu tầng hiện tại là quan trọng</button></div></article>
         <article class="vvvtm-card"><h3>🎨 Giao diện và hỗ trợ</h3>${number('uiPageSize','超长列表每页条数',10,100,5)}${toggle('hideCompletedSummaryCards','总结中心隐藏Đã hoàn thành卡片','数据仍保留。')}${toggle('autoCompanionOutput','幕后七条后台写作（推荐）','每轮可见chính văn完成后，由幕后七条专用独立API单独调用1次，一次性生成当前场景、Lời hẹn/秘密、人物外观、朋友圈/日记/纪念日、通讯终端和彼间私文；模型可在“API与模型”单独选择。')}${toggle('autoEcologyRepair','手机/彼间私文二次补活（可选，额外1次）','幕后七条本身已经读取静默债务并负责活化。仅在你主动开启本开关且七条结果仍死寂时，再额外调用1次同一个幕后七条写作源；默认Đóng以固定每轮只用1次后台请求。')}${number('companionRetryMaxAttempts','幕后七条失败最多自动重试次数',1,5,1)}${toggle('companionSkipGreeting','开场白保护','新卡开场白、替换开场白和仅加载聊天时不读取、不生成通讯与彼间私文。')}${toggle('phoneAutoGenerate','AI自主判断通讯方式与联系内容','每轮读取当前场景+角色卡+世界书重新判断：现代场景固定iPhone17Promax（断网/无信号只标记不可用）；其他时代/区域由AI按当前地点自由选择具体通讯载体。')}${toggle('phoneEcologyEnabled','手机生态增强','让联系人、群聊/频道、时代通讯噪声和实时联络像真实社会一样在后台生活；user不打开终端也会积累NPC↔NPC互动。')}${toggle('phoneInstitutionBootstrap','按人设自动建立稳定社交群','P26把原世界Thân phận与当前时空拆开：原班级/朋友群跨世界时保留但离线；若剧情在异世界/历史时代加入当地学校或组织，则建立当地传讯频道/电报簿/联络簿，不会硬塞微信。')}${number('phoneGroupActivity','群聊/频道后台活跃度（0-1）',0,1,.05)}${number('phoneServiceNoise','通讯环境噪声（0-1）',0,1,.05)}${number('phoneDeadAirMaxFloors','手机最多连续静默Tầng',1,12,1)}${number('phoneDirectContactMaxFloors','NPC最多几层不直接找user',2,20,1)}${number('phonePrivateMaxMessages','每轮私聊最多条数',1,8,1)}${number('phoneGroupMaxMessages','每轮群聊最多条数',1,12,1)}${number('phoneSmsMaxMessages','每轮短信最多条数',1,8,1)}${number('phoneCallMaxEvents','每轮电话最多事件',1,4,1)}${toggle('npcCallVariety','NPC来电自然度增强','避免NPC长期只发文字：连续多次NPC文字联系后，遇到合理即时沟通动机会优先考虑真实来电，但不会每轮强制打电话。')}${number('npcCallEscalationAfter','连续几次NPC文字联系后加强来电倾向',2,12)}${toggle('autoCharacterWorld','推进彼间私文','由每轮幕后七条后台写作持续映射全部NPC的独立生活；NPC可主动联系/打断user。')}${toggle('npcWorldAutonomy','NPC大世界自治增强','NPC彼此之间也会生活、交友、恋爱、争吵、工作、搬家、失联或改变目标；不是所有事件都围绕user。')}${number('npcWorldSpontaneity','NPC世界自发度（0-1）',0,1,.05)}${number('worldDeadAirMaxFloors','彼间私文最多连续静默Tầng',1,12,1)}${number('worldMinPulseEvents','触发世界心跳时最低NPC动态数',1,8,1)}${number('companionWorldMaxEvents','彼间私文最低并行槽位（会自动扩展覆盖全部NPC）',1,80)}<label class="vvvtm-setting"><div><strong>Cách trả lời liên lạc</strong><small>Chế độ khuyến nghị sẽ chờ chính văn lượt sau kết thúc rồi trả lời luôn trong cùng một yêu cầu chạy nền của Bảy điều hậu trường, không thêm một yêu cầu nữa.</small></div><select data-setting-select="phoneInteractiveMode"><option value="next-main" ${s.phoneInteractiveMode!=='plugin-immediate'?'selected':''}>Gộp trả lời vào Bảy điều hậu trường lượt sau (khuyến nghị)</option><option value="plugin-immediate" ${s.phoneInteractiveMode==='plugin-immediate'?'selected':''}>Bảy điều hậu trường trả lời ngay (thêm một lượt)</option></select></label>${toggle('removeDuplicateAssistantReplies','自动清理完全重复的相邻AITầng','仅处理同角色、相邻、五分钟内且chính văn完全相同的两层。')}${toggle('companionAlwaysShowShell','每轮显示通讯与彼间私文入口','即使本轮七条没有新内容或写作源不可用，也显示Trạng thái，避免误以为插件没运行。')}${toggle('syncWorldBooksAcrossClients','跨端世界书刷新保护','每次打开/切换聊天时重新读取酒馆实际启用的角色/聊天/全局世界书，减少手机和电脑显示/读取Trạng thái不同步。')}${toggle('diagnosticsUseAI','剧情体检使用AI','本地规则始终可用。')}</article></section>
         <section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🛡️ Bảo vệ dữ liệu cực ổn định</h3><p class="vvvtm-note">Máy chủ liên tục lưu trọn trạng thái 0-32 của cuộc trò chuyện hiện tại, ảnh chụp lịch sử giữ vĩnh viễn và không tự cắt bớt; mở/đổi cuộc trò chuyện không thực hiện cắt bỏ có tính phá hủy; khi phát hiện số lượng ký ức sụt giảm bất thường thì từ chối ghi đè.</p></div></div>${toggle('safetySnapshots','服务器完整Trạng thái安全快照','推荐永久开启。metadata异常、浏览器localStorage超限或误Bỏ chọn时可恢复。')}${number('safetySnapshotIntervalSeconds','自动快照最小间隔（秒）',15,600,5)}<div class="vvvtm-action-grid"><button data-setting-action="snapshot-now">📸 Chụp ảnh an toàn ngay</button><button data-setting-action="restore-latest">♻️ Khôi phục ảnh chụp an toàn gần nhất</button><button data-setting-action="restore-history">🗂 Chọn ảnh chụp lịch sử để khôi phục</button></div></section><section class="vvvtm-card"><div class="vvvtm-section-title"><div><h3>🗑 Dữ liệu đã xóa / thùng rác</h3><p class="vvvtm-note">U1.4: dữ liệu có cấu trúc do chính bạn xóa sẽ vào thùng rác bia mộ trước; ở đây khôi phục lại được. Nâng cấp thường, đồng bộ hay việc xóa chính văn không tạo bia mộ và cũng không có quyền xóa.</p></div></div>${recycleBinMarkup()}</section><section class="vvvtm-card vvvtm-danger-zone"><div class="vvvtm-section-title"><div><h3>Dữ liệu, an toàn và khôi phục</h3><p class="vvvtm-note">“Xóa sạch một chạm” sẽ xóa dữ liệu đang hoạt động và khôi phục /hide; chế độ cực ổn định sẽ giữ thêm một ảnh chụp bảo hiểm trước khi xóa, không tham gia việc AI đọc và có thể khôi phục khi lỡ tay. Cuộc trò chuyện thật, thẻ nhân vật, sách thế giới, bản thân tiện ích và cấu hình API riêng sẽ không bị xóa.</p></div></div><div class="vvvtm-action-grid"><button data-setting-action="migrate">Di trú Memory-Context cũ</button><button data-setting-action="import">Nhập bản sao lưu</button><button data-setting-action="export">Xuất bản sao lưu</button><button data-setting-action="rebuild">Dựng lại chỉ mục truy hồi</button><button data-setting-action="reset-progress">Tính lại các chỗ hổng của tổng kết</button><button data-setting-action="clear-tasks">Dọn bản ghi tác vụ đã hoàn thành</button><button data-setting-action="wipe-all" class="danger-soft">🗑 Xóa một chạm dữ liệu hoạt động của cuộc trò chuyện này</button></div><input id="vvvtm-import-file" type="file" accept="application/json,.json" hidden></section>`;
     }
@@ -17800,7 +17800,7 @@ ${JSON.stringify(evidence)}`;
 
         await syncStateWithCurrentChat({reason:'chat-open'});if(!stillCurrent())return;
         await refreshServerState({config:true,tasks:true,index:true});if(!stillCurrent())return;
-        await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv记忆中枢] Đã hoàn thành主记忆任务恢复失败',error));if(!stillCurrent())return;
+        await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv Trung tâm Ký ức] Khôi phục các tác vụ ký ức chính đã hoàn thành thất bại',error));if(!stillCurrent())return;
         scheduleIndexSchemaUpgrade();
         renderCurrentTab();applyButtonVisibility();applyUiCollapse();
         runLaterForScope(scope,120,()=>decorateAllCompanionOutputs());
@@ -17830,11 +17830,11 @@ ${JSON.stringify(evidence)}`;
             stateRuntime.baselineChatLength=context()?.chat?.length||0;stateRuntime.generationActive=false;stateRuntime.liveUserPending=false;stateRuntime.liveUserFloor=-1;stateRuntime.liveTurnChatKey='';stateRuntime.liveGenerationType='';stateRuntime.foregroundAwaitingUser=false;ensureUI();registerSettingsEntry();
             await syncStateWithCurrentChat({reason:'initial-load'});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
             await refreshServerState({config:true,tasks:true,index:true});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
-            await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv记忆中枢] 初始化恢复Đã hoàn thành主记忆任务失败',error));if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
+            await restoreCompletedMemoryJobsOnLoad().catch(error=>console.warn('[vvv Trung tâm Ký ức] Khởi tạo khôi phục các tác vụ ký ức chính đã hoàn thành thất bại',error));if(!chatScopeIsCurrent(scope)||stateRuntime.state!==loadedState)continue;
             scheduleIndexSchemaUpgrade();
             initScope=scope;
         }
-        if(!initScope){stateRuntime.initialized=false;setTimeout(()=>initialize().catch(error=>console.error('[vvv小剧场] 延迟初始化失败',error)),120);return;}
+        if(!initScope){stateRuntime.initialized=false;setTimeout(()=>initialize().catch(error=>console.error('[vvv Sân Khấu Nhỏ] Khởi tạo trễ thất bại',error)),120);return;}
         scheduleContextRefresh();applyUiCollapse();runLaterForScope(initScope,120,()=>decorateAllCompanionOutputs());showPendingIncomingCallIfAny();
         const ctx=context();const events=getEvents(ctx);const source=ctx?.eventSource;
         const unifiedBus=globalThis.VVVUnifiedCore?.events;
@@ -17875,7 +17875,7 @@ ${JSON.stringify(evidence)}`;
                 // quiet 还会在结束时发 GENERATION_ENDED；若把它当真实轮处理，其异步收尾会和下一轮chính văn并发，
                 // 最终把 generationActive/liveUserPending 在真实chính văn生成途中清掉，导致第二轮没有小剧场也没有 settled。
                 if(dryRun===true){
-                    console.debug('[vvv小剧场] 忽略 dry-run GENERATION_STARTED');
+                    console.debug('[vvv Sân Khấu Nhỏ] Bỏ qua GENERATION_STARTED của dry-run');
                     return;
                 }
                 if(generationType==='quiet'||generationType==='impersonate'){
@@ -17926,7 +17926,7 @@ ${JSON.stringify(evidence)}`;
                 const scopeStateStillCurrent=()=>chatScopeIsCurrent(scope)&&stateRuntime.state===turnState;
                 if(stateRuntime.backgroundGenerationActive){
                     stateRuntime.backgroundGenerationActive=false;
-                    console.debug('[vvv小剧场] 忽略后台静默生成的 GENERATION_ENDED');
+                    console.debug('[vvv Sân Khấu Nhỏ] Bỏ qua GENERATION_ENDED của lần sinh ngầm ở nền');
                     return;
                 }
                 if(!isLiveTurn()){
@@ -17948,17 +17948,17 @@ ${JSON.stringify(evidence)}`;
                 const narrativeRealityChanged=s39SyncNarrativePhoneRealityImmediate(endedFloor,endedSignature);
                 const phoneEcosystemChanged=s8TickPhoneEcosystem(endedFloor);
                 if(narrativeRealityChanged||phoneEcosystemChanged)updatePromptInjection();
-                console.debug('[vvv小剧场] chính văn请求完全结束；并行启动幕后七条和即时记忆整理');
+                console.debug('[vvv Sân Khấu Nhỏ] Yêu cầu chính văn đã kết thúc hoàn toàn; khởi động song song Bảy điều hậu trường và việc sắp xếp ký ức tức thời');
                 const companionTask=processDedicatedCompanionForLatest({silent:true,targetFloor:endedFloor,targetSignature:endedSignature})
-                    .catch(error=>{console.warn('[vvv小剧场] 幕后七条失败，不阻断记忆整理',error);return false;});
+                    .catch(error=>{console.warn('[vvv Sân Khấu Nhỏ] Bảy điều hậu trường thất bại, không chặn việc sắp xếp ký ức',error);return false;});
                 // 幕后七条继续独立收尾，不再占着真实chính văn轮标记或拖住整理/总结。
                 void companionTask.then(()=>{if(chatScopeIsCurrent(scope))decorateCompanionOutput(endedFloor);});
-                await flushAutoExtract(endedFloor,endedSignature).catch(error=>console.warn('[vvv小剧场] 即时记忆整理失败',error));if(!scopeStateStillCurrent())return;
-                const memoryHealthAttempt=await auditLatestTurnMemoryHealth(endedFloor,endedSignature).catch(error=>{console.warn('[vvv小剧场] 记忆健康检查失败',error);return null;});if(!scopeStateStillCurrent())return;
+                await flushAutoExtract(endedFloor,endedSignature).catch(error=>console.warn('[vvv Sân Khấu Nhỏ] Sắp xếp ký ức tức thời thất bại',error));if(!scopeStateStillCurrent())return;
+                const memoryHealthAttempt=await auditLatestTurnMemoryHealth(endedFloor,endedSignature).catch(error=>{console.warn('[vvv Sân Khấu Nhỏ] Kiểm tra sức khỏe ký ức thất bại',error);return null;});if(!scopeStateStillCurrent())return;
                 // Do not let a newer real turn make the completed floor lose
                 // its P13 result; defer only summary/UI finalization.
                 if(!turnStillCurrent()){await saveState({immediate:true,refresh:false,reason:'turn-memory-settled-before-new-turn'}).catch(()=>{});scheduleReindex();return;}
-                await maybeCreateSummaries().catch(error=>console.warn('[vvv小剧场] 总结失败',error));if(!turnStillCurrent())return;
+                await maybeCreateSummaries().catch(error=>console.warn('[vvv Sân Khấu Nhỏ] Tổng kết thất bại',error));if(!turnStillCurrent())return;
                 await saveState({immediate:true,refresh:false,reason:'turn-settled'});if(!turnStillCurrent())return;
                 scheduleContextRefresh();applyUiCollapse();finishLiveTurn();
                 const sidecar=context()?.chat?.[endedFloor]?.extra?.vvvTheaterCompanion;
@@ -17970,7 +17970,7 @@ ${JSON.stringify(evidence)}`;
                 const scope=captureChatScope();
                 if(stateRuntime.backgroundGenerationActive&&!isLiveTurn()){
                     stateRuntime.backgroundGenerationActive=false;
-                    console.debug('[vvv小剧场] 后台生成已停止，Trạng thái标记已释放');
+                    console.debug('[vvv Sân Khấu Nhỏ] Việc tạo ở nền đã dừng, dấu trạng thái đã được giải phóng');
                     applyUiCollapse();return;
                 }
                 if(!isLiveTurn()){
@@ -18069,7 +18069,7 @@ ${JSON.stringify(evidence)}`;
                 const worldBookDigest=await buildStrongWorldBookDigest();
                 if(worldBookDigest){
                     const insertAt=chat.length>0?Math.max(0,chat.length-1):0;
-                    chat.splice(insertAt,0,systemNoteForGeneration(chat,worldBookDigest,'0-32强读世界书'));
+                    chat.splice(insertAt,0,systemNoteForGeneration(chat,worldBookDigest,'0-32 đọc cưỡng bức sách thế giới'));
                 }
             }
 
@@ -18078,7 +18078,7 @@ ${JSON.stringify(evidence)}`;
             if (isMainAssistantReply && mainDirectorEnabledFromRelay()) {
                 const director = mainAiDirectorInstruction(chat);
                 if (director) {
-                    const note = { name:'0-32剧情导演', is_user:false, is_system:true, mes:director, send_date:Date.now() };
+                    const note = { name:'Đạo diễn cốt truyện 0-32', is_user:false, is_system:true, mes:director, send_date:Date.now() };
                     // 按官方拦截器推荐思路放在“最后一条待生成上下文”之前：
                     // normal通常在最新user之前；continue则在待续写assistant之前，同样靠近本轮生成末端。
                     const insertAt = chat.length > 0 ? Math.max(0, chat.length - 1) : 0;
@@ -18102,12 +18102,12 @@ ${JSON.stringify(evidence)}`;
                     const openAiShape = Object.prototype.hasOwnProperty.call(sample,'role') || Object.prototype.hasOwnProperty.call(sample,'content');
                     const note = openAiShape
                         ? { role:'system', content:antiReplay }
-                        : { name:'0-32本轮接续边界', is_user:false, is_system:true, mes:antiReplay, send_date:Date.now() };
+                        : { name:'Ranh giới tiếp nối lượt này của 0-32', is_user:false, is_system:true, mes:antiReplay, send_date:Date.now() };
                     chat.splice(latestUserIndex + 1, 0, note);
                 }
             }
         } catch(error) {
-            console.warn('[vvv记忆中枢] 生成拦截器处理失败，本轮保留原聊天', error);
+            console.warn('[vvv Trung tâm Ký ức] Bộ chặn lượt sinh xử lý thất bại, lượt này giữ nguyên cuộc trò chuyện gốc', error);
         }
     };
 
@@ -18126,7 +18126,7 @@ ${JSON.stringify(evidence)}`;
     });
     globalThis.dispatchEvent?.(new CustomEvent('vvv-theater-archive-bridge-ready',{detail:{version:VERSION}}));
 
-    import('./p41-s3-archive-binding-addon.js').catch(error => console.warn('[0-32·S3] 永久档案UI附加层加载失败', error));
+    import('./p41-s3-archive-binding-addon.js').catch(error => console.warn('[0-32·S3] Nạp lớp giao diện bổ sung của kho lưu vĩnh viễn thất bại', error));
 
     // S13 phone UX overrides: route choices and Didi trip cards retain the original
     // event attributes while exposing deterministic route/driver details.
@@ -18313,7 +18313,7 @@ ${JSON.stringify(evidence)}`;
     const s15NormalizeCompanionPayloadBase=normalizeCompanionPayload;
     normalizeCompanionPayload=function(raw,floor,signature){const payload=s15NormalizeCompanionPayloadBase(raw,floor,signature);payload.worldMap=s15CleanMapPayload(raw?.world?.map||raw?.worldMap,floor);return payload;};
     const s15MergeCompanionPayloadBase=mergeCompanionPayload;
-    mergeCompanionPayload=function(payload){const result=s15MergeCompanionPayloadBase(payload);s15MergeWorldMapPayload(payload?.worldMap,payload);setTimeout(()=>s15AutoIllustrate(payload).catch(error=>console.warn('[0-32画像工坊] 自动生成跳过',error)),50);return result;};
+    mergeCompanionPayload=function(payload){const result=s15MergeCompanionPayloadBase(payload);s15MergeWorldMapPayload(payload?.worldMap,payload);setTimeout(()=>s15AutoIllustrate(payload).catch(error=>console.warn('[0-32 Xưởng chân dung] Bỏ qua việc tạo tự động',error)),50);return result;};
     const s15BuildMemoryPromptBase=buildMemoryPrompt;
     buildMemoryPrompt=function(){
         const base=s15BuildMemoryPromptBase(),systems=s15EnsureSystems();if(!systems||!base)return base;
@@ -18374,7 +18374,7 @@ ${JSON.stringify(evidence)}`;
             if(typeof bridge?.generateTravel==='function')return bridge;
             await new Promise(resolve=>setTimeout(resolve,120));
         }
-        throw new Error('AI接力模块没有完成加载，请刷新页面后重试');
+        throw new Error('Mô-đun tiếp sức AI chưa nạp xong, hãy tải lại trang rồi thử lại');
     }
     function s15TravelComposer(place){
         const overlay=document.getElementById('vvvtm-worldmap-overlay'),map=stateRuntime.state?.worldMap;if(!overlay||!place||!map)return;
@@ -18386,7 +18386,7 @@ ${JSON.stringify(evidence)}`;
             const custom=compactText(modal.querySelector('[data-travel-custom]')?.value,800),floor=Math.max(0,(context()?.chat?.length||1)-1),prior=map.activeTravel?.destinationId===place.id?map.activeTravel:null,event={id:prior?.id||uid('travel'),from:map.currentLocation||stateRuntime.state?.scene?.location||'Vị trí hiện tại',destination:place.name,destinationId:place.id,custom,status:'departure-planned',floor,createdAt:prior?.createdAt||Date.now(),updatedAt:Date.now(),time:phoneClock().time};
             const instruction=`旅行/前往：从“${event.from}”前往“${event.destination}”。只写user开始出发的这一阶段，不要直接替NPC回应，也不要一口气写到抵达后的结果。交通方式与同行人说明：${custom||'结合当前剧情自然决定，但不得凭空让不在场NPC同行。'}`;
             try{
-                if(generateButton){generateButton.disabled=true;generateButton.textContent='AI接力生成中…';}
+                if(generateButton){generateButton.disabled=true;generateButton.textContent='Đang tạo lượt tiếp sức AI…';}
                 if(errorNode){errorNode.hidden=true;errorNode.textContent='';}
                 const relay=await s15WaitForRelayBridge();
                 await relay.generateTravel(instruction);
@@ -18604,7 +18604,7 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-avatar-reference]')?.addEventListener('click',()=>content.querySelector('[data-avatar-reference-file]')?.click());content.querySelector('[data-avatar-reference-file]')?.addEventListener('change',async event=>{try{setBusy(true,'正在上传角色参考图…');s15SaveMirrorForm(content,active);await s15UploadReference(active,event.target.files?.[0],content);}catch(error){toast(`参考图上传失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelector('[data-avatar-save-mirror]')?.addEventListener('click',async()=>{s15SaveMirrorForm(content,active);await s15ApplyWornAppearance(active,'镜子资料更新');toast('镜子数据已保存','success');renderCurrentTab();});
         content.querySelector('[data-avatar-take-snapshot]')?.addEventListener('click',async()=>{s15SaveMirrorForm(content,active);const floor=Math.max(0,(context()?.chat?.length||1)-1);studio.mirrorSnapshots.push({id:uid('mirror'),subjectId:active.id,subjectName:active.name,mirror:clone(active.mirror),wornGarmentIds:s15WornGarments(active).map(row=>row.id),floor,time:nowText(),createdAt:Date.now()});if(studio.mirrorSnapshots.length>300)studio.mirrorSnapshots=studio.mirrorSnapshots.slice(-300);await s15ApplyWornAppearance(active,'照镜子确认当前样貌');toast('镜面快照已保存','success');renderCurrentTab();});
-        content.querySelector('[data-avatar-generate]')?.addEventListener('click',async()=>{try{s15SaveMirrorForm(content,active);await saveState({immediate:true,refresh:false});setBusy(true,'NovelAI 正在按参考图生成…');await s15GeneratePortrait(active,{floor:Math.max(0,(context()?.chat?.length||1)-1),reason:'manual'});}catch(error){toast(`画像生成失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-avatar-generate]')?.addEventListener('click',async()=>{try{s15SaveMirrorForm(content,active);await saveState({immediate:true,refresh:false});setBusy(true,'NovelAI đang tạo ảnh theo ảnh tham chiếu…');await s15GeneratePortrait(active,{floor:Math.max(0,(context()?.chat?.length||1)-1),reason:'manual'});}catch(error){toast(`画像生成失败：${error.message}`,'error');}finally{setBusy(false);}});
         content.querySelectorAll('[data-avatar-wear]').forEach(button=>button.addEventListener('click',async()=>{const garment=studio.garments.find(row=>row.id===button.dataset.avatarWear);if(!garment)return;garment.wornBy=Array.isArray(garment.wornBy)?garment.wornBy:[];if(garment.wornBy.includes(active.id))garment.wornBy=garment.wornBy.filter(id=>id!==active.id);else garment.wornBy.push(active.id);await s15ApplyWornAppearance(active,garment.wornBy.includes(active.id)?`穿上${garment.name}`:`脱下${garment.name}`);renderCurrentTab();if(active.referenceAssetId&&stateRuntime.serverHealth?.imageConfigured)try{await s15GeneratePortrait(active,{floor:Math.max(0,(context()?.chat?.length||1)-1),reason:'wardrobe'});}catch(error){toast(`换装已保存，但重新生图失败：${error.message}`,'warn');}}));
         content.querySelector('[data-avatar-add-garment]')?.addEventListener('click',()=>s15OpenAvatarCreateDialog('garment',active));
         content.querySelectorAll('[data-avatar-garment-delete]').forEach(button=>button.addEventListener('click',async()=>{const row=studio.garments.find(item=>item.id===button.dataset.avatarGarmentDelete);if(!row||!confirm(`从衣架移除“${row.name}”？不会删除购物订单。`))return;studio.garments=studio.garments.filter(item=>item.id!==row.id);await saveState({immediate:true,refresh:false,reason:'delete-garment'});renderCurrentTab();}));
@@ -18613,7 +18613,7 @@ ${JSON.stringify(evidence)}`;
     };
     const s15RenderApiBase=renderApi;
     renderApi=function(){
-        const html=s15RenderApiBase(),image=stateRuntime.serverConfig?.image||{},mode=image.workflowMode||'strict-character-reference',card=`<article class="vvvtm-card vvvtm-image-api-card"><div class="vvvtm-section-title"><div><h3>🖼 API chân dung cốt truyện NovelAI</h3><p class="vvvtm-note">Ảnh gốc bạn tải lên là ảnh mẹ vĩnh viễn. Chế độ nghiêm ngặt dùng NovelAI 4.5 Character Reference để khóa nhân vật và phong cách; ảnh sinh ra trong thư viện cốt truyện sẽ không bao giờ quay lại làm ảnh tham chiếu cho đời sau.</p></div><div class="vvvtm-row-actions"><button data-image-api-action="test" title="Sẽ thật sự tạo một ảnh thử và tiêu hạn mức NovelAI; Character Reference thường tốn thêm điểm">Kiểm tra NovelAI (tốn hạn mức)</button><button data-image-api-action="save">Lưu NovelAI</button></div></div><label class="vvvtm-setting"><div><strong>Bật vẽ theo cốt truyện</strong><small>Sau khi Bảy điều hậu trường xong, nếu nhân vật của lượt này đã có ảnh tham chiếu thì tự tạo thêm một ảnh.</small></div><input id="image-enabled" type="checkbox" ${image.enabled?'checked':''}></label><div class="api-grid"><label class="api-field wide"><span>Luồng giữ nhân vật ổn định</span><select id="image-workflow"><option value="strict-character-reference" ${mode==='strict-character-reference'?'selected':''}>Giữ nghiêm ngặt nhân vật gốc (khuyến nghị, khóa nhân vật + phong cách)</option><option value="flexible-character-reference" ${mode==='flexible-character-reference'?'selected':''}>Giữ cùng một nhân vật (cho phép phong cách thay đổi nhẹ)</option><option value="img2img-redesign" ${mode==='img2img-redesign'?'selected':''}>Vẽ lại thường (chỉ dùng khi chủ động thiết kế lại)</option></select><small>Hai mục đầu cần NAI 4.5; nếu API từ chối tham chiếu nhân vật thì tự lùi về vẽ lại biên độ thấp và ghi rõ trong kết quả kiểm tra.</small></label>${inputField('image-base','NovelAI Base URL',image.baseUrl||'https://image.novelai.net')}${inputField('image-key','NovelAI API Token','', 'password','placeholder="Để trống thì giữ Token cũ trên máy chủ"')}${inputField('image-model','模型（角色参考必须 4.5）',image.model||'nai-diffusion-4-5-curated')}${inputField('image-sampler','采样器',image.sampler||'k_euler_ancestral')}${inputField('image-noise-schedule','Noise Schedule',image.noiseSchedule||'karras')}${inputField('image-seed','Seed（-1 随机）',Number.isFinite(Number(image.seed))?image.seed:-1,'number','min="-1" max="4294967295"')}${inputField('image-cfg-rescale','CFG Rescale',image.cfgRescale??0,'number','min="0" max="1" step="0.01"')}${inputField('image-width','宽度',image.width||832,'number','min="256" max="2048" step="64"')}${inputField('image-height','高度',image.height||1216,'number','min="256" max="2048" step="64"')}${inputField('image-steps','步数',image.steps||28,'number','min="1" max="50"')}${inputField('image-scale','Prompt Guidance',image.scale||5,'number','min="1" max="20" step="0.1"')}${inputField('image-identity-strength','人物Thân phận锁强度',image.identityStrength??1,'number','min="0" max="2" step="0.05"')}${inputField('image-style-fidelity','原图画风保真',image.styleFidelity??.85,'number','min="0" max="2" step="0.05"')}${inputField('image-strength','低幅回退/普通重绘幅度',image.strength??.24,'number','min="0.01" max="0.99" step="0.01"')}${inputField('image-noise','低幅回退/普通重绘噪声',image.noise??.03,'number','min="0" max="0.99" step="0.01"')}${inputField('image-timeout','超时秒数',image.timeoutSeconds||180,'number','min="20" max="900"')}<label class="api-field wide"><span>Prompt phủ định mặc định</span><textarea id="image-negative">${esc(image.negativePrompt||'')}</textarea></label></div><pre id="vvvtm-image-api-result" class="api-result">${image.apiKeyConfigured?'NovelAI Token 已保存在服务器。':'尚未保存 NovelAI Token。'} 当前默认使用永久母图角色参考；测试会真实消耗额度。</pre></article>`;
+        const html=s15RenderApiBase(),image=stateRuntime.serverConfig?.image||{},mode=image.workflowMode||'strict-character-reference',card=`<article class="vvvtm-card vvvtm-image-api-card"><div class="vvvtm-section-title"><div><h3>🖼 API chân dung cốt truyện NovelAI</h3><p class="vvvtm-note">Ảnh gốc bạn tải lên là ảnh mẹ vĩnh viễn. Chế độ nghiêm ngặt dùng NovelAI 4.5 Character Reference để khóa nhân vật và phong cách; ảnh sinh ra trong thư viện cốt truyện sẽ không bao giờ quay lại làm ảnh tham chiếu cho đời sau.</p></div><div class="vvvtm-row-actions"><button data-image-api-action="test" title="Sẽ thật sự tạo một ảnh thử và tiêu hạn mức NovelAI; Character Reference thường tốn thêm điểm">Kiểm tra NovelAI (tốn hạn mức)</button><button data-image-api-action="save">Lưu NovelAI</button></div></div><label class="vvvtm-setting"><div><strong>Bật vẽ theo cốt truyện</strong><small>Sau khi Bảy điều hậu trường xong, nếu nhân vật của lượt này đã có ảnh tham chiếu thì tự tạo thêm một ảnh.</small></div><input id="image-enabled" type="checkbox" ${image.enabled?'checked':''}></label><div class="api-grid"><label class="api-field wide"><span>Luồng giữ nhân vật ổn định</span><select id="image-workflow"><option value="strict-character-reference" ${mode==='strict-character-reference'?'selected':''}>Giữ nghiêm ngặt nhân vật gốc (khuyến nghị, khóa nhân vật + phong cách)</option><option value="flexible-character-reference" ${mode==='flexible-character-reference'?'selected':''}>Giữ cùng một nhân vật (cho phép phong cách thay đổi nhẹ)</option><option value="img2img-redesign" ${mode==='img2img-redesign'?'selected':''}>Vẽ lại thường (chỉ dùng khi chủ động thiết kế lại)</option></select><small>Hai mục đầu cần NAI 4.5; nếu API từ chối tham chiếu nhân vật thì tự lùi về vẽ lại biên độ thấp và ghi rõ trong kết quả kiểm tra.</small></label>${inputField('image-base','NovelAI Base URL',image.baseUrl||'https://image.novelai.net')}${inputField('image-key','NovelAI API Token','', 'password','placeholder="Để trống thì giữ Token cũ trên máy chủ"')}${inputField('image-model','模型（角色参考必须 4.5）',image.model||'nai-diffusion-4-5-curated')}${inputField('image-sampler','采样器',image.sampler||'k_euler_ancestral')}${inputField('image-noise-schedule','Noise Schedule',image.noiseSchedule||'karras')}${inputField('image-seed','Seed（-1 随机）',Number.isFinite(Number(image.seed))?image.seed:-1,'number','min="-1" max="4294967295"')}${inputField('image-cfg-rescale','CFG Rescale',image.cfgRescale??0,'number','min="0" max="1" step="0.01"')}${inputField('image-width','宽度',image.width||832,'number','min="256" max="2048" step="64"')}${inputField('image-height','高度',image.height||1216,'number','min="256" max="2048" step="64"')}${inputField('image-steps','步数',image.steps||28,'number','min="1" max="50"')}${inputField('image-scale','Prompt Guidance',image.scale||5,'number','min="1" max="20" step="0.1"')}${inputField('image-identity-strength','人物Thân phận锁强度',image.identityStrength??1,'number','min="0" max="2" step="0.05"')}${inputField('image-style-fidelity','原图画风保真',image.styleFidelity??.85,'number','min="0" max="2" step="0.05"')}${inputField('image-strength','低幅回退/普通重绘幅度',image.strength??.24,'number','min="0.01" max="0.99" step="0.01"')}${inputField('image-noise','低幅回退/普通重绘噪声',image.noise??.03,'number','min="0" max="0.99" step="0.01"')}${inputField('image-timeout','超时秒数',image.timeoutSeconds||180,'number','min="20" max="900"')}<label class="api-field wide"><span>Prompt phủ định mặc định</span><textarea id="image-negative">${esc(image.negativePrompt||'')}</textarea></label></div><pre id="vvvtm-image-api-result" class="api-result">${image.apiKeyConfigured?'Token NovelAI đã được lưu trên máy chủ.':'尚未保存 NovelAI Token。'} 当前默认使用永久母图角色参考；测试会真实消耗额度。</pre></article>`;
         const index=html.lastIndexOf('</section>');return index>=0?`${html.slice(0,index)}${card}${html.slice(index)}`:`${html}${card}`;
     };
     const s15ReadApiFormBase=readApiForm;
@@ -18622,15 +18622,15 @@ ${JSON.stringify(evidence)}`;
     bindApi=function(content){
         s15BindApiBase(content);const result=content.querySelector('#vvvtm-image-api-result'),workflow=content.querySelector('#image-workflow'),identity=content.querySelector('#image-identity-strength');workflow?.querySelector('option[value="img2img-redesign"]')?.remove();if(workflow&&!['strict-character-reference','flexible-character-reference'].includes(workflow.value))workflow.value='strict-character-reference';if(identity){identity.max='1';identity.min='0';identity.step='.05';if(Number(identity.value)>1)identity.value='1';}const workflowHelp=workflow?.closest('label')?.querySelector('small');if(workflowHelp)workflowHelp.textContent='两种模式都必须由 NovelAI 4.5 Character Reference 成功完成；失败会显示真实错误，不会回退到普通重绘。';for(const id of ['image-style-fidelity','image-strength','image-noise'])content.querySelector(`#${id}`)?.closest('label')?.remove();
         const persist=async()=>{const config=readApiForm(content),data=await serverFetch('/config',{method:'POST',body:JSON.stringify(config)});stateRuntime.serverConfig=data.config;await refreshServerState({config:true});return data.config;};
-        content.querySelector('[data-image-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存 NovelAI 配置…');const config=await persist();if(result)result.textContent=config?.image?.apiKeyConfigured?'NovelAI 配置已保存，Token 仅保存在服务器。':'配置已保存，但尚未提供 Token。';toast('NovelAI 配置已保存','success');}catch(error){if(result)result.textContent=error.message;toast(`NovelAI 保存失败：${error.message}`,'error');}finally{setBusy(false);}});
+        content.querySelector('[data-image-api-action="save"]')?.addEventListener('click',async()=>{try{setBusy(true,'正在保存 NovelAI 配置…');const config=await persist();if(result)result.textContent=config?.image?.apiKeyConfigured?'Đã lưu cấu hình NovelAI, Token chỉ được giữ trên máy chủ.':'配置已保存，但尚未提供 Token。';toast('Đã lưu cấu hình NovelAI','success');}catch(error){if(result)result.textContent=error.message;toast(`NovelAI 保存失败：${error.message}`,'error');}finally{setBusy(false);}});
         const testButton=content.querySelector('[data-image-api-action="test"]');testButton?.addEventListener('click',async()=>{
             if(testButton.dataset.imageTestRunning==='1')return;const originalText=testButton.textContent||'测试 NovelAI（消耗额度）',startedAt=Date.now();let active=true,timer=0;
             testButton.dataset.imageTestRunning='1';testButton.disabled=true;testButton.setAttribute('aria-busy','true');
             const updateElapsed=()=>{if(!active)return;testButton.textContent=`测试中 ${Math.max(0,Math.floor((Date.now()-startedAt)/1000))}s`;timer=setTimeout(updateElapsed,1000);};
-            updateElapsed();setBusy(true,'NovelAI 正在真实生成测试图，会消耗额度…');
+            updateElapsed();setBusy(true,'NovelAI đang thật sự tạo ảnh thử, sẽ tốn hạn mức…');
             try{
                 await persist();const subject=s15Subject(),body=subject?.referenceAssetId?{subjectId:subject.id,referenceId:subject.referenceAssetId,referenceData:await s15NovelAiReferenceData(subject.referenceAssetId),prompt:s15PortraitPrompt(subject,-1,'API connection test, current scene illustration')}:{},data=await serverFetch('/portrait/test',{method:'POST',body:JSON.stringify(body)});
-                const seconds=(Number(data.durationMs||0)/1000).toFixed(1),labels={'strict-character-reference':'严格角色＋画风参考','flexible-character-reference':'角色Thân phận参考',text2img:'文生图'},mode=labels[data.mode]||data.mode||'Chưa rõ工作流';if(result)result.textContent=`NovelAI 实际生图成功 · ${mode} · ${compactText(data.model||'Chưa rõ模型',180)} · ${Math.round(Number(data.size||0)/1024)}KB · ${seconds}s\nCharacter Reference 已真实通过；没有使用普通图生图回退。本次测试已经消耗 NovelAI 额度，测试图没有写入剧情画廊。`;toast('NovelAI 角色参考实际生图测试成功','success');
+                const seconds=(Number(data.durationMs||0)/1000).toFixed(1),labels={'strict-character-reference':'严格角色＋画风参考','flexible-character-reference':'角色Thân phận参考',text2img:'文生图'},mode=labels[data.mode]||data.mode||'Chưa rõ工作流';if(result)result.textContent=`NovelAI 实际生图成功 · ${mode} · ${compactText(data.model||'Chưa rõ模型',180)} · ${Math.round(Number(data.size||0)/1024)}KB · ${seconds}s\nCharacter Reference 已真实通过；没有使用普通图生图回退。本次测试已经消耗 NovelAI 额度，测试图没有写入剧情画廊。`;toast('Kiểm tra tạo ảnh thật với tham chiếu nhân vật NovelAI thành công','success');
             }catch(error){if(result)result.textContent=`NovelAI 测试失败：${error.message}`;toast(`NovelAI 测试失败：${error.message}`,'error');}
             finally{active=false;clearTimeout(timer);testButton.textContent=originalText;testButton.disabled=false;testButton.removeAttribute('aria-busy');delete testButton.dataset.imageTestRunning;setBusy(false);}
         });
