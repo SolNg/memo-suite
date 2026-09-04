@@ -11577,46 +11577,46 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         const terminal=['refunded','cancelled','Đã hủy'].includes(order.status),delivered=['delivered','Đã hoàn thành','Đã dùng'].includes(order.status);
         if(terminal)return `<span>${esc(s8OrderStatusLabel(order))}</span>`;
         if(order.status==='refund-pending')return '<button disabled>Đang xử lý hoàn tiền</button>';
-        if(order.status==='exception')return `<button data-phone-order-action="resume" data-phone-order-id="${esc(order.id)}">继续处理</button><button class="danger-soft" data-phone-order-action="refund" data-phone-order-id="${esc(order.id)}">申请退款</button>`;
-        if(delivered)return `<button data-phone-order-action="receiver" data-phone-order-id="${esc(order.id)}">代收人</button><button data-phone-order-action="aftersale" data-phone-order-id="${esc(order.id)}">申请售后</button>`;
-        const rider=order.kind==='food'&&order.status==='delivering'?`<button data-phone-order-action="rider" data-phone-order-id="${esc(order.id)}">联系骑手</button>`:'';
-        return `${rider}<button data-phone-order-action="issue" data-phone-order-id="${esc(order.id)}">遇到问题</button><button class="danger-soft" data-phone-order-action="cancel" data-phone-order-id="${esc(order.id)}">Hủy订单</button>`;
+        if(order.status==='exception')return `<button data-phone-order-action="resume" data-phone-order-id="${esc(order.id)}">Tiếp tục xử lý</button><button class="danger-soft" data-phone-order-action="refund" data-phone-order-id="${esc(order.id)}">Yêu cầu hoàn tiền</button>`;
+        if(delivered)return `<button data-phone-order-action="receiver" data-phone-order-id="${esc(order.id)}">Người nhận hộ</button><button data-phone-order-action="aftersale" data-phone-order-id="${esc(order.id)}">Yêu cầu hậu mãi</button>`;
+        const rider=order.kind==='food'&&order.status==='delivering'?`<button data-phone-order-action="rider" data-phone-order-id="${esc(order.id)}">Liên hệ tài xế</button>`:'';
+        return `${rider}<button data-phone-order-action="issue" data-phone-order-id="${esc(order.id)}">Gặp vấn đề</button><button class="danger-soft" data-phone-order-action="cancel" data-phone-order-id="${esc(order.id)}">Hủy đơn</button>`;
     }
     function phoneOrderDetailMarkup(order) {
         const items=s8OrderItems(order); const timeline=(order.timeline||[]).slice().reverse();
         const merchant=order.storeName||order.merchant||({ride:order.destination,travel:order.code}[order.platform]||s8OrderPlatformLabel(order.platform));
-        return `<div class="vvvtm-phone-app-page vvvtm-order-page"><header class="vvvtm-phone-app-head"><button data-phone-order-back>‹</button><div><b>${esc(s8OrderPlatformLabel(order.platform))} · 订单详情</b><small>${esc(order.id)}</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-order-detail"><section class="vvvtm-order-status-card"><small>${esc(merchant||'Đơn hàng')}</small><strong>${esc(s8OrderStatusLabel(order))}</strong><p>${esc(phoneOrderStoryStamp(order))}${order.receiver?` · ${esc(order.receiver)}代收`:''}</p></section><section class="vvvtm-order-items"><h3>商品明细</h3>${items.length?items.map(item=>`<article><span>${item.icon}</span><div><b>${esc(item.name)}</b><small>${s8MoneyText(item.price)} × ${item.qty}</small></div><em>${s8MoneyText(item.price*item.qty)}</em></article>`).join(''):'<p>此订单没有商品明细。</p>'}</section><section class="vvvtm-order-total"><span>${order.externalPayer?'他人代付':'实付金额'}</span><strong>${s8MoneyText(order.amount)}</strong></section>${order.issues?.length?`<section class="vvvtm-order-issues"><h3>异常与售后</h3>${order.issues.slice().reverse().map(issue=>`<article><b>${esc(issue.label||issue.type)}</b><p>${esc(issue.note||'')}</p><small>${esc(issue.time||'')}</small></article>`).join('')}</section>`:''}<section class="vvvtm-order-timeline"><h3>订单进度</h3>${timeline.length?timeline.map(item=>`<article class="${item===timeline[0]?'current':''}"><i></i><div><b>${esc(item.label||item.status)}</b><small>${esc(parseStoryDateTime(item.storyTime||'').label||phoneOrderStoryStamp(order)||item.time||'')}</small>${item.detail?`<p>${esc(item.detail)}</p>`:''}</div></article>`).join(''):'<p>Chưa có进度记录。</p>'}</section><section class="vvvtm-order-service-actions">${s12OrderActionMarkup(order)}</section><footer class="vvvtm-order-actions"><button data-phone-order-back>继续浏览</button><button data-phone-order-center>全部订单</button></footer></main></div>`;
+        return `<div class="vvvtm-phone-app-page vvvtm-order-page"><header class="vvvtm-phone-app-head"><button data-phone-order-back>‹</button><div><b>${esc(s8OrderPlatformLabel(order.platform))} · Chi tiết đơn hàng</b><small>${esc(order.id)}</small></div><button data-phone-home>⌂</button></header><main class="vvvtm-order-detail"><section class="vvvtm-order-status-card"><small>${esc(merchant||'Đơn hàng')}</small><strong>${esc(s8OrderStatusLabel(order))}</strong><p>${esc(phoneOrderStoryStamp(order))}${order.receiver?` · ${esc(order.receiver)}代收`:''}</p></section><section class="vvvtm-order-items"><h3>商品明细</h3>${items.length?items.map(item=>`<article><span>${item.icon}</span><div><b>${esc(item.name)}</b><small>${s8MoneyText(item.price)} × ${item.qty}</small></div><em>${s8MoneyText(item.price*item.qty)}</em></article>`).join(''):'<p>此订单没有商品明细。</p>'}</section><section class="vvvtm-order-total"><span>${order.externalPayer?'他人代付':'实付金额'}</span><strong>${s8MoneyText(order.amount)}</strong></section>${order.issues?.length?`<section class="vvvtm-order-issues"><h3>异常与售后</h3>${order.issues.slice().reverse().map(issue=>`<article><b>${esc(issue.label||issue.type)}</b><p>${esc(issue.note||'')}</p><small>${esc(issue.time||'')}</small></article>`).join('')}</section>`:''}<section class="vvvtm-order-timeline"><h3>订单进度</h3>${timeline.length?timeline.map(item=>`<article class="${item===timeline[0]?'current':''}"><i></i><div><b>${esc(item.label||item.status)}</b><small>${esc(parseStoryDateTime(item.storyTime||'').label||phoneOrderStoryStamp(order)||item.time||'')}</small>${item.detail?`<p>${esc(item.detail)}</p>`:''}</div></article>`).join(''):'<p>Chưa có进度记录。</p>'}</section><section class="vvvtm-order-service-actions">${s12OrderActionMarkup(order)}</section><footer class="vvvtm-order-actions"><button data-phone-order-back>继续浏览</button><button data-phone-order-center>全部订单</button></footer></main></div>`;
     }
     function s12SetOrderIssue(order,type='other',note='',options={}){
-        if(!order)return false;s8NormalizeOrder(order,order.platform);const floor=Math.max(0,(context()?.chat?.length||1)-1);const labels={late:'配送延迟',missing:'商品缺失',wrong:'商品错送',damaged:'商品损坏',address:'地址问题',stock:'商家缺货',cancel:'用户Hủy',other:'订单异常'};
+        if(!order)return false;s8NormalizeOrder(order,order.platform);const floor=Math.max(0,(context()?.chat?.length||1)-1);const labels={late:'Giao hàng trễ',missing:'Thiếu hàng',wrong:'Giao nhầm hàng',damaged:'Hàng bị hỏng',address:'Vấn đề địa chỉ',stock:'Cửa hàng hết hàng',cancel:'Người dùng hủy',other:'Đơn hàng bất thường'};
         const issue={id:uid('order-issue'),type,label:labels[type]||labels.other,note:compactText(note,400),time:phoneClock().time,floor,createdAt:Date.now()};order.issues.push(issue);
         order.afterSales.previousStatus=order.status;order.status=options.status||'exception';order.afterSales.activeIssueId=issue.id;
         s8OrderTimeline(order,order.status,s8OrderStatusLabel(order),`${issue.label}${issue.note?` · ${issue.note}`:''}`);s8AddNotification(s8OrderPlatformLabel(order.platform),issue.label,`${order.storeName||order.merchant||'Đơn hàng'} · ${issue.note||s8OrderItemSummary(order,120)}`,{type:'order-issue',route:'orders',relatedId:order.id,dedupeKey:`issue-${issue.id}`});
         s8RecordPhoneActivity('order-issue',`${s8OrderPlatformLabel(order.platform)} · ${issue.label}`,issue.note||s8OrderItemSummary(order,200),{relatedId:order.id,route:'orders'});return true;
     }
-    function s12RequestOrderRefund(order,reason='用户申请退款'){
+    function s12RequestOrderRefund(order,reason='Người dùng yêu cầu hoàn tiền'){
         if(!order||['refunded','cancelled'].includes(order.status))return false;const floor=Math.max(0,(context()?.chat?.length||1)-1);order.afterSales ||= {};order.afterSales.previousStatus=order.status;order.afterSales.reason=compactText(reason,400);order.afterSales.requestedFloor=floor;order.afterSales.refundDueFloor=floor+1;order.status='refund-pending';
         s8OrderTimeline(order,'refund-pending','Đang xử lý hoàn tiền',order.afterSales.reason);s8AddNotification(s8OrderPlatformLabel(order.platform),'Đã gửi yêu cầu hoàn tiền',`${order.storeName||order.merchant||'Đơn hàng'} · ${s8MoneyText(order.amount)}`,{route:'orders',relatedId:order.id,dedupeKey:`refund-request-${order.id}`});return true;
     }
     function s12CompleteOrderRefund(order){
-        if(!order||order.afterSales?.refundTransactionId)return false;const account=order.payAccount==='wechat'?'wechat':'alipay';const row=s8RecordTransaction({account,amount:Math.abs(s8Money(order.amount)),title:`${s8OrderPlatformLabel(order.platform)}订单退款 · ${s8OrderItemSummary(order,100)}`,counterparty:order.storeName||order.merchant||s8OrderPlatformLabel(order.platform),category:'refund',source:'order-refund',floor:Math.max(0,(context()?.chat?.length||1)-1)});order.afterSales ||= {};order.afterSales.refundTransactionId=row.id;order.status='refunded';order.refundedAt=Date.now();
-        s8OrderTimeline(order,'refunded','Hoàn tiền thành công',`${s8MoneyText(order.amount)} 已原路退回${s8PaymentAccountLabel(account)}`);s8AddNotification(s8OrderPlatformLabel(order.platform),'Hoàn tiền thành công',`${s8MoneyText(order.amount)} 已退回${s8PaymentAccountLabel(account)}`,{route:'orders',relatedId:order.id,dedupeKey:`refund-done-${order.id}`});return true;
+        if(!order||order.afterSales?.refundTransactionId)return false;const account=order.payAccount==='wechat'?'wechat':'alipay';const row=s8RecordTransaction({account,amount:Math.abs(s8Money(order.amount)),title:`Hoàn tiền đơn ${s8OrderPlatformLabel(order.platform)} · ${s8OrderItemSummary(order,100)}`,counterparty:order.storeName||order.merchant||s8OrderPlatformLabel(order.platform),category:'refund',source:'order-refund',floor:Math.max(0,(context()?.chat?.length||1)-1)});order.afterSales ||= {};order.afterSales.refundTransactionId=row.id;order.status='refunded';order.refundedAt=Date.now();
+        s8OrderTimeline(order,'refunded','Hoàn tiền thành công',`${s8MoneyText(order.amount)} đã hoàn về ${s8PaymentAccountLabel(account)} theo đường cũ`);s8AddNotification(s8OrderPlatformLabel(order.platform),'Hoàn tiền thành công',`${s8MoneyText(order.amount)} đã hoàn về ${s8PaymentAccountLabel(account)}`,{route:'orders',relatedId:order.id,dedupeKey:`refund-done-${order.id}`});return true;
     }
     function s12ApplyOrderAction(orderId='',action='',data={}){
         const order=s8AllPhoneOrders().find(item=>item.id===compactText(orderId,120));if(!order)return false;
-        if(action==='cancel'){s12SetOrderIssue(order,'cancel',data.note||'订单Đã hủy',{status:'cancelled'});return s12CompleteOrderRefund(order);}
-        if(action==='refund'||action==='aftersale')return s12RequestOrderRefund(order,data.note||'用户申请售后退款');
-        if(action==='issue')return s12SetOrderIssue(order,data.type||'other',data.note||'用户报告订单异常');
-        if(action==='resume'){order.status=order.afterSales?.previousStatus||'paid';order.afterSales.activeIssueId='';s8OrderTimeline(order,order.status,'恢复处理','异常已处理，订单继续原流程');return true;}
-        if(action==='receiver'){const npc=relationPartyName(data.receiver);if(!npc)return false;order.receiver=npc;order.status='delivered';order.deliveredFloor=Math.max(0,(context()?.chat?.length||1)-1);s8OrderTimeline(order,'delivered','Đã có người khác nhận hộ',`${npc} 已代收：${s8OrderItemSummary(order,200)}`);s12RecordKnowledge({relatedId:order.id,subject:'代收订单',summary:s8OrderItemSummary(order,240),npc,method:'received',source:'order',floor:order.deliveredFloor});return true;}
+        if(action==='cancel'){s12SetOrderIssue(order,'cancel',data.note||'Đơn hàng đã hủy',{status:'cancelled'});return s12CompleteOrderRefund(order);}
+        if(action==='refund'||action==='aftersale')return s12RequestOrderRefund(order,data.note||'Người dùng yêu cầu hoàn tiền hậu mãi');
+        if(action==='issue')return s12SetOrderIssue(order,data.type||'other',data.note||'Người dùng báo đơn hàng bất thường');
+        if(action==='resume'){order.status=order.afterSales?.previousStatus||'paid';order.afterSales.activeIssueId='';s8OrderTimeline(order,order.status,'Khôi phục xử lý','Đã xử lý sự cố, đơn hàng tiếp tục quy trình cũ');return true;}
+        if(action==='receiver'){const npc=relationPartyName(data.receiver);if(!npc)return false;order.receiver=npc;order.status='delivered';order.deliveredFloor=Math.max(0,(context()?.chat?.length||1)-1);s8OrderTimeline(order,'delivered','Đã có người khác nhận hộ',`${npc} đã nhận hộ: ${s8OrderItemSummary(order,200)}`);s12RecordKnowledge({relatedId:order.id,subject:'Đơn nhận hộ',summary:s8OrderItemSummary(order,240),npc,method:'received',source:'order',floor:order.deliveredFloor});return true;}
         return false;
     }
     function phoneOrdersMarkup() {
         const filter=stateRuntime.phoneOrderFilter||'all'; const rows=s8AllPhoneOrders().filter(order=>s8OrderMatchesFilter(order,filter));
         const selected=stateRuntime.phoneSelectedOrderId?s8AllPhoneOrders().find(order=>order.id===stateRuntime.phoneSelectedOrderId):null;
         if(selected)return phoneOrderDetailMarkup(selected);
-        const tabs=[['all','Tất cả'],['shopping','Mua sắm'],['food','Giao đồ ăn'],['shipping','待收货'],['ride','Đặt xe'],['travel','Hàng không & du lịch']];
-        return `<div class="vvvtm-phone-app-page vvvtm-orders-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>订单</b><small>${rows.length} 笔剧情订单 · 可查看完整进度</small></div><button data-phone-order-refresh>↻</button></header><main><nav class="vvvtm-order-tabs">${tabs.map(([id,label])=>`<button class="${filter===id?'active':''}" data-phone-order-filter="${id}">${label}</button>`).join('')}</nav>${rows.length?`<section class="vvvtm-order-list">${rows.map(order=>{const items=s8OrderItems(order);const merchant=order.storeName||order.merchant||({ride:order.destination,travel:order.code}[order.platform]||s8OrderPlatformLabel(order.platform));return `<button class="vvvtm-order-card" data-phone-order-open="${esc(order.id)}"><span class="vvvtm-order-icon">${order.platform==='travel'?'🎫':order.platform==='ride'?'🚕':order.platform==='eleme'||order.platform==='meituan'?'🛵':'📦'}</span><div><header><b>${esc(s8OrderPlatformLabel(order.platform))}</b><small>${esc(phoneOrderStoryStamp(order))}</small></header><strong>${esc(merchant||'Đơn hàng')}</strong><p>${esc(items.map(item=>`${item.name} ×${item.qty}`).join('、')||'订单明细')}</p><footer><span>${esc(s8OrderStatusLabel(order))}</span><em>${s8MoneyText(order.amount)}</em></footer></div></button>`;}).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><span>🧾</span><b>还没有订单</b><small>在淘宝、京东、外卖、打车或航旅完成一次模拟支付后，订单会出现在这里。</small></div>'}</main></div>`;
+        const tabs=[['all','Tất cả'],['shopping','Mua sắm'],['food','Giao đồ ăn'],['shipping','Chờ nhận hàng'],['ride','Đặt xe'],['travel','Hàng không & du lịch']];
+        return `<div class="vvvtm-phone-app-page vvvtm-orders-page"><header class="vvvtm-phone-app-head"><button data-phone-home>‹</button><div><b>Đơn hàng</b><small>${rows.length} đơn trong cốt truyện · xem được toàn bộ tiến độ</small></div><button data-phone-order-refresh>↻</button></header><main><nav class="vvvtm-order-tabs">${tabs.map(([id,label])=>`<button class="${filter===id?'active':''}" data-phone-order-filter="${id}">${label}</button>`).join('')}</nav>${rows.length?`<section class="vvvtm-order-list">${rows.map(order=>{const items=s8OrderItems(order);const merchant=order.storeName||order.merchant||({ride:order.destination,travel:order.code}[order.platform]||s8OrderPlatformLabel(order.platform));return `<button class="vvvtm-order-card" data-phone-order-open="${esc(order.id)}"><span class="vvvtm-order-icon">${order.platform==='travel'?'🎫':order.platform==='ride'?'🚕':order.platform==='eleme'||order.platform==='meituan'?'🛵':'📦'}</span><div><header><b>${esc(s8OrderPlatformLabel(order.platform))}</b><small>${esc(phoneOrderStoryStamp(order))}</small></header><strong>${esc(merchant||'Đơn hàng')}</strong><p>${esc(items.map(item=>`${item.name} ×${item.qty}`).join('、')||'订单明细')}</p><footer><span>${esc(s8OrderStatusLabel(order))}</span><em>${s8MoneyText(order.amount)}</em></footer></div></button>`;}).join('')}</section>`:'<div class="vvvtm-phone-empty-chat"><span>🧾</span><b>还没有订单</b><small>在淘宝、京东、外卖、打车或航旅完成一次模拟支付后，订单会出现在这里。</small></div>'}</main></div>`;
     }
     function s8NormalizePaymentAction(action={}) {
         const payment=clone(action||{}); payment.kind=compactText(payment.kind,40); payment.account=payment.account==='wechat'?'wechat':'alipay';
@@ -11658,14 +11658,14 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         },platform);
         order.timeline=[];
         s8OrderTimeline(order,order.status,s8OrderStatusLabel(order),'Đã tạo đơn hàng');
-        s8RecordPhoneActivity(order.kind==='food'?'food-order':'shopping-order',`${s8OrderPlatformLabel(platform)}下单`,`${order.storeName||order.merchant||'Cửa hàng bán'} · ${s8OrderItems(order).map(item=>`${item.name}×${item.qty}`).join('、')}`,{relatedId:order.id,floor:order.sourceFloor});
+        s8RecordPhoneActivity(order.kind==='food'?'food-order':'shopping-order',`Đặt đơn trên ${s8OrderPlatformLabel(platform)}`,`${order.storeName||order.merchant||'Cửa hàng'} · ${s8OrderItems(order).map(item=>`${item.name}×${item.qty}`).join(', ')}`,{relatedId:order.id,floor:order.sourceFloor});
         stateRuntime.lastPaymentOrderId=order.id;
-        s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'Cửa hàng bán'}｜${s8OrderItemSummary(order,700)}｜Trạng thái:${s8OrderStatusLabel(order)}`,floor:order.sourceFloor,time:order.time,location:order.sceneLocation,source:'phone-order'});
+        s39RecordStoryEvent({type:'order',relatedId:order.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],knownBy:[compactText(context()?.name1||'{{user}}',80)||'{{user}}'],userKnows:true,channel:s8OrderPlatformLabel(platform),amount:order.amount,status:order.status,summary:`${order.storeName||order.merchant||'Cửa hàng'} | ${s8OrderItemSummary(order,700)} | Trạng thái: ${s8OrderStatusLabel(order)}`,floor:order.sourceFloor,time:order.time,location:order.sceneLocation,source:'phone-order'});
         return order;
     }
     function s8OrderItemSummary(orderOrItems, maxChars=360) {
         const items=Array.isArray(orderOrItems)?s8OrderItems({items:orderOrItems}):s8OrderItems(orderOrItems||{});
-        return compactText(items.map(item=>`${item.name} ×${item.qty}`).join('、'),maxChars)||'订单商品';
+        return compactText(items.map(item=>`${item.name} ×${item.qty}`).join(', '),maxChars)||'Món hàng trong đơn';
     }
     async function s8ExecutePayment(action) {
         const operationScope=captureChatScope();
@@ -11674,75 +11674,75 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         const phone=ensurePhoneEcosystem(); if(!phone||!action)return false;
         action=s8NormalizePaymentAction(action);
         stateRuntime.lastPaymentOrderId='';
-        if(!new Set(['taobao','jd','eleme','meituan','ride','travel','campus','recharge','transfer','redpacket','dianping']).has(action.kind)){toast('暂不支持此类剧情支付，未扣款。','error');return false;}
+        if(!new Set(['taobao','jd','eleme','meituan','ride','travel','campus','recharge','transfer','redpacket','dianping']).has(action.kind)){toast('Tạm chưa hỗ trợ kiểu thanh toán này trong cốt truyện, chưa trừ tiền.','error');return false;}
         const account=action.account==='wechat'?'wechat':'alipay';
         const amount=Math.round(s8Money(action.amount)*100)/100;
         if(amount<=0){toast('Số tiền thanh toán không đúng.','error');return false;}
         const balance=s8WalletBalance(account);
-        if(balance < amount){ toast(`${s8PaymentAccountLabel(account)}余额不足：当前 ${s8MoneyText(balance)}`,'warning'); return false; }
+        if(balance < amount){ toast(`${s8PaymentAccountLabel(account)} không đủ số dư: hiện có ${s8MoneyText(balance)}`,'warning'); return false; }
         if(action.kind==='taobao'){
             const items=Array.isArray(action.items)?action.items:[];
             const storeName=compactText(action.storeName||items[0]?.storeName||'Người bán Taobao',160)||'Người bán Taobao';
             const order=s8CreateOrder(action,{id:uid('tb-order'),platform:'taobao',kind:'shopping',merchant:storeName,storeName,status:'paid'});
             phone.commerce.taobao.orders.push(order);
             if(action.clearCart) phone.commerce.taobao.cart=[];
-            s8RecordTransaction({account,amount:-amount,title:`淘宝购物 · ${s8OrderItemSummary(order,120)}`,counterparty:storeName,category:'shopping',source:'taobao'});
-            s8AddCommerceNotice('Thanh toán đơn hàng thành công',`${storeName} · ${s8OrderItemSummary(order)}；实付 ${s8MoneyText(amount)}。商家正在备货。`,'Taobao',{relatedId:order.id});
+            s8RecordTransaction({account,amount:-amount,title:`Mua sắm Taobao · ${s8OrderItemSummary(order,120)}`,counterparty:storeName,category:'shopping',source:'taobao'});
+            s8AddCommerceNotice('Thanh toán đơn hàng thành công',`${storeName} · ${s8OrderItemSummary(order)}; thực trả ${s8MoneyText(amount)}. Cửa hàng đang chuẩn bị hàng.`,'Taobao',{relatedId:order.id});
         }else if(action.kind==='jd'){
             const items=Array.isArray(action.items)?action.items:[];
             const storeName=compactText(action.storeName||items[0]?.storeName||'JD tự vận hành',160)||'JD tự vận hành';
             const order=s8CreateOrder(action,{id:uid('jd-order'),platform:'jd',kind:'shopping',merchant:storeName,storeName,status:'paid'});
             phone.commerce.jd.orders.push(order);
             if(action.clearCart) phone.commerce.jd.cart=[];
-            s8RecordTransaction({account,amount:-amount,title:`京东购物 · ${s8OrderItemSummary(order,120)}`,counterparty:storeName,category:'shopping',source:'jd'});
-            s8AddCommerceNotice('Thanh toán đơn hàng thành công',`${storeName} · ${s8OrderItemSummary(order)}；实付 ${s8MoneyText(amount)}。仓库正在处理。`,'JD',{relatedId:order.id});
+            s8RecordTransaction({account,amount:-amount,title:`Mua sắm JD · ${s8OrderItemSummary(order,120)}`,counterparty:storeName,category:'shopping',source:'jd'});
+            s8AddCommerceNotice('Thanh toán đơn hàng thành công',`${storeName} · ${s8OrderItemSummary(order)}; thực trả ${s8MoneyText(amount)}. Kho đang xử lý.`,'JD',{relatedId:order.id});
         }else if(action.kind==='eleme'){
             const items=Array.isArray(action.items)?action.items:[];
             const store=s8ElemeStore(action.storeId);
             const order=s8CreateOrder(action,{id:uid('el-order'),platform:'eleme',kind:'food',storeId:action.storeId,storeName:store?.name||'Cửa hàng giao đồ ăn',merchant:store?.name||'Cửa hàng giao đồ ăn',status:'paid'});
             phone.commerce.eleme.orders.push(order);
             if(action.clearCart) phone.commerce.eleme.cart=[];
-            s8RecordTransaction({account,amount:-amount,title:`外卖 · ${order.storeName} · ${s8OrderItemSummary(order,100)}`,counterparty:order.storeName,category:'food',source:'eleme'});
-            s8AddCommerceNotice('外卖下单成功',`${order.storeName} · ${s8OrderItemSummary(order)}；实付 ${s8MoneyText(amount)}。`,'Ele.me',{relatedId:order.id});
+            s8RecordTransaction({account,amount:-amount,title:`Giao đồ ăn · ${order.storeName} · ${s8OrderItemSummary(order,100)}`,counterparty:order.storeName,category:'food',source:'eleme'});
+            s8AddCommerceNotice('Đặt đồ ăn thành công',`${order.storeName} · ${s8OrderItemSummary(order)}; thực trả ${s8MoneyText(amount)}.`,'Ele.me',{relatedId:order.id});
         }else if(action.kind==='meituan'){
             const store=s9MeituanStore(action.storeId); const order=s8CreateOrder(action,{id:uid('mt-order'),platform:'meituan',kind:'food',storeId:action.storeId,storeName:store?.name||'Cửa hàng Meituan',merchant:store?.name||'Cửa hàng Meituan',status:'paid'}); phone.commerce.meituan.orders.push(order); if(action.clearCart)phone.commerce.meituan.cart=[];s8RecordTransaction({account,amount:-amount,title:`美团 · ${order.storeName} · ${s8OrderItemSummary(order,100)}`,counterparty:order.storeName,category:'food',source:'meituan'});s8AddCommerceNotice('美团订单已提交',`${order.storeName} · ${s8OrderItemSummary(order)}；${s8MoneyText(amount)}`,'Meituan',{relatedId:order.id});
         }else if(action.kind==='ride'){
-            const p=s9EnsureExtendedApps(); const order=s8CreateOrder(action,{id:uid('ride-order'),platform:'ride',kind:'ride',destination:action.destination||'目的地',carType:action.carType||'Xe nhanh',merchant:'Nền tảng xe công nghệ',status:'Tài xế nhận đơn'});p.ride.orders.push(order);s8RecordTransaction({account,amount:-amount,title:`打车 · ${order.destination}`,counterparty:'Nền tảng xe công nghệ',category:'ride',source:'ride'});s8AddNotification('Đặt xe','Tài xế đã nhận đơn',`${order.carType}前往${order.destination} · ${s8MoneyText(amount)}`);
+            const p=s9EnsureExtendedApps(); const order=s8CreateOrder(action,{id:uid('ride-order'),platform:'ride',kind:'ride',destination:action.destination||'Điểm đến',carType:action.carType||'Xe nhanh',merchant:'Nền tảng xe công nghệ',status:'Tài xế nhận đơn'});p.ride.orders.push(order);s8RecordTransaction({account,amount:-amount,title:`Đặt xe · ${order.destination}`,counterparty:'Nền tảng xe công nghệ',category:'ride',source:'ride'});s8AddNotification('Đặt xe','Tài xế đã nhận đơn',`${order.carType}前往${order.destination} · ${s8MoneyText(amount)}`);
         }else if(action.kind==='travel'){
             const p=s9EnsureExtendedApps();const order=s8CreateOrder(action,{id:uid('travel-order'),platform:'travel',kind:'travel',code:action.code||'',travelKind:action.travelKind||'flight',merchant:'Nền tảng hàng không & du lịch',status:'Xuất vé thành công'});p.travel.orders.push(order);s8RecordTransaction({account,amount:-amount,title:action.title||'Đơn hàng không & du lịch',counterparty:'Nền tảng hàng không & du lịch',category:'travel',source:'travel'});s8AddNotification('Hàng không & du lịch','Xuất vé thành công',`${action.title||order.code} · ${s8MoneyText(amount)}`);
         }else if(action.kind==='campus'){
-            const p=s9EnsureExtendedApps();p.campus.cardBalance=s8Money(p.campus.cardBalance)+amount;s8RecordTransaction({account,amount:-amount,title:'Nạp thẻ sinh viên',counterparty:'校园卡',category:'campus',source:'campus'});s8AddNotification('智慧校园','校园卡充值成功',`${s8MoneyText(amount)} · 当前余额${s8MoneyText(p.campus.cardBalance)}`);
+            const p=s9EnsureExtendedApps();p.campus.cardBalance=s8Money(p.campus.cardBalance)+amount;s8RecordTransaction({account,amount:-amount,title:'Nạp thẻ sinh viên',counterparty:'Thẻ sinh viên',category:'campus',source:'campus'});s8AddNotification('Trường học thông minh','Nạp thẻ sinh viên thành công',`${s8MoneyText(amount)} · số dư hiện tại ${s8MoneyText(p.campus.cardBalance)}`);
         }else if(action.kind==='recharge'){
             phone.finance.phoneBalance=Math.round((s8Money(phone.finance.phoneBalance)+amount)*100)/100;
-            s8RecordTransaction({account,amount:-amount,title:`手机话费充值 ${action.phone||''}`,counterparty:'Nhà mạng',category:'recharge',source:'phone-recharge'});
-            operationState.phone.sms.push({id:uid('carrier-sms'),author:'Nhà mạng',contact:action.phone||'Máy này',content:`充值成功：${s8MoneyText(amount)} 已到账，当前模拟话费余额 ${s8MoneyText(phone.finance.phoneBalance)}。`,time:phoneClock().time,category:'carrier',direction:'incoming'});
-            s8AddNotification('话费充值','Nạp tiền thành công',`${action.phone||'Máy này'} · ${s8MoneyText(amount)} 已到账`,{type:'recharge'});
+            s8RecordTransaction({account,amount:-amount,title:`Nạp tiền điện thoại ${action.phone||''}`,counterparty:'Nhà mạng',category:'recharge',source:'phone-recharge'});
+            operationState.phone.sms.push({id:uid('carrier-sms'),author:'Nhà mạng',contact:action.phone||'Máy này',content:`Nạp tiền thành công: ${s8MoneyText(amount)} đã vào tài khoản, số dư mô phỏng hiện tại ${s8MoneyText(phone.finance.phoneBalance)}.`,time:phoneClock().time,category:'carrier',direction:'incoming'});
+            s8AddNotification('Nạp tiền điện thoại','Nạp tiền thành công',`${action.phone||'Máy này'} · ${s8MoneyText(amount)} đã vào tài khoản`,{type:'recharge'});
         }else if(action.kind==='transfer'){
-            const to=relationPartyName(action.to);if(!to){toast('转账收款人不正确。','error');return false;}
+            const to=relationPartyName(action.to);if(!to){toast('Người nhận chuyển khoản không đúng.','error');return false;}
             const userName=compactText(context()?.name1||'{{user}}',80)||'{{user}}';
             const floor=Math.max(0,(context()?.chat?.length||1)-1),channel=account==='wechat'?'Chuyển khoản WeChat':'Alipay';
             const status=account==='alipay'?'credited':'pending-acceptance';
-            const tx=s8RecordTransaction({account,amount:-amount,title:`转账给 ${to}`,counterparty:to,category:'transfer',source:'manual-transfer',floor});
+            const tx=s8RecordTransaction({account,amount:-amount,title:`Chuyển tiền cho ${to}`,counterparty:to,category:'transfer',source:'manual-transfer',floor});
             const transfer={id:uid('wallet-transfer'),transactionId:tx.id,from:userName,to,amount,note:compactText(action.note,120),account,channel,status,time:phoneClock().time,createdAt:Date.now(),floor};
             phone.walletTools.transfers.push(transfer);if(phone.walletTools.transfers.length>300)phone.walletTools.transfers.splice(0,phone.walletTools.transfers.length-300);
-            s39MarkAcquaintance(to,{channel,floor,evidence:`${userName}向${to}转账 ${s8MoneyText(amount)}`});
-            s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],channel,amount,status,summary:`${userName}向${to}转账 ${s8MoneyText(amount)}${transfer.note?`；Ghi chú:${transfer.note}`:''}`,floor,time:transfer.time,source:'phone-wallet'});
+            s39MarkAcquaintance(to,{channel,floor,evidence:`${userName} chuyển cho ${to} ${s8MoneyText(amount)}`});
+            s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[userName,to],channel,amount,status,summary:`${userName} chuyển cho ${to} ${s8MoneyText(amount)}${transfer.note?`; ghi chú: ${transfer.note}`:''}`,floor,time:transfer.time,source:'phone-wallet'});
             if(account==='wechat'){
                 const thread=ensurePhoneThread(to);
-                thread.messages.push({id:uid('phone-transfer-user'),role:'user',sender:userName,content:`[微信转账] ${s8MoneyText(amount)}${action.note?` · ${action.note}`:''}`,time:phoneClock().time,createdAt:Date.now(),transferId:transfer.id,realtimeHandled:true});
-                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'Thẻ chuyển tiền WeChat',summary:`${userName}发来微信转账卡 ${s8MoneyText(amount)}${transfer.note?`，Ghi chú：${transfer.note}`:''}；当前等待接收或退还`,npc:to,method:'message',channel,source:'wallet-transfer'});
+                thread.messages.push({id:uid('phone-transfer-user'),role:'user',sender:userName,content:`[Chuyển khoản WeChat] ${s8MoneyText(amount)}${action.note?` · ${action.note}`:''}`,time:phoneClock().time,createdAt:Date.now(),transferId:transfer.id,realtimeHandled:true});
+                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'Thẻ chuyển tiền WeChat',summary:`${userName} gửi thẻ chuyển tiền WeChat ${s8MoneyText(amount)}${transfer.note?`, ghi chú: ${transfer.note}`:''}; đang chờ nhận hoặc hoàn lại`,npc:to,method:'message',channel,source:'wallet-transfer'});
             }else{
-                operationState.phone.sms.push({id:uid('transfer-sms'),author:'Alipay',contact:userName,content:`已向 ${to} 转账 ${s8MoneyText(amount)}${action.note?`，Ghi chú：${action.note}`:''}；对方账户已自动到账，无需领取或点击接收。`,time:phoneClock().time,category:'payment',direction:'incoming'});
-                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'Chuyển khoản Alipay đã vào tài khoản',summary:`${userName}通过支付宝转账 ${s8MoneyText(amount)}${transfer.note?`，Ghi chú：${transfer.note}`:''}；支付宝已自动到账，无需领取或点击接收`,npc:to,method:'message',channel,source:'wallet-transfer'});
+                operationState.phone.sms.push({id:uid('transfer-sms'),author:'Alipay',contact:userName,content:`Đã chuyển cho ${to} ${s8MoneyText(amount)}${action.note?`, ghi chú: ${action.note}`:''}; tài khoản đối phương đã tự động nhận được, không cần lĩnh hay bấm nhận.`,time:phoneClock().time,category:'payment',direction:'incoming'});
+                s12RecordKnowledge({eventId:transfer.id,relatedId:transfer.id,subject:'Chuyển khoản Alipay đã vào tài khoản',summary:`${userName} chuyển khoản qua Alipay ${s8MoneyText(amount)}${transfer.note?`, ghi chú: ${transfer.note}`:''}; Alipay đã tự động vào tài khoản, không cần lĩnh hay bấm nhận`,npc:to,method:'message',channel,source:'wallet-transfer'});
             }
         }else if(action.kind==='redpacket'){
-            const to=relationPartyName(action.to);if(!to){toast('红包收件人不正确。','error');return false;}const tools=phone.walletTools;const row={id:uid('red-packet'),to,amount,note:compactText(action.note||'Chúc phát tài',120),account,status:'sent',time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true};tools.redPackets.push(row);s8RecordTransaction({account,amount:-amount,title:`红包 · ${to}`,counterparty:to,category:'red-packet',source:'wallet-redpacket'});const user=compactText(context()?.name1||'{{user}}',80)||'{{user}}',thread=ensurePhoneThread(to);thread.messages.push({id:uid('phone-redpacket-user'),role:'user',sender:user,content:`[微信红包] ${row.note} · ${s8MoneyText(amount)}`,time:row.time,createdAt:Date.now(),realtimeHandled:true,relatedId:row.id});s12RecordKnowledge({relatedId:row.id,subject:'收到红包',summary:`${row.note} · ${s8MoneyText(amount)}`,npc:to,method:'message',channel:'WeChat',source:'wallet'});
+            const to=relationPartyName(action.to);if(!to){toast('Người nhận lì xì không đúng.','error');return false;}const tools=phone.walletTools;const row={id:uid('red-packet'),to,amount,note:compactText(action.note||'Chúc phát tài',120),account,status:'sent',time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true};tools.redPackets.push(row);s8RecordTransaction({account,amount:-amount,title:`Lì xì · ${to}`,counterparty:to,category:'red-packet',source:'wallet-redpacket'});const user=compactText(context()?.name1||'{{user}}',80)||'{{user}}',thread=ensurePhoneThread(to);thread.messages.push({id:uid('phone-redpacket-user'),role:'user',sender:user,content:`[微信红包] ${row.note} · ${s8MoneyText(amount)}`,time:row.time,createdAt:Date.now(),realtimeHandled:true,relatedId:row.id});s12RecordKnowledge({relatedId:row.id,subject:'收到红包',summary:`${row.note} · ${s8MoneyText(amount)}`,npc:to,method:'message',channel:'WeChat',source:'wallet'});
         }else if(action.kind==='dianping'){
-            const venue=compactText(action.venue,180)||'到店团购';const deal={id:uid('dianping-deal'),venue,title:compactText(action.title||'大众点评团购',160),amount,account,status:'unused',time:phoneClock().time,createdAt:Date.now()};phone.dianping.deals.push(deal);s8RecordTransaction({account,amount:-amount,title:`大众点评团购 · ${venue}`,counterparty:venue,category:'dianping',source:'dianping'});s8AddNotification('Dianping','团购购买成功',`${venue} · ${s8MoneyText(amount)}`,{route:'dianping',relatedId:deal.id,dedupeKey:`dianping-deal-${deal.id}`});
+            const venue=compactText(action.venue,180)||'Groupon tại quán';const deal={id:uid('dianping-deal'),venue,title:compactText(action.title||'Groupon Dianping',160),amount,account,status:'unused',time:phoneClock().time,createdAt:Date.now()};phone.dianping.deals.push(deal);s8RecordTransaction({account,amount:-amount,title:`Groupon Dianping · ${venue}`,counterparty:venue,category:'dianping',source:'dianping'});s8AddNotification('Dianping','团购购买成功',`${venue} · ${s8MoneyText(amount)}`,{route:'dianping',relatedId:deal.id,dedupeKey:`dianping-deal-${deal.id}`});
         }
         await saveState({immediate:true,refresh:false,reason:'phone-payment'});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-        try{await runPhonePaymentRealtimeReaction(action);}catch(error){console.warn('[vvv小手机] 支付后的实时反应失败',error);toast(`支付Đã hoàn thành，实时联系人回复失败：${error.message}`,'warn');}
+        try{await runPhonePaymentRealtimeReaction(action);}catch(error){console.warn('[vvv Điện Thoại Nhỏ] Phản ứng thời gian thực sau thanh toán thất bại',error);toast(`Đã thanh toán xong, nhưng liên hệ không trả lời được theo thời gian thực: ${error.message}`,'warn');}
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         updatePromptInjection();
         return true;
@@ -11753,21 +11753,21 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
         if(action.kind==='transfer'){
             const transfer=(phone.walletTools?.transfers||[]).at(-1);if(!transfer)return false;
             const contact=transfer.to,thread=ensurePhoneThread(contact),history=phoneRealtimeHistory(thread.messages,20);
-            const result=await callPhoneRealtimeApi({mode:'transfer',contact,event:{transferId:transfer.id,channel:transfer.channel,amount:transfer.amount,note:transfer.note,status:transfer.status,hardRule:transfer.account==='alipay'?'已经自动到账，只能回应，不能等待接收':'可以接收、退还或拒绝'},history,maxTokens:1500,requireMessages:true});
+            const result=await callPhoneRealtimeApi({mode:'transfer',contact,event:{transferId:transfer.id,channel:transfer.channel,amount:transfer.amount,note:transfer.note,status:transfer.status,hardRule:transfer.account==='alipay'?'Đã tự động vào tài khoản, chỉ có thể phản hồi, không thể chờ nhận':'Có thể nhận, hoàn lại hoặc từ chối'},history,maxTokens:1500,requireMessages:true});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             if(transfer.account==='wechat'&&transfer.status==='pending-acceptance'){
                 if(result.action.type==='accept-transfer')transfer.status='accepted';
                 else if(['return-transfer','decline-transfer'].includes(result.action.type)){
                     transfer.status='returned';transfer.returnedAt=Date.now();
-                    s8RecordTransaction({account:'wechat',amount:transfer.amount,title:`${contact}退还微信转账`,counterparty:contact,category:'transfer-return',source:'phone-realtime',floor:anchorFloor});
+                    s8RecordTransaction({account:'wechat',amount:transfer.amount,title:`${contact} hoàn lại chuyển khoản WeChat`,counterparty:contact,category:'transfer-return',source:'phone-realtime',floor:anchorFloor});
                 }
                 transfer.resolvedAt=['accepted','returned'].includes(transfer.status)?Date.now():0;
             }
             for(const row of result.messages)appendPhoneRealtimeIncoming({contact,useWechat:true,text:row.text,stickerId:row.stickerId,anchorFloor,sender:row.sender});
             if(transfer.account==='wechat'&&['accepted','returned'].includes(transfer.status))thread.messages.push({id:uid('phone-transfer-status'),role:'system',sender:'Hệ thống',content:transfer.status==='accepted'?`${contact} 已收款 ${s8MoneyText(transfer.amount)}`:`${contact} 已退还 ${s8MoneyText(transfer.amount)}`,time:phoneClock().time,createdAt:Date.now(),transferId:transfer.id,realtimeHandled:true});
-            const statusText=transfer.status==='credited'?'支付宝已自动到账':transfer.status==='accepted'?'微信转账已接收':transfer.status==='returned'?'微信转账已退还':'微信转账仍待处理';
+            const statusText=transfer.status==='credited'?'Alipay đã tự động vào tài khoản':transfer.status==='accepted'?'Đã nhận chuyển khoản WeChat':transfer.status==='returned'?'Đã hoàn lại chuyển khoản WeChat':'Chuyển khoản WeChat vẫn đang chờ xử lý';
             s39RecordStoryEvent({type:'transfer',relatedId:transfer.id,participants:[compactText(context()?.name1||'{{user}}',80)||'{{user}}',contact],channel:transfer.channel,amount:transfer.amount,status:transfer.status,summary:`${contact}：${statusText}；精确金额 ${s8MoneyText(transfer.amount)}`,floor:transfer.floor,time:transfer.time,source:'phone-wallet-realtime'});
-            recordPhoneRealtimeEvent('transfer',`${contact}：${statusText}；金额 ${s8MoneyText(transfer.amount)}；${result.messages.map(row=>row.text||`[表情:${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||result.action.reason||'未发送文字'}`,{relatedId:transfer.id,contact});
+            recordPhoneRealtimeEvent('transfer',`${contact}: ${statusText}; số tiền ${s8MoneyText(transfer.amount)}; ${result.messages.map(row=>row.text||`[Sticker: ${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||result.action.reason||'未发送文字'}`,{relatedId:transfer.id,contact});
         }else if(action.kind==='redpacket'){
             const packet=(phone.walletTools?.redPackets||[]).at(-1);if(!packet)return false;const contact=packet.to,thread=ensurePhoneThread(contact),history=phoneRealtimeHistory(thread.messages,20);
             const result=await callPhoneRealtimeApi({mode:'red-packet',contact,event:{redPacketId:packet.id,amount:packet.amount,note:packet.note,status:packet.status},history,maxTokens:1400,requireMessages:true});
@@ -11775,7 +11775,7 @@ ${present.length?present.join(', '):'Chưa phát hiện rõ ràng'}
             if(['return-transfer','decline-transfer'].includes(result.action.type)&&packet.status==='sent'){packet.status='returned';s8RecordTransaction({account:packet.account,amount:packet.amount,title:`${contact}退还红包`,counterparty:contact,category:'red-packet-return',source:'phone-realtime',floor:anchorFloor});}
             else if(result.action.type==='accept-transfer')packet.status='opened';
             for(const row of result.messages)appendPhoneRealtimeIncoming({contact,useWechat:true,text:row.text,stickerId:row.stickerId,anchorFloor,sender:row.sender});
-            recordPhoneRealtimeEvent('red-packet',`${contact}${packet.status==='opened'?'领取了':packet.status==='returned'?'退还了':'看到了'}红包 ${s8MoneyText(packet.amount)}：${result.messages.map(row=>row.text).filter(Boolean).join(' / ')||result.action.reason||'未发送文字'}`,{relatedId:packet.id,contact});
+            recordPhoneRealtimeEvent('red-packet',`${contact} ${packet.status==='opened'?'đã nhận':packet.status==='returned'?'đã hoàn lại':'đã thấy'} lì xì ${s8MoneyText(packet.amount)}: ${result.messages.map(row=>row.text).filter(Boolean).join(' / ')||result.action.reason||'未发送文字'}`,{relatedId:packet.id,contact});
         }else if(['taobao','jd','eleme','meituan','ride','travel','dianping'].includes(action.kind)){
             const order=stateRuntime.lastPaymentOrderId?s8AllPhoneOrders().find(row=>row.id===stateRuntime.lastPaymentOrderId):null;
             const contact=compactText(order?.storeName||order?.merchant||({ride:'Nền tảng xe công nghệ',travel:'Nền tảng hàng không & du lịch',dianping:'Dianping'}[action.kind])||'订单服务',120);
@@ -12660,7 +12660,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
         }
         for(const row of result.messages){call.transcript.push({id:uid('call-line-ai'),role:'character',sender:row.sender||contact,content:row.text||'',stickerId:row.stickerId||'',time:phoneClock().time,createdAt:Date.now(),realtimeHandled:true});}
         if(result.action.type==='end-call'){call.status='ended';call.endedAt=Date.now();stateRuntime.phoneActiveCallId='';stateRuntime.phoneView='calls';}
-        recordPhoneRealtimeEvent('call',`${contact}电话${opening?'接通':'继续'}：${result.messages.map(row=>row.text||`[表情:${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||result.action.reason||'无发言'}`,{relatedId:call.id,contact});
+        recordPhoneRealtimeEvent('call',`${contact}电话${opening?'接通':'继续'}：${result.messages.map(row=>row.text||`[Sticker: ${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||result.action.reason||'无发言'}`,{relatedId:call.id,contact});
         await saveState({immediate:true,refresh:false,reason:'phone-realtime-call'});if(!chatScopeIsCurrent(scope)||stateRuntime.state!==operationState)return false;updatePromptInjection();scheduleReindex();return true;
     }
     async function sendPhoneCallLine() {
@@ -13101,10 +13101,10 @@ ${activities.join('\n')||'- Chưa có记录'}`;
                     const note=compactText(overlay.querySelector('#vvvtm-transfer-note')?.value||'',120);
                     if(!to||amount<=0){toast('请输入收款人和正确金额。','info');return;}
                     const account=stateRuntime.phoneDialog?.account==='wechat'?'wechat':'alipay';
-                    stateRuntime.phoneDialog=null; s8BeginPayment({kind:'transfer',account,amount,to,note,title:`转账给 ${to}`}); return;
+                    stateRuntime.phoneDialog=null; s8BeginPayment({kind:'transfer',account,amount,to,note,title:`Chuyển tiền cho ${to}`}); return;
                 }
                 if(action==='wallet-redpacket'){
-                    const to=relationPartyName(overlay.querySelector('#vvvtm-redpacket-to')?.value||''),amount=s8Money(overlay.querySelector('#vvvtm-redpacket-amount')?.value||0),note=compactText(overlay.querySelector('#vvvtm-redpacket-note')?.value||'Chúc phát tài',120);if(!to||amount<=0){toast('请输入收件人和正确金额。','info');return;}const account=stateRuntime.phoneDialog?.account==='alipay'?'alipay':'wechat';stateRuntime.phoneDialog=null;s8BeginPayment({kind:'redpacket',account,amount,to,note,title:`红包 · ${to}`});return;
+                    const to=relationPartyName(overlay.querySelector('#vvvtm-redpacket-to')?.value||''),amount=s8Money(overlay.querySelector('#vvvtm-redpacket-amount')?.value||0),note=compactText(overlay.querySelector('#vvvtm-redpacket-note')?.value||'Chúc phát tài',120);if(!to||amount<=0){toast('请输入收件人和正确金额。','info');return;}const account=stateRuntime.phoneDialog?.account==='alipay'?'alipay':'wechat';stateRuntime.phoneDialog=null;s8BeginPayment({kind:'redpacket',account,amount,to,note,title:`Lì xì · ${to}`});return;
                 }
                 if(action==='wallet-split'){
                     const title=compactText(overlay.querySelector('#vvvtm-split-title')?.value||'',140),total=s8Money(overlay.querySelector('#vvvtm-split-total')?.value||0),people=String(overlay.querySelector('#vvvtm-split-people')?.value||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);if(!title||total<=0||!people.length){toast('请填写事项、总金额和参与NPC。','info');return;}s12CreateSplitBill({title,total,people,account:stateRuntime.phoneDialog?.account||'wechat'});stateRuntime.phoneDialog=null;await saveState({immediate:true,refresh:false});if(!phoneEventStillCurrent())return;renderRolePhone();toast('AA收款已发出','success');return;
@@ -13472,7 +13472,7 @@ ${activities.join('\n')||'- Chưa có记录'}`;
             const result=await callPhoneRealtimeApi({mode:groupName?'group-message':useWechat?'wechat-message':'period-message',contact:groupName||contact,event:{outgoingId,content,stickerId,attachment:phoneAttachmentSummary(attachment?[attachment]:[])},history,maxTokens:1600,requireMessages:!groupName});
             if(!stillCurrent())return false;
             for(const row of result.messages)appendPhoneRealtimeIncoming({contact,groupName,useWechat,text:row.text,stickerId:row.stickerId,anchorFloor,sender:row.sender});
-            const replySummary=result.messages.map(row=>row.text||`[表情:${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||'对方暂未回复';
+            const replySummary=result.messages.map(row=>row.text||`[Sticker: ${phoneStickerById(row.stickerId)?.name||''}]`).join(' / ')||'对方暂未回复';
             s39RecordStoryEvent({type:'communication',relatedId:outgoingId,participants:[userName,groupName||contact],channel:groupName?(useWechat?'Nhóm WeChat':(currentProfile.communicationType||'Liên lạc thời đại')):(useWechat?'WeChat':(currentProfile.communicationType||'Liên lạc điện thoại')),status:result.messages.length?'已互相通讯':'已发送待回复',summary:`${userName}发送：${compactText(content||'[附件/表情]',300)}；对方：${compactText(replySummary,500)}`,floor:anchorFloor,time:sentClock,source:'phone-realtime'});
             recordPhoneRealtimeEvent('message',`${userName} 与 ${groupName?`群聊${groupName}`:contact} 实时通讯：${replySummary}`,{relatedId:outgoingId,contact:groupName||contact});
             logAudit('通讯终端聊天', groupName ? `${userName} ↔ 群聊:${groupName}` : `${userName} ↔ ${contact}`);
