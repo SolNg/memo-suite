@@ -1,56 +1,81 @@
 # VVV · Lõi Cốt Truyện & Ký Ức
 
-基于 **R21 fixed42** 独立拆分的 SillyTavern 扩展。只保留并发布以下核心能力：
+> 🇻🇳 **Bản tiếng Việt.** Đây là bản Việt hóa toàn diện của tiện ích SillyTavern
+> `vvv-story-memory-suite`. Xem [`docs/BAN-DICH.md`](docs/BAN-DICH.md) để biết
+> thuật ngữ đối chiếu và **lưu ý quan trọng về tương thích dữ liệu**.
 
-- **0-32 · 永不落幕的剧场**：完整记忆、当前场景、人物/关系、Lời hẹn与秘密、手机、彼间私文、订单、世界地图、单一世界线等能力。
-- **AI Thúc đẩy cốt truyện / 接力**：保留原 `vvv_story_relay` 设置、导演、连续性、四阶段、视角与发送链路。
-- **RAG / Memory Hub**：继续使用原 `vvv-theater-memory-server`、永久档案、BM25/向量/VCP、Memory Hub。
-- **作者场外问答**：单轮暂停角色扮演；回答结束后下一条普通消息恢复 RP。
+Tiện ích SillyTavern được tách độc lập trên nền **R21 fixed42**. Bản này chỉ giữ
+và phát hành các năng lực cốt lõi sau:
 
-## 数据兼容
+- **0-32 · Sân Khấu Không Bao Giờ Hạ Màn**: ký ức đầy đủ, bối cảnh hiện tại,
+  nhân vật/quan hệ, lời hẹn và bí mật, điện thoại, Bỉ Gian Tư Văn, đơn hàng,
+  bản đồ thế giới, tuyến thế giới duy nhất…
+- **Thúc đẩy / Tiếp sức cốt truyện bằng AI**: giữ nguyên phần cài đặt, đạo diễn,
+  tính liền mạch, bốn giai đoạn, góc nhìn và tuyến gửi của `vvv_story_relay` gốc.
+- **RAG / Memory Hub**: tiếp tục dùng `vvv-theater-memory-server` gốc, hồ sơ vĩnh
+  viễn, BM25/vector/VCP và Memory Hub.
+- **Hỏi đáp ngoài lề với tác giả**: tạm dừng nhập vai trong một lượt; sau khi trả
+  lời xong, tin nhắn thường kế tiếp sẽ quay lại chế độ nhập vai.
 
-本仓库**故意不改**以下键与目录，因此会继续读取原来的数据：
+## Tương thích dữ liệu
+
+Kho mã này **cố ý không đổi** các khóa và thư mục sau, nên vẫn đọc được dữ liệu cũ:
 
 - `vvv_theater_memory`
 - `vvv_story_relay`
 - `/api/plugins/vvv-theater-memory-server`
 - `dataRoot/vvv/vvv-theater-memory`
 
-升级/拆分不会自动删除永久档案。
+Việc nâng cấp/tách bản sẽ không tự động xóa hồ sơ vĩnh viễn.
 
-## GitHub 安装 / 订阅
+> ⚠️ **Riêng với bản Việt hóa:** tên cột trong các bảng ký ức (ví dụ `姓名` → `Họ tên`,
+> `状态` → `Trạng thái`) và các giá trị trạng thái đã được dịch sang tiếng Việt. Vì vậy
+> kho ký ức tạo bằng bản tiếng Trung **không đọc lại được nguyên vẹn** ở bản này, và
+> ngược lại. Hãy đọc kỹ phần “Tương thích dữ liệu” trong [`docs/BAN-DICH.md`](docs/BAN-DICH.md)
+> trước khi chuyển đổi giữa hai bản.
 
-仓库创建后固定使用：
+## Cài đặt / đăng ký qua GitHub
+
+Sau khi tạo kho mã, địa chỉ cố định là:
 
 `https://github.com/nanjun434-byte/vvv-story-memory-suite`
 
-在 SillyTavern 的扩展安装界面使用上面的 GitHub 仓库地址安装。仓库根目录就是标准扩展目录，`auto_update=true`。
+Dùng địa chỉ kho GitHub ở trên trong giao diện cài tiện ích của SillyTavern. Thư mục
+gốc của kho chính là thư mục tiện ích tiêu chuẩn, `auto_update=true`.
 
-> **重要：不要让旧 `vvv-unified-core` 和本独立版同时运行 0-32。** 本独立版检测到旧 0-00/0-32 前端时会主动停机，避免同一轮写两次记忆。迁移完成后Đóng或移除旧 0-00 前端，再刷新酒馆。
+> **Quan trọng: đừng để bản `vvv-unified-core` cũ và bản độc lập này cùng chạy 0-32.**
+> Khi phát hiện giao diện 0-00/0-32 đời cũ, bản độc lập sẽ tự dừng để tránh ghi ký ức
+> hai lần trong cùng một lượt. Sau khi chuyển xong, hãy tắt hoặc gỡ giao diện 0-00 cũ
+> rồi tải lại SillyTavern.
 
-## 服务端插件
+## Plugin phía máy chủ
 
-RAG、永久档案、独立 API、Memory Hub 等能力依赖 `vvv-theater-memory-server`。你原服务器已经安装过时，可以继续沿用；需要用仓库版本更新时，在仓库目录运行：
+RAG, hồ sơ vĩnh viễn, API riêng, Memory Hub… phụ thuộc vào `vvv-theater-memory-server`.
+Nếu máy chủ của bạn đã cài sẵn thì cứ dùng tiếp; khi cần cập nhật bằng phiên bản trong
+kho, hãy chạy lệnh sau tại thư mục kho:
 
 ```bash
 bash install-server.sh /home/www/SillyTavern
 ```
 
-服务端仍按原行为只允许账号 `vvv`，数据目录不变。
+Phía máy chủ vẫn giữ nguyên hành vi cũ, thư mục dữ liệu không đổi.
 
-## 自检
+## Tự kiểm tra
 
 ```bash
 bash verify.sh
 ```
 
-## fixed42 保留项
+## Những mục fixed42 được giữ lại
 
-本独立版直接以 fixed42 为代码基线，保留 fixed39 单一世界、fixed40 新档保护、fixed41 正常生成顺序修复、fixed42 网络Trạng thái单一真值修复。
+Bản độc lập này lấy thẳng fixed42 làm nền mã, giữ nguyên fixed39 (thế giới duy nhất),
+fixed40 (bảo vệ bản lưu mới), fixed41 (sửa thứ tự sinh của lượt bình thường) và
+fixed42 (sửa nguồn sự thật duy nhất cho trạng thái mạng).
 
-## v1.0.1 公共订阅修复
+## Bản sửa v1.0.1 cho đăng ký công khai
 
-- 移除仅账号 `vvv` 才启动的限制；所有 SillyTavern 账号均可加载。
-- 服务端永久数据继续按账号目录隔离，不会互相串档。
-- 扩展菜单增加固定入口：0-32 / Thúc đẩy cốt truyện / Hỏi tác giả / Memory Hub。
-- 如果检测到旧版 VVV 0-00/0-32 仍在运行，会明确提示冲突，而不是“已安装但什么都不显示”。
+- Bỏ giới hạn chỉ khởi động với tài khoản `vvv`; mọi tài khoản SillyTavern đều tải được.
+- Dữ liệu vĩnh viễn phía máy chủ vẫn được cách ly theo thư mục tài khoản, không lẫn nhau.
+- Menu tiện ích có thêm lối vào cố định: 0-32 / Thúc đẩy cốt truyện / Hỏi tác giả / Memory Hub.
+- Nếu phát hiện bản VVV 0-00/0-32 cũ vẫn đang chạy, tiện ích sẽ báo xung đột rõ ràng
+  thay vì “đã cài nhưng không hiện gì”.
