@@ -15590,8 +15590,8 @@ ${digests.join('\n\n')}`,{
         const operationToken={scope:operationScope,floor:entry.index,at:Date.now()};stateRuntime.extractOperationToken=operationToken;stateRuntime.extracting=true;
         const retryAttempt=Math.max(0,Number(operationState.progress?.extractRetryAttempt||0));
         const priorReason=String(operationState.progress?.extractRetryReason||'');
-        const retryLabel=fromRetry?` · 重试 ${retryAttempt}/${extractRetryLimit()}${priorReason?` · 上次：${compactText(priorReason,90)}`:''}`:'';
-        setBusy(true,`${manual?'Đang sắp xếp':'Sắp xếp ở nền'}第 ${entry.index} 层AI回复${retryLabel}…`);
+        const retryLabel=fromRetry?` · thử lại ${retryAttempt}/${extractRetryLimit()}${priorReason?` · lần trước: ${compactText(priorReason,90)}`:''}`:'';
+        setBusy(true,`${manual?'Đang sắp xếp':'Sắp xếp ở nền'} lượt trả lời AI tầng ${entry.index}${retryLabel}…`);
         try{
             const result=await runFeature('extract',extractionPromptV16(entry.index),{kind:'extract',floor:entry.index,sourceMessageSignature:entry.signature,assistantOnce:true,dedupeKey:extractTaskDedupeKey(entry.index,entry.signature)},{jsonMode:true,timeoutMs:95000});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
@@ -15602,7 +15602,7 @@ ${digests.join('\n\n')}`,{
             if(!result.record){const postWriteHealth=await auditLatestTurnMemoryHealth(entry.index,entry.signature).catch(error=>{console.warn('[vvv Trung tâm Ký ức] Đồng bộ sức khỏe sau khi ghi trực tiếp ký ức chính thất bại',error);return null;});if(postWriteHealth)scheduleLifeDetailRescueAfterSettled(postWriteHealth);}
             await maybeCreateSummaries();if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;clearExtractRetryState();
             const q=operationState.progress?.assistantMemoryQueue;if(Array.isArray(q)&&q.length&&Number(q[0]?.floor)===entry.index&&q[0]?.signature===entry.signature)q.shift();
-            await saveState({immediate:true,refresh:true,reason:'assistant-memory-once'});if(!chatScopeIsCurrent(operationScope))return false;scheduleReindex();notifyPipelineDone(`第 ${entry.index} 层记忆整理完成，可以继续下一条。`,'success',{fullscreen:true});runLaterForScope(operationScope,30,()=>drainAssistantMemoryQueue());return true;
+            await saveState({immediate:true,refresh:true,reason:'assistant-memory-once'});if(!chatScopeIsCurrent(operationScope))return false;scheduleReindex();notifyPipelineDone(`Đã sắp xếp xong ký ức tầng ${entry.index}, có thể tiếp tục mục sau.`,'success',{fullscreen:true});runLaterForScope(operationScope,30,()=>drainAssistantMemoryQueue());return true;
         }catch(error){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             console.error('[vvv Trung tâm Ký ức] Sắp xếp một tầng AI thất bại',error);
@@ -15615,11 +15615,11 @@ ${digests.join('\n\n')}`,{
     }
 
     function bigSummaryPrompt(rows) {
-        return `请把以下${rows.length}份连续阶段总结合并成一份大总结。保留完整时间轴、Quan hệ nhân vật演变、关键因果、长期Lời hẹn、物品和未解决伏笔；去掉重复句但不要遗漏变化。只输出总结chính văn。\n\n${rows.map((row, index) => `【阶段${index + 1}｜${row['Tầng bao phủ']}】\n${row['Nội dung tổng kết']}`).join('\n\n')}`;
+        return `Hãy gộp ${rows.length} bản tổng kết giai đoạn liên tiếp dưới đây thành một bản tổng kết lớn. Giữ trọn trục thời gian, diễn biến quan hệ nhân vật, những nhân quả then chốt, lời hẹn dài hạn, vật phẩm và các manh mối chưa được giải; bỏ câu trùng nhưng đừng bỏ sót thay đổi. Chỉ xuất phần nội dung tổng kết.\n\n${rows.map((row, index) => `【GIAI ĐOẠN ${index + 1} | ${row['Tầng bao phủ']}】\n${row['Nội dung tổng kết']}`).join('\n\n')}`;
     }
 
     function eraSummaryPrompt(rows) {
-        return `你正在整理超长角色扮演档案。请把以下${rows.length}份连续“大总结”压缩成一份“时代总结”。它用于1000层级别乃至2万层长期记忆，必须保留：时间轴、核心人物Thân phận/关系演变、恋爱亲密分手复合等里程碑、Thân phận揭示/伤亡/搬家/毕业/工作/长期目标、仍有效Lời hẹn/秘密边界/关键物品/未解决伏笔，以及影响未来行为的因果。删除重复日常描写但不要抹掉重大事实。禁止脑补。只输出高密度总结chính văn。\n\n${rows.map((row,index)=>`【大总结${index+1}｜${row['Tầng bao phủ']}】\n${row['Nội dung tổng kết']}`).join('\n\n')}`;
+        return `Bạn đang sắp xếp một hồ sơ nhập vai siêu dài. Hãy nén ${rows.length} bản “tổng kết lớn” liên tiếp dưới đây thành một bản “tổng kết thời đại”. Nó phục vụ ký ức dài hạn ở quy mô cả nghìn tầng, thậm chí hai vạn tầng, nên bắt buộc giữ lại: trục thời gian, thân phận và diễn biến quan hệ của các nhân vật cốt lõi, những cột mốc như yêu đương - thân mật - chia tay - tái hợp, việc lộ thân phận/thương vong/chuyển nhà/tốt nghiệp/công việc/mục tiêu dài hạn, những lời hẹn còn hiệu lực, ranh giới bí mật, vật phẩm then chốt, manh mối chưa giải, cùng các nhân quả ảnh hưởng tới hành vi về sau. Bỏ những đoạn tả sinh hoạt lặp lại nhưng đừng xóa mất sự thật quan trọng. Cấm suy diễn. Chỉ xuất phần nội dung tổng kết dày đặc thông tin.\n\n${rows.map((row,index)=>`【TỔNG KẾT LỚN ${index+1} | ${row['Tầng bao phủ']}】\n${row['Nội dung tổng kết']}`).join('\n\n')}`;
     }
 
     function standardStageRange(start,end) {
@@ -15666,7 +15666,7 @@ ${digests.join('\n\n')}`,{
         const s=operationState;const bigRows=(s.tables.summaries||[]).filter(row=>(row['Loại']||row['Loại bảng'])==='Tổng kết lớn' && (row._sourceSummaryIds||[]).includes(stageRow._id));
         for(const big of bigRows){
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-            const sources=(big._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['Loại']||row['Loại bảng'])==='Tổng kết giai đoạn' && /完成|成功/.test(row['Trạng thái']||''));
+            const sources=(big._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['Loại']||row['Loại bảng'])==='Tổng kết giai đoạn' && /hoàn thành|thành công/i.test(row['Trạng thái']||''));
             if(sources.length !== (big._sourceSummaryIds||[]).length){ big['Trạng thái']='Cần tính lại'; big._staleReason='Thiếu tổng kết giai đoạn ở thượng nguồn'; continue; }
             const result=await runValidatedTransientLlm('bigSummary',bigSummaryPrompt(sources),{workflowMeta:{workflow:'bigSummary-rebuild',sourceSummaryIds:sources.map(row=>row._id)},validate:value=>requireSummaryQuality(value,'Tổng kết lớn',100),maxAttempts:3,label:'Tính lại tổng kết lớn'});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
@@ -15675,7 +15675,7 @@ ${digests.join('\n\n')}`,{
             const eras=(s.tables.summaries||[]).filter(row=>(row['Loại']||row['Loại bảng'])==='Tổng kết thời đại' && (row._sourceSummaryIds||[]).includes(big._id));
             for(const era of eras){
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
-                const bigSources=(era._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['Loại']||row['Loại bảng'])==='Tổng kết lớn' && /完成|成功/.test(row['Trạng thái']||''));
+                const bigSources=(era._sourceSummaryIds||[]).map(id=>s.tables.summaries.find(row=>row._id===id)).filter(row=>row && (row['Loại']||row['Loại bảng'])==='Tổng kết lớn' && /hoàn thành|thành công/i.test(row['Trạng thái']||''));
                 if(bigSources.length !== (era._sourceSummaryIds||[]).length){ era['Trạng thái']='Cần tính lại'; era._staleReason='Thiếu tổng kết lớn ở thượng nguồn'; continue; }
                 const er=await runValidatedTransientLlm('eraSummary',eraSummaryPrompt(bigSources),{workflowMeta:{workflow:'eraSummary-rebuild',sourceSummaryIds:bigSources.map(row=>row._id)},validate:value=>requireSummaryQuality(value,'Tổng kết thời đại',120),maxAttempts:3,label:'Tính lại tổng kết thời đại'});
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==s)return false;
@@ -15711,17 +15711,17 @@ ${digests.join('\n\n')}`,{
         if(!standardStageRange(start,end) && !manual) return false;
         const operationScope=captureChatScope();const operationState=stateRuntime.state;const operationToken={scope:operationScope,start,end,at:Date.now()};
         stateRuntime.summaryOperationToken=operationToken;stateRuntime.summaryRunning=true;
-        setBusy(true, `正在完整总结 ${start}-${end} 层…`);
+        setBusy(true, `Đang tổng kết trọn tầng ${start}-${end}…`);
         try {
             const existing=findStageSummaryByRange(start,end);
-            if(existing && !replaceExisting){ toast(`第 ${start}-${end} 层已有阶段总结，请使用“重做本段”覆盖它。`,'info'); return false; }
+            if(existing && !replaceExisting){ toast(`Tầng ${start}-${end} đã có tổng kết giai đoạn, hãy dùng “Làm lại đoạn này” để ghi đè.`,'info'); return false; }
             await createSafetySnapshot(`before-stage-summary-${start}-${end}`,{force:Boolean(replaceExisting)});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const result=requireSummaryQuality(await generateCompleteStageSummary(start,end),'Tổng kết giai đoạn',80);
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const row=await upsertStageSummaryFromText(start,end,result,{existing:replaceExisting?existing:null,source:replaceExisting?'Làm lại đoạn này':'Tổng kết giai đoạn'});
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            // 先保存“总结存在但原文未隐藏”的安全Trạng thái；随后再hide并再次落盘。
+            // Lưu trạng thái an toàn “đã có tổng kết nhưng chính văn chưa ẩn” trước; sau đó mới hide rồi lưu lại lần nữa.
             await saveState({ immediate:true, refresh:true, reason:replaceExisting?'summary-redo-before-hide':'summary-create-before-hide', forceSnapshot:Boolean(replaceExisting) });
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             if(stateRuntime.state.settings.autoHideSummarized){
@@ -15740,7 +15740,7 @@ ${digests.join('\n\n')}`,{
             }
             scheduleReindex();
             if(row._restoredFromRecycle){
-                // 真正删除后再单独总结同一范围：复用原ID，因此旧的大总结/时代总结依赖链可以安全接回。
+                // Khi đã xóa hẳn rồi mới tổng kết riêng cùng khoảng đó: dùng lại ID cũ, nhờ vậy chuỗi phụ thuộc của tổng kết lớn/tổng kết thời đại cũ vẫn nối lại an toàn.
                 try{await rebuildDependentSummaryChain(row,operationScope,operationState);}catch(error){if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState){console.warn('[vvv Sân Khấu Nhỏ] Chuỗi cấp trên sau khi khôi phục giai đoạn từ thùng rác tạm chưa được tính lại',error);toast(`本段已重新总结；上级总结等待重算：${error.message}`,'warn');}}
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
                 delete row._restoredFromRecycle;
@@ -15748,13 +15748,13 @@ ${digests.join('\n\n')}`,{
                 if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             }
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            notifyPipelineDone(`第 ${start}-${end} 层总结完成（已完整读取该范围），可以继续下一条。`, 'success');
+            notifyPipelineDone(`Đã tổng kết xong tầng ${start}-${end} (đã đọc trọn khoảng này), có thể tiếp tục mục sau.`, 'success');
             if(!replaceExisting && !row._includedInBig){await maybeCreateBigSummary();if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;}
             return true;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             console.error('[vvv Sân Khấu Nhỏ] Tổng kết giai đoạn thất bại',error);
-            toast(`阶段总结失败：${error.message}`, 'error'); return false;
+            toast(`Tổng kết giai đoạn thất bại: ${error.message}`, 'error'); return false;
         } finally {
             if(stateRuntime.summaryOperationToken===operationToken){stateRuntime.summaryOperationToken=null;stateRuntime.summaryRunning=false;}
             if(chatScopeIsCurrent(operationScope))setBusy(false);
@@ -15773,19 +15773,19 @@ ${digests.join('\n\n')}`,{
         const ok=await createStageSummary(range.start,range.end,{manual:true,replaceExisting:true});
         if(!ok||!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         markDependentSummariesStale(oldId,'Tổng kết giai đoạn ở thượng nguồn đã làm lại');
-        // 先把“新阶段总结 + 上级需重算标记”落盘。即使上级API随后失败，也不会出现阶段已更新但旧大总结仍假装有效。
+        // Lưu xuống “tổng kết giai đoạn mới + dấu cần tính lại ở cấp trên” trước. Kể cả khi API cấp trên thất bại sau đó thì cũng không xảy ra cảnh giai đoạn đã cập nhật mà tổng kết lớn cũ vẫn giả vờ còn hiệu lực.
         await saveState({immediate:true,refresh:true,reason:'summary-redo-mark-stale',forceSnapshot:true});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         setBusy(true,'Đang tính lại đồng bộ các tổng kết lớn/tổng kết thời đại bị ảnh hưởng…');
         let chainOk=true;
         try{const rebuilt=await rebuildDependentSummaryChain(row,operationScope,operationState);if(!rebuilt)return false;}
-        catch(error){if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;chainOk=false;console.warn('[vvv Sân Khấu Nhỏ] Tính lại chuỗi tổng kết cấp trên thất bại, đã giữ lại dấu cần tính lại',error);toast(`本段已重做成功；上级总结暂未重算成功：${error.message}`,'warn');}
+        catch(error){if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;chainOk=false;console.warn('[vvv Sân Khấu Nhỏ] Tính lại chuỗi tổng kết cấp trên thất bại, đã giữ lại dấu cần tính lại',error);toast(`Đã làm lại đoạn này thành công; tổng kết cấp trên tạm chưa tính lại được: ${error.message}`,'warn');}
         finally{if(chatScopeIsCurrent(operationScope))setBusy(false);}
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         recalculateSummaryProgress();
         await saveState({immediate:true,refresh:true,reason:chainOk?'summary-redo-chain':'summary-redo-chain-pending',forceSnapshot:true});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-        scheduleReindex();if(chainOk)toast(`第 ${range.start}-${range.end} 层已原位重做，并同步更新上级总结`, 'success'); return true;
+        scheduleReindex();if(chainOk)toast(`Đã làm lại tại chỗ tầng ${range.start}-${range.end} và cập nhật đồng bộ tổng kết cấp trên`, 'success'); return true;
     }
 
     async function restorePreviousSummaryVersion(row) {
@@ -15797,7 +15797,7 @@ ${digests.join('\n\n')}`,{
         await createSafetySnapshot(`before-summary-version-restore-${row['Tầng bao phủ']||''}`,{force:true,stateSnapshot:clone(operationState),scope:operationScope});
         if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
         const previous=history.at(-1);
-        if((row['Loại']||row['Loại bảng'])==='Tổng kết giai đoạn'&&!isFixedStageSummaryText(previous?.content||''))throw new Error('上一版是旧自由格式阶段总结，U1.6.1禁止恢复为“Đã hoàn thành”；请用“重做本段”从原聊天重建');
+        if((row['Loại']||row['Loại bảng'])==='Tổng kết giai đoạn'&&!isFixedStageSummaryText(previous?.content||''))throw new Error('Bản trước là tổng kết giai đoạn theo định dạng tự do cũ, U1.6.1 cấm khôi phục về trạng thái “Đã hoàn thành”; hãy dùng “Làm lại đoạn này” để dựng lại từ cuộc trò chuyện gốc');
         history.pop();
         const current={content:row['Nội dung tổng kết'],time:nowText(),reason:'Bản hiện tại trước khi khôi phục'};
         row['Nội dung tổng kết']=String(previous?.content||'').trim();
@@ -15817,13 +15817,13 @@ ${digests.join('\n\n')}`,{
     }
 
     async function createSupplementSummary(start,end) {
-        if(stateRuntime.summaryRunning)return false;const operationScope=captureChatScope(),operationState=stateRuntime.state,operationToken={scope:operationScope,start,end,at:Date.now()};stateRuntime.summaryOperationToken=operationToken;stateRuntime.summaryRunning=true;setBusy(true,`正在补充整理 ${start}-${end} 层…`);
+        if(stateRuntime.summaryRunning)return false;const operationScope=captureChatScope(),operationState=stateRuntime.state,operationToken={scope:operationScope,start,end,at:Date.now()};stateRuntime.summaryOperationToken=operationToken;stateRuntime.summaryRunning=true;setBusy(true,`Đang sắp xếp bổ sung ${start}-${end} 层…`);
         try{
             await createSafetySnapshot(`before-supplement-${start}-${end}`,{force:true});if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             const result=requireSummaryQuality(await generateCompleteStageSummary(start,end),'Bổ sung cục bộ',60);if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             operationState.tables.summaries.push({'Loại':'Bổ sung cục bộ','Trạng thái':'Đã hoàn thành','Nội dung tổng kết':result.text.trim(),'Tầng bao phủ':`${start}-${end}`,'Mô hình':result.model||'API tổng kết riêng','Thời điểm tạo':nowText(),'Khóa':'Không','Trạng thái ẩn':'Không tham gia việc tự ẩn',_id:uid('supplement-summary'),_history:[]});
-            await saveState({immediate:true,refresh:true,reason:'summary-supplement',forceSnapshot:true});scheduleReindex();toast(`已生成 ${start}-${end} 层局部补充记忆，不改变主总结进度`,'success');return true;
-        }catch(error){if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState)toast(`补充总结失败：${error.message}`,'error');return false;}finally{if(stateRuntime.summaryOperationToken===operationToken){stateRuntime.summaryOperationToken=null;stateRuntime.summaryRunning=false;}if(chatScopeIsCurrent(operationScope))setBusy(false);}
+            await saveState({immediate:true,refresh:true,reason:'summary-supplement',forceSnapshot:true});scheduleReindex();toast(`Đã tạo ký ức bổ sung cục bộ cho tầng ${start}-${end}, không làm thay đổi tiến độ tổng kết chính`,'success');return true;
+        }catch(error){if(chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState)toast(`Tổng kết bổ sung thất bại: ${error.message}`,'error');return false;}finally{if(stateRuntime.summaryOperationToken===operationToken){stateRuntime.summaryOperationToken=null;stateRuntime.summaryRunning=false;}if(chatScopeIsCurrent(operationScope))setBusy(false);}
     }
 
     async function deleteSummarySafely(row) {
@@ -15886,12 +15886,12 @@ ${digests.join('\n\n')}`,{
             else if(!(await applyCompletedJob(record, { status: 'completed', result: { text: result.text }, model: result.model, usage: result.usage })))return false;
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
             if (!quiet) toast('Tổng kết lớn đã xong', 'success');
-            // R9：达到时代边界后继续做第三级压缩。时代总结失败不会回滚已经成功的大总结。
+            // R9: sau khi chạm ranh giới thời đại thì nén tiếp ở cấp ba. Tổng kết thời đại thất bại sẽ không hoàn tác các tổng kết lớn đã thành công.
             await maybeCreateEraSummary({ force:false, quiet:true });
             return chatScopeIsCurrent(operationScope)&&stateRuntime.state===operationState;
         } catch (error) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
-            if (!quiet) toast(`大总结失败：${error.message}`, 'error');
+            if (!quiet) toast(`Tổng kết lớn thất bại: ${error.message}`, 'error');
             if (throwOnError) throw error;
             return false;
         } finally { if(chatScopeIsCurrent(operationScope))setBusy(false); }
@@ -15901,9 +15901,9 @@ ${digests.join('\n\n')}`,{
         const s = stateRuntime.state;
         if (!s.settings.autoSummary || stateRuntime.summaryRunning) return;
         recalculateSummaryProgress();
-        // R9S1旧档同意门：打开一张已有几十/几百/几千层、但没有阶段总结的旧聊天时，
-        // 绝不因为加载事件或下一次普通回复而从0-19偷偷开始补跑。历史回放必须由用户明确点击旧档接管，
-        // 或在总结中心手动点“总结下一段/补齐全部”。
+        // Cổng xin phép cho hồ sơ cũ của R9S1: khi mở một cuộc trò chuyện cũ đã có vài chục/vài trăm/vài nghìn tầng mà chưa có tổng kết giai đoạn,
+        // tuyệt đối không vì sự kiện nạp hay lượt trả lời thông thường kế tiếp mà lén chạy bù từ 0-19. Việc phát lại lịch sử phải do người dùng bấm rõ ràng vào phần tiếp quản hồ sơ cũ,
+        // hoặc bấm thủ công “Tổng kết đoạn tiếp theo/Bù đủ tất cả” trong Trung tâm tổng kết.
         if (s.progress?.archiveTakeoverRequired && s.takeover?.userInitiated !== true) {
             if (!s.progress.archiveGuardNotified) {
                 s.progress.archiveGuardNotified = true;
@@ -15911,7 +15911,7 @@ ${digests.join('\n\n')}`,{
             }
             return;
         }
-        // 总结固定使用独立API；未配置时保持现有进度，等待用户完成配置。
+        // Việc tổng kết luôn dùng API riêng; khi chưa cấu hình thì giữ nguyên tiến độ hiện tại và chờ người dùng cấu hình xong.
         if (!independentApiReady()) return;
         const chatLength = context()?.chat?.length ?? 0;
         const interval = Math.max(5, Number(s.settings.summaryEvery || 20));
@@ -15919,7 +15919,7 @@ ${digests.join('\n\n')}`,{
         if (chatLength - start < interval) return;
         const end=start+interval-1;
         const existing=findStageSummaryByRange(start,end);
-        // 历史被编辑/删除后，旧阶段会被标记需重算。自动流程在这里停住，避免每轮重复烧API或静默覆盖；用户可选择重做本段或从0完整重建。
+        // Sau khi lịch sử bị sửa/xóa, giai đoạn cũ sẽ bị đánh dấu cần tính lại. Luồng tự động dừng ở đây để tránh đốt API mỗi lượt hoặc âm thầm ghi đè; người dùng có thể chọn làm lại đoạn này hoặc dựng lại trọn vẹn từ 0.
         if(existing && !/完成|成功/.test(String(existing['Trạng thái']||'')))return;
         await createStageSummary(start, end);
     }
@@ -15929,7 +15929,7 @@ ${digests.join('\n\n')}`,{
         if(!operationScope||!operationState)return false;
         const interval = Math.max(5, Number(operationState.settings.summaryEvery || 20));
         let guard = 0;
-        // 旧版最多补30段（默认只有600层）；R9按真实聊天长度计算，可补2万层。
+        // Bản cũ chỉ bù được tối đa 30 đoạn (mặc định chỉ 600 tầng); R9 tính theo độ dài thật của cuộc trò chuyện nên bù được tới hai vạn tầng.
         const guardMax = Math.min(5000, Math.ceil((context()?.chat?.length || 0) / interval) + 2);
         while (guard < guardMax) {
             if(!chatScopeIsCurrent(operationScope)||stateRuntime.state!==operationState)return false;
@@ -15999,7 +15999,7 @@ ${digests.join('\n\n')}`,{
                     continue;
                 }
                 if (key === 'summaries') {
-                    // 需重算/失败/被删除的上级总结绝不能继续进入检索，否则AI会同时读到新阶段与旧大总结。
+                    // Tổng kết cấp trên đang cần tính lại/thất bại/đã bị xóa thì tuyệt đối không được vào truy hồi nữa, nếu không AI sẽ đọc đồng thời cả giai đoạn mới lẫn tổng kết lớn cũ.
                     if (!/完成|成功/.test(String(row['Trạng thái'] || 'Đã hoàn thành')) || !String(row['Nội dung tổng kết'] || '').trim()) continue;
                     const summaryType = row['Loại'] || row['Loại bảng'] || 'Tổng kết giai đoạn';
                     const type = summaryType === 'Tổng kết thời đại' ? 'era-summary' : (summaryType === 'Tổng kết lớn' ? 'big-summary' : 'stage-summary');
@@ -16017,16 +16017,16 @@ ${digests.join('\n\n')}`,{
             }
         }
 
-        s.secrets.filter(memoryRecordUsable).forEach(item => add('secret', item.subject, `${item.content}；知道者：${item.knowers}；怀疑者：${item.suspects}；不知道者：${item.unknown}`, Number(item._sourceFloor), Number(item._sourceFloor), true, item.updatedAt, { tags:['Bí mật',item.subject], characters:[item.subject], importanceWeight:1 }));
+        s.secrets.filter(memoryRecordUsable).forEach(item => add('secret', item.subject, `${item.content}; người biết: ${item.knowers}; người nghi ngờ: ${item.suspects}; người không biết: ${item.unknown}`, Number(item._sourceFloor), Number(item._sourceFloor), true, item.updatedAt, { tags:['Bí mật',item.subject], characters:[item.subject], importanceWeight:1 }));
         (s.appearances || []).filter(memoryRecordUsable).forEach(item => add('appearance', item.character, `${item.outfit}${item.hair ? `；发型：${item.hair}` : ''}${item.accessories ? `；配饰：${item.accessories}` : ''}${item.shoes ? `；鞋履：${item.shoes}` : ''}${item.condition ? `；Trạng thái：${item.condition}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Ngoại hình','Trang phục',item.character], characters:[item.character], importanceWeight:0.5 }));
-        (s.characterWorld?.events || []).filter(memoryRecordUsable).forEach(item => add('character-world', item.character, `${item.activity}${item.goal ? `；目标：${item.goal}` : ''}${item.social ? `；社交：${item.social}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Đời sống hậu trường','Động thái thế giới',item.character], characters:[item.character], importanceWeight:0.45 }));
-        (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || 'Mốc neo sự kiện', `${item.date||''} ${item.time||''}｜${(item.people||[]).join('、')}｜${item.event||''}${item.details?`；${item.details}`:''}${item.rawFallbackText?`；原文保底:${item.rawFallbackText}`:''}${item.tags?.length?`；标签:${item.tags.join('、')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance), `${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
-        (s.episodeFacts || []).filter(memoryRecordUsable).forEach(item => add('episode-fact', `小事件:${item.category||'detail'}`, `第${item.floor??'?'}层｜${(item.people||[]).join('、')}｜${item.fact||''}｜实体:${(item.entities||[]).join('、')}｜证据:${item.evidenceText||''}`, Number(item.floor), Number(item.floor), false, item.createdAt||'', { tags:['小事件',item.category,...(item.entities||[])], characters:item.people||[], importanceWeight:0.7, entityId:item.id, eventId:item.id, timeline:true }));
+        (s.characterWorld?.events || []).filter(memoryRecordUsable).forEach(item => add('character-world', item.character, `${item.activity}${item.goal ? `; mục tiêu: ${item.goal}` : ''}${item.social ? `; giao tiếp: ${item.social}` : ''}`, Number(item.floor), Number(item.floor), false, item.time || item.generatedAt, { tags:['Đời sống hậu trường','Động thái thế giới',item.character], characters:[item.character], importanceWeight:0.45 }));
+        (s.memoryAnchors || []).filter(memoryRecordUsable).forEach(item => add('episode-anchor', item.event || item.type || 'Mốc neo sự kiện', `${item.date||''} ${item.time||''} | ${(item.people||[]).join(', ')} | ${item.event||''}${item.details?`; ${item.details}`:''}${item.rawFallbackText?`; chính văn phương án đáy: ${item.rawFallbackText}`:''}${item.tags?.length?`；标签:${item.tags.join('、')}`:''}`, Number(item.floor), Number(item.floor), ['core','high'].includes(item.importance), `${item.date||''} ${item.time||''}`, { tags:[item.type,item.importance,...(item.tags||[])], characters:item.people||[], importanceWeight:item.importance==='core'?1:(item.importance==='high'?0.88:0.5) }));
+        (s.episodeFacts || []).filter(memoryRecordUsable).forEach(item => add('episode-fact', `Sự kiện nhỏ: ${item.category||'detail'}`, `Tầng ${item.floor??'?'} | ${(item.people||[]).join(', ')} | ${item.fact||''} | thực thể: ${(item.entities||[]).join(', ')} | bằng chứng: ${item.evidenceText||''}`, Number(item.floor), Number(item.floor), false, item.createdAt||'', { tags:['小事件',item.category,...(item.entities||[])], characters:item.people||[], importanceWeight:0.7, entityId:item.id, eventId:item.id, timeline:true }));
         (s.lifeFacts || []).filter(memoryRecordUsable).forEach(item => add('life-fact', `生活认知:${item.subject||''}`, `${item.subject||''}｜${item.category||''}｜${item.key||''}=${item.value||item.fact||''}；Trạng thái:${item.status||'observed'}；证据Tầng:${(item.evidenceFloors||[]).join('、')}；${item.fact||''}`, Number(item.firstFloor), Number(item.lastFloor), ['stable','confirmed'].includes(item.status), item.updatedAt||'', { tags:['Nhận thức đời sống',item.category,item.key,item.status], characters:[item.subject], importanceWeight:item.status==='confirmed'?0.9:(item.status==='stable'?0.78:0.45) }));
         (s.npcRegistry || []).forEach(item => add('npc-identity', item.currentName, `${item.currentName}${item.aliases?.length?`；旧称:${item.aliases.join('、')}`:''}${item.identity?`；Thân phận:${item.identity}`:''}`, Number(item.firstSeenFloor), Number(item.lastSeenFloor), false, '', { tags:['NPC','Thân phận',...(item.aliases||[])], characters:[item.currentName,...(item.aliases||[])], importanceWeight:0.5 }));
         s.chapters.filter(memoryRecordUsable).forEach(item => add('chapter', item.title, item.summary, Number(item.startFloor), Number(item.endFloor), true, item.time, { tags:['Chương',item.title], importanceWeight:0.82 }));
 
-        // R9：旧电话/微信/短信/朋友圈/日记/纪念日也进入长期检索，避免几千层后只记得chính văn、不记得“生活痕迹”。
+        // R9: cuộc gọi/WeChat/SMS/Khoảnh khắc/nhật ký/ngày kỷ niệm cũ cũng vào truy hồi dài hạn, tránh cảnh sau vài nghìn tầng chỉ còn nhớ chính văn mà quên mất “dấu vết đời sống”.
         for (const key of ['wechat','sms','calls']) {
             for (const item of (s.phone?.[key] || []).filter(memoryRecordUsable)) {
                 const floor = Number(item.floor ?? item._floor ?? item.sourceFloor);
