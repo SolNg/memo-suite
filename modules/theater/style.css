@@ -2528,6 +2528,12 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     .vvvtm-shell { position:relative; }
     .vvvtm-content { position:relative; z-index:1; }
 
+    /* Dùng !important vì stylesheet của SillyTavern hoặc của app bọc ngoài có thể
+       đặt user-select:none lên phần tử cha; trên iOS như vậy là không đặt được
+       con trỏ vào ô nhập. */
+    .vvvtm-shell,
+    .vvvtm-content { -webkit-user-select:auto !important; user-select:auto !important; }
+
     .vvvtm-shell input,
     .vvvtm-shell textarea,
     .vvvtm-shell select,
@@ -2535,10 +2541,11 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     #vvv-relay-settings-modal input,
     #vvv-relay-settings-modal textarea,
     #vvv-relay-settings-modal select {
-        pointer-events:auto;
+        pointer-events:auto !important;
         touch-action:manipulation;
-        -webkit-user-select:text;
-        user-select:text;
+        -webkit-user-select:text !important;
+        user-select:text !important;
+        -webkit-touch-callout:default;
     }
 
     /* iOS tự phóng to trang khi ô nhập nhỏ hơn 16px; vùng chạm dưới 44px rất

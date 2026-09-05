@@ -3484,6 +3484,17 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
                     <main id="vvvtm-content" class="vvvtm-content"></main>
                     <div id="vvvtm-busy" class="vvvtm-busy" hidden><b></b><span>Đang xử lý…</span></div>
                 </div>`;
+            // iOS/WKWebView (Safari, TauriTavern): trong lớp phủ position:fixed đôi khi
+            // không đặt được con trỏ vào ô nhập — chạm một lần không có gì, chạm hai
+            // lần thì bàn phím nháy lên rồi tắt. Gọi focus() ngay trong cử chỉ chạm
+            // của người dùng là cách duy nhất chắc chắn mở được bàn phím.
+            modal.addEventListener('touchend', event => {
+                const field = event.target?.closest?.('input:not([type="checkbox"]):not([type="radio"]),textarea');
+                if (!field || field.disabled || field.readOnly) return;
+                if (document.activeElement === field) return;
+                try { field.focus({ preventScroll: true }); } catch { field.focus(); }
+            }, { passive: true });
+
             modal.addEventListener('click', event => {
                 if (event.target === modal) closeModal();
                 const action = event.target.closest('[data-action]')?.dataset.action;
