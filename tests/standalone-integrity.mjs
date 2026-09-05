@@ -29,7 +29,7 @@ assert.ok(hub.includes("const API='/api/plugins/vvv-theater-memory-server'"),'Me
 assert.ok(server.includes('multi-account mode'),'server multi-account mode missing');
 assert.ok(server.includes('initializeAccountStorage'),'server per-account initialization missing');
 assert.ok(server.includes('account-required'),'server account isolation guard missing');
-assert.ok(theater.includes('/scripts/extensions/third-party/vvv-story-memory-suite/memory-hub/index.html'),'Memory Hub standalone path not patched');
+assert.ok(theater.includes("new URL('../../memory-hub/index.html', import.meta.url)"),'Memory Hub standalone path not patched');
 assert.ok(!theater.includes('/scripts/extensions/third-party/vvv-unified-core/memory-hub/index.html'),'legacy Memory Hub path remains');
 for(const absent of ['modules/cardvault/index.js','modules/creative/index.js'])assert.ok(!fs.existsSync(path.join(root,absent)),`unwanted module included: ${absent}`);
 console.log('PASS standalone integrity: 0-32 + relay + RAG/Memory Hub + author QA preserve fixed42 data/bridge ids, single-world behavior, and multi-account startup.');

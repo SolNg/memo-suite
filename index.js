@@ -164,7 +164,7 @@ function ensureSuiteLauncher(){
     if(key==='memory')globalThis.openVVVTheaterMemory?.();
     else if(key==='relay')globalThis.VVVUnifiedRelay?.open?.();
     else if(key==='author')globalThis.VVVStoryMemoryAuthorQa?.open?.();
-    else if(key==='hub')window.open('/scripts/extensions/third-party/vvv-story-memory-suite/memory-hub/index.html','_blank','noopener');
+    else if(key==='hub')window.open(new URL('./memory-hub/index.html', import.meta.url).href,'_blank','noopener');
   });
   menu.appendChild(box);return true;
 }

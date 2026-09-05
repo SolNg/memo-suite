@@ -4,12 +4,12 @@ import { createServerJsonClient } from '../shared/server-client.js';
     'use strict';
 
     const ID = 'vvv_story_relay';
-    const LEGACY_IDS = ['vvv_r9s1p3_story_relay','vvv_r9s1p2_story_relay'];
+    const LEGACY_IDS = ['vvv_r9s1p3_story_relay', 'vvv_r9s1p2_story_relay'];
     const VERSION = '0.9.3-r9s1p41-u1.7.15-world-map-avatar-studio-r21-memory-bridge-fixed24';
     const SERVER = '/api/plugins/vvv-theater-memory-server';
     const serverJson = createServerJsonClient(SERVER, {
         getContext: () => globalThis.SillyTavern?.getContext?.() || null,
-        label:'Tiếp sức cốt truyện bằng AI',
+        label: 'Tiếp sức cốt truyện bằng AI',
     });
     const FALLEN_WRITER_CONTEXT = [
         '【THÂN PHẬN SÁNG TÁC: NHÀ VĂN SA CƠ】',
@@ -19,7 +19,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         '【NGUYÊN TẮC SÁNG TÁC】Luôn tuân theo chỉ thị sáng tác của User trong nhiệm vụ này và sáng tạo tự do trong phạm vi đó; tôn trọng thiết định nhân vật, chủ quyền của USER, ranh giới hiểu biết của từng nhân vật, nhân quả cốt truyện và tính liền mạch trước sau, đồng thời tuân thủ chính sách sử dụng hiện hành của dịch vụ mô hình.',
     ].join('\n');
     const FATE_CATEGORY_LABELS = Object.freeze({
-        daily:'Thường nhật', emotion:'Tình cảm', conflict:'Xung đột', clue:'Manh mối', npc:'NPC', world:'Thế giới', major:'Sự kiện lớn', custom:'Tùy chỉnh',
+        daily: 'Thường nhật', emotion: 'Tình cảm', conflict: 'Xung đột', clue: 'Manh mối', npc: 'NPC', world: 'Thế giới', major: 'Sự kiện lớn', custom: 'Tùy chỉnh',
     });
     const BUILTIN_FATE_CARDS = Object.freeze([
         { id:'daily-forgotten-item', category:'daily', text:'Một món đồ nhỏ từng xuất hiện trước đây lọt lại vào tầm mắt trong cảnh hiện tại theo cách hợp lý, nhưng đừng ép nhân vật nào phải xử lý nó ngay.', weight:1 },
@@ -52,15 +52,15 @@ import { createServerJsonClient } from '../shared/server-client.js';
         { id:'major-turn', category:'major', text:'Đẩy một điểm gài dài hạn đã cắm sẵn tiến thêm một bước, nhưng không được bịa điểm gài mới, càng không được kết toán trọn vẹn cả sự việc ngay trong lượt này.', weight:.45 },
     ]);
     const DIRECTIONS = [
-        ['natural','Tiến triển tự nhiên'], ['meal','Ăn uống'], ['date','Hẹn hò'], ['intimate','Thân mật/ân ái'],
-        ['rest','Nghỉ ngơi'], ['outing','Ra ngoài'], ['work','Làm việc/học tập'], ['conflict','Xung đột'],
-        ['adventure','Điều tra/phiêu lưu'], ['time','Đẩy thời gian'], ['travel','Du lịch/liên thành'], ['major','Biến động lớn'],
-        ['random','Ngẫu nhiên'], ['custom','Tùy chỉnh'],
+        ['natural', 'Tiến triển tự nhiên'], ['meal', 'Ăn uống'], ['date', 'Hẹn hò'], ['intimate', 'Thân mật/ân ái'],
+        ['rest', 'Nghỉ ngơi'], ['outing', 'Ra ngoài'], ['work', 'Làm việc/học tập'], ['conflict', 'Xung đột'],
+        ['adventure', 'Điều tra/phiêu lưu'], ['time', 'Đẩy thời gian'], ['travel', 'Du lịch/liên thành'], ['major', 'Biến động lớn'],
+        ['random', 'Ngẫu nhiên'], ['custom', 'Tùy chỉnh'],
     ];
     const DIRECTION_ICONS = Object.freeze({
-        natural:'↗', meal:'◌', date:'◇', intimate:'♡', rest:'☾', outing:'↪',
-        work:'▣', conflict:'⚡', adventure:'⌖', time:'◷', travel:'✈', major:'◆',
-        random:'✦', custom:'＋',
+        natural: '↗', meal: '◌', date: '◇', intimate: '♡', rest: '☾', outing: '↪',
+        work: '▣', conflict: '⚡', adventure: '⌖', time: '◷', travel: '✈', major: '◆',
+        random: '✦', custom: '＋',
     });
     const LEGACY_PERSPECTIVE_STYLE_ID = 'vvv-relay-perspective-hotfix-style-r9s1p40';
     function removeLegacyPerspectiveStyle() {
@@ -74,10 +74,10 @@ import { createServerJsonClient } from '../shared/server-client.js';
     });
     const defaults = {
         enabled: true,
-        mode:'independent',
+        mode: 'independent',
         directAfterGenerate: false,
         recentFloors: 16,
-        relayPerspective:'first',
+        relayPerspective: 'first',
         directorEnabled: true,
         directorMainEnabled: true,
         directorRelayEnabled: true,
@@ -87,9 +87,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
         fateCategories: ['daily','emotion','conflict','clue','npc','world','major'],
         fateCooldown: 4,
         fateHistory: [],
-        customFateCards:'',
-        ledgerLong:'',
-        ledgerChapter:'',
+        customFateCards: '',
+        ledgerLong: '',
+        ledgerChapter: '',
         ledgerTimed: [],
         multiFlashEnabled: false,
         pendingFateCard: null,
@@ -103,9 +103,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
         settings: null,
         busy: false,
         selected: new Set(),
-        currentSignature:'',
-        draft:'',
-        lastProviderFinishReason:'',
+        currentSignature: '',
+        draft: '',
+        lastProviderFinishReason: '',
         lastContinuationCount: 0,
         settled: new Set(),
         serverConfig: null,
@@ -129,29 +129,29 @@ import { createServerJsonClient } from '../shared/server-client.js';
         dockMountTimer: 0,
         lastEnvironment: null,
         currentFateCard: null,
-        fateLastAutoSignature:'',
+        fateLastAutoSignature: '',
         lastPipelineDebug: null,
-        lastGenerationSource:'',
-        lastGenerationSourceLabel:'',
-        lastCustomDirection:'',
+        lastGenerationSource: '',
+        lastGenerationSourceLabel: '',
+        lastCustomDirection: '',
         retryNoticeShown: false,
         policyRecoveryNoticeShown: false,
-        previewCustom:'',
+        previewCustom: '',
         draftAnchor: null,
         activeGeneration: null,
-        activeGenerationOwner:'',
+        activeGenerationOwner: '',
         activeGenerationAbort: null,
-        lastError:'',
+        lastError: '',
         configuredSourceReady: false,
     };
 
     const ctx = () => globalThis.SillyTavern?.getContext?.() || null;
     const relayChatRuntimeIds = new WeakMap();
     const RELAY_CHAT_INSTANCE_META_KEY = 'vvvRelayChatInstanceIdV1';
-    const esc = value => String(value ??'')
-        .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
-        .replaceAll('"','&quot;').replaceAll("'",'&#39;');
-    const textOf = message => String(message?.mes ?? message?.text ??'').trim();
+    const esc = value => String(value ?? '')
+        .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+    const textOf = message => String(message?.mes ?? message?.text ?? '').trim();
     const hash = value => {
         let h = 2166136261;
         for (const c of String(value)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619); }
@@ -397,7 +397,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const legacy = LEGACY_IDS.map(key => c.extensionSettings[key]).find(value => value && typeof value === 'object') || {};
         runtime.settings = { ...defaults, ...legacy, ...(c.extensionSettings[ID] || {}) };
         runtime.settings.recentFloors = [8, 12, 16, 24, 32].includes(Number(runtime.settings.recentFloors)) ? Number(runtime.settings.recentFloors) : 16;
-        runtime.settings.relayPerspective = Object.hasOwn(PERSPECTIVES, String(runtime.settings.relayPerspective || '')) ? String(runtime.settings.relayPerspective) :'first';
+        runtime.settings.relayPerspective = Object.hasOwn(PERSPECTIVES, String(runtime.settings.relayPerspective || '')) ? String(runtime.settings.relayPerspective) : 'first';
         runtime.settings.fateInterval = [4,6,8,10,12,16,20].includes(Number(runtime.settings.fateInterval)) ? Number(runtime.settings.fateInterval) : 8;
         runtime.settings.fateCooldown = Math.max(0, Math.min(12, Number(runtime.settings.fateCooldown ?? 4)));
         runtime.settings.directorMainEnabled = runtime.settings.directorMainEnabled !== false;
@@ -435,7 +435,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function toast(message, type = 'info') {
         const t = globalThis.toastr;
-        if (t?.[type]) t[type](message,'0-32 · Tiếp sức cốt truyện bằng AI');
+        if (t?.[type]) t[type](message, '0-32 · Tiếp sức cốt truyện bằng AI');
         else console.log(`[${ID}] ${message}`);
     }
 
@@ -475,10 +475,10 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!button) return;
         button.disabled = runtime.dockBusy;
         button.classList.toggle('is-busy', runtime.dockBusy);
-        button.setAttribute('aria-busy', runtime.dockBusy ?'true' :'false');
+        button.setAttribute('aria-busy', runtime.dockBusy ? 'true' : 'false');
         button.title = runtime.dockBusy
-            ?'0-32 Tiếp sức: chính văn đang được sinh'
-            :'0-32 · Tiếp sức cốt truyện bằng AI';
+            ? '0-32 Tiếp sức: chính văn đang được sinh'
+            : '0-32 · Tiếp sức cốt truyện bằng AI';
     }
 
     function entryForDock() {
@@ -503,13 +503,13 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!runtime.settings?.enabled) return;
         if (await isGenerating()) {
             setDockBusy(true);
-            toast('Chính văn của lượt trước vẫn đang được sinh, hãy đợi lượt này xong đã.','info');
+            toast('Chính văn của lượt trước vẫn đang được sinh, hãy đợi lượt này xong đã.', 'info');
             return;
         }
         setDockBusy(false);
         const entry = entryForDock();
         if (!entry) {
-            toast('Hiện chưa có chính văn AI hoàn chỉnh nào để tiếp sức.','info');
+            toast('Hiện chưa có chính văn AI hoàn chỉnh nào để tiếp sức.', 'info');
             return;
         }
         runtime.commandAnchor = anchorFromEntry(entry);
@@ -539,7 +539,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         button.type = 'button';
         button.id = 'vvv-relay-dock-button';
         button.className = 'vvv-relay-dock-button';
-        button.setAttribute('aria-label','Mở Tiếp sức cốt truyện bằng AI của 0-32');
+        button.setAttribute('aria-label', 'Mở Tiếp sức cốt truyện bằng AI của 0-32');
         button.innerHTML = `<span class="vvv-relay-dock-glyph" aria-hidden="true">✒</span><span class="vvv-relay-dock-dot" aria-hidden="true"></span>`;
         button.addEventListener('click', event => {
             event.preventDefault();
@@ -608,7 +608,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
     function relayPerspectiveKey() {
         const key = String(runtime.settings?.relayPerspective || 'first');
-        return Object.hasOwn(PERSPECTIVES, key) ? key :'first';
+        return Object.hasOwn(PERSPECTIVES, key) ? key : 'first';
     }
 
     function relayPerspectiveMeta() {
@@ -631,7 +631,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         root.querySelectorAll('[data-relay-perspective]').forEach(button => {
             const selected = button.dataset.relayPerspective === active;
             button.classList.toggle('selected', selected);
-            button.setAttribute('aria-pressed', selected ?'true' :'false');
+            button.setAttribute('aria-pressed', selected ? 'true' : 'false');
         });
         const hint = root.querySelector('[data-relay-perspective-hint]');
         if (hint) hint.textContent = `${relayPerspectiveMeta().label} · ${relayPerspectiveMeta().short}`;
@@ -675,7 +675,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const raw = line.trim();
             if (!raw) return null;
             const split = raw.split('|').map(v => v.trim());
-            const category = Object.hasOwn(FATE_CATEGORY_LABELS, split[0]) ? split.shift() :'custom';
+            const category = Object.hasOwn(FATE_CATEGORY_LABELS, split[0]) ? split.shift() : 'custom';
             const text = split.join('|').trim() || raw;
             return { id:`custom-${hash(`${index}:${raw}`)}`, category, text:text.slice(0,500), weight:1 };
         }).filter(Boolean).slice(0, 200);
@@ -753,9 +753,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const scopes = [];
             if (directorAppliesToMain()) scopes.push('AI chính');
             if (directorAppliesToRelay()) scopes.push('Tiếp sức');
-            bits.push(scopes.length ?`Đạo diễn BẬT·${scopes.join('+')}` :'Đạo diễn BẬT·chưa chọn phạm vi');
+            bits.push(scopes.length ? `Đạo diễn BẬT·${scopes.join('+')}` : 'Đạo diễn BẬT·chưa chọn phạm vi');
         }
-        bits.push(runtime.settings?.fateEnabled === false ?'Bể thẻ TẮT' :`Bể thẻ BẬT${runtime.settings?.fateAutoEnabled ?'·tự động' :''}`);
+        bits.push(runtime.settings?.fateEnabled === false ? 'Bể thẻ TẮT' : `Bể thẻ BẬT${runtime.settings?.fateAutoEnabled ? '·tự động' : ''}`);
         bits.push(`Sổ cái ${activeLedgerRuleCount()}`);
         bits.push('API riêng cho tiếp sức');
         return bits.join(' · ');
@@ -787,7 +787,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const summary = root.querySelector('[data-relay-selection-summary]');
         if (summary) {
             const labels = selectedDirectionLabels().filter(label => label !== 'Tùy chỉnh');
-            summary.textContent = labels.length ?`Đã chọn: ${labels.join(' · ')}` :'Không chọn hướng nào thì sẽ sinh theo “Tiến triển tự nhiên”';
+            summary.textContent = labels.length ? `Đã chọn: ${labels.join(' · ')}` : 'Không chọn hướng nào thì sẽ sinh theo “Tiến triển tự nhiên”';
         }
     }
 
@@ -824,20 +824,20 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const left = Math.round(vv?.offsetLeft || 0);
             const top = Math.round(vv?.offsetTop || 0);
 
-            root.style.setProperty('inset','auto','important');
-            root.style.setProperty('left',`${left}px`,'important');
-            root.style.setProperty('top',`${top}px`,'important');
-            root.style.setProperty('width',`${width}px`,'important');
-            root.style.setProperty('height',`${height}px`,'important');
-            root.style.setProperty('display','flex','important');
-            root.style.setProperty('align-items','center','important');
-            root.style.setProperty('justify-content','center','important');
-            root.style.setProperty('box-sizing','border-box','important');
+            root.style.setProperty('inset', 'auto', 'important');
+            root.style.setProperty('left', `${left}px`, 'important');
+            root.style.setProperty('top', `${top}px`, 'important');
+            root.style.setProperty('width', `${width}px`, 'important');
+            root.style.setProperty('height', `${height}px`, 'important');
+            root.style.setProperty('display', 'flex', 'important');
+            root.style.setProperty('align-items', 'center', 'important');
+            root.style.setProperty('justify-content', 'center', 'important');
+            root.style.setProperty('box-sizing', 'border-box', 'important');
 
             // Keep enough air above/below the card; long content scrolls inside it.
-            shell.style.setProperty('max-height',`${Math.max(360, Math.floor(height * 0.82))}px`,'important');
-            shell.style.setProperty('overflow-y','auto','important');
-            shell.style.setProperty('-webkit-overflow-scrolling','touch');
+            shell.style.setProperty('max-height', `${Math.max(360, Math.floor(height * 0.82))}px`, 'important');
+            shell.style.setProperty('overflow-y', 'auto', 'important');
+            shell.style.setProperty('-webkit-overflow-scrolling', 'touch');
 
             if (initial) {
                 shell.scrollTop = 0;
@@ -906,21 +906,21 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const top = Math.round(vv?.offsetTop || 0);
 
             // Dùng đúng cách định vị VisualViewport như cửa sổ tiếp sức chính đã được kiểm chứng.
-            root.style.setProperty('inset','auto','important');
-            root.style.setProperty('left',`${left}px`,'important');
-            root.style.setProperty('top',`${top}px`,'important');
-            root.style.setProperty('width',`${width}px`,'important');
-            root.style.setProperty('height',`${height}px`,'important');
-            root.style.setProperty('display','flex','important');
-            root.style.setProperty('align-items','center','important');
-            root.style.setProperty('justify-content','center','important');
-            root.style.setProperty('box-sizing','border-box','important');
+            root.style.setProperty('inset', 'auto', 'important');
+            root.style.setProperty('left', `${left}px`, 'important');
+            root.style.setProperty('top', `${top}px`, 'important');
+            root.style.setProperty('width', `${width}px`, 'important');
+            root.style.setProperty('height', `${height}px`, 'important');
+            root.style.setProperty('display', 'flex', 'important');
+            root.style.setProperty('align-items', 'center', 'important');
+            root.style.setProperty('justify-content', 'center', 'important');
+            root.style.setProperty('box-sizing', 'border-box', 'important');
 
             // Trang cài đặt dài hơn cửa sổ tiếp sức chính, nên giới hạn trong chiều cao thực sự nhìn thấy và cho phép cuộn bên trong.
-            shell.style.setProperty('max-height',`${Math.max(360, Math.floor(height * 0.84))}px`,'important');
-            shell.style.setProperty('overflow-x','hidden','important');
-            shell.style.setProperty('overflow-y','auto','important');
-            shell.style.setProperty('-webkit-overflow-scrolling','touch');
+            shell.style.setProperty('max-height', `${Math.max(360, Math.floor(height * 0.84))}px`, 'important');
+            shell.style.setProperty('overflow-x', 'hidden', 'important');
+            shell.style.setProperty('overflow-y', 'auto', 'important');
+            shell.style.setProperty('-webkit-overflow-scrolling', 'touch');
 
             if (initial) {
                 shell.scrollTop = 0;
@@ -983,26 +983,26 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const left = Math.round(vv?.offsetLeft || 0);
             const top = Math.round(vv?.offsetTop || 0);
 
-            root.style.setProperty('position','fixed','important');
-            root.style.setProperty('inset','auto','important');
-            root.style.setProperty('left',`${left}px`,'important');
-            root.style.setProperty('top',`${top}px`,'important');
-            root.style.setProperty('width',`${width}px`,'important');
-            root.style.setProperty('height',`${height}px`,'important');
-            root.style.setProperty('display','flex','important');
-            root.style.setProperty('align-items','center','important');
-            root.style.setProperty('justify-content','center','important');
-            root.style.setProperty('box-sizing','border-box','important');
-            root.style.setProperty('overflow','hidden','important');
+            root.style.setProperty('position', 'fixed', 'important');
+            root.style.setProperty('inset', 'auto', 'important');
+            root.style.setProperty('left', `${left}px`, 'important');
+            root.style.setProperty('top', `${top}px`, 'important');
+            root.style.setProperty('width', `${width}px`, 'important');
+            root.style.setProperty('height', `${height}px`, 'important');
+            root.style.setProperty('display', 'flex', 'important');
+            root.style.setProperty('align-items', 'center', 'important');
+            root.style.setProperty('justify-content', 'center', 'important');
+            root.style.setProperty('box-sizing', 'border-box', 'important');
+            root.style.setProperty('overflow', 'hidden', 'important');
 
-            shell.style.setProperty('width','calc(100% - 24px)','important');
-            shell.style.setProperty('max-width','660px','important');
-            shell.style.setProperty('max-height',`${Math.max(320, Math.floor(height * 0.78))}px`,'important');
-            shell.style.setProperty('overflow-x','hidden','important');
-            shell.style.setProperty('overflow-y','auto','important');
-            shell.style.setProperty('-webkit-overflow-scrolling','touch');
-            shell.style.setProperty('overscroll-behavior','contain');
-            shell.style.setProperty('margin','0','important');
+            shell.style.setProperty('width', 'calc(100% - 24px)', 'important');
+            shell.style.setProperty('max-width', '660px', 'important');
+            shell.style.setProperty('max-height', `${Math.max(320, Math.floor(height * 0.78))}px`, 'important');
+            shell.style.setProperty('overflow-x', 'hidden', 'important');
+            shell.style.setProperty('overflow-y', 'auto', 'important');
+            shell.style.setProperty('-webkit-overflow-scrolling', 'touch');
+            shell.style.setProperty('overscroll-behavior', 'contain');
+            shell.style.setProperty('margin', '0', 'important');
 
             if (initial) {
                 shell.scrollTop = 0;
@@ -1085,7 +1085,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                     <span>Nguồn viết <b>${esc(relayModeLabel())}</b></span>
                     <span>Văn phong <b>kể thẳng · không ẩn dụ</b></span>
                 </div>
-                ${(() => { const rf=deriveRelayRealityFacts(entry); return rf.hardFacts.length ?`<div class="vvv-relay-reality-lock"><b>⛓ Khóa hiện thực hiện tại</b>${rf.hardFacts.map(x=>`<span>${esc(x)}</span>`).join('')}</div>` :''; })()}
+                ${(() => { const rf=deriveRelayRealityFacts(entry); return rf.hardFacts.length ? `<div class="vvv-relay-reality-lock"><b>⛓ Khóa hiện thực hiện tại</b>${rf.hardFacts.map(x=>`<span>${esc(x)}</span>`).join('')}</div>` : ''; })()}
                 <div class="vvv-relay-command-body">
                     <div class="vvv-relay-section-title"><div><b>Chọn hướng đẩy tới</b><small>Chọn được nhiều mục; mặc định chỉ đẩy một nhịp nhỏ của cảnh hiện tại</small></div><span>STEP 01</span></div>
                     <div class="vvv-relay-choice-grid">${cards}</div>
@@ -1137,7 +1137,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         });
         root.querySelector('[data-fate-draw]')?.addEventListener('click', () => {
             const card = drawFateCard({ manual:true });
-            if (card) toast(`Thẻ định mệnh: ${FATE_CATEGORY_LABELS[card.category] || card.category} · ${card.text}`,'info');
+            if (card) toast(`Thẻ định mệnh: ${FATE_CATEGORY_LABELS[card.category] || card.category} · ${card.text}`, 'info');
             refreshControlUi(root);
         });
         root.querySelectorAll('[data-relay-perspective]').forEach(button => button.addEventListener('click', () => {
@@ -1157,20 +1157,20 @@ import { createServerJsonClient } from '../shared/server-client.js';
         root.querySelector('[data-relay-expand]')?.addEventListener('click', event => {
             const button=event.currentTarget;
             const pressed=button?.getAttribute('aria-pressed')==='true';
-            button?.setAttribute('aria-pressed', pressed ?'false' :'true');
+            button?.setAttribute('aria-pressed', pressed ? 'false' : 'true');
             button?.classList.toggle('selected', !pressed);
             const state=button?.querySelector('[data-relay-expand-state]');
             if(state)state.textContent=pressed?'Tắt · chỉ chỉnh câu':'Bật · mở rộng tự nhiên';
         });
         root.querySelector('[data-relay-panel-generate]')?.addEventListener('click', () => {
             const customSelected=runtime.selected.has('custom');
-            const userText=customSelected ? String(root.querySelector('[data-relay-user-text]')?.value || '') :'';
-            const notes=customSelected ? String(root.querySelector('[data-relay-custom-text]')?.value || '') :'';
+            const userText=customSelected ? String(root.querySelector('[data-relay-user-text]')?.value || '') : '';
+            const notes=customSelected ? String(root.querySelector('[data-relay-custom-text]')?.value || '') : '';
             const expand=customSelected && root.querySelector('[data-relay-expand]')?.getAttribute('aria-pressed')==='true';
             if (customSelected && !userText.trim() && !notes.trim()) {
                 const input=root.querySelector('[data-relay-user-text]');
                 input?.focus();
-                toast('Sau khi chọn “Tùy chỉnh”, hãy điền “Lời user cần gửi đi” hoặc “Bổ sung ý của bạn”.','warning');
+                toast('Sau khi chọn “Tùy chỉnh”, hãy điền “Lời user cần gửi đi” hoặc “Bổ sung ý của bạn”.', 'warning');
                 return;
             }
             setRelayInlineError('');
@@ -1225,7 +1225,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             .filter(({ message, index }) => !(excludeOpening && ceiling >= 6 && isOpeningMessage(message, index)));
         return real.slice(-Math.max(1, Number(limit || 16))).map(({ message, index }) => ({
             floor: index,
-            role: message.is_user ?'user' :'assistant',
+            role: message.is_user ? 'user' : 'assistant',
             name: message.name || '',
             text: textOf(message).slice(0, 12000),
         }));
@@ -1239,7 +1239,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             if (!message || message.is_system || !textOf(message)) continue;
             if (message.is_user) return { index: i, text: textOf(message) };
         }
-        return { index: -1, text:'' };
+        return { index: -1, text: '' };
     }
 
     function tailText(value, maxChars = 3500) {
@@ -1275,13 +1275,13 @@ import { createServerJsonClient } from '../shared/server-client.js';
             /(?:bao cao su|bao|gói bạc nhỏ|vỏ bạc)[^.!?]{0,36}(?:xé ra|bóc ra|đeo xong|đeo vào|lồng vào)|(?:xé|bóc)[^.!?]{0,30}(?:bao cao su|bao|vỏ|gói bạc nhỏ)[^.!?]{0,30}(?:đeo xong|đeo vào|lồng vào)|(?:đeo xong|đeo vào|lồng vào)[^.!?]{0,24}(?:bao cao su|bao)/i,
             /(?:cầm lấy|lấy ra|móc ra|rút ra)[^.!?]{0,24}(?:bao cao su|bao|gói bạc nhỏ|vỏ bạc)|(?:xé|bóc)[^.!?]{0,24}(?:vỏ|bao cao su|bao|gói bạc nhỏ)|(?:đeo xong|đeo vào|lồng vào)[^.!?]{0,24}(?:bao cao su|bao)/i
         );
-        add('meal','Bữa ăn đã xong', /(?:ăn (?:cơm |xong)?xong|ăn hết|dùng bữa xong|sau bữa (?:ăn|cơm)|no rồi|đặt (?:bát|đũa|chén|thìa) xuống)/i,
+        add('meal', 'Bữa ăn đã xong', /(?:ăn (?:cơm |xong)?xong|ăn hết|dùng bữa xong|sau bữa (?:ăn|cơm)|no rồi|đặt (?:bát|đũa|chén|thìa) xuống)/i,
             /(?:đi|định đi|chuẩn bị đi|cùng|chúng ta)[^.!?]{0,12}(?:ăn cơm|ăn gì đó|dùng bữa|nhà hàng|quán ăn)|(?:ăn|kiếm) (?:chút|cái) gì/i);
-        add('home','Đã về tới nhà / phòng riêng', /(?:đã|cuối cùng|rồi|sau đó)?[^.!?]{0,12}(?:về (?:tới|đến) nhà|về nhà rồi|bước vào cửa nhà|về (?:tới |đến )?phòng|về (?:tới |đến )?phòng ngủ|vào phòng ngủ)/i,
+        add('home', 'Đã về tới nhà / phòng riêng', /(?:đã|cuối cùng|rồi|sau đó)?[^.!?]{0,12}(?:về (?:tới|đến) nhà|về nhà rồi|bước vào cửa nhà|về (?:tới |đến )?phòng|về (?:tới |đến )?phòng ngủ|vào phòng ngủ)/i,
             /(?:về nhà|về phòng|về phòng ngủ|chuẩn bị về|đi về|về trước)/i);
-        add('bed','Đã lên giường / nằm xuống', /(?:đã|lại|sau đó)?[^.!?]{0,10}(?:nằm trên giường|nằm xuống|lên giường rồi|chui vào chăn|trở lại giường)/i,
+        add('bed', 'Đã lên giường / nằm xuống', /(?:đã|lại|sau đó)?[^.!?]{0,10}(?:nằm trên giường|nằm xuống|lên giường rồi|chui vào chăn|trở lại giường)/i,
             /(?:lên giường|nằm lên giường|nằm xuống|chui vào chăn|trở lại giường)/i);
-        add('leave','Đã rời khỏi địa điểm trước đó', /(?:đã|sau đó|quay người)?[^.!?]{0,12}(?:rời đi|rời khỏi|bước ra|đi ra|ra khỏi cửa|đi xa rồi)/i,
+        add('leave', 'Đã rời khỏi địa điểm trước đó', /(?:đã|sau đó|quay người)?[^.!?]{0,12}(?:rời đi|rời khỏi|bước ra|đi ra|ra khỏi cửa|đi xa rồi)/i,
             /(?:chuẩn bị|định|đứng dậy|quay người)?[^.!?]{0,10}(?:rời đi|đi ra ngoài|ra khỏi cửa)/i);
         return signals;
     }
@@ -1489,7 +1489,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function npcSubjectCandidates(environment = {}, entry = null) {
-        const out = new Set(['cô ấy','anh ấy','chị ấy','nàng','hắn','đối phương','người đó','cô gái','chàng trai','người phụ nữ','người đàn ông','nhân vật','NPC']);
+        const out = new Set(['cô ấy', 'anh ấy', 'chị ấy', 'nàng', 'hắn', 'đối phương', 'người đó', 'cô gái', 'chàng trai', 'người phụ nữ', 'người đàn ông', 'nhân vật', 'NPC']);
         const c = ctx() || {};
         const userName = String(c.name1 || '').trim();
         const add = value => {
@@ -1508,7 +1508,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         return [...out].sort((a, b) => b.length - a.length);
     }
 
-    const VIETNAMESE_PRONOUN_ALIASES = ['cô','anh','chị','em','ông','bà','nó','tôi','bạn','ta','mình'];
+    const VIETNAMESE_PRONOUN_ALIASES = ['cô', 'anh', 'chị', 'em', 'ông', 'bà', 'nó', 'tôi', 'bạn', 'ta', 'mình'];
     function npcShortAgencyAliases(subjects = []) {
         const aliases = new Set();
         for (const raw of subjects || []) {
@@ -1531,16 +1531,16 @@ import { createServerJsonClient } from '../shared/server-client.js';
     function hasEmbeddedNpcAgency(clause, subjects = [], agencyVerb = /$a/) {
         const value = String(clause || '').trim();
         if (!value) return false;
-        const full = (subjects || []).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).filter(Boolean);
-        const aliases = npcShortAgencyAliases(subjects).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).filter(Boolean);
+        const full = (subjects || []).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
+        const aliases = npcShortAgencyAliases(subjects).map(name => String(name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
         // Tên đầy đủ/đại từ được phép nằm giữa mệnh đề, ví dụ “nghe cô ấy yêu cầu…”. Trạng thái tĩnh đã bị loại ở lớp ngoài.
         if (full.length) {
-            const re = new RegExp(`(?:${full.join('|')})\\s*(?:liền|đã|rốt cuộc|từ từ|bỗng|đột nhiên|lại|cũng|vẫn|đang|chưa|không|bắt đầu|tiếp tục|sau đó|rồi|thì|vô thức|theo bản năng)?\\s*${agencyVerb.source}`,'gi');
+            const re = new RegExp(`(?:${full.join('|')})\\s*(?:liền|đã|rốt cuộc|từ từ|bỗng|đột nhiên|lại|cũng|vẫn|đang|chưa|không|bắt đầu|tiếp tục|sau đó|rồi|thì|vô thức|theo bản năng)?\\s*${agencyVerb.source}`, 'gi');
             for(const match of value.matchAll(re))if(!npcReferenceIsObject(value,match.index))return true;
         }
         // Tên gọi tắt chỉ được nhận diện ở ranh giới mệnh đề, tránh đụng với các mảnh chính văn thông thường.
         if (aliases.length) {
-            const re = new RegExp(`(?:^|[,;.!?\\s])(?:${aliases.join('|')})\\s*(?:(?:liền|đã|rốt cuộc|từ từ|bỗng|đột nhiên|lại|cũng|vẫn|đang|chưa|không|bắt đầu|tiếp tục|sau đó|rồi|thì|vô thức|theo bản năng)\\s*)*${agencyVerb.source}`,'gi');
+            const re = new RegExp(`(?:^|[,;.!?\\s])(?:${aliases.join('|')})\\s*(?:(?:liền|đã|rốt cuộc|từ từ|bỗng|đột nhiên|lại|cũng|vẫn|đang|chưa|không|bắt đầu|tiếp tục|sau đó|rồi|thì|vô thức|theo bản năng)\\s*)*${agencyVerb.source}`, 'gi');
             for(const match of value.matchAll(re))if(!npcReferenceIsObject(value,match.index))return true;
         }
         return false;
@@ -1551,7 +1551,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         if (!value) return [];
         const issues = [];
         const names = subjects.length ? subjects : npcSubjectCandidates();
-        const escaped = names.map(name => String(name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).filter(Boolean);
+        const escaped = names.map(name => String(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
         if (!escaped.length) return [];
         const subject = `(?:${escaped.join('|')})`;
 
@@ -1570,7 +1570,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
 
         const clauses = value.match(/[^,;.!?\n]+[,;.!?\n]?/g) || [value];
         for (const rawClause of clauses) {
-            const clause = String(rawClause || '').replace(/^[,;.!?\\s]+/,'').trim();
+            const clause = String(rawClause || '').replace(/^[,;.!?\\s]+/, '').trim();
             // P34: kiểm tra “chủ thể hành động nằm giữa mệnh đề” trước, rồi mới xét xem mệnh đề có mở đầu bằng tên nhân vật hay không.
             // P33 đặt bước này sau `if (!matched) continue`, khiến những hành động NPC ẩn phổ biến nhất như
             // “nghe cô ấy yêu cầu…”, “nhìn Mộng đi tới…” bị bỏ qua thẳng.
@@ -1585,7 +1585,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
             const matched = clause.match(clauseStart);
             if (!matched) continue;
 
-            const afterSubject = clause.slice(matched[0].length).replace(/^(?:\s*của)?\s*/i,'');
+            const afterSubject = clause.slice(matched[0].length).replace(/^(?:\s*của)?\s*/i, '');
             const isStatic = staticState.test(clause) && !agencyVerb.test(afterSubject);
             if (isStatic) continue;
 
@@ -1603,7 +1603,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
     }
 
     function replayNgrams(text) {
-        const value = String(text || '').toLowerCase().replace(/[\s,.!?;:“”"'‘’()\[\]【】—…]+/g,' ').trim();
+        const value = String(text || '').toLowerCase().replace(/[\s,.!?;:“”"'‘’()\[\]【】—…]+/g, ' ').trim();
         const grams = new Set();
         // Vietnamese repetition shows up as repeated word runs, not repeated characters.
         const words = value.match(/[\p{L}\p{N}_]+/gu) || [];
@@ -1693,7 +1693,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const signals = detectCompletionSignals(latest, previousUserBefore(entry).text);
         if (!explicitRepeatIntent(custom)) {
             for (const signal of signals) {
-                const start = new RegExp(signal.start,'i');
+                const start = new RegExp(signal.start, 'i');
                 if (start.test(text)) issues.push(`Trạng thái cốt truyện đi lùi: ${signal.label}, vậy mà lại khởi động cùng hành động đó một lần nữa`);
             }
         }
@@ -1757,7 +1757,7 @@ import { createServerJsonClient } from '../shared/server-client.js';
                 const snapshot = await bridge.getRelayContext({ relayQuery, anchorFloor:Number(entry?.index ?? -1), continuityFloors:continuityFloorCount() });
                 if (snapshot && typeof snapshot === 'object') {
                     return {
-                        source:`R9S1P13 bridge ${snapshot.version || ''}`.trim(),
+                        source: `R9S1P13 bridge ${snapshot.version || ''}`.trim(),
                         writingContext: snapshot.writingContext || {},
                         r9s1p1: snapshot.state || {},
                         latestCompanion: snapshot.latestCompanion || {},
@@ -1768,12 +1768,12 @@ import { createServerJsonClient } from '../shared/server-client.js';
             }
         }
         return {
-            source:'fallback',
+            source: 'fallback',
             writingContext: {
-                source:'vvv-relay-scoped-fallback',
-                generationType:'relay-scoped',
+                source: 'vvv-relay-scoped-fallback',
+                generationType: 'relay-scoped',
                 characterName: String(fallbackCharacterSnapshot()?.name || ctx()?.name2 || '').slice(0,160),
-                presetAndWorldInfo:'Chưa đọc; chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong yêu cầu tiếp sức.',
+                presetAndWorldInfo: 'Chưa đọc; chỉ dùng phần tư liệu cốt truyện hữu hạn được cung cấp tường minh trong yêu cầu tiếp sức.',
             },
             r9s1p1: {},
             latestCompanion: entry?.message?.extra?.vvvTheaterCompanion || {},
@@ -1784,9 +1784,9 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const recent = chat.slice(-24).map(item => item.text).join('\n');
         const changes = (recent.match(/rời đi|tới nơi|quyết định|phát hiện|xác nhận|bắt đầu|kết thúc|xung đột|đồng ý|từ chối|lời hẹn|nhiệm vụ/gi) || []).length;
         return {
-            stage: recent.length < 2000 ?'Mở màn / cảnh ngắn' : changes < 3 ?'Giai đoạn tương tác ổn định' :'Giai đoạn đẩy tới',
+            stage: recent.length < 2000 ? 'Mở màn / cảnh ngắn' : changes < 3 ? 'Giai đoạn tương tác ổn định' : 'Giai đoạn đẩy tới',
             possiblyStagnant: recent.length > 5000 && changes < 3,
-            note:'Chỉ dùng làm tham chiếu cho bước nhỏ kế tiếp, không được nhồi sự kiện vào.',
+            note: 'Chỉ dùng làm tham chiếu cho bước nhỏ kế tiếp, không được nhồi sự kiện vào.',
         };
     }
 
@@ -1823,8 +1823,8 @@ import { createServerJsonClient } from '../shared/server-client.js';
         const chunks=[];
         if(custom.userText){
             chunks.push(custom.expand
-                ?`Nguyên văn của user (chế độ mở rộng tự nhiên; bắt buộc viết lại và mở rộng thật sự, giữ nguyên toàn bộ hành động cốt lõi, trình tự, đối tượng và ý định lời nói; ${relayExpansionLengthInstruction(custom.userText)}): ${custom.userText}`
-                :`Nguyên văn của user (chế độ chỉnh câu nhẹ; chỉ sắp lại trật tự từ, dấu câu, ranh giới hành động và lời thoại, không thêm tình tiết): ${custom.userText}`);
+                ? `Nguyên văn của user (chế độ mở rộng tự nhiên; bắt buộc viết lại và mở rộng thật sự, giữ nguyên toàn bộ hành động cốt lõi, trình tự, đối tượng và ý định lời nói; ${relayExpansionLengthInstruction(custom.userText)}): ${custom.userText}`
+                : `Nguyên văn của user (chế độ chỉnh câu nhẹ; chỉ sắp lại trật tự từ, dấu câu, ranh giới hành động và lời thoại, không thêm tình tiết): ${custom.userText}`);
         }
         if(custom.notes)chunks.push(`Ý bổ sung (gửi cho AI cùng nguyên văn của user; dùng để ràng buộc giọng điệu, hướng đi và chi tiết, không bắt buộc viết vào từng chữ): ${custom.notes}`);
         return chunks.join('\n');
@@ -1872,15 +1872,15 @@ import { createServerJsonClient } from '../shared/server-client.js';
             '7. Phần tư liệu cốt truyện hữu hạn và các quy tắc được cung cấp tường minh trong yêu cầu này.',
         ];
         environment.recentChat = chat;
-        environment.recentChatPolicy = { floors: continuityFloorCount(), requestedMemoryWindow: normalizedRecentFloorCount(), note:'Cách ly liền mạch P24: phần nguyên văn thật sự dùng để viết tiếp hiện tại luôn chỉ mang theo 6 tầng gần nhất, và khi mạch truyện vượt quá 6 tầng thì loại hẳn tin nhắn mở màn. Nội dung cũ hơn chỉ được đi vào với tư cách sự thật lịch sử thông qua ký ức có cấu trúc/truy xuất của R9, không được dùng làm khuôn mẫu cho hành động hiện tại.' };
+        environment.recentChatPolicy = { floors: continuityFloorCount(), requestedMemoryWindow: normalizedRecentFloorCount(), note: 'Cách ly liền mạch P24: phần nguyên văn thật sự dùng để viết tiếp hiện tại luôn chỉ mang theo 6 tầng gần nhất, và khi mạch truyện vượt quá 6 tầng thì loại hẳn tin nhắn mở màn. Nội dung cũ hơn chỉ được đi vào với tư cách sự thật lịch sử thông qua ký ức có cấu trúc/truy xuất của R9, không được dùng làm khuôn mẫu cho hành động hiện tại.' };
         environment.director = directorAppliesToRelay() ? { enabled:true, ...stagnationHint(chat) } : { enabled:false, note:'Đạo diễn cốt truyện 0-32 không tác động lên Tiếp sức cốt truyện bằng AI' };
         environment.controlLayer = controlLayerSnapshot(entry);
         return `Bạn chỉ viết thay cho user một lượt hành động/lời thoại có thể gửi đi ngay, không viết tiếp chính văn của assistant/nhân vật, không quyết định thay nhân vật đối diện.
 Hướng: ${chosen.join(' + ')}
 
 【HỢP ĐỒNG HÀNH ĐỘNG TÙY CHỈNH CỦA NGƯỜI DÙNG｜ƯU TIÊN CAO NHẤT LƯỢT NÀY】
-${customContract ?`${custom.userText ?`- Nguyên văn user cần gửi đi: ${custom.userText.slice(0,12000)}\n- AI mở rộng: ${custom.expand ?`Bật. Bắt buộc viết lại và mở rộng thật sự, không phải chép lại nguyên văn hay chỉ thêm dấu câu. ${relayExpansionLengthInstruction(custom.userText)} Giữ nguyên trình tự hành động, đối tượng nhân vật và ý định lời nói vốn có; với điều kiện không thêm phản hồi thay cho char/NPC, hãy bổ sung phần nối tiếp hành động của user, giọng điệu, tư thế, khoảng ngừng và những chi tiết cảm giác tức thời cần thiết.` :'Tắt. Vẫn phải gọi AI để chỉnh câu ở mức nhẹ: chỉ sửa trật tự từ, dấu câu, ranh giới hành động/lời thoại và các câu nói sai rõ rệt; không tự thêm hành động mới, lời thoại mới, tình tiết mới hay kết quả mới.'}` :'- Không có nguyên văn cố định của user; hãy dựa vào ý bổ sung để sinh một lượt nhập liệu mới cho user.'}
-${custom.notes ?`- Ý bổ sung: ${custom.notes.slice(0,1200)}\n- Nguyên văn của user ở trên và ý bổ sung phải được đọc cùng nhau trong một lần sinh. Ý bổ sung dùng để ràng buộc giọng điệu, hướng đi hoặc chi tiết; nếu mâu thuẫn với nguyên văn của user thì lấy nguyên văn của user làm chuẩn.` :'- Không có ý bổ sung nào thêm.'}
+${customContract ? `${custom.userText ? `- Nguyên văn user cần gửi đi: ${custom.userText.slice(0,12000)}\n- AI mở rộng: ${custom.expand ? `Bật. Bắt buộc viết lại và mở rộng thật sự, không phải chép lại nguyên văn hay chỉ thêm dấu câu. ${relayExpansionLengthInstruction(custom.userText)} Giữ nguyên trình tự hành động, đối tượng nhân vật và ý định lời nói vốn có; với điều kiện không thêm phản hồi thay cho char/NPC, hãy bổ sung phần nối tiếp hành động của user, giọng điệu, tư thế, khoảng ngừng và những chi tiết cảm giác tức thời cần thiết.` : 'Tắt. Vẫn phải gọi AI để chỉnh câu ở mức nhẹ: chỉ sửa trật tự từ, dấu câu, ranh giới hành động/lời thoại và các câu nói sai rõ rệt; không tự thêm hành động mới, lời thoại mới, tình tiết mới hay kết quả mới.'}` : '- Không có nguyên văn cố định của user; hãy dựa vào ý bổ sung để sinh một lượt nhập liệu mới cho user.'}
+${custom.notes ? `- Ý bổ sung: ${custom.notes.slice(0,1200)}\n- Nguyên văn của user ở trên và ý bổ sung phải được đọc cùng nhau trong một lần sinh. Ý bổ sung dùng để ràng buộc giọng điệu, hướng đi hoặc chi tiết; nếu mâu thuẫn với nguyên văn của user thì lấy nguyên văn của user làm chuẩn.` : '- Không có ý bổ sung nào thêm.'}
 - Bắt buộc thực hiện đúng cùng một hành động cốt lõi, cùng điểm đến, cùng đối tượng và cùng ý định; được bổ sung quá trình hợp lý, nhưng cấm đổi sang một hành động khác.
 - Nếu phần trong ngoặc đơn ở nguyên văn của người dùng mô tả các hành động kiểu “sau đó, rồi thì, tiếp đó, anh ấy/tôi đã làm…”, mặc định coi đó là chỉ dẫn sân khấu/chỉ thị viết, không phải lời nhân vật phải nói ra; bắt buộc viết lại thành hành động tự sự bình thường và đặt lời thoại trước sau dấu ngoặc về đúng chỗ, tuyệt đối không đọc thẳng cả phần hành động lẫn lời chú giải trong ngoặc thành thoại.
 - Nếu nguyên văn thuộc kiểu thay đổi vị trí cơ thể do user chủ động gây ra, như “user đỡ/ôm/kéo/dắt char tới một vị trí nào đó”, “để char ngồi lên đùi mình”, thì được viết char ở vai trò tân ngữ của hành động user, ví dụ “bạn đỡ lấy eo cô ấy, kéo cô ấy về phía đùi mình”; như vậy không phải là hành động tự chủ thay cho char. Cấm viết thêm cảnh char chủ động phối hợp, gật đầu, đáp lại, hôn hay bất kỳ phản ứng tự chủ nào khác.
@@ -1891,12 +1891,12 @@ ${custom.userText&&custom.expand?`【YÊU CẦU CHẤT LƯỢNG KHI MỞ RỘNG 
 - Giữ chất khẩu ngữ cho những lời thoại đã có trong nguyên văn, đừng tự ý đổi thành văn vẻ sáo rỗng, sến súa, giọng “tổng tài” hay giọng truyện người lớn rẻ tiền.
 - Không kể lại chính văn của assistant ở lượt trước, không giải thích động cơ thay user, không viết tâm lý hay phản hồi của char.
 - ${relayExpansionLengthInstruction(custom.userText)}
-- Ví dụ chuyển đổi để tham khảo: nguyên văn “tôi đi tới bên cạnh cô ấy nói, đợi chút (sau đó tôi ngồi xuống và kéo cô ấy lên đùi) thế này dễ chịu hơn không” → có thể viết thành “tôi đi tới bên ghế cô ấy, khẽ bảo cô ấy đợi một chút, rồi ngồi xuống ghế, đưa tay đỡ lấy eo cô ấy, kéo người cô ấy về phía đùi mình: ‘Thế này dễ chịu hơn không?’”; chỉ học cách sắp xếp, không chép lại câu ví dụ.` :''}
+- Ví dụ chuyển đổi để tham khảo: nguyên văn “tôi đi tới bên cạnh cô ấy nói, đợi chút (sau đó tôi ngồi xuống và kéo cô ấy lên đùi) thế này dễ chịu hơn không” → có thể viết thành “tôi đi tới bên ghế cô ấy, khẽ bảo cô ấy đợi một chút, rồi ngồi xuống ghế, đưa tay đỡ lấy eo cô ấy, kéo người cô ấy về phía đùi mình: ‘Thế này dễ chịu hơn không?’”; chỉ học cách sắp xếp, không chép lại câu ví dụ.` : ''}
 ${verificationTarget && !custom.userText && customExpressionRequirements(verificationTarget).length?`- Lời thoại/câu hỏi bắt buộc giữ lại từng câu:\n${customExpressionRequirements(verificationTarget).map(item=>`  · ${item}`).join('\n')}`:''}
-${custom.userText && !custom.expand ?`【CHẾ ĐỘ CHỈNH CÂU NHẸ｜GIỚI HẠN CỨNG】\n- Đây không phải viết tiếp tự do. Chỉ được sắp xếp lại nguyên văn của user ở trên: sửa trật tự từ, cách ngắt câu, dấu câu, cách trỏ của đại từ, ranh giới giữa lời thoại và hành động.\n- Được viết lại phần chú giải hành động trong ngoặc thành hành động tự sự bình thường, nhưng không được đọc phần chú giải đó thành lời thoại.\n- Không được tự thêm hành động mới, lời thoại mới, quyết định mới, tình tiết mới hay kết quả mới mà nguyên văn không có; về nguyên tắc độ dài không vượt quá khoảng 1,35 lần nguyên văn.\n- Ý bổ sung chỉ giúp xác định giọng điệu/cách sắp xếp, không được mượn cớ đó để biến việc chỉnh câu nhẹ thành một đoạn mở rộng dài.` :''}
+${custom.userText && !custom.expand ? `【CHẾ ĐỘ CHỈNH CÂU NHẸ｜GIỚI HẠN CỨNG】\n- Đây không phải viết tiếp tự do. Chỉ được sắp xếp lại nguyên văn của user ở trên: sửa trật tự từ, cách ngắt câu, dấu câu, cách trỏ của đại từ, ranh giới giữa lời thoại và hành động.\n- Được viết lại phần chú giải hành động trong ngoặc thành hành động tự sự bình thường, nhưng không được đọc phần chú giải đó thành lời thoại.\n- Không được tự thêm hành động mới, lời thoại mới, quyết định mới, tình tiết mới hay kết quả mới mà nguyên văn không có; về nguyên tắc độ dài không vượt quá khoảng 1,35 lần nguyên văn.\n- Ý bổ sung chỉ giúp xác định giọng điệu/cách sắp xếp, không được mượn cớ đó để biến việc chỉnh câu nhẹ thành một đoạn mở rộng dài.` : ''}
 - Bắt buộc giữ đúng chủ thể và đối tượng của “ai làm gì với ai” trong chỉ thị gốc. Nếu chỉ thị yêu cầu NPC làm gì đó thì chỉ được viết thành user đề nghị, ra hiệu hoặc chờ NPC đó làm, không được đánh tráo thành user tự đưa ra một quyết định khác.
 - Những câu hỏi mở như “mấy cái, bao nhiêu, chọn cái nào, có nên không” bắt buộc phải để ngỏ, dừng lại ở chỗ chờ nhân vật tương ứng trả lời; cấm tự điền ra số lượng, phương án, lời đồng ý hay từ chối.
-- Nếu các hướng khác, thẻ định mệnh, gợi ý của Đạo diễn hay ký ức cũ mâu thuẫn với chỉ thị tùy chỉnh này thì bỏ qua toàn bộ phần mâu thuẫn và tuân theo hợp đồng hành động này.` :'- Lượt này không có hợp đồng hành động tùy chỉnh, hãy tiến triển tự nhiên theo hướng đã chọn.'}
+- Nếu các hướng khác, thẻ định mệnh, gợi ý của Đạo diễn hay ký ức cũ mâu thuẫn với chỉ thị tùy chỉnh này thì bỏ qua toàn bộ phần mâu thuẫn và tuân theo hợp đồng hành động này.` : '- Lượt này không có hợp đồng hành động tùy chỉnh, hãy tiến triển tự nhiên theo hướng đã chọn.'}
 
 【NGÔI KỂ CỦA LƯỢT NÀY｜YÊU CẦU CỨNG】
 - ${relayPerspectiveInstruction()}
@@ -1904,7 +1904,7 @@ ${custom.userText && !custom.expand ?`【CHẾ ĐỘ CHỈNH CÂU NHẸ｜GIỚI
 ${continuityRules(jump)}
 
 【SỰ THẬT CỨNG CỦA HIỆN THỰC HIỆN TẠI｜do mã nguồn xác định, cao hơn truy xuất/tổng kết/scene cũ】
-${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`).join('\n') :'- Không nhận diện thêm sự thật cứng nào; vẫn lấy đoạn cuối chính văn AI mới nhất làm chuẩn.'}
+${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`).join('\n') : '- Không nhận diện thêm sự thật cứng nào; vẫn lấy đoạn cuối chính văn AI mới nhất làm chuẩn.'}
 
 【QUY TẮC GIÁ TRỊ THẬT CỦA DÒNG THỜI GIAN｜cao hơn mọi ký ức cũ】
 - Đoạn cuối của chính văn AI mới nhất chính là “bây giờ”. Những hành động nó đã ghi rõ là hoàn tất thì coi như đã xong, tuyệt đối không được khởi động lại, trừ khi phần tùy chỉnh của người dùng yêu cầu rõ “làm lại một lần nữa”. Nếu tin nhắn user trước đó nói rõ là đã di chuyển từ A sang B thì B là địa điểm hiện tại, A lập tức hạ xuống thành địa điểm quá khứ.
@@ -1912,7 +1912,7 @@ ${currentTurn.hardFacts?.length ? currentTurn.hardFacts.map(item => `- ${item}`)
 - Nếu bạn thấy một đoạn tư liệu cũ và cảnh hiện tại đều rất cụ thể, bắt buộc chọn “nguyên văn 6 tầng gần nhất + đoạn cuối AI mới nhất”, tuyệt đối không được vì tư liệu cũ dài hơn, sinh động hơn mà quay về tình tiết cũ.
 - Nếu scene của R9, các bản tổng kết, retrievalHits hay đoạn chat cũ mâu thuẫn với chính văn AI mới nhất thì luôn lấy chính văn AI mới nhất làm chuẩn.
 - Trước hết hãy xác định vị trí cơ thể hiện tại của user, họ đang làm gì, vừa hoàn tất việc gì, rồi mới viết bước kế tiếp. Cấm để mạch truyện đi lùi.
-- ${custom.userText ? (custom.expand ?`Lượt này là chế độ mở rộng tự nhiên: ${relayExpansionLengthInstruction(custom.userText)} Đừng gò cho đủ 300-800 chữ, cũng đừng bơm một câu ngắn thành cả đoạn tiểu thuyết.` :'Lượt này là chế độ chỉnh câu nhẹ: đừng mở rộng để cho đủ chữ, hãy bám sát độ dài nguyên văn, chỉ làm câu văn trôi chảy và rõ ràng hơn.') :'Nên viết thành một đoạn user hoàn chỉnh khoảng 300-800 chữ; user được phép có chuỗi hành động nhỏ liền mạch, cảm nhận chân thật và lời thoại trong cùng một cảnh hiện tại. U1.4 mặc định không cắt cứng ở 800 ký tự; nếu người dùng có đặt giới hạn ký tự cho phần tiếp sức thì bắt buộc tuân theo giới hạn đó.'}
+- ${custom.userText ? (custom.expand ? `Lượt này là chế độ mở rộng tự nhiên: ${relayExpansionLengthInstruction(custom.userText)} Đừng gò cho đủ 300-800 chữ, cũng đừng bơm một câu ngắn thành cả đoạn tiểu thuyết.` : 'Lượt này là chế độ chỉnh câu nhẹ: đừng mở rộng để cho đủ chữ, hãy bám sát độ dài nguyên văn, chỉ làm câu văn trôi chảy và rõ ràng hơn.') : 'Nên viết thành một đoạn user hoàn chỉnh khoảng 300-800 chữ; user được phép có chuỗi hành động nhỏ liền mạch, cảm nhận chân thật và lời thoại trong cùng một cảnh hiện tại. U1.4 mặc định không cắt cứng ở 800 ký tự; nếu người dùng có đặt giới hạn ký tự cho phần tiếp sức thì bắt buộc tuân theo giới hạn đó.'}
 - Không viết kiểu liệt kê dàn trải xuyên thời gian/địa điểm, không viết trước những kết quả tương lai chỉ có thể xảy ra sau khi char/NPC đáp lời.
 
 【KHÓA CỨNG NGỮ NGHĨA VỀ RANH GIỚI CHỦ THỂ｜TUYỆT ĐỐI KHÔNG ĐƯỢC VI PHẠM】
@@ -1935,7 +1935,7 @@ Chỉ xuất ra phần chính văn có thể gửi đi ngay dưới dạng tin n
 ${(() => { const r=environment.controlLayer?.ledger||{}; const lines=[...(r.long||[]).map(x=>`Dài hạn: ${x}`),...(r.chapter||[]).map(x=>`Chương này: ${x}`),...(r.timed||[]).map(x=>`Tạm thời (còn ${x.remaining} tầng): ${x.text}`)]; return lines.length?lines.map(x=>`- ${x}`).join('\n'):'- Không có quy tắc bổ sung'; })()}
 
 【THẺ ĐỊNH MỆNH 0-32｜ràng buộc mềm】
-${environment.controlLayer?.fateCard ?`- ${environment.controlLayer.fateCard.categoryLabel}: ${environment.controlLayer.fateCard.text}\n- Thẻ định mệnh chỉ gieo mầm cho “điều gì có thể xảy ra”; nếu mâu thuẫn với chính văn mới nhất, thiết định nhân vật, sổ cái quy tắc hay khóa liền mạch cốt truyện thì bắt buộc hạ cấp hoặc bỏ qua.` :'- Lượt này không có thẻ định mệnh.'}
+${environment.controlLayer?.fateCard ? `- ${environment.controlLayer.fateCard.categoryLabel}: ${environment.controlLayer.fateCard.text}\n- Thẻ định mệnh chỉ gieo mầm cho “điều gì có thể xảy ra”; nếu mâu thuẫn với chính văn mới nhất, thiết định nhân vật, sổ cái quy tắc hay khóa liền mạch cốt truyện thì bắt buộc hạ cấp hoặc bỏ qua.` : '- Lượt này không có thẻ định mệnh.'}
 
 【MÔI TRƯỜNG CỐT TRUYỆN HIỆN TẠI CỦA SILLYTAVERN】
 ${JSON.stringify(environment)}
@@ -1945,26 +1945,26 @@ ${JSON.stringify(environment)}
 
     function strip(raw) {
         let value = String(raw || '')
-            .replace(/<think>[\s\S]*?<\/think>/gi,'')
-            .replace(/<analysis>[\s\S]*?<\/analysis>/gi,'')
-            .replace(/^\s*```(?:text|markdown|md|json)?\s*/i,'')
-            .replace(/\s*```\s*$/i,'')
-            .replace(/^\s*(?:assistant|user|người dùng|chính văn|kết quả|trả lời)\s*[:]\s*/i,'')
+            .replace(/<think>[\s\S]*?<\/think>/gi, '')
+            .replace(/<analysis>[\s\S]*?<\/analysis>/gi, '')
+            .replace(/^\s*```(?:text|markdown|md|json)?\s*/i, '')
+            .replace(/\s*```\s*$/i, '')
+            .replace(/^\s*(?:assistant|user|người dùng|chính văn|kết quả|trả lời)\s*[:]\s*/i, '')
             .trim();
         if ((value.startsWith('“') && value.endsWith('”')) || (value.startsWith('\"') && value.endsWith('\"'))) value = value.slice(1, -1).trim();
         return value;
     }
 
     function cleanRelayModelOutput(raw) {
-        let value = strip(raw).replace(/\r\n?/g,'\n').trim();
+        let value = strip(raw).replace(/\r\n?/g, '\n').trim();
         if (!value) return '';
         // Một số mô hình còn bọc thêm lời khách sáo/tiêu đề bên ngoài chính văn; những thứ đó không phải nội dung tin nhắn của user.
         for (let pass=0; pass<3; pass+=1) {
             const cleaned=value
-                .replace(/^\s*(?:【\s*)?(?:chính văn|kết quả|trả lời|assistant|user|người dùng)(?:\s*】)?\s*[:]\s*/i,'')
-                .replace(/^\s*(?:dưới đây (?:là|chính là)|sau đây (?:là|chính là))[,.!:\s]*/i,'')
+                .replace(/^\s*(?:【\s*)?(?:chính văn|kết quả|trả lời|assistant|user|người dùng)(?:\s*】)?\s*[:]\s*/i, '')
+                .replace(/^\s*(?:dưới đây (?:là|chính là)|sau đây (?:là|chính là))[,.!:\s]*/i, '')
                 // “Được, tôi đẩy cửa ra” có thể là lời thoại thật; chỉ bóc bỏ khi ngay sau nó là một từ bao bọc rõ ràng.
-                .replace(/^\s*(?:được rồi|được thôi|dĩ nhiên|đã hiểu|vâng|ok)[,.!:\s]+(?=(?:【\s*)?(?:chính văn|kết quả|trả lời|dưới đây|sau đây))/i,'')
+                .replace(/^\s*(?:được rồi|được thôi|dĩ nhiên|đã hiểu|vâng|ok)[,.!:\s]+(?=(?:【\s*)?(?:chính văn|kết quả|trả lời|dưới đây|sau đây))/i, '')
                 .trim();
             if (cleaned===value) break;
             value=cleaned;
@@ -1975,12 +1975,12 @@ ${JSON.stringify(environment)}
         while (lines.length && /^(?:lưu ý|chú thích|ghi chú|giải thích|tái bút|trên đây (?:là|chính là)|hy vọng|nếu bạn còn cần|bạn có muốn tôi viết tiếp)[:,\s]/i.test(lines.at(-1))) lines.pop();
         value = lines.join('\n').trim();
         // Những dấu kết thúc quen thuộc đến từ khuôn mẫu preset, không thuộc phần chính văn có thể gửi đi.
-        value = value.replace(/(?:^|\n)\s*(?:\(hết\)|\[hết\]|hết|kết thúc|nội dung trên)[.!]?\s*$/i,'').trim();
+        value = value.replace(/(?:^|\n)\s*(?:\(hết\)|\[hết\]|hết|kết thúc|nội dung trên)[.!]?\s*$/i, '').trim();
         return value;
     }
 
     function limitCompleteSentence(raw, maxChars = relayMaxChars(), { cleanModelOutput = false } = {}) {
-        const source = cleanModelOutput ? cleanRelayModelOutput(raw) : String(raw ??'').replace(/\r\n?/g,'\n').trim();
+        const source = cleanModelOutput ? cleanRelayModelOutput(raw) : String(raw ?? '').replace(/\r\n?/g, '\n').trim();
         const chars = [...source];
         const requested=Number(maxChars||0);
         if(!Number.isFinite(requested)||requested<=0)return chars.join('').trim();
@@ -2036,9 +2036,9 @@ ${JSON.stringify(environment)}
         if(!source&&!notes)throw new Error('Bước khôi phục ngữ cảnh tối thiểu thiếu văn bản user hoặc ý bổ sung để biên tập');
         const mode=source
             ? (custom.expand
-                ?`Mở rộng tự nhiên: bắt buộc viết lại thật sự, không được trả lại nguyên văn; ${relayExpansionLengthInstruction(source)} Chỉ bổ sung phần nối tiếp hành động, giọng điệu, khoảng ngừng và cảm nhận tức thời cần thiết phía user, không thêm phản hồi của nhân vật đối diện.`
-                :'Chỉnh câu nhẹ: chỉ sắp lại trật tự từ, dấu câu, ranh giới hành động và lời thoại; không thêm tình tiết, hành động, lời thoại hay kết quả mới.')
-            :'Dựa vào ý bổ sung để sinh một lượt nhập liệu ngắn gọn cho user; chỉ viết về user, không viết phản hồi của nhân vật đối diện.';
+                ? `Mở rộng tự nhiên: bắt buộc viết lại thật sự, không được trả lại nguyên văn; ${relayExpansionLengthInstruction(source)} Chỉ bổ sung phần nối tiếp hành động, giọng điệu, khoảng ngừng và cảm nhận tức thời cần thiết phía user, không thêm phản hồi của nhân vật đối diện.`
+                : 'Chỉnh câu nhẹ: chỉ sắp lại trật tự từ, dấu câu, ranh giới hành động và lời thoại; không thêm tình tiết, hành động, lời thoại hay kết quả mới.')
+            : 'Dựa vào ý bổ sung để sinh một lượt nhập liệu ngắn gọn cho user; chỉ viết về user, không viết phản hồi của nhân vật đối diện.';
         return `【KHÔI PHỤC NGỮ CẢNH TỐI THIỂU CHO TIẾP SỨC AI】
 Lần này chỉ xử lý phần chữ được cung cấp tường minh dưới đây, không mang theo tình tiết cũ, sách thế giới, RAG, điện thoại, bản tổng kết hay bất kỳ ngữ cảnh lịch sử nào.
 
@@ -2072,14 +2072,14 @@ ${notes||'không có'}
                 source:'vvv-relay-scoped', generationType:'relay-scoped',
                 presetIncluded:false, worldBookIncluded:false, personaIncluded:false,
             },
-            feature:'relay',
+            feature: 'relay',
             jsonMode: Boolean(jsonMode),
         };
         if (Number.isFinite(requested)) body.maxTokens = Math.max(128, Math.min(100000, requested));
         runtime.lastProviderFinishReason='';let data;
         try {
             data = await serverJson('/generate', {
-                method:'POST',
+                method: 'POST',
                 body: JSON.stringify(body),
                 signal,
             });
@@ -2405,7 +2405,7 @@ ${notes||'không có'}
             runtime.draftAnchor={...operationAnchor};
             runtime.previewCustom={...customRequest};
             if (!runtime.draft) throw new Error('Mô hình không sinh ra chính văn dùng được');
-            toast(customRequest.userText ? (customRequest.expand ?'✒ AI đã mở rộng tự nhiên đúng ý ban đầu, sẽ không gửi thẳng nguyên văn.' :'✒ Đã chỉnh lại phần chữ của user và gộp ý bổ sung để hoàn tất phần tiếp sức.') :'✒ Tiếp sức cốt truyện bằng AI đã hoàn tất (API riêng).','success');
+            toast(customRequest.userText ? (customRequest.expand ? '✒ AI đã mở rộng tự nhiên đúng ý ban đầu, sẽ không gửi thẳng nguyên văn.' : '✒ Đã chỉnh lại phần chữ của user và gộp ý bổ sung để hoàn tất phần tiếp sức.') : '✒ Tiếp sức cốt truyện bằng AI đã hoàn tất (API riêng).', 'success');
             if(runtime.lastContinuationCount)toast(`Bộ chống cắt cụt đã tự viết tiếp và ghép thêm ${runtime.lastContinuationCount} đoạn.`,'success');
             if (runtime.settings.directAfterGenerate) await send(runtime.draft,operationAnchor);
             else openPreview(runtime.draft, customRequest, operationAnchor);
@@ -2443,7 +2443,7 @@ ${notes||'không có'}
         setRelayInlineError(message);
         setBusy(false);
         console.error('[Tiếp sức cốt truyện bằng AI] Lượt này thất bại hoàn toàn', error);
-        toast(message,'error');
+        toast(message, 'error');
     }
 
     function preview() { return document.getElementById('vvv-relay-preview'); }
@@ -2477,7 +2477,7 @@ ${notes||'không có'}
         runtime.settings.pendingFateCard = null; saveSettings();
         input.dispatchEvent(new Event('input', { bubbles: true }));
         closePreview();
-        toast('Đã điền vào ô nhập, bạn có thể sửa tiếp.','success');
+        toast('Đã điền vào ô nhập, bạn có thể sửa tiếp.', 'success');
     }
 
     async function send(value, expectedAnchor = runtime.draftAnchor) {
@@ -2507,7 +2507,7 @@ ${notes||'không có'}
             console.warn('[Tiếp sức cốt truyện bằng AI] Không chuẩn bị sẵn được preset sáng tác cho lượt trả lời chính; vẫn dùng đường gửi gốc và để generate_interceptor lo phần còn lại',error);
         }
         await mod.sendTextareaMessage();
-        toast('Đã gửi theo đường thông thường của SillyTavern; lượt AI chính kế tiếp đã gắn chuỗi suy luận và preset hiện tại y như khi bạn gửi tay.','success');
+        toast('Đã gửi theo đường thông thường của SillyTavern; lượt AI chính kế tiếp đã gắn chuỗi suy luận và preset hiện tại y như khi bạn gửi tay.', 'success');
     }
 
     function settingsModal() { return document.getElementById('vvv-relay-settings-modal'); }
@@ -2517,8 +2517,8 @@ ${notes||'không có'}
             useMemoryApi: false,
             fallbackToPreset: false,
             sourcePolicyRevision: 4,
-            provider:'openai-compatible',
-            baseUrl:'', apiKey:'', model:'', temperature: 0.35,
+            provider: 'openai-compatible',
+            baseUrl: '', apiKey: '', model: '', temperature: 0.35,
             maxTokens: 900, timeoutSeconds: 180, extraHeaders: {},
         };
     }
@@ -2561,7 +2561,7 @@ ${notes||'không có'}
 
     async function saveRelayServerConfig(root) {
         const relay = readRelayApiForm(root);
-        const data = await serverJson('/config', { method:'POST', body: JSON.stringify({ relay }) });
+        const data = await serverJson('/config', { method: 'POST', body: JSON.stringify({ relay }) });
         runtime.serverConfig = data.config || runtime.serverConfig;
         return data.config?.relay || relay;
     }
@@ -2590,7 +2590,7 @@ ${notes||'không có'}
                     picker.appendChild(option);
                 }
                 picker.hidden = false;
-                picker.value = models.includes(String(modelInput?.value || '').trim()) ? String(modelInput.value).trim() :'';
+                picker.value = models.includes(String(modelInput?.value || '').trim()) ? String(modelInput.value).trim() : '';
             }
             if (status) status.textContent = `✅ Đã lấy được ${models.length} mô hình; có thể chọn từ danh sách xổ xuống hoặc tiếp tục tự điền.`;
         } catch (error) {
@@ -2727,7 +2727,7 @@ ${notes||'không có'}
                     closeSettingsModal(root);
                     if (runtime.settings.enabled) restoreBar({ settled: true });
                     else removeBars();
-                    toast('Đã lưu cài đặt tiếp sức.','success');
+                    toast('Đã lưu cài đặt tiếp sức.', 'success');
                 } catch (error) {
                     status.textContent = `❌ ${String(error?.message || error)}`;
                 }
@@ -2765,7 +2765,7 @@ ${notes||'không có'}
             root.querySelector('[data-api-max]').value = Number(relay.maxTokens || 1600);
             root.querySelector('[data-api-timeout]').value = Number(relay.timeoutSeconds || 180);
             root.querySelector('[data-api-headers]').value = JSON.stringify(relay.extraHeaders || {}, null, 2);
-            status.textContent = relay.apiKeyConfigured ?'🔐 Đã lưu khóa API riêng của phần tiếp sức; khi thất bại chỉ thử lại chính nguồn độc lập đó.' :'API riêng của phần tiếp sức chưa lưu khóa; hãy cấu hình Base URL, mô hình và khóa trước.';
+            status.textContent = relay.apiKeyConfigured ? '🔐 Đã lưu khóa API riêng của phần tiếp sức; khi thất bại chỉ thử lại chính nguồn độc lập đó.' : 'API riêng của phần tiếp sức chưa lưu khóa; hãy cấu hình Base URL, mô hình và khóa trước.';
         } catch (error) {
             status.textContent = `⚠️ Không đọc được cấu hình tiếp sức trên máy chủ: ${String(error?.message || error)}`;
         }

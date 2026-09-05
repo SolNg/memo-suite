@@ -36,12 +36,17 @@ Việc nâng cấp/tách bản sẽ không tự động xóa hồ sơ vĩnh vi�
 
 ## Cài đặt / đăng ký qua GitHub
 
-Sau khi tạo kho mã, địa chỉ cố định là:
+Địa chỉ kho mã:
 
-`https://github.com/nanjun434-byte/vvv-story-memory-suite`
+`https://github.com/SolNg/memo-suite`
 
-Dùng địa chỉ kho GitHub ở trên trong giao diện cài tiện ích của SillyTavern. Thư mục
-gốc của kho chính là thư mục tiện ích tiêu chuẩn, `auto_update=true`.
+Dùng địa chỉ trên trong giao diện cài tiện ích của SillyTavern. Thư mục gốc của kho
+chính là thư mục tiện ích tiêu chuẩn, `auto_update=true`.
+
+> 📘 **Hướng dẫn cài đặt đầy đủ từng bước** (kể cả phần plugin máy chủ bắt buộc cho
+> RAG/Memory Hub/API riêng): xem [`docs/CAI-DAT.md`](docs/CAI-DAT.md). Nếu bạn đang
+> gặp lỗi *“Plugin phía máy chủ chưa được nạp (404)”* hoặc bấm **Lưu** mà API key
+> không được giữ lại, hãy đọc tài liệu đó trước.
 
 > **Quan trọng: đừng để bản `vvv-unified-core` cũ và bản độc lập này cùng chạy 0-32.**
 > Khi phát hiện giao diện 0-00/0-32 đời cũ, bản độc lập sẽ tự dừng để tránh ghi ký ức
