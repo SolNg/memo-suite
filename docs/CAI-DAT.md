@@ -245,10 +245,10 @@ Bản gốc thượng nguồn còn sót một danh sách trắng ghi cứng tron
 - Muốn giới hạn lại thì đặt biến môi trường trước khi khởi động SillyTavern:
 
 ```bash
-VVV_ENABLED_ACCOUNTS="tên1,tên2"      # Linux/macOS
+MEMO_ENABLED_ACCOUNTS="tên1,tên2"      # Linux/macOS
 ```
 ```powershell
-$env:VVV_ENABLED_ACCOUNTS = "tên1,tên2"   # Windows PowerShell
+$env:MEMO_ENABLED_ACCOUNTS = "tên1,tên2"   # Windows PowerShell
 ```
 
 Xem tài khoản hiện tại và chế độ đang chạy bằng endpoint `/health`: trường `account` là

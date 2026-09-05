@@ -9,10 +9,10 @@ const PLUGIN_ID = 'vvv-theater-memory-server';
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
 // Mọi tài khoản SillyTavern đều dùng được; dữ liệu vẫn tách riêng theo handle của
 // từng tài khoản (DATA_ROOT/<handle>/vvv-theater-memory). Muốn giới hạn thì đặt biến
-// môi trường VVV_ENABLED_ACCOUNTS="handle1,handle2" trước khi khởi động SillyTavern.
+// môi trường MEMO_ENABLED_ACCOUNTS="handle1,handle2" trước khi khởi động SillyTavern.
 const DEFAULT_ACCOUNT = 'default-user';
 const ACCOUNT_ALLOWLIST = new Set(
-    String(process.env.VVV_ENABLED_ACCOUNTS || '')
+    String(process.env.MEMO_ENABLED_ACCOUNTS || '')
         .split(',').map(value => value.trim()).filter(Boolean),
 );
 const accountAllowed = handle => ACCOUNT_ALLOWLIST.size === 0 || ACCOUNT_ALLOWLIST.has(handle);
