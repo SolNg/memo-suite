@@ -29,6 +29,18 @@ function withFictionContext(systemPrompt = '') {
     const current = String(systemPrompt || '').trim();
     return current.includes(FICTION_CONTEXT_MARKER) ? current : [FICTION_CONTEXT, current].filter(Boolean).join('\n');
 }
+
+// Ép ngôn ngữ đầu ra cho MỌI lời gọi AI của tiện ích (sắp xếp ký ức, ba cấp tổng
+// kết, Bảy điều hậu trường, điện thoại, tiếp sức cốt truyện). Cần thiết vì mô hình
+// bám theo ngôn ngữ của tư liệu chứ không theo ngôn ngữ của prompt: thẻ nhân vật
+// tiếng Anh thì ký ức cũng ra tiếng Anh.
+// Đặt MEMO_OUTPUT_LANGUAGE="off" để tắt, hoặc đổi thành tên ngôn ngữ khác.
+const OUTPUT_LANGUAGE = String(process.env.MEMO_OUTPUT_LANGUAGE ?? 'tiếng Việt').trim();
+const OUTPUT_LANGUAGE_RULE = (OUTPUT_LANGUAGE && OUTPUT_LANGUAGE.toLowerCase() !== 'off') ? [
+    `【NGÔN NGỮ ĐẦU RA】Viết toàn bộ nội dung bằng ${OUTPUT_LANGUAGE}, kể cả khi thẻ nhân vật, chính văn hay tư liệu đang ở ngôn ngữ khác.`,
+    'GIỮ NGUYÊN, KHÔNG DỊCH: tên riêng của nhân vật, địa danh, tổ chức và thương hiệu; tên khóa JSON; các giá trị liệt kê cố định mà đề bài quy định sẵn (ví dụ core|high|normal|detail, relationship|intimacy|meal|promise…); mã định danh, đường dẫn, số, giờ và ngày tháng.',
+    `CHỈ VIẾT BẰNG ${OUTPUT_LANGUAGE} phần văn xuôi tự do: mô tả, tóm tắt, lý do, trạng thái, tâm trạng, ghi chú, lời thoại và nội dung tin nhắn.`,
+].join('\n') : '';
 const DATA_ROOT = path.resolve(globalThis.DATA_ROOT || path.join(process.cwd(), 'data'));
 const accountStorage = new AsyncLocalStorage();
 const activeAccount = () => accountStorage.getStore() || DEFAULT_ACCOUNT;
@@ -1486,15 +1498,17 @@ function withFictionContextMessages(input) {
 
 function resolveLlmMessages({ messages, prompt = '', systemPrompt = '', allowRichContent = false } = {}) {
     const structured = normalizeStructuredMessages(messages, 2_000_000, { allowRichContent });
+    // Quy tắc ngôn ngữ đứng đầu để mọi nhà cung cấp (OpenAI/Anthropic/Gemini) đều
+    // gom được nó vào phần system qua providerSystemText().
+    const system = [OUTPUT_LANGUAGE_RULE, String(systemPrompt || '').trim()].filter(Boolean).join('\n\n');
     if (structured.length) {
-        const system = String(systemPrompt || '').trim();
         const user = String(prompt || '').trim();
         if (system) structured.unshift({ role:'system', content:system });
         if (user) structured.push({ role:'user', content:user });
         return structured;
     }
     return [
-        ...(String(systemPrompt || '').trim() ? [{ role:'system', content:String(systemPrompt).trim() }] : []),
+        ...(system ? [{ role:'system', content:system }] : []),
         ...(String(prompt || '').trim() ? [{ role:'user', content:String(prompt).trim() }] : []),
     ];
 }

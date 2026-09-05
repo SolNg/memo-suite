@@ -342,6 +342,37 @@ tài khoản của bạn, `enabledAccounts` là `"all"` khi không giới hạn.
 
 ---
 
+## Ngôn ngữ đầu ra của AI
+
+Mặc định bản này **ép mọi kết quả AI của tiện ích ra tiếng Việt**: sắp xếp ký ức,
+ba cấp tổng kết, Bảy điều hậu trường, điện thoại, tiếp sức cốt truyện.
+
+Cần thiết vì mô hình bám theo **ngôn ngữ của tư liệu**, không phải ngôn ngữ của prompt:
+thẻ nhân vật tiếng Anh thì ký ức cũng ra tiếng Anh dù prompt là tiếng Việt.
+
+Những thứ **được giữ nguyên, không dịch**: tên riêng nhân vật/địa danh/thương hiệu,
+tên khóa JSON, các giá trị liệt kê cố định (`core|high|normal|detail`,
+`relationship|intimacy|meal|promise`…), mã định danh, đường dẫn, số và mốc thời gian —
+để bản ghi vẫn phân tích được.
+
+Muốn đổi thì đặt biến môi trường trước khi khởi động SillyTavern:
+
+```bash
+MEMO_OUTPUT_LANGUAGE=off          # tắt hẳn, để AI tự chọn như bản gốc
+MEMO_OUTPUT_LANGUAGE="English"    # hoặc ép sang ngôn ngữ khác
+```
+
+```powershell
+$env:MEMO_OUTPUT_LANGUAGE = "off"     # Windows PowerShell
+```
+
+> ⚠️ Lưu ý: các bản ghi ký ức được **nạp ngược vào prompt** của AI chính ở lượt sau.
+> Nếu bạn nhập vai bằng tiếng Anh mà ép ký ức ra tiếng Việt thì ngữ cảnh sẽ lẫn hai
+> ngôn ngữ, AI chính dễ trả lời nửa nọ nửa kia. Chơi bằng thẻ nhân vật tiếng Việt thì
+> để mặc định là hợp lý nhất.
+
+---
+
 ## Bảng xử lý sự cố
 
 Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu tương ứng:
