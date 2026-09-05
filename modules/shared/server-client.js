@@ -33,7 +33,7 @@ function readableResponseText(text) {
 
 function responseError(response, body, rawText, label) {
     const status = Number(response?.status || 0);
-    const accountDenied = body?.error === 'only-vvv';
+    const accountDenied = body?.error === 'only-vvv' || body?.error === 'account-not-allowed';
     const fallback = accountDenied
         ? 'Tài khoản SillyTavern hiện tại chưa bật tính năng máy chủ VVV'
         : status === 403

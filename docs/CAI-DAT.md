@@ -232,6 +232,30 @@ Ba thẻ còn lại (**Bảy điều hậu trường**, **API thời gian thực
 
 ---
 
+## Tài khoản nào dùng được?
+
+**Mọi tài khoản SillyTavern đều dùng được** — không cần đặt tên tài khoản là `vvv` nữa.
+
+Bản gốc thượng nguồn còn sót một danh sách trắng ghi cứng trong plugin máy chủ
+(`ENABLED_ACCOUNTS = new Set(['vvv'])`), khiến mọi tài khoản khác nhận HTTP 403 kèm
+`only-vvv`, dù README của chính bản đó nói đã bỏ giới hạn. Bản này đã sửa:
+
+- Ai đăng nhập cũng dùng được; SillyTavern tắt tính năng tài khoản thì dùng `default-user`.
+- **Dữ liệu vẫn tách riêng theo từng tài khoản**: `dataRoot/<tên-tài-khoản>/vvv-theater-memory`.
+- Muốn giới hạn lại thì đặt biến môi trường trước khi khởi động SillyTavern:
+
+```bash
+VVV_ENABLED_ACCOUNTS="tên1,tên2"      # Linux/macOS
+```
+```powershell
+$env:VVV_ENABLED_ACCOUNTS = "tên1,tên2"   # Windows PowerShell
+```
+
+Xem tài khoản hiện tại và chế độ đang chạy bằng endpoint `/health`: trường `account` là
+tài khoản của bạn, `enabledAccounts` là `"all"` khi không giới hạn.
+
+---
+
 ## Bảng xử lý sự cố
 
 Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu tương ứng:

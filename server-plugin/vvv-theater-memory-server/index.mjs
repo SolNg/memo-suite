@@ -7,7 +7,15 @@ import { fileURLToPath } from 'node:url';
 
 const PLUGIN_ID = 'vvv-theater-memory-server';
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
-const ENABLED_ACCOUNTS = new Set(['vvv']);
+// Mọi tài khoản SillyTavern đều dùng được; dữ liệu vẫn tách riêng theo handle của
+// từng tài khoản (DATA_ROOT/<handle>/vvv-theater-memory). Muốn giới hạn thì đặt biến
+// môi trường VVV_ENABLED_ACCOUNTS="handle1,handle2" trước khi khởi động SillyTavern.
+const DEFAULT_ACCOUNT = 'default-user';
+const ACCOUNT_ALLOWLIST = new Set(
+    String(process.env.VVV_ENABLED_ACCOUNTS || '')
+        .split(',').map(value => value.trim()).filter(Boolean),
+);
+const accountAllowed = handle => ACCOUNT_ALLOWLIST.size === 0 || ACCOUNT_ALLOWLIST.has(handle);
 const VERSION = '0.9.3-r9s1p41-s15-032-u1715-world-map-avatar-studio-r21-memory-bridge-fixed35';
 const FICTION_CONTEXT_MARKER = '【THÂN PHẬN SÁNG TÁC: NHÀ VĂN SA CƠ】';
 const FICTION_CONTEXT = [
@@ -23,7 +31,7 @@ function withFictionContext(systemPrompt = '') {
 }
 const DATA_ROOT = path.resolve(globalThis.DATA_ROOT || path.join(process.cwd(), 'data'));
 const accountStorage = new AsyncLocalStorage();
-const activeAccount = () => accountStorage.getStore() || 'vvv';
+const activeAccount = () => accountStorage.getStore() || DEFAULT_ACCOUNT;
 const ROOT_DIR = () => path.join(DATA_ROOT, activeAccount(), 'vvv-theater-memory');
 const TASKS_DIR = () => path.join(ROOT_DIR(), 'tasks');
 const INDEX_DIR = () => path.join(ROOT_DIR(), 'indexes');
@@ -362,11 +370,27 @@ function getAccountHandle(request) {
 }
 
 function requireEnabledAccount(request, response, next) {
-    const account = getAccountHandle(request);
-    if (!ENABLED_ACCOUNTS.has(account)) {
-        return response.status(403).json({ ok: false, enabled: false, account, error: 'only-vvv' });
+    const account = getAccountHandle(request) || DEFAULT_ACCOUNT;
+    if (!accountAllowed(account)) {
+        return response.status(403).json({ ok: false, enabled: false, account, error: 'account-not-allowed' });
     }
     return accountStorage.run(account, next);
+}
+
+// Lúc khởi động chưa biết ai sẽ đăng nhập, nên chỉ hâm nóng những tài khoản đã có
+// thư mục dữ liệu từ trước, cộng thêm tài khoản mặc định. Tài khoản mới sẽ được tạo
+// thư mục ngay ở lần gọi đầu tiên (ensureDirs).
+function bootstrapAccounts() {
+    const found = new Set(ACCOUNT_ALLOWLIST.size ? ACCOUNT_ALLOWLIST : [DEFAULT_ACCOUNT]);
+    if (!ACCOUNT_ALLOWLIST.size) {
+        try {
+            for (const entry of fs.readdirSync(DATA_ROOT, { withFileTypes: true })) {
+                if (!entry.isDirectory()) continue;
+                if (fs.existsSync(path.join(DATA_ROOT, entry.name, 'vvv-theater-memory'))) found.add(entry.name);
+            }
+        } catch {}
+    }
+    return [...found];
 }
 
 function safeId(value) {
@@ -2537,12 +2561,12 @@ function createTask(type, payload = {}) {
 }
 
 function cleanup() {
-    for (const account of ENABLED_ACCOUNTS) accountStorage.run(account, () => { cleanupStateUploads(); cleanupCardArchiveUploads(); });
+    for (const account of bootstrapAccounts()) accountStorage.run(account, () => { cleanupStateUploads(); cleanupCardArchiveUploads(); });
     const cutoff = Date.now() - MAX_TASK_AGE;
     for (const [id, task] of tasks) {
         if (Number(task.updatedAt || 0) < cutoff) {
             tasks.delete(id);
-            try { accountStorage.run(task.account || 'vvv', () => fs.unlinkSync(taskFile(id))); } catch {}
+            try { accountStorage.run(task.account || DEFAULT_ACCOUNT, () => fs.unlinkSync(taskFile(id))); } catch {}
         }
     }
 }
@@ -2779,7 +2803,7 @@ function buildPhoneHistoryRecoveryBundle(args={}) {
 export async function init(router) {
     // Giai đoạn khởi tạo tuyệt đối không truy cập mạng, không chờ mô hình và không quét kho Git; tránh làm nghẽn quá trình khởi động SillyTavern 1.18.0.
     try {
-        for (const account of ENABLED_ACCOUNTS) accountStorage.run(account, () => {
+        for (const account of bootstrapAccounts()) accountStorage.run(account, () => {
             ensureDirs();
             const stored = readJson(CONFIG_FILE(), null);
             // Lần đầu chạy bản hai API riêng thì dọn bể đa nguồn cũ, bù đủ cấu hình Bảy điều hậu trường, và tách hẳn phần tiếp sức ra khỏi API tổng kết.
@@ -2789,7 +2813,7 @@ export async function init(router) {
         console.error(`[${PLUGIN_ID}] Khởi tạo thư mục dữ liệu thất bại, tiện ích sẽ nạp ở chế độ sự cố chỉ đọc:`, error);
     }
     // R9S1P1: khôi phục đồng bộ các tác vụ trên đĩa trước rồi mới mở route, loại bỏ tình trạng tranh chấp “tác vụ mới ngay sau khi khởi động lại bị loadTasks chậm hiểu nhầm thành tác vụ cũ bị gián đoạn”.
-    try { for (const account of ENABLED_ACCOUNTS) accountStorage.run(account, loadTasks); }
+    try { for (const account of bootstrapAccounts()) accountStorage.run(account, loadTasks); }
     catch (error) { console.error(`[${PLUGIN_ID}] Nạp các tác vụ lịch sử thất bại:`, error); }
     cleanupTimer = setInterval(cleanup, 6 * 60 * 60 * 1000);
     cleanupTimer.unref?.();
@@ -2798,7 +2822,8 @@ export async function init(router) {
     router.get('/health', (req, res) => {
         const config = loadConfig();
         res.json({
-            ok: true, version: VERSION, account: getAccountHandle(req), enabledAccounts: [...ENABLED_ACCOUNTS],
+            ok: true, version: VERSION, account: getAccountHandle(req) || DEFAULT_ACCOUNT,
+            enabledAccounts: ACCOUNT_ALLOWLIST.size ? [...ACCOUNT_ALLOWLIST] : 'all',
             llmConfigured: Boolean(config.llm.baseUrl && config.llm.model),
             memoryContextMode: 'scoped',
             memoryFallbackSource: '',

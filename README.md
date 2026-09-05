@@ -80,6 +80,8 @@ fixed42 (sửa nguồn sự thật duy nhất cho trạng thái mạng).
 ## Bản sửa v1.0.1 cho đăng ký công khai
 
 - Bỏ giới hạn chỉ khởi động với tài khoản `vvv`; mọi tài khoản SillyTavern đều tải được.
+  (Bản gốc còn sót danh sách trắng ghi cứng trong plugin máy chủ nên vẫn trả HTTP 403
+  `only-vvv`; bản này đã sửa hẳn — xem [`docs/CAI-DAT.md`](docs/CAI-DAT.md) mục “Tài khoản nào dùng được?”.)
 - Dữ liệu vĩnh viễn phía máy chủ vẫn được cách ly theo thư mục tài khoản, không lẫn nhau.
 - Menu tiện ích có thêm lối vào cố định: 0-32 / Thúc đẩy cốt truyện / Hỏi tác giả / Memory Hub.
 - Nếu phát hiện bản VVV 0-00/0-32 cũ vẫn đang chạy, tiện ích sẽ báo xung đột rõ ràng
