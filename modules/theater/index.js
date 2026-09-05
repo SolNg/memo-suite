@@ -17721,8 +17721,33 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-setting-action="wipe-all"]')?.addEventListener('click',async()=>{if(!confirm(`Xác nhận xóa sạch toàn bộ dữ liệu vvv Sân Khấu Nhỏ của cuộc trò chuyện này chỉ bằng một lần bấm?\n\nHệ thống sẽ xóa cùng lúc ký ức, tổng kết, dòng thời gian, nhân vật/quan hệ, điện thoại, Bỉ Gian Tư Văn, chương, chỉ mục truy hồi, bản ghi tác vụ, và khôi phục các tầng trò chuyện đang bị /hide.\n\nCuộc trò chuyện thật, thẻ nhân vật, sách thế giới, bản thân tiện ích và cấu hình API sẽ không bị xóa.`))return;setBusy(true,'Đang xóa sạch cuộc trò chuyện này…');try{await wipeCurrentTheaterData({unhide:true,silent:false});}finally{setBusy(false);}});
     }
 
+    // Một lần làm mới chạy nền (ví dụ tab "API & mô hình" tự hỏi lại trạng thái
+    // máy chủ rồi vẽ lại) sẽ thay toàn bộ innerHTML, tức là ô nhập đang gõ dở bị
+    // xoá và tạo lại. Trên máy tính chỉ thấy con trỏ nhảy ra; trên iOS thì bàn phím
+    // nháy lên rồi tắt ngay, không gõ được gì.
+    // Vì vậy: nếu con trỏ đang nằm trong một ô nhập của bảng thì hoãn việc vẽ lại
+    // cho tới khi người dùng rời ô đó.
+    function panelInputHasFocus() {
+        const active=document.activeElement;
+        if(!active||!active.matches?.('input,textarea,select,[contenteditable="true"]'))return false;
+        return Boolean(active.closest?.('#vvvtm-modal'));
+    }
+
     function renderCurrentTab() {
         const content=document.getElementById('vvvtm-content');if(!content||!stateRuntime.state)return;
+        if(panelInputHasFocus()){
+            if(!stateRuntime.pendingTabRender){
+                stateRuntime.pendingTabRender=true;
+                const rerun=()=>{
+                    document.removeEventListener('focusout',rerun,true);
+                    stateRuntime.pendingTabRender=false;
+                    setTimeout(()=>{ if(!panelInputHasFocus())renderCurrentTab(); },120);
+                };
+                document.addEventListener('focusout',rerun,true);
+            }
+            return;
+        }
+        stateRuntime.pendingTabRender=false;
         if(stateRuntime.currentTab!=='phone') undockRolePhoneFromTab({hide:true});
         const renderers={overview:renderOverview,tables:renderTables,timeline:renderTimeline,characters:renderCharacters,relations:renderRelations,secrets:renderSecrets,summary:renderSummaryCenter,retrieval:renderRetrieval,phone:renderPhone,worldlife:renderCharacterWorld,appearance:renderAppearance,chapters:renderChapters,diagnostics:renderDiagnostics,api:renderApi,settings:renderSettings};
         content.innerHTML=renderers[stateRuntime.currentTab]?.()??renderOverview();
