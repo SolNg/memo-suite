@@ -49,7 +49,17 @@ script riêng cho Windows.
 **1. Đóng SillyTavern trước** — đóng hẳn cửa sổ đen của `Start.bat`. Nếu không đóng,
 Windows khoá tệp và bạn sẽ gặp lỗi `EBUSY: resource busy or locked`.
 
-**2. Mở PowerShell** (bấm Start → gõ `powershell` → Enter), rồi chạy:
+**2a. Cách dễ nhất — bấm đúp.** Mở thư mục tiện ích bằng File Explorer:
+
+```
+E:\SillyTavern\public\scripts\extensions\third-party\memo-suite
+```
+
+Bấm đúp vào tệp **`install-server.bat`**. Nó tự chạy phần còn lại, không phải gõ lệnh nào.
+
+**2b. Hoặc gõ lệnh trong PowerShell** (bấm Start → gõ `powershell` → Enter).
+⚠️ **Gõ từng dòng một, bấm Enter sau mỗi dòng.** Dán cả khối cùng lúc dễ làm PowerShell
+hiểu nhầm thành một lệnh dài (dấu nhắc đổi thành `>>`) và chạy sai thứ tự:
 
 ```powershell
 cd E:\SillyTavern\public\scripts\extensions\third-party\memo-suite
