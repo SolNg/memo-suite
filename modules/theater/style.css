@@ -2507,3 +2507,48 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 }
 .vvvtm-recent-event>span,.vvvtm-promise-jump>span{min-width:0;line-height:1.55}
 .vvvtm-timeline .vvvtm-story-stamp{display:inline-block;margin:0 4px 0 0}
+
+/* ==========================================================================
+   Sửa cho màn hình cảm ứng (iOS / WKWebView / TauriTavern)
+   Trên WebKit, một lớp phủ position:fixed có backdrop-filter bọc nội dung cuộn
+   hay làm hỏng việc bắt chạm: nhìn thấy ô nhập nhưng bấm vào không có gì xảy ra.
+   Khối này bỏ hiệu ứng mờ trên thiết bị cảm ứng và bảo đảm các ô nhập luôn
+   nhận được chạm. Máy tính không bị ảnh hưởng.
+   ========================================================================== */
+@media (hover:none) and (pointer:coarse) {
+    #vvvtm-modal {
+        backdrop-filter:none;
+        -webkit-backdrop-filter:none;
+        background:rgba(2,3,12,.94);
+    }
+    .vvvtm-shell { position:relative; }
+    .vvvtm-content { position:relative; z-index:1; }
+
+    .vvvtm-shell input,
+    .vvvtm-shell textarea,
+    .vvvtm-shell select,
+    .vvvtm-shell button,
+    #vvv-relay-settings-modal input,
+    #vvv-relay-settings-modal textarea,
+    #vvv-relay-settings-modal select {
+        pointer-events:auto;
+        touch-action:manipulation;
+        -webkit-user-select:text;
+        user-select:text;
+    }
+
+    /* iOS tự phóng to trang khi ô nhập nhỏ hơn 16px, và vùng chạm dưới 44px rất
+       khó bấm trúng; cố định lại cho vừa ngón tay. */
+    .vvvtm-shell input,
+    .vvvtm-shell textarea,
+    .vvvtm-shell select {
+        font-size:16px;
+        min-height:44px;
+    }
+    .vvvtm-shell button { min-height:40px; }
+}
+
+/* Màn hình rất hẹp: thẻ thống kê xếp một cột cho đỡ vỡ chữ. */
+@media (max-width:560px) {
+    .vvvtm-grid.stats { grid-template-columns:1fr; }
+}
