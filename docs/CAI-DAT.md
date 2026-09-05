@@ -41,6 +41,92 @@ dừng, nên bạn sẽ thấy “cài rồi mà không hiện gì”.
 
 ---
 
+## 📱 Chơi trên điện thoại?
+
+Có hai kiểu chơi trên điện thoại, cách làm khác hẳn nhau.
+
+### Kiểu 1 — SillyTavern chạy trên máy tính, điện thoại chỉ mở trình duyệt
+
+**Bạn không phải làm gì trên điện thoại cả.** Plugin máy chủ nằm ở máy tính, nên cứ cài
+trên máy tính theo hướng dẫn Windows/Linux bên dưới. Điện thoại chỉ là màn hình.
+
+Chỉ cần trong `config.yaml` của máy tính có:
+
+```yaml
+listen: true                 # cho phép máy khác truy cập
+whitelistMode: true
+whitelist:
+  - ::1
+  - 127.0.0.1
+  - 192.168.1.0/24           # dải mạng LAN của bạn, sửa cho đúng
+```
+
+Rồi trên điện thoại mở `http://<IP-máy-tính>:8000`. Xem IP máy tính bằng `ipconfig`
+(Windows) hoặc `ip a` (Linux).
+
+### Kiểu 2 — SillyTavern chạy thẳng trên điện thoại bằng Termux
+
+Termux **có dòng lệnh đầy đủ**, nên bạn dùng được `install-server.sh` như trên Linux.
+Không cần sửa tệp bằng tay.
+
+Mở Termux, gõ từng dòng:
+
+```bash
+cd ~/SillyTavern/public/scripts/extensions/third-party/memo-suite
+git pull
+bash install-server.sh ~/SillyTavern
+```
+
+Nếu chưa cài tiện ích qua giao diện SillyTavern thì tải về trước:
+
+```bash
+mkdir -p ~/SillyTavern/public/scripts/extensions/third-party
+cd ~/SillyTavern/public/scripts/extensions/third-party
+git clone https://github.com/SolNg/memo-suite
+```
+
+Script tự bật luôn phần plugin máy chủ. Nếu muốn kiểm tra lại bằng tay:
+
+```bash
+grep -n enableServerPlugins ~/SillyTavern/config.yaml
+```
+
+Không thấy dòng nào thì thêm vào (không cần trình soạn thảo):
+
+```bash
+echo 'enableServerPlugins: true' >> ~/SillyTavern/config.yaml
+```
+
+Muốn sửa tệp bằng trình soạn thảo trong Termux thì cài `nano`:
+
+```bash
+pkg install nano -y
+nano ~/SillyTavern/config.yaml     # Ctrl+O để lưu, Ctrl+X để thoát
+```
+
+**Khởi động lại SillyTavern trên Termux:** bấm `Ctrl+C` ở cửa sổ đang chạy rồi:
+
+```bash
+cd ~/SillyTavern && ./start.sh
+```
+
+**Kiểm tra:** mở trình duyệt trên chính điện thoại đó:
+
+```
+http://127.0.0.1:8000/api/plugins/vvv-theater-memory-server/health
+```
+
+> 💡 Termux không có quyền root nên lệnh `chown` trong script sẽ bỏ qua — đó là bình
+> thường, script vẫn chạy tiếp và cài đúng.
+
+### Kiểu 3 — Dùng dịch vụ đám mây (Colab, VPS, Docker…)
+
+Giống Kiểu 2: chỗ nào chạy SillyTavern thì cài plugin ở đó. Với Docker, thư mục
+`plugins/` phải nằm trong volume được gắn vào container, nếu không mỗi lần dựng lại
+container là plugin biến mất.
+
+---
+
 ## 🪟 Dùng Windows? Đọc mục này thay cho Bước 2–5
 
 `install-server.sh` là script Linux, **PowerShell không chạy được**. Bản này có sẵn
