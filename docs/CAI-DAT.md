@@ -41,6 +41,54 @@ dừng, nên bạn sẽ thấy “cài rồi mà không hiện gì”.
 
 ---
 
+## 🪟 Dùng Windows? Đọc mục này thay cho Bước 2–5
+
+`install-server.sh` là script Linux, **PowerShell không chạy được**. Bản này có sẵn
+script riêng cho Windows.
+
+**1. Đóng SillyTavern trước** — đóng hẳn cửa sổ đen của `Start.bat`. Nếu không đóng,
+Windows khoá tệp và bạn sẽ gặp lỗi `EBUSY: resource busy or locked`.
+
+**2. Mở PowerShell** (bấm Start → gõ `powershell` → Enter), rồi chạy:
+
+```powershell
+cd E:\SillyTavern\public\scripts\extensions\third-party\memo-suite
+git pull
+powershell -ExecutionPolicy Bypass -File .\install-server.ps1 E:\SillyTavern
+```
+
+Đổi `E:\SillyTavern` thành thư mục SillyTavern thật của bạn (nơi có `server.js`).
+
+Script sẽ tự: kiểm tra SillyTavern đã tắt chưa → sao lưu plugin cũ → chép plugin sang
+`E:\SillyTavern\plugins\vvv-theater-memory-server` → sao lưu `config.yaml` → bật
+`enableServerPlugins: true` → in ra việc còn lại.
+
+**3. Mở lại `Start.bat`**, rồi mở địa chỉ này trong trình duyệt đang đăng nhập SillyTavern:
+
+```
+http://127.0.0.1:8000/api/plugins/vvv-theater-memory-server/health
+```
+
+Ra JSON là xong. Sau đó bấm **Ctrl+F5** ở tab SillyTavern rồi vào tab **API & mô hình**.
+
+**Làm tay, không dùng script** (nếu PowerShell chặn):
+
+```powershell
+# vẫn phải đóng SillyTavern trước
+mkdir E:\SillyTavern\plugins -Force
+Copy-Item -Recurse -Force `
+  E:\SillyTavern\public\scripts\extensions\third-party\memo-suite\server-plugin\vvv-theater-memory-server `
+  E:\SillyTavern\plugins\
+notepad E:\SillyTavern\config.yaml      # thêm dòng:  enableServerPlugins: true
+```
+
+**Gặp lỗi `EBUSY ... rmdir memo-suite`?** Là do có chương trình đang giữ thư mục đó.
+Bạn **không cần xoá tiện ích** — chỉ cần `git pull` để cập nhật. Nếu vẫn muốn xoá:
+đóng SillyTavern, đóng mọi cửa sổ File Explorer và trình soạn thảo đang mở thư mục đó,
+tạm tắt phần mềm diệt virus, rồi thử lại.
+
+---
+
 ## Bước 2 — Tìm thư mục gốc SillyTavern
 
 Nếu chưa chắc SillyTavern nằm ở đâu, dùng một trong các cách sau:
