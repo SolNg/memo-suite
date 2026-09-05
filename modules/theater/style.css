@@ -2552,6 +2552,26 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     .vvvtm-shell button { min-height:40px; }
 }
 
+/* --- 1b. Bàn phím iOS: chạm một lần không vào, chạm hai lần thì bàn phím
+       nháy lên rồi tắt ngay -------------------------------------------------
+   Nguyên nhân: lớp phủ là position:fixed, mà <html> lại bị khoá cuộn
+   (html.vvvtm-open{overflow:hidden}) khi mở bảng. Bàn phím hiện lên, WebKit cố
+   cuộn ô nhập vào tầm nhìn, cuộn không được nên đóng luôn bàn phím.
+   Cách sửa: trên thiết bị cảm ứng thì thả khoá cuộn, và cho lớp phủ dùng đơn vị
+   dvh để nó tự co lại theo bàn phím thay vì tranh cuộn với trình duyệt. */
+@media (hover:none) and (pointer:coarse) {
+    html.vvvtm-open { overflow:visible !important; }
+
+    #vvvtm-modal { height:100dvh; max-height:100dvh; }
+    .vvvtm-shell { max-height:100dvh; }
+
+    /* Chừa chỗ để ô nhập không nằm dưới bàn phím khi được cuộn tới */
+    .vvvtm-content { scroll-padding-bottom:44vh; }
+    .vvvtm-shell input,
+    .vvvtm-shell textarea,
+    .vvvtm-shell select { scroll-margin-bottom:44vh; }
+}
+
 /* --- 2. Không cho cả bảng kéo ngang nữa -------------------------------- */
 @media (max-width:760px) {
     .vvvtm-shell { max-width:100%; overflow-x:hidden; }
