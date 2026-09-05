@@ -2636,6 +2636,32 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     .vvvtm-row-actions { flex-wrap:wrap; }
 }
 
+/* --- 2b. Ô chọn mô hình (thay cho <datalist> vốn không chạy trên iOS) --- */
+.vvvtm-model-picker { display:flex; flex-direction:column; gap:6px; margin-top:6px; }
+.vvvtm-model-picker[hidden] { display:none; }
+.vvvtm-model-picker > small { color:var(--vvvtm-muted); font-size:11px; }
+.vvvtm-model-picker > div {
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    max-height:168px;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+}
+.vvvtm-model-picker button {
+    padding:6px 10px;
+    font-size:12px;
+    border-radius:9px;
+    background:rgba(255,255,255,.05);
+    border:1px solid var(--vvvtm-line);
+    color:var(--vvvtm-text);
+    white-space:nowrap;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.vvvtm-model-picker button:hover { background:rgba(167,139,250,.22); border-color:rgba(167,139,250,.48); }
+
 /* --- 3. Màn hình hẹp: thẻ thống kê một cột ----------------------------- */
 @media (max-width:560px) {
     .vvvtm-grid.stats { grid-template-columns:1fr; }
