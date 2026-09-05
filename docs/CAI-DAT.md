@@ -1,5 +1,10 @@
 # Hướng dẫn cài đặt đầy đủ
 
+> 🍼 **Muốn bản dễ nhất, chép một phát là xong?** Mở [`docs/config.yaml`](config.yaml) —
+> đó là một tệp `config.yaml` hoàn chỉnh, đã bật sẵn plugin máy chủ, và có hướng dẫn
+> 9 bước viết ngay trong phần ghi chú ở đầu tệp. Chép đè lên `config.yaml` của
+> SillyTavern (nhớ sao lưu tệp cũ trước) rồi làm theo từng bước.
+
 Tiện ích này gồm **hai nửa**, phải cài cả hai:
 
 | Nửa | Nằm ở đâu | Lo việc gì |

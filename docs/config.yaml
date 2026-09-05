@@ -1,0 +1,229 @@
+# =============================================================================
+#  config.yaml  —  BẢN MẪU CHO SillyTavern (đã bật sẵn plugin máy chủ)
+#  Tiện ích: 0-32 · Sân Khấu Không Bao Giờ Hạ Màn (bản tiếng Việt)
+#  Kho mã:   https://github.com/SolNg/memo-suite
+# =============================================================================
+#
+#  ĐỌC CÁI NÀY TRƯỚC — CHỈ 3 CÂU:
+#
+#    1. Tệp này thay cho tệp config.yaml đang có trong thư mục SillyTavern.
+#    2. Dòng quan trọng nhất là  enableServerPlugins: true  (tìm chữ ⭐ bên dưới).
+#    3. Sao lưu tệp cũ trước khi thay, rồi khởi động lại SillyTavern.
+#
+#  KHÔNG MUỐN THAY CẢ TỆP? Chỉ cần chạy đúng 2 dòng lệnh này là xong,
+#  nó tự thêm dòng thiếu và không đụng gì khác:
+#
+#      ST=/home/www/SillyTavern      # sửa cho đúng máy bạn
+#      grep -q '^enableServerPlugins:' $ST/config.yaml \
+#        && sed -i 's/^enableServerPlugins:.*/enableServerPlugins: true/' $ST/config.yaml \
+#        || echo 'enableServerPlugins: true' >> $ST/config.yaml
+#
+# -----------------------------------------------------------------------------
+#  LÀM THEO THỨ TỰ NÀY, ĐỪNG BỎ BƯỚC NÀO
+# -----------------------------------------------------------------------------
+#
+#  BƯỚC 0 — Mở cửa sổ dòng lệnh (Terminal / SSH) vào máy chủ chạy SillyTavern.
+#
+#  BƯỚC 1 — Tìm xem SillyTavern nằm ở thư mục nào:
+#
+#      find / -name "server.js" -path "*SillyTavern*" 2>/dev/null
+#
+#      Nó in ra ví dụ:  /home/www/SillyTavern/server.js
+#      → thư mục cần nhớ là:  /home/www/SillyTavern
+#
+#      Ghi nó vào một biến cho đỡ gõ lại (sửa cho đúng máy bạn):
+#
+#      ST=/home/www/SillyTavern
+#      ls $ST/server.js $ST/config.yaml
+#
+#      Thấy đủ 2 tệp là đúng chỗ. Không thấy thì tìm lại Bước 1.
+#
+#  BƯỚC 2 — Sao lưu tệp cũ (phòng khi cần quay lại):
+#
+#      cp $ST/config.yaml $ST/config.yaml.backup
+#
+#  BƯỚC 3 — Mở tệp cũ ra xem, chép lại 4 giá trị này ra giấy/notepad:
+#
+#      grep -E "^(listen|port|whitelistMode|basicAuthMode|dataRoot):" $ST/config.yaml
+#
+#      Lát nữa điền lại đúng 4 giá trị đó vào tệp mới bên dưới.
+#      (Điền sai có thể làm bạn không mở được SillyTavern từ xa.)
+#
+#  BƯỚC 4 — Chép toàn bộ nội dung tệp này đè lên $ST/config.yaml,
+#           rồi sửa 4 giá trị ở Bước 3 cho khớp.
+#
+#  BƯỚC 5 — Cài tiện ích trong SillyTavern:
+#           Extensions → Install Extension → dán:
+#           https://github.com/SolNg/memo-suite
+#
+#  BƯỚC 6 — Cài plugin máy chủ (phần lo việc lưu API key, RAG, Memory Hub):
+#
+#      cd $ST/public/scripts/extensions/third-party/memo-suite
+#      bash install-server.sh $ST
+#      ls $ST/plugins/vvv-theater-memory-server/index.mjs
+#
+#      Dòng cuối phải in ra đường dẫn tệp. Không in ra là chưa cài được.
+#
+#  BƯỚC 7 — Khởi động lại SillyTavern (chọn đúng cách bạn đang chạy):
+#
+#      pm2 restart SillyTavern --update-env     # nếu dùng PM2
+#      systemctl restart sillytavern            # nếu dùng systemd
+#      docker restart sillytavern               # nếu dùng Docker
+#      # chạy tay bằng npm start thì bấm Ctrl+C rồi chạy lại
+#
+#  BƯỚC 8 — Kiểm tra đã chạy chưa. Mở trình duyệt (đang đăng nhập SillyTavern):
+#
+#      http://<địa-chỉ-SillyTavern>/api/plugins/vvv-theater-memory-server/health
+#
+#      Hiện chữ JSON loằng ngoằng  = ĐÚNG, xong rồi.
+#      Hiện trang báo 404          = SAI, xem lại BƯỚC 4 và BƯỚC 7.
+#
+#  BƯỚC 9 — Vào 0-32 → tab "API & mô hình" → nhập Base URL và API Key →
+#           bấm Lưu → bấm Lấy danh sách mô hình → chọn mô hình → Lưu lần nữa.
+#
+# =============================================================================
+
+
+# --- ⭐ DÒNG QUAN TRỌNG NHẤT — KHÔNG ĐƯỢC XOÁ, KHÔNG ĐƯỢC ĐỔI THÀNH false ---
+# Bật plugin máy chủ. Thiếu dòng này thì tiện ích báo lỗi 404 và không lưu
+# được API key, cũng không lấy được danh sách mô hình.
+enableServerPlugins: true
+
+# Tự cập nhật plugin máy chủ khi khởi động. Để false cho an toàn.
+enableServerPluginsAutoUpdate: false
+
+
+# --- Tiện ích giao diện ---
+enableExtensions: true
+enableExtensionsAutoUpdate: true
+enableDownloadableTokenizers: true
+
+
+# --- Nơi cất dữ liệu ---
+# ⚠️ ĐIỀN LẠI theo Bước 3. Mặc định của SillyTavern là ./data
+# Ký ức vĩnh viễn của tiện ích nằm trong  <dataRoot>/vvv/vvv-theater-memory
+dataRoot: ./data
+
+
+# --- Mạng ---
+# ⚠️ ĐIỀN LẠI theo Bước 3.
+# listen: false = chỉ mở được ngay trên máy đó.
+# listen: true  = mở được từ máy khác (máy chủ / VPS thường để true).
+listen: false
+listenAddress:
+  ipv4: 0.0.0.0
+  ipv6: '[::]'
+protocol:
+  ipv4: true
+  ipv6: false
+dnsPreferIPv6: false
+autorun: true
+autorunHostname: auto
+port: 8000
+autorunPortOverride: -1
+ssl:
+  enabled: false
+  keyPath: ''
+  certPath: ''
+
+
+# --- Bảo mật ---
+# ⚠️ ĐIỀN LẠI theo Bước 3.
+# Bật listen: true mà không có whitelist hoặc mật khẩu là để ngỏ cho người lạ.
+whitelistMode: true
+enableForwardedWhitelist: true
+whitelist:
+  - ::1
+  - 127.0.0.1
+whitelistDockerHosts: true
+basicAuthMode: false
+basicAuthUser:
+  username: user
+  password: password
+enableCorsProxy: false
+requestProxy:
+  enabled: false
+  url: socks5://username:password@example.com:1080
+  bypass:
+    - localhost
+    - 127.0.0.1
+
+# ĐỪNG đổi hai dòng này. Tắt CSRF sẽ làm nút Lưu của tiện ích báo lỗi 403.
+disableCsrfProtection: false
+securityOverride: false
+
+
+# --- Tài khoản người dùng ---
+# Tiện ích cất dữ liệu tách riêng theo từng tài khoản đăng nhập.
+enableUserAccounts: false
+enableDiscreetLogin: false
+autheliaAuth: false
+perUserBasicAuth: false
+sessionTimeout: -1
+cookieSecret: ''
+
+
+# --- Linh tinh ---
+allowKeysExposure: false
+skipContentCheck: false
+whitelistImportDomains:
+  - localhost
+  - cdn.discordapp.com
+  - files.catbox.moe
+  - raw.githubusercontent.com
+requestOverrides: []
+enableIPv6: false
+enableIPv4: true
+logging:
+  enableAccessLog: true
+  minLogLevel: 0
+rateLimiting:
+  preferRealIpHeader: false
+backups:
+  common:
+    numberOfBackups: 50
+  chat:
+    enabled: true
+    checkIntervalSeconds: 300
+    maxTotalBackups: -1
+    throttleInterval: 10000
+thumbnails:
+  enabled: true
+  format: jpg
+  quality: 95
+  dimensions:
+    bg:
+      - 160
+      - 90
+    avatar:
+      - 96
+      - 144
+performance:
+  lazyLoadCharacters: false
+  memoryCacheCapacity: 100mb
+  useDiskCache: true
+cacheBuster: ''
+promptPlaceholder: '[Start a new chat]'
+extras:
+  disableAutoDownload: false
+  classificationModel: Cohee/distilbert-base-uncased-go-emotions-onnx
+  captioningModel: Xenova/vit-gpt2-image-captioning
+  embeddingModel: Cohee/jina-embeddings-v2-base-en
+  speechToTextModel: Xenova/whisper-small
+  textToSpeechModel: Xenova/speecht5_tts
+openai:
+  randomizeUserId: false
+  captionSystemPrompt: ''
+deepl:
+  formality: default
+mistral:
+  enablePrefix: false
+ollama:
+  keepAlive: -1
+  batchSize: -1
+claude:
+  enableSystemPromptCache: false
+  cachingAtDepth: -1
+  extendedTTL: false
+gemini:
+  apiVersion: v1beta
