@@ -2509,13 +2509,17 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-timeline .vvvtm-story-stamp{display:inline-block;margin:0 4px 0 0}
 
 /* ==========================================================================
-   Sửa cho màn hình cảm ứng (iOS / WKWebView / TauriTavern)
-   Trên WebKit, một lớp phủ position:fixed có backdrop-filter bọc nội dung cuộn
-   hay làm hỏng việc bắt chạm: nhìn thấy ô nhập nhưng bấm vào không có gì xảy ra.
-   Khối này bỏ hiệu ứng mờ trên thiết bị cảm ứng và bảo đảm các ô nhập luôn
-   nhận được chạm. Máy tính không bị ảnh hưởng.
+   TỐI ƯU CHO ĐIỆN THOẠI
+   Bản gốc dựng cho màn hình rộng: bên trong bảng có nhiều chỗ rộng cứng
+   (min-width, minmax(360px…), chữ không xuống dòng) nên trên điện thoại cả
+   bảng bị kéo ngang và chữ mép trái bị cắt mất.
+   Toàn bộ nằm trong @media nên máy tính không đổi gì.
    ========================================================================== */
+
+/* --- 1. Chạm được vào ô nhập (iOS/WKWebView/TauriTavern) ---------------- */
 @media (hover:none) and (pointer:coarse) {
+    /* Lớp phủ có backdrop-filter bọc nội dung cuộn làm WebKit bắt chạm sai:
+       nhìn thấy ô nhập nhưng bấm không vào được. */
     #vvvtm-modal {
         backdrop-filter:none;
         -webkit-backdrop-filter:none;
@@ -2537,8 +2541,8 @@ html.vvvtm-phone-open { overflow:hidden !important; }
         user-select:text;
     }
 
-    /* iOS tự phóng to trang khi ô nhập nhỏ hơn 16px, và vùng chạm dưới 44px rất
-       khó bấm trúng; cố định lại cho vừa ngón tay. */
+    /* iOS tự phóng to trang khi ô nhập nhỏ hơn 16px; vùng chạm dưới 44px rất
+       khó bấm trúng. */
     .vvvtm-shell input,
     .vvvtm-shell textarea,
     .vvvtm-shell select {
@@ -2548,7 +2552,76 @@ html.vvvtm-phone-open { overflow:hidden !important; }
     .vvvtm-shell button { min-height:40px; }
 }
 
-/* Màn hình rất hẹp: thẻ thống kê xếp một cột cho đỡ vỡ chữ. */
+/* --- 2. Không cho cả bảng kéo ngang nữa -------------------------------- */
+@media (max-width:760px) {
+    .vvvtm-shell { max-width:100%; overflow-x:hidden; }
+    .vvvtm-content { overflow-x:hidden; }
+    .vvvtm-content > *,
+    .vvvtm-card,
+    .vvvtm-setting,
+    .vvvtm-stat,
+    .vvvtm-section-title { min-width:0; max-width:100%; }
+
+    /* Chữ dài (URL, khóa API, tên mô hình) xuống dòng thay vì đẩy rộng bảng */
+    .vvvtm-content :is(p,small,b,strong,em,dd,dt,li,label,textarea,pre,code) {
+        overflow-wrap:anywhere;
+        word-break:break-word;
+    }
+
+    /* Mọi lưới về một cột */
+    .vvvtm-grid,
+    .vvvtm-grid.two,
+    .vvvtm-grid.characters,
+    .vvvtm-dashboard-grid,
+    .vvvtm-api-layout,
+    .vvvtm-summary-layout,
+    .vvvtm-appearance-grid,
+    .vvvtm-form-grid,
+    .vvvtm-action-grid,
+    .vvvtm-settings-columns,
+    .vvvtm-relation-map,
+    .api-grid,
+    .api-grid.feature-models,
+    .retrieval-controls,
+    .settings-grid { grid-template-columns:1fr; }
+
+    /* Bỏ các bề rộng cứng đẩy tràn */
+    .vvvtm-inline-worldmap p,
+    .vvvtm-open-device,
+    .vvvtm-busy [data-memory-collection-abort],
+    .vvv-relay-primary,
+    .vvv-relay-generation-actions .vvv-relay-primary { min-width:0; }
+
+    /* Bảng dữ liệu tự cuộn trong khung của nó, không kéo cả trang */
+    .vvvtm-table-wrap { max-height:56vh; -webkit-overflow-scrolling:touch; }
+    .vvvtm-table-wrap th,
+    .vvvtm-table-wrap td { min-width:118px; padding:6px; font-size:13px; }
+
+    /* Tiêu đề gọn lại, cho xuống dòng */
+    .vvvtm-head { flex-wrap:wrap; min-height:0; padding:10px 12px; gap:8px; }
+    .vvvtm-head strong { font-size:17px; line-height:1.25; }
+    .vvvtm-head-actions { flex-wrap:wrap; gap:6px; }
+    .vvvtm-head-actions .icon { width:38px; height:38px; font-size:20px; }
+
+    /* Hàng nút trong thẻ: xuống dòng thay vì tràn */
+    .vvvtm-section-title { flex-wrap:wrap; gap:8px; }
+    .vvvtm-section-title > div:last-child { display:flex; flex-wrap:wrap; gap:6px; }
+    .vvvtm-row-actions { flex-wrap:wrap; }
+}
+
+/* --- 3. Màn hình hẹp: thẻ thống kê một cột ----------------------------- */
 @media (max-width:560px) {
     .vvvtm-grid.stats { grid-template-columns:1fr; }
+    .vvvtm-content { padding:8px; }
+    .vvvtm-card { padding:10px; border-radius:12px; }
+}
+
+/* --- 4. Lật ngang: màn thấp thì thu gọn phần đầu cho còn chỗ đọc ------- */
+@media (max-height:520px) and (orientation:landscape) {
+    .vvvtm-head { min-height:0; padding:6px 10px; }
+    .vvvtm-head strong { font-size:15px; }
+    .vvvtm-tabs { padding:4px 8px; }
+    .vvvtm-tabs button { padding:6px 10px; font-size:13px; }
+    .vvvtm-content { padding:8px; }
+    .vvvtm-table-wrap { max-height:46vh; }
 }
