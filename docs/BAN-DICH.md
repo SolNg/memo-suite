@@ -123,12 +123,22 @@ bash verify.sh
 của nó phải giống hệt kết quả trên mã nguồn chưa dịch — nghĩa là bản dịch không làm
 thay đổi hành vi.
 
-> ℹ️ **Lưu ý:** `bash verify.sh` hiện dừng ở khẳng định `server multi-account mode missing`
-> trong `tests/standalone-integrity.mjs`. Đây là lỗi **có sẵn từ bản gốc chưa dịch** (chuỗi
-> `multi-account mode` không tồn tại trong `server-plugin/.../index.mjs` của thượng nguồn),
-> không phải do bản Việt hóa gây ra. Toàn bộ phần kiểm tra cú pháp JS/MJS/JSON phía trước
-> đều qua, và bài kiểm tra dừng đúng tại cùng một dòng như khi chạy trên mã nguồn gốc.
+> ℹ️ **Lưu ý:** `bash verify.sh` nay chạy trọn vẹn và kết thúc bằng
+> `✅ VVV Story Memory Suite đã qua toàn bộ kiểm tra tĩnh`.
 >
-> Thay đổi duy nhất trong `tests/standalone-integrity.mjs` là chuỗi mẫu của dấu hiệu
-> Hỏi đáp ngoài lề, được cập nhật cho khớp bản dịch.
+> Bản gốc chưa dịch dừng ở khẳng định `server multi-account mode missing` trong
+> `tests/standalone-integrity.mjs` — chuỗi `multi-account mode` không hề tồn tại trong
+> `server-plugin/.../index.mjs` của thượng nguồn, nên bài kiểm tra của chính tác giả
+> không bao giờ qua được. Sau khi bản này thay danh sách trắng ghi cứng `['vvv']` bằng
+> cơ chế nhiều tài khoản thật, các khẳng định đó đã được viết lại cho khớp mã nguồn
+> hiện tại: `accountStorage`, `bootstrapAccounts`, `DEFAULT_ACCOUNT`,
+> `ACCOUNT_ALLOWLIST`/`MEMO_ENABLED_ACCOUNTS`, cộng thêm một khẳng định chặn việc
+> danh sách trắng cũ quay lại.
+>
+> Các khẳng định mới thêm trong `tests/standalone-integrity.mjs`:
+> chuỗi mẫu của dấu hiệu Hỏi đáp ngoài lề (cập nhật cho khớp bản dịch), bộ đọc danh
+> sách mô hình `extractModelIds`, khóa ngôn ngữ đầu ra `OUTPUT_LANGUAGE_RULE`,
+> hàm `detectDevice` nhận diện thiết bị, và **kiểm tra không còn quy tắc `:hover` nào
+> nằm ngoài `@media (hover:hover)`** — quy tắc `:hover` lọt ra ngoài chính là thứ khiến
+> iOS phải chạm hai lần mới bấm được.
 

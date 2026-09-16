@@ -383,7 +383,11 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | **403** | Thiếu header CSRF hợp lệ | Đóng hết tab SillyTavern cũ, mở lại đúng một tab rồi thử lại |
 | **200** nhưng `only-vvv` | Tài khoản chưa được bật tính năng máy chủ | Xem lại phần cấu hình tài khoản của plugin |
 | Bấm **Lưu** báo thành công, mở lại vẫn trống | Đang xem nhầm tài khoản | Dữ liệu tách riêng theo tài khoản đăng nhập; đăng nhập đúng tài khoản đã lưu |
-| **Lấy danh sách mô hình** trả mảng rỗng | Base URL hoặc khóa sai | Kiểm tra Base URL có `/v1`, thử lại khóa; nhà cung cấp không hỗ trợ `/models` thì cứ gõ tay tên mô hình vào ô **Mô hình mặc định** |
+| **Đã lấy được 0 mô hình** | Bản cũ chỉ đọc đúng một kiểu phản hồi | Bản này đã sửa: tự thử cả ba kiểu xác thực (`Bearer`, `?key=`, `x-api-key`) và đọc mọi kiểu danh sách mô hình. Nếu vẫn không ra thì ô kết quả in rõ từng lần thử thất bại vì lý do gì |
+| Ô kết quả in `HTTP 401` / `HTTP 403` | Khóa sai hoặc hết hạn | Dán lại khóa rồi **Lưu**, sau đó bấm **Lấy danh sách mô hình** |
+| Ô kết quả in `HTTP 404` | Base URL thiếu/thừa đường dẫn | Loại tương thích OpenAI thì Base URL kết thúc bằng `/v1`, không kèm `/chat/completions` |
+| Ô kết quả in `HTTP 200 nhưng không thấy mô hình nào` | Nhà cung cấp không mở endpoint `/models` | Gõ tay tên mô hình vào ô **Mô hình mặc định** rồi **Lưu** — vẫn chạy bình thường |
+| iPhone/iPad phải chạm **hai lần** mới ăn | Quy tắc `:hover` của bản gốc: iOS biến cú chạm đầu thành "rê chuột" | Bản này đã bọc mọi quy tắc `:hover` trong `@media (hover:hover)`; chỉ cần tải lại trang (Ctrl+F5 / xoá cache trình duyệt trên máy) |
 | Nút **Memory Hub** mở ra trang trắng/404 | Đường dẫn tiện ích | Bản này đã tự suy ra đường dẫn theo vị trí thật của tiện ích, chỉ cần tải lại trang (Ctrl+F5) |
 | Cài rồi mà không thấy gì trong menu | Còn bản VVV cũ đang chạy | Gỡ `vvv-unified-core` / `vvv-story-memory-suite`, tải lại SillyTavern |
 
@@ -396,6 +400,12 @@ cd $ST/public/scripts/extensions/third-party/memo-suite
 bash verify.sh
 ```
 
-Script kiểm tra cú pháp mọi tệp JS/JSON. Nó dừng ở khẳng định
-`server multi-account mode missing` — đây là **lỗi có sẵn từ bản gốc**, không phải do
-bản Việt hóa; xem [`BAN-DICH.md`](BAN-DICH.md) mục 5.
+Script kiểm tra cú pháp mọi tệp JS/JSON rồi chạy `tests/standalone-integrity.mjs`.
+Chạy xong phải thấy dòng cuối:
+
+```
+✅ VVV Story Memory Suite đã qua toàn bộ kiểm tra tĩnh
+```
+
+Bản gốc chưa dịch dừng giữa chừng ở khẳng định `server multi-account mode missing`;
+bản này đã sửa cả nguyên nhân lẫn bài kiểm tra — xem [`BAN-DICH.md`](BAN-DICH.md) mục 5.

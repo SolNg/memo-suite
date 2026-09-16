@@ -1978,29 +1978,92 @@ function controlAgentCapabilities(config) {
     };
 }
 
+function describeJsonShape(data) {
+    let text;
+    try { text = JSON.stringify(data); } catch { text = String(data); }
+    if (!text) return 'phản hồi rỗng';
+    return `phản hồi: ${text.slice(0, 400)}${text.length > 400 ? '…' : ''}`;
+}
+
+// Relays that claim to be OpenAI/Gemini/Anthropic compatible answer with a
+// surprising number of different shapes, so read every one we have seen
+// instead of trusting the provider that was picked in the panel.
+function extractModelIds(data) {
+    const seen = new Set();
+    const models = [];
+    const push = value => {
+        const id = String(value || '').trim().replace(/^models\//, '');
+        if (!id || seen.has(id)) return;
+        seen.add(id);
+        models.push(id);
+    };
+    const readList = list => {
+        for (const item of list) {
+            if (typeof item === 'string') { push(item); continue; }
+            if (item && typeof item === 'object') push(item.id ?? item.name ?? item.model ?? item.modelId ?? item.model_name ?? item.slug);
+        }
+    };
+    const lists = [
+        data,
+        data?.data, data?.models, data?.result, data?.results, data?.items, data?.list,
+        data?.data?.data, data?.data?.models, data?.result?.models, data?.response?.data, data?.body?.data,
+    ];
+    for (const list of lists) if (Array.isArray(list)) readList(list);
+    if (!models.length && data && typeof data === 'object' && !Array.isArray(data)) {
+        // Shape: { "gpt-4o": { … }, "claude-sonnet-4": { … } }
+        const keys = Object.keys(data);
+        if (keys.length && keys.every(key => data[key] && typeof data[key] === 'object' && !Array.isArray(data[key]))) keys.forEach(push);
+    }
+    return models;
+}
+
 async function listModels(config) {
     const provider = String(config.llm.provider || 'openai-compatible').toLowerCase();
-    if (provider === 'gemini') {
-        const base = normalizeBaseUrl(config.llm.baseUrl || 'https://generativelanguage.googleapis.com/v1beta');
-        const url = `${base}/models${config.llm.apiKey ? `?key=${encodeURIComponent(config.llm.apiKey)}` : ''}`;
-        const { data } = await fetchJson(url, { headers: headersWithExtra({}, config.llm.extraHeaders), signal: timeoutSignal(60) });
-        return (data.models || []).map(item => item.name?.replace(/^models\//, '')).filter(Boolean);
-    }
-    if (provider === 'anthropic') {
-        const base = normalizeBaseUrl(config.llm.baseUrl || 'https://api.anthropic.com/v1');
-        const url = joinUrl(base, '/models');
-        const { data } = await fetchJson(url, {
-            headers: headersWithExtra({ 'x-api-key': config.llm.apiKey || '', 'anthropic-version': '2023-06-01' }, config.llm.extraHeaders),
-            signal: timeoutSignal(60),
-        });
-        return (data.data || []).map(item => item.id).filter(Boolean);
-    }
-    const base = normalizeBaseUrl(config.llm.baseUrl);
+    const apiKey = String(config.llm.apiKey || '').trim();
+    const extraHeaders = config.llm.extraHeaders;
+    const fallbackBase = provider === 'gemini' ? 'https://generativelanguage.googleapis.com/v1beta'
+        : provider === 'anthropic' ? 'https://api.anthropic.com/v1'
+        : '';
+    const base = normalizeBaseUrl(config.llm.baseUrl || fallbackBase);
+    if (!base) throw new Error('Chưa điền Base URL');
     const url = /\/models$/i.test(base) ? base : joinUrl(base, '/models');
-    const headers = headersWithExtra({}, config.llm.extraHeaders);
-    if (config.llm.apiKey) headers.authorization = `Bearer ${config.llm.apiKey}`;
-    const { data } = await fetchJson(url, { headers, signal: timeoutSignal(60) });
-    return (data.data || data.models || []).map(item => item.id || item.name).filter(Boolean);
+    const keyQuery = apiKey ? `${url}${url.includes('?') ? '&' : '?'}key=${encodeURIComponent(apiKey)}` : url;
+
+    const attempts = [];
+    const seenAttempts = new Set();
+    const addAttempt = (label, target, headers) => {
+        const merged = headersWithExtra(headers, extraHeaders);
+        const fingerprint = `${target} :: ${JSON.stringify(Object.entries(merged).sort())}`;
+        if (seenAttempts.has(fingerprint)) return;
+        seenAttempts.add(fingerprint);
+        attempts.push({ label, url: target, headers: merged });
+    };
+    if (provider === 'gemini') addAttempt('Gemini (?key=)', keyQuery, {});
+    if (provider === 'anthropic') addAttempt('Anthropic (x-api-key)', url, { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' });
+    addAttempt('OpenAI (Bearer)', url, apiKey ? { authorization: `Bearer ${apiKey}` } : {});
+    if (apiKey) {
+        addAttempt('Gemini (?key=)', keyQuery, {});
+        addAttempt('Anthropic (x-api-key)', url, { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' });
+    }
+
+    const problems = [];
+    for (const attempt of attempts) {
+        let data;
+        try {
+            ({ data } = await fetchJson(attempt.url, { headers: attempt.headers, signal: timeoutSignal(60) }));
+        } catch (error) {
+            problems.push(`· ${attempt.label} → ${String(error?.message || error)}`);
+            continue;
+        }
+        const models = extractModelIds(data);
+        if (models.length) return models;
+        problems.push(`· ${attempt.label} → HTTP 200 nhưng không thấy mô hình nào, ${describeJsonShape(data)}`);
+    }
+    throw new Error([
+        `Không đọc được danh sách mô hình từ ${url}`,
+        ...problems,
+        'Gợi ý: kiểm tra lại Base URL (thường kết thúc bằng /v1), API key, và chọn đúng Nhà cung cấp.',
+    ].join('\n'));
 }
 
 async function embedTexts(config, texts) {

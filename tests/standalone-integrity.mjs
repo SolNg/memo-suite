@@ -26,9 +26,21 @@ assert.ok(qaPrompt.includes('【VVV HỎI ĐÁP NGOÀI LỀ VỚI TÁC GIẢ｜T
 assert.ok(qa.includes('injectAuthorQaPrompt'),'standalone author QA injector missing');
 assert.ok(qa.includes("await mod.Generate('regenerate')"),'author answer recovery missing');
 assert.ok(hub.includes("const API='/api/plugins/vvv-theater-memory-server'"),'Memory Hub endpoint changed');
-assert.ok(server.includes('multi-account mode'),'server multi-account mode missing');
-assert.ok(server.includes('initializeAccountStorage'),'server per-account initialization missing');
-assert.ok(server.includes('account-required'),'server account isolation guard missing');
+assert.ok(server.includes('const accountStorage = new AsyncLocalStorage()'),'server per-account storage missing');
+assert.ok(server.includes('function bootstrapAccounts'),'server per-account initialization missing');
+assert.ok(server.includes("const DEFAULT_ACCOUNT = 'default-user'"),'server default account missing');
+assert.ok(server.includes('ACCOUNT_ALLOWLIST')&&server.includes('MEMO_ENABLED_ACCOUNTS'),'server account allowlist missing');
+assert.ok(!/ENABLED_ACCOUNTS\s*=\s*new Set\(\s*\['vvv'\]/.test(server),'hard-coded upstream account gate is back');
+assert.ok(server.includes('function extractModelIds'),'tolerant model-list parser missing');
+assert.ok(server.includes('OUTPUT_LANGUAGE_RULE'),'output language lock missing');
+const theaterCss=read('modules/theater/style.css');
+const hubCss=read('memory-hub/style.css');
+for(const [name,css] of [['modules/theater/style.css',theaterCss],['memory-hub/style.css',hubCss]]){
+    const unguarded=css.split('}').filter(chunk=>chunk.includes(':hover')&&!chunk.includes('hover:hover')).length;
+    assert.equal(unguarded,0,`${name}: :hover rule outside @media (hover:hover) makes iOS need a second tap`);
+}
+assert.ok(theaterCss.includes('html[data-vvvu-device="mobile"]'),'mobile layout rules missing');
+assert.ok(core.includes('function detectDevice'),'device detection missing');
 assert.ok(theater.includes("new URL('../../memory-hub/index.html', import.meta.url)"),'Memory Hub standalone path not patched');
 assert.ok(!theater.includes('/scripts/extensions/third-party/vvv-unified-core/memory-hub/index.html'),'legacy Memory Hub path remains');
 for(const absent of ['modules/cardvault/index.js','modules/creative/index.js'])assert.ok(!fs.existsSync(path.join(root,absent)),`unwanted module included: ${absent}`);

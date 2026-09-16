@@ -77,6 +77,26 @@ Bản độc lập này lấy thẳng fixed42 làm nền mã, giữ nguyên fixe
 fixed40 (bảo vệ bản lưu mới), fixed41 (sửa thứ tự sinh của lượt bình thường) và
 fixed42 (sửa nguồn sự thật duy nhất cho trạng thái mạng).
 
+## Tối ưu cho điện thoại (iPhone / iPad / TauriTavern)
+
+Bản gốc chỉ được làm cho máy tính. Bản này nhận diện thiết bị lúc chạy
+(`detectDevice()` trong `index.js`: `pointer:coarse`, `hover:none`, `maxTouchPoints`,
+cạnh ngắn màn hình) rồi gắn `data-vvvu-device="mobile|desktop"` lên thẻ `<html>`,
+nên giao diện đổi theo thiết bị thật chứ không đoán theo bề rộng cửa sổ:
+
+- **Chạm một lần là ăn.** Mọi quy tắc `:hover` đã được bọc trong `@media (hover:hover)`.
+  Trên iOS, một quy tắc `:hover` lọt ra ngoài sẽ khiến cú chạm đầu tiên bị tính là
+  "rê chuột" — đó chính là lý do trước đây phải chạm hai lần cho gần như mọi thứ.
+- **Bảng điều khiển bám `visualViewport`**, không tràn ngang, không kéo qua kéo lại;
+  bàn phím hiện lên thì khung co lại theo (`data-vvvu-keyboard`).
+- **Ô nhập cỡ chữ 16px, vùng chạm ≥44px** để iOS không tự phóng to trang.
+- **Chọn mô hình bằng nút bấm** thay cho `<datalist>` (iOS không hiện `<datalist>`).
+- Lưới nhiều cột tự gộp thành một cột; máy tính giữ nguyên bố cục cũ.
+
+Đã kiểm thử bằng Chromium thật ở đúng kích thước **iPhone 16 Pro Max (440×956, DPR 3)**,
+cả dọc lẫn ngang, cùng một lượt chạy trên máy tính 1920×1080 để chắc chắn không hỏng
+giao diện cũ.
+
 ## Bản sửa v1.0.1 cho đăng ký công khai
 
 - Bỏ giới hạn chỉ khởi động với tài khoản `vvv`; mọi tài khoản SillyTavern đều tải được.
@@ -86,3 +106,6 @@ fixed42 (sửa nguồn sự thật duy nhất cho trạng thái mạng).
 - Menu tiện ích có thêm lối vào cố định: 0-32 / Thúc đẩy cốt truyện / Hỏi tác giả / Memory Hub.
 - Nếu phát hiện bản VVV 0-00/0-32 cũ vẫn đang chạy, tiện ích sẽ báo xung đột rõ ràng
   thay vì “đã cài nhưng không hiện gì”.
+- **Lấy danh sách mô hình** không còn im lặng trả về 0: máy chủ thử lần lượt `Bearer`,
+  `?key=` và `x-api-key`, đọc được mọi kiểu phản hồi thường gặp, và khi vẫn thất bại
+  thì in rõ từng lần thử hỏng vì lý do gì thay vì báo “Đã lấy được 0 mô hình”.
