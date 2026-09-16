@@ -2509,172 +2509,164 @@ html.vvvtm-phone-open { overflow:hidden !important; }
 .vvvtm-timeline .vvvtm-story-stamp{display:inline-block;margin:0 4px 0 0}
 
 /* ==========================================================================
-   TỐI ƯU CHO ĐIỆN THOẠI
-   Bản gốc dựng cho màn hình rộng: bên trong bảng có nhiều chỗ rộng cứng
-   (min-width, minmax(360px…), chữ không xuống dòng) nên trên điện thoại cả
-   bảng bị kéo ngang và chữ mép trái bị cắt mất.
-   Toàn bộ nằm trong @media nên máy tính không đổi gì.
+   TỐI ƯU CHO ĐIỆN THOẠI  ·  nhận diện thiết bị lúc chạy
+   --------------------------------------------------------------------------
+   Nguồn sự thật là thuộc tính do JS đặt lên <html> (xem index.js →
+   syncVisualViewport / detectDevice), KHÔNG chỉ dựa vào media query — vì media
+   query trong WKWebView của app Tauri trên iOS không đáng tin:
+
+       data-vvvu-device="mobile" | "desktop"
+       data-vvvu-ios        · iPhone/iPad (kể cả iPad giả dạng máy tính)
+       data-vvvu-touch      · màn hình cảm ứng
+       data-vvvu-keyboard   · bàn phím ảo đang mở
+       --vvvu-vv-top/left/width/height · vùng nhìn thấy thật
+
+   Media query ở cuối chỉ là phương án dự phòng cho lúc JS chưa kịp chạy.
    ========================================================================== */
 
-/* --- 1. Chạm được vào ô nhập (iOS/WKWebView/TauriTavern) ---------------- */
-@media (hover:none) and (pointer:coarse) {
-    /* Lớp phủ có backdrop-filter bọc nội dung cuộn làm WebKit bắt chạm sai:
-       nhìn thấy ô nhập nhưng bấm không vào được. */
-    #vvvtm-modal {
-        backdrop-filter:none;
-        -webkit-backdrop-filter:none;
-        background:rgba(2,3,12,.94);
-    }
-    .vvvtm-shell { position:relative; }
-    .vvvtm-content { position:relative; z-index:1; }
-
-    /* Dùng !important vì stylesheet của SillyTavern hoặc của app bọc ngoài có thể
-       đặt user-select:none lên phần tử cha; trên iOS như vậy là không đặt được
-       con trỏ vào ô nhập. */
-    .vvvtm-shell,
-    .vvvtm-content { -webkit-user-select:auto !important; user-select:auto !important; }
-
-    .vvvtm-shell input,
-    .vvvtm-shell textarea,
-    .vvvtm-shell select,
-    .vvvtm-shell button,
-    #vvv-relay-settings-modal input,
-    #vvv-relay-settings-modal textarea,
-    #vvv-relay-settings-modal select {
-        pointer-events:auto !important;
-        touch-action:manipulation;
-        -webkit-user-select:text !important;
-        user-select:text !important;
-        -webkit-touch-callout:default;
-    }
-
-    /* iOS tự phóng to trang khi ô nhập nhỏ hơn 16px; vùng chạm dưới 44px rất
-       khó bấm trúng. */
-    .vvvtm-shell input,
-    .vvvtm-shell textarea,
-    .vvvtm-shell select {
-        font-size:16px;
-        min-height:44px;
-    }
-    .vvvtm-shell button { min-height:40px; }
-}
-
-/* --- 1b. Bàn phím iOS: chạm một lần không vào, chạm hai lần thì bàn phím
-       nháy lên rồi tắt ngay -------------------------------------------------
-   Nguyên nhân: lớp phủ là position:fixed, mà <html> lại bị khoá cuộn
-   (html.vvvtm-open{overflow:hidden}) khi mở bảng. Bàn phím hiện lên, WebKit cố
-   cuộn ô nhập vào tầm nhìn, cuộn không được nên đóng luôn bàn phím.
-   Cách sửa: trên thiết bị cảm ứng thì thả khoá cuộn, và cho lớp phủ dùng đơn vị
-   dvh để nó tự co lại theo bàn phím thay vì tranh cuộn với trình duyệt. */
-@media (hover:none) and (pointer:coarse) {
-    html.vvvtm-open { overflow:visible !important; }
-
-    #vvvtm-modal { height:100dvh; max-height:100dvh; }
-    .vvvtm-shell { max-height:100dvh; }
-
-    /* Chừa chỗ để ô nhập không nằm dưới bàn phím khi được cuộn tới */
-    .vvvtm-content { scroll-padding-bottom:44vh; }
-    .vvvtm-shell input,
-    .vvvtm-shell textarea,
-    .vvvtm-shell select { scroll-margin-bottom:44vh; }
-}
-
-/* --- 2. Không cho cả bảng kéo ngang nữa -------------------------------- */
-@media (max-width:760px) {
-    .vvvtm-shell { max-width:100%; overflow-x:hidden; }
-    .vvvtm-content { overflow-x:hidden; }
-    .vvvtm-content > *,
-    .vvvtm-card,
-    .vvvtm-setting,
-    .vvvtm-stat,
-    .vvvtm-section-title { min-width:0; max-width:100%; }
-
-    /* Chữ dài (URL, khóa API, tên mô hình) xuống dòng thay vì đẩy rộng bảng */
-    .vvvtm-content :is(p,small,b,strong,em,dd,dt,li,label,textarea,pre,code) {
-        overflow-wrap:anywhere;
-        word-break:break-word;
-    }
-
-    /* Mọi lưới về một cột */
-    .vvvtm-grid,
-    .vvvtm-grid.two,
-    .vvvtm-grid.characters,
-    .vvvtm-dashboard-grid,
-    .vvvtm-api-layout,
-    .vvvtm-summary-layout,
-    .vvvtm-appearance-grid,
-    .vvvtm-form-grid,
-    .vvvtm-action-grid,
-    .vvvtm-settings-columns,
-    .vvvtm-relation-map,
-    .api-grid,
-    .api-grid.feature-models,
-    .retrieval-controls,
-    .settings-grid { grid-template-columns:1fr; }
-
-    /* Bỏ các bề rộng cứng đẩy tràn */
-    .vvvtm-inline-worldmap p,
-    .vvvtm-open-device,
-    .vvvtm-busy [data-memory-collection-abort],
-    .vvv-relay-primary,
-    .vvv-relay-generation-actions .vvv-relay-primary { min-width:0; }
-
-    /* Bảng dữ liệu tự cuộn trong khung của nó, không kéo cả trang */
-    .vvvtm-table-wrap { max-height:56vh; -webkit-overflow-scrolling:touch; }
-    .vvvtm-table-wrap th,
-    .vvvtm-table-wrap td { min-width:118px; padding:6px; font-size:13px; }
-
-    /* Tiêu đề gọn lại, cho xuống dòng */
-    .vvvtm-head { flex-wrap:wrap; min-height:0; padding:10px 12px; gap:8px; }
-    .vvvtm-head strong { font-size:17px; line-height:1.25; }
-    .vvvtm-head-actions { flex-wrap:wrap; gap:6px; }
-    .vvvtm-head-actions .icon { width:38px; height:38px; font-size:20px; }
-
-    /* Hàng nút trong thẻ: xuống dòng thay vì tràn */
-    .vvvtm-section-title { flex-wrap:wrap; gap:8px; }
-    .vvvtm-section-title > div:last-child { display:flex; flex-wrap:wrap; gap:6px; }
-    .vvvtm-row-actions { flex-wrap:wrap; }
-}
-
-/* --- 2b. Ô chọn mô hình (thay cho <datalist> vốn không chạy trên iOS) --- */
+/* --- Ô chọn mô hình (mọi thiết bị) ------------------------------------
+   Thay cho <datalist>, vốn không hoạt động trên iOS Safari/WKWebView. */
 .vvvtm-model-picker { display:flex; flex-direction:column; gap:6px; margin-top:6px; }
 .vvvtm-model-picker[hidden] { display:none; }
 .vvvtm-model-picker > small { color:var(--vvvtm-muted); font-size:11px; }
 .vvvtm-model-picker > div {
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    max-height:168px;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
+    display:flex; flex-wrap:wrap; gap:6px;
+    max-height:168px; overflow-y:auto; -webkit-overflow-scrolling:touch;
 }
 .vvvtm-model-picker button {
-    padding:6px 10px;
-    font-size:12px;
-    border-radius:9px;
-    background:rgba(255,255,255,.05);
-    border:1px solid var(--vvvtm-line);
+    padding:6px 10px; font-size:12px; border-radius:9px;
+    background:rgba(255,255,255,.05); border:1px solid var(--vvvtm-line);
     color:var(--vvvtm-text);
-    white-space:nowrap;
-    max-width:100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .vvvtm-model-picker button:hover { background:rgba(167,139,250,.22); border-color:rgba(167,139,250,.48); }
 
-/* --- 3. Màn hình hẹp: thẻ thống kê một cột ----------------------------- */
-@media (max-width:560px) {
-    .vvvtm-grid.stats { grid-template-columns:1fr; }
-    .vvvtm-content { padding:8px; }
-    .vvvtm-card { padding:10px; border-radius:12px; }
+/* --- 1. Lớp phủ bám đúng vùng nhìn thấy -------------------------------
+   Khi bàn phím hiện lên, vùng nhìn thấy thu lại. Cho lớp phủ co theo đúng vùng
+   đó thì trình duyệt không phải cuộn để lộ ô nhập nữa — đây là gốc rễ của lỗi
+   "bàn phím nháy lên rồi tắt ngay". */
+html[data-vvvu-device="mobile"] #vvvtm-modal {
+    top:var(--vvvu-vv-top,0px);
+    left:var(--vvvu-vv-left,0px);
+    right:auto; bottom:auto;
+    width:var(--vvvu-vv-width,100vw);
+    height:var(--vvvu-vv-height,100dvh);
+    max-height:var(--vvvu-vv-height,100dvh);
+    padding:0;
+    /* backdrop-filter trên lớp phủ cuộn được làm WebKit bắt chạm sai vị trí.
+       Cần !important vì chủ đề "sương xám" ở phía dưới cũng dùng !important. */
+    backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    background:rgba(2,3,12,.95) !important;
+}
+html[data-vvvu-device="mobile"] .vvvtm-shell {
+    position:relative;
+    width:100%; height:100%; max-height:100%;
+    border-radius:0; border:0;
+    overflow-x:hidden;
+}
+html[data-vvvu-device="mobile"] .vvvtm-content { position:relative; z-index:1; }
+
+/* Thả khoá cuộn của <html>: khoá cuộn cộng lớp phủ position:fixed khiến WebKit
+   không cuộn được ô nhập vào tầm nhìn nên nó đóng luôn bàn phím. */
+html[data-vvvu-device="mobile"].vvvtm-open { overflow:visible !important; }
+
+/* --- 2. Chạm một lần là vào ô nhập ------------------------------------ */
+html[data-vvvu-device="mobile"] .vvvtm-shell,
+html[data-vvvu-device="mobile"] .vvvtm-content {
+    -webkit-user-select:auto !important; user-select:auto !important;
+}
+html[data-vvvu-device="mobile"] .vvvtm-shell input,
+html[data-vvvu-device="mobile"] .vvvtm-shell textarea,
+html[data-vvvu-device="mobile"] .vvvtm-shell select,
+html[data-vvvu-device="mobile"] .vvvtm-shell button,
+html[data-vvvu-device="mobile"] #vvv-relay-settings-modal input,
+html[data-vvvu-device="mobile"] #vvv-relay-settings-modal textarea,
+html[data-vvvu-device="mobile"] #vvv-relay-settings-modal select {
+    pointer-events:auto !important;
+    touch-action:manipulation;
+    -webkit-user-select:text !important; user-select:text !important;
+    -webkit-touch-callout:default;
+}
+/* iOS tự phóng to trang khi ô nhập nhỏ hơn 16px; vùng chạm nên tối thiểu 44px. */
+html[data-vvvu-device="mobile"] .vvvtm-shell input,
+html[data-vvvu-device="mobile"] .vvvtm-shell textarea,
+html[data-vvvu-device="mobile"] .vvvtm-shell select { font-size:16px; min-height:44px; }
+html[data-vvvu-device="mobile"] .vvvtm-shell button { min-height:40px; }
+
+/* --- 3. Không để bảng kéo ngang --------------------------------------- */
+html[data-vvvu-device="mobile"] .vvvtm-content { overflow-x:hidden; }
+html[data-vvvu-device="mobile"] .vvvtm-content > *,
+html[data-vvvu-device="mobile"] .vvvtm-card,
+html[data-vvvu-device="mobile"] .vvvtm-setting,
+html[data-vvvu-device="mobile"] .vvvtm-stat,
+html[data-vvvu-device="mobile"] .vvvtm-section-title { min-width:0; max-width:100%; }
+
+html[data-vvvu-device="mobile"] .vvvtm-content :is(p,small,b,strong,em,dd,dt,li,label,textarea,pre,code) {
+    overflow-wrap:anywhere; word-break:break-word;
 }
 
-/* --- 4. Lật ngang: màn thấp thì thu gọn phần đầu cho còn chỗ đọc ------- */
+html[data-vvvu-device="mobile"] :is(
+    .vvvtm-grid,.vvvtm-grid.two,.vvvtm-grid.characters,.vvvtm-grid.stats,
+    .vvvtm-dashboard-grid,.vvvtm-api-layout,.vvvtm-summary-layout,
+    .vvvtm-appearance-grid,.vvvtm-form-grid,.vvvtm-action-grid,
+    .vvvtm-settings-columns,.vvvtm-relation-map,
+    .api-grid,.api-grid.feature-models,.retrieval-controls,.settings-grid
+) { grid-template-columns:1fr; }
+
+html[data-vvvu-device="mobile"] :is(
+    .vvvtm-inline-worldmap p,.vvvtm-open-device,
+    .vvvtm-busy [data-memory-collection-abort],
+    .vvv-relay-primary,.vvv-relay-generation-actions .vvv-relay-primary
+) { min-width:0; }
+
+html[data-vvvu-device="mobile"] .vvvtm-table-wrap { max-height:52vh; -webkit-overflow-scrolling:touch; }
+html[data-vvvu-device="mobile"] .vvvtm-table-wrap th,
+html[data-vvvu-device="mobile"] .vvvtm-table-wrap td { min-width:118px; padding:6px; font-size:13px; }
+
+/* --- 4. Đầu trang gọn, chừa chỗ cho Dynamic Island -------------------- */
+html[data-vvvu-device="mobile"] .vvvtm-head {
+    flex-wrap:wrap; min-height:0; gap:8px;
+    padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));
+}
+html[data-vvvu-device="mobile"] .vvvtm-head strong { font-size:17px; line-height:1.25; }
+html[data-vvvu-device="mobile"] .vvvtm-head span { display:none; }
+html[data-vvvu-device="mobile"] .vvvtm-head-actions { flex-wrap:wrap; gap:6px; }
+html[data-vvvu-device="mobile"] .vvvtm-head-actions .icon { width:38px; height:38px; font-size:20px; }
+html[data-vvvu-device="mobile"] .vvvtm-section-title { flex-wrap:wrap; gap:8px; }
+html[data-vvvu-device="mobile"] .vvvtm-section-title > div:last-child { display:flex; flex-wrap:wrap; gap:6px; }
+html[data-vvvu-device="mobile"] .vvvtm-row-actions { flex-wrap:wrap; }
+html[data-vvvu-device="mobile"] .vvvtm-content {
+    padding:10px max(10px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));
+}
+
+/* --- 5. Lúc bàn phím mở: giấu phần đầu để còn chỗ nhìn ô đang gõ ------ */
+html[data-vvvu-keyboard] .vvvtm-head { padding-top:6px; padding-bottom:6px; }
+html[data-vvvu-keyboard] .vvvtm-head strong { font-size:14px; }
+html[data-vvvu-keyboard] .vvvtm-tabs { display:none; }
+
+/* --- 6. Màn rất hẹp (iPhone dọc) -------------------------------------- */
+@media (max-width:480px) {
+    html[data-vvvu-device="mobile"] .vvvtm-card { padding:10px; border-radius:12px; }
+    html[data-vvvu-device="mobile"] .vvvtm-model-picker > div { max-height:132px; }
+}
+
+/* --- 7. Lật ngang, màn thấp ------------------------------------------- */
 @media (max-height:520px) and (orientation:landscape) {
-    .vvvtm-head { min-height:0; padding:6px 10px; }
-    .vvvtm-head strong { font-size:15px; }
-    .vvvtm-tabs { padding:4px 8px; }
-    .vvvtm-tabs button { padding:6px 10px; font-size:13px; }
-    .vvvtm-content { padding:8px; }
-    .vvvtm-table-wrap { max-height:46vh; }
+    html[data-vvvu-device="mobile"] .vvvtm-head { padding-top:6px; padding-bottom:6px; }
+    html[data-vvvu-device="mobile"] .vvvtm-head strong { font-size:15px; }
+    html[data-vvvu-device="mobile"] .vvvtm-tabs { padding:4px 8px; }
+    html[data-vvvu-device="mobile"] .vvvtm-table-wrap { max-height:44vh; }
+}
+
+/* --- 8. Dự phòng khi JS chưa chạy xong -------------------------------- */
+@media (hover:none) and (pointer:coarse) {
+    html:not([data-vvvu-device]) #vvvtm-modal {
+        padding:0;
+        backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+        background:rgba(2,3,12,.95) !important;
+    }
+    html:not([data-vvvu-device]) .vvvtm-content { overflow-x:hidden; }
+    html:not([data-vvvu-device]) .vvvtm-shell input,
+    html:not([data-vvvu-device]) .vvvtm-shell textarea,
+    html:not([data-vvvu-device]) .vvvtm-shell select { font-size:16px; min-height:44px; }
 }

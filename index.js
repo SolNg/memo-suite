@@ -127,17 +127,54 @@ const overlays={
 };
 
 const viewportState={cleanup:null,last:null};
+// Nhận diện thiết bị lúc chạy. Media query của CSS không đủ tin cậy trong
+// WKWebView (app Tauri/SillyTavern trên iOS), nên ta tự xác định rồi gắn thuộc
+// tính lên <html> để cả CSS lẫn JS cùng dựa vào một nguồn duy nhất:
+//   data-vvvu-device="mobile" | "desktop"
+//   data-vvvu-ios            (iPhone/iPad, kể cả iPad giả dạng máy tính)
+//   data-vvvu-touch          (màn hình cảm ứng)
+//   data-vvvu-keyboard       (bàn phím ảo đang mở)
+// Kèm bốn biến --vvvu-vv-* bám theo visual viewport để lớp phủ co lại đúng bằng
+// vùng còn nhìn thấy khi bàn phím hiện lên.
+function detectDevice(){
+  const mm=q=>{try{return Boolean(matchMedia?.(q)?.matches);}catch{return false;}};
+  const ua=String(globalThis.navigator?.userAgent||'');
+  const touchPoints=Number(globalThis.navigator?.maxTouchPoints||0);
+  const coarse=mm('(pointer: coarse)');
+  const noHover=mm('(hover: none)');
+  const touch=coarse||touchPoints>0||'ontouchstart' in globalThis;
+  // iPadOS báo userAgent giống macOS, phải xét thêm số điểm chạm.
+  const ios=/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&touchPoints>1);
+  const shortSide=Math.min(
+    Number(globalThis.innerWidth||0)||Number.POSITIVE_INFINITY,
+    Number(globalThis.innerHeight||0)||Number.POSITIVE_INFINITY,
+  );
+  // Điện thoại/máy tính bảng: cảm ứng thật, hoặc cạnh ngắn hẹp như màn điện thoại.
+  const mobile=(touch&&noHover)||(touch&&shortSide<=1024)||shortSide<=640;
+  return {mobile,ios,touch,coarse,shortSide};
+}
+
 function syncVisualViewport(){
   const vv=globalThis.visualViewport;
-  const mobile=matchMedia?.('(max-width: 800px)')?.matches||matchMedia?.('(pointer: coarse)')?.matches;
+  const device=detectDevice();
+  const mobile=device.mobile;
   const width=Math.max(1,Math.round(vv?.width||globalThis.innerWidth||document.documentElement.clientWidth||1));
   const height=Math.max(1,Math.round(vv?.height||globalThis.innerHeight||document.documentElement.clientHeight||1));
   const left=Math.round(vv?.offsetLeft||0),top=Math.round(vv?.offsetTop||0);
-  const next={left,top,width,height,mobile:!!mobile};
+  // Bàn phím ảo chiếm chỗ: vùng nhìn thấy thấp hơn hẳn chiều cao cửa sổ.
+  const windowHeight=Math.max(1,Number(globalThis.innerHeight||height));
+  const keyboard=mobile&&(windowHeight-height)>120;
+  const next={left,top,width,height,mobile:!!mobile,ios:device.ios,touch:device.touch,keyboard};
   const root=document.documentElement;
   root.style.setProperty('--vvvu-vv-left',`${left}px`);root.style.setProperty('--vvvu-vv-top',`${top}px`);
   root.style.setProperty('--vvvu-vv-width',`${width}px`);root.style.setProperty('--vvvu-vv-height',`${height}px`);
-  root.toggleAttribute('data-vvvu-mobile',!!mobile);viewportState.last=next;return next;
+  root.dataset.vvvuDevice=mobile?'mobile':'desktop';
+  root.toggleAttribute('data-vvvu-mobile',!!mobile);
+  root.toggleAttribute('data-vvvu-ios',!!device.ios);
+  root.toggleAttribute('data-vvvu-touch',!!device.touch);
+  root.toggleAttribute('data-vvvu-keyboard',!!keyboard);
+  globalThis.VVVDevice=next;
+  viewportState.last=next;return next;
 }
 function bindVisualViewport(){
   if(viewportState.cleanup)return;
