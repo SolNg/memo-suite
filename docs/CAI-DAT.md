@@ -390,9 +390,29 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | iPhone/iPad phải chạm **hai lần** mới ăn | Quy tắc `:hover` của bản gốc: iOS biến cú chạm đầu thành "rê chuột" | Bản này đã bọc mọi quy tắc `:hover` trong `@media (hover:hover)`; chỉ cần tải lại trang (Ctrl+F5 / xoá cache trình duyệt trên máy) |
 | Màn hình **dọc** vẫn phải chạm hai lần, màn hình ngang thì được | Bản gốc ghim `width:100vw; height:100dvh` kèm `!important` cho màn ≤760px, đè mất phần bám theo vùng nhìn thấy; bàn phím bật lên là ô đang gõ bị xê dịch nên iOS huỷ focus | Đã sửa: các khai báo kích thước cho điện thoại nay cũng dùng `!important`, và lớp phủ **không co lại** khi bàn phím mở |
 | Gõ được vài chữ thì mất con trỏ | Bảng vẽ lại giữa lúc đang gõ | Đã sửa: hoãn vẽ lại suốt cử chỉ chạm và khi con trỏ còn trong ô, đồng thời giữ nguyên con trỏ + vị trí cuộn qua mỗi lần vẽ lại |
+| **Máy tính chạy được, điện thoại thì không** (cùng một máy chủ) | Điện thoại vẫn đang chạy bản cũ giữ trong bộ nhớ đệm — iOS giữ cache tệp JS/CSS rất dai | Mở tab **API & mô hình**, kéo lên đầu xem thẻ **“Bản tiện ích trên máy này”**. Khác với máy tính là đúng bệnh; xem mục ngay dưới bảng này để xoá cache |
 | Bấm dấu **✓** trên bàn phím iOS là mất sạch những gì vừa nhập | Bỏ focus làm lần vẽ lại đang bị hoãn chạy ngay, mà ô nhập thì được dựng lại từ cấu hình **đang có trên máy chủ** | Đã sửa: những ô bạn tự gõ mà chưa bấm **Lưu** được giữ nguyên qua mỗi lần vẽ lại. Vẫn phải bấm **Lưu** thì khóa mới thật sự nằm trên máy chủ |
 | Nút **Memory Hub** mở ra trang trắng/404 | Đường dẫn tiện ích | Bản này đã tự suy ra đường dẫn theo vị trí thật của tiện ích, chỉ cần tải lại trang (Ctrl+F5) |
 | Cài rồi mà không thấy gì trong menu | Còn bản VVV cũ đang chạy | Gỡ `vvv-unified-core` / `vvv-story-memory-suite`, tải lại SillyTavern |
+
+---
+
+## Điện thoại vẫn chạy bản cũ? Xoá bộ nhớ đệm
+
+Ở đầu tab **API & mô hình** có thẻ **“Bản tiện ích trên máy này”**. So thẻ đó giữa
+máy tính và điện thoại: **giống nhau** thì hai bên đang chạy cùng một bản, **khác
+nhau** nghĩa là điện thoại còn giữ bản cũ trong bộ nhớ đệm chứ không phải bản sửa
+chưa có tác dụng.
+
+Cách xoá, thử theo thứ tự:
+
+1. **TauriTavern (app trên iPhone):** vuốt tắt hẳn app rồi mở lại.
+2. **Safari / Chrome trên iPhone:** Cài đặt → Safari → **Xoá Lịch sử và Dữ liệu Trang web**.
+3. **Vẫn chưa ăn:** trong SillyTavern, gỡ tiện ích rồi cài lại từ đường dẫn GitHub —
+   lúc này trình duyệt buộc phải tải tệp mới.
+
+> Sau khi kéo bản mới về máy chủ, **luôn phải làm bước này trên điện thoại**. Đây là
+> lý do một sửa đổi hay “chạy trên máy tính mà không chạy trên điện thoại”.
 
 ---
 

@@ -3,7 +3,7 @@ import { isAuthorQaRequest, injectAuthorQaPrompt, initAuthorQa } from './modules
 (() => {
 'use strict';
 const VERSION='1.0.1';
-const BUILD='vvv-story-memory-suite-1.0.1-public-multi-account';
+const BUILD='vvv-story-memory-suite-1.0.1-vi.4-multi-account';
 
 if(globalThis.__VVV_STORY_MEMORY_SUITE_INSTANCE__){
   console.warn('[VVV Story Memory Suite] duplicate load blocked',globalThis.__VVV_STORY_MEMORY_SUITE_INSTANCE__);
