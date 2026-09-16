@@ -383,6 +383,7 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | **403** | Thiếu header CSRF hợp lệ | Đóng hết tab SillyTavern cũ, mở lại đúng một tab rồi thử lại |
 | **200** nhưng `only-vvv` | Tài khoản chưa được bật tính năng máy chủ | Xem lại phần cấu hình tài khoản của plugin |
 | Bấm **Lưu** báo thành công, mở lại vẫn trống | Đang xem nhầm tài khoản | Dữ liệu tách riêng theo tài khoản đăng nhập; đăng nhập đúng tài khoản đã lưu |
+| Thẻ **“Phía máy chủ”** ghi **“Không thấy plugin”** | Thứ đang trả lời không phải plugin của tiện ích — gần như chắc chắn là TauriTavern trên iPhone/iPad | Xem mục “Dùng TauriTavern trên iPhone/iPad?” phía trên. Plugin Node không chạy được ở đó; phải trỏ điện thoại vào SillyTavern thật |
 | **Đã tải 0 mô hình** mà ô kết quả báo máy chủ trả lời thành công | Plugin máy chủ vẫn là **mã cũ đang chạy trong tiến trình Node** — chép tệp mới vào thư mục là chưa đủ | **Khởi động lại SillyTavern.** Xem thẻ **“Phía máy chủ”** ở đầu tab API: phiên bản phải có chuỗi `vi.` — không có nghĩa là còn bản cũ |
 | **Đã lấy được 0 mô hình** | Bản cũ chỉ đọc đúng một kiểu phản hồi | Bản này đã sửa: tự thử cả ba kiểu xác thực (`Bearer`, `?key=`, `x-api-key`) và đọc mọi kiểu danh sách mô hình. Nếu vẫn không ra thì ô kết quả in rõ từng lần thử thất bại vì lý do gì |
 | Ô kết quả in `HTTP 401` / `HTTP 403` | Khóa sai hoặc hết hạn | Dán lại khóa rồi **Lưu**, sau đó bấm **Lấy danh sách mô hình** |
@@ -395,6 +396,38 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | Bấm dấu **✓** trên bàn phím iOS là mất sạch những gì vừa nhập | Bỏ focus làm lần vẽ lại đang bị hoãn chạy ngay, mà ô nhập thì được dựng lại từ cấu hình **đang có trên máy chủ** | Đã sửa: những ô bạn tự gõ mà chưa bấm **Lưu** được giữ nguyên qua mỗi lần vẽ lại. Vẫn phải bấm **Lưu** thì khóa mới thật sự nằm trên máy chủ |
 | Nút **Memory Hub** mở ra trang trắng/404 | Đường dẫn tiện ích | Bản này đã tự suy ra đường dẫn theo vị trí thật của tiện ích, chỉ cần tải lại trang (Ctrl+F5) |
 | Cài rồi mà không thấy gì trong menu | Còn bản VVV cũ đang chạy | Gỡ `vvv-unified-core` / `vvv-story-memory-suite`, tải lại SillyTavern |
+
+---
+
+## Dùng TauriTavern trên iPhone/iPad? Đọc trước khi mất công
+
+**TauriTavern viết lại phần máy chủ của SillyTavern bằng Rust, nên nó KHÔNG chạy được
+plugin Node.** Không có tiến trình Node nào trong app, nên **không có chỗ nào để chép
+`plugins/vvv-theater-memory-server` vào cả** — chép được cũng không ai nạp.
+
+Hệ quả rất rõ ràng:
+
+| Chạy được trên TauriTavern | Cần plugin máy chủ, **không chạy được** |
+| --- | --- |
+| Toàn bộ giao diện 0-32, bảng ký ức, chỉnh sửa tay | Sắp xếp/tổng kết bằng API riêng |
+| Thẻ nhân vật, chat, preset, sách thế giới | RAG / truy hồi / vector |
+| Tiếp sức cốt truyện qua API chính của SillyTavern | Hồ sơ vĩnh viễn phía máy chủ |
+| | Memory Hub |
+| | Nút **Lấy danh sách mô hình** |
+
+Đây là giới hạn của TauriTavern chứ không phải của tiện ích. Bảng điều khiển tự nhận ra
+và hiện cảnh báo: thẻ **“Phía máy chủ”** ghi **“Không thấy plugin”**.
+
+**Muốn dùng đủ tính năng trên điện thoại thì chạy SillyTavern thật ở nơi khác rồi trỏ
+điện thoại vào đó:**
+
+1. Trên máy tính, mở `config.yaml` đặt `listen: true` và thêm IP điện thoại vào
+   `whitelist` (xem mục “Chơi trên điện thoại?” phía trên).
+2. Khởi động lại SillyTavern trên máy tính.
+3. Trên iPhone mở Safari vào `http://<IP-máy-tính>:8000` — **không dùng TauriTavern nữa**.
+
+Lúc này plugin chạy trên máy tính, điện thoại chỉ là màn hình, và mọi tính năng đều đủ.
+Cập nhật cũng chỉ làm trên máy tính: chép tệp mới rồi khởi động lại SillyTavern.
 
 ---
 

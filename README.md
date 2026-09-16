@@ -65,6 +65,17 @@ bash install-server.sh /home/www/SillyTavern
 
 Phía máy chủ vẫn giữ nguyên hành vi cũ, thư mục dữ liệu không đổi.
 
+## TauriTavern trên iPhone/iPad: chỉ chạy được nửa giao diện
+
+TauriTavern viết lại phần máy chủ bằng Rust nên **không chạy được plugin Node**. Giao diện
+0-32 và việc chỉnh sửa tay vẫn dùng bình thường, nhưng mọi thứ đi qua plugin — API riêng,
+RAG, hồ sơ vĩnh viễn, Memory Hub, nút “Lấy danh sách mô hình” — thì không. Không có chỗ nào
+để chép plugin vào cả, vì trong app không có tiến trình Node.
+
+Bảng điều khiển tự nhận ra và ghi **“Không thấy plugin”** ở thẻ “Phía máy chủ”. Muốn đủ
+tính năng thì chạy SillyTavern thật trên máy tính/VPS rồi trỏ điện thoại vào đó — xem
+[`docs/CAI-DAT.md`](docs/CAI-DAT.md).
+
 ## Hai nửa, hai cách cập nhật
 
 - **Giao diện** (`public/scripts/extensions/third-party/memo-suite`) — trình duyệt tải lại
