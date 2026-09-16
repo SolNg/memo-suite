@@ -41,6 +41,20 @@ for(const [name,css] of [['modules/theater/style.css',theaterCss],['memory-hub/s
 }
 assert.ok(theaterCss.includes('html[data-vvvu-device="mobile"]'),'mobile layout rules missing');
 assert.ok(core.includes('function detectDevice'),'device detection missing');
+// Bản gốc đặt width/height 100vw/100dvh KÈM !important cho màn ≤760px (đúng cỡ
+// iPhone dọc), nên các khai báo kích thước của phần tối ưu buộc phải !important,
+// nếu không thì màn hình dọc lại hỏng trong khi màn hình ngang vẫn chạy.
+{
+    const start=theaterCss.indexOf('html[data-vvvu-device="mobile"] #vvvtm-modal {');
+    assert.ok(start>=0,'mobile overlay rule missing');
+    const block=theaterCss.slice(start,theaterCss.indexOf('}',start));
+    for(const prop of ['width','height','max-height','padding'])
+        assert.ok(new RegExp(`\\n\\s*${prop}:[^;]*!important`).test(block),`mobile overlay ${prop} must win over the upstream !important sizing`);
+}
+assert.ok(core.includes('viewportState.baseHeight')&&core.includes('--vvvu-kb-height'),'keyboard height pinning missing');
+assert.ok(!theaterCss.includes('html[data-vvvu-keyboard] .vvvtm-tabs { display:none; }'),'hiding the tab bar while typing moves the focused field on iOS');
+assert.ok(theater.includes('<label class="api-field" for='),'API fields must stay inside their own label for iOS tap forwarding');
+assert.ok(theater.includes('function renderPausedByUser'),'render guard during touch/typing missing');
 assert.ok(theater.includes("new URL('../../memory-hub/index.html', import.meta.url)"),'Memory Hub standalone path not patched');
 assert.ok(!theater.includes('/scripts/extensions/third-party/vvv-unified-core/memory-hub/index.html'),'legacy Memory Hub path remains');
 for(const absent of ['modules/cardvault/index.js','modules/creative/index.js'])assert.ok(!fs.existsSync(path.join(root,absent)),`unwanted module included: ${absent}`);

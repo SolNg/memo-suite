@@ -3488,8 +3488,18 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             // không đặt được con trỏ vào ô nhập — chạm một lần không có gì, chạm hai
             // lần thì bàn phím nháy lên rồi tắt. Gọi focus() ngay trong cử chỉ chạm
             // của người dùng là cách duy nhất chắc chắn mở được bàn phím.
+            const FIELD_SELECTOR='input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),textarea';
+            modal.addEventListener('touchstart', () => { stateRuntime.touchHolding=true; }, { passive: true });
+            const releaseTouch = () => { stateRuntime.touchHolding=false; stateRuntime.touchEndedAt=Date.now(); };
+            modal.addEventListener('touchcancel', releaseTouch, { passive: true });
             modal.addEventListener('touchend', event => {
-                const field = event.target?.closest?.('input:not([type="checkbox"]):not([type="radio"]),textarea');
+                releaseTouch();
+                // Chạm trúng chữ của nhãn cũng phải vào đúng ô của nhãn đó.
+                const host = event.target?.closest?.('label,.api-field,.vvvtm-setting');
+                const direct = event.target?.closest?.(FIELD_SELECTOR);
+                let field = direct || host?.querySelector?.(FIELD_SELECTOR);
+                // Nếu bảng vừa vẽ lại thì nút cũ đã rời khỏi trang, phải lấy nút mới cùng id.
+                if (field && !field.isConnected && field.id) field = document.getElementById(field.id);
                 if (!field || field.disabled || field.readOnly) return;
                 if (document.activeElement === field) return;
                 try { field.focus({ preventScroll: true }); } catch { field.focus(); }
@@ -17427,17 +17437,17 @@ ${JSON.stringify(evidence)}`;
         content.querySelector('[data-diag-ai]')?.addEventListener('click',async()=>{setBusy(true,'AI đang kiểm tra tính liền mạch của cốt truyện…');try{const promptText=`Hãy kiểm tra cuộc trò chuyện dưới đây có gặp các vấn đề sau không: quyết định thay {{user}}, nhân vật OOC, mâu thuẫn dòng thời gian, dịch chuyển địa điểm tức thời, nhân vật biết bí mật lẽ ra không được biết, vật phẩm xuất hiện từ hư không, xưng hô sai, nội dung lặp lại, cốt truyện lâu không tiến triển. Chỉ xuất JSON: {"issues":[{"type":"","detail":"","floor":0}]}. Nếu không có vấn đề thì trả về mảng rỗng.\n\nKý ức có cấu trúc:\n${buildMemoryPrompt()}\n\nCuộc trò chuyện:\n${recentTranscript(16)}`;const result=await runFeature('diagnostics',promptText,{kind:'diagnostics'},{jsonMode:true});const record=result.record||{kind:'diagnostics'};if(result.task)await applyCompletedJob(record,result.task);else await applyCompletedJob(record,{status:'completed',result:{text:result.text},model:result.model});renderCurrentTab();toast('Khám bằng AI đã xong','success');}catch(error){toast(`Khám thất bại: ${error.message}`,'error');}finally{setBusy(false);}});
     }
 
-    // Dùng <div> chứ không dùng <label> bọc quanh ô nhập: khi <input> nằm bên trong
-    // chính <label> của nó, WebKit trên iOS chuyển tiếp thêm một cú click nữa từ
-    // label sang input, làm focus vừa đặt xong đã bị huỷ — phải chạm hai lần mới
-    // gõ được. CSS dùng class .api-field nên giao diện không đổi.
-    // Kèm theo một ô chọn mô hình dạng nút bấm, vì <datalist> không hoạt động trên
-    // iOS Safari/WKWebView: danh sách tải về nhưng không có gì để chọn.
+    // Bọc bằng <label for> giống hệt mọi tab khác: trên iOS, chạm vào nhãn cũng
+    // chuyển thẳng thành thao tác vào ô nhập, nên không còn cảnh chạm trúng chữ
+    // mà không có gì xảy ra. Ô chọn mô hình nằm NGOÀI nhãn, nếu không thì chạm
+    // vào nút chọn cũng kéo bàn phím lên che mất danh sách.
+    // Phải có ô chọn dạng nút vì <datalist> không hoạt động trên iOS
+    // Safari/WKWebView: danh sách tải về nhưng không có gì để chọn.
     function inputField(id,label,value,type='text',extra='') {
         const picker = /list="/.test(extra) ? `<div class="vvvtm-model-picker" data-picker-for="${id}" hidden></div>` : '';
-        return `<div class="api-field"><span>${label}</span><input id="${id}" type="${type}" value="${esc(value||'')}" ${extra}>${picker}</div>`;
+        return `<label class="api-field" for="${id}"><span>${label}</span><input id="${id}" type="${type}" value="${esc(value||'')}" ${extra}></label>${picker}`;
     }
-    function selectField(id,label,value,options) { return `<div class="api-field"><span>${label}</span><select id="${id}">${options.map(([v,t])=>`<option value="${v}" ${value===v?'selected':''}>${t}</option>`).join('')}</select></div>`; }
+    function selectField(id,label,value,options) { return `<label class="api-field" for="${id}"><span>${label}</span><select id="${id}">${options.map(([v,t])=>`<option value="${v}" ${value===v?'selected':''}>${t}</option>`).join('')}</select></label>`; }
 
     // Đổ danh sách mô hình thành các nút bấm được, dùng thay cho <datalist>.
     function fillModelPicker(content, inputId, models) {
@@ -17547,7 +17557,8 @@ ${JSON.stringify(evidence)}`;
         content.addEventListener('click', event => {
             const pick = event.target?.closest?.('[data-pick-model]');
             if (!pick) return;
-            const field = pick.closest('.vvvtm-model-picker')?.parentElement?.querySelector('input');
+            const box = pick.closest('.vvvtm-model-picker');
+            const field = box && document.getElementById(box.dataset.pickerFor || '');
             if (!field) return;
             field.value = pick.dataset.pickModel || '';
             field.dispatchEvent(new Event('input', { bubbles: true }));
@@ -17764,27 +17775,65 @@ ${JSON.stringify(evidence)}`;
         return Boolean(active.closest?.('#vvvtm-modal'));
     }
 
+    // Trên iOS, focus chỉ mở được bàn phím khi nó xảy ra bên trong chính cử chỉ
+    // chạm của người dùng. Nếu bảng vẽ lại đúng lúc ngón tay còn đang chạm thì ô
+    // nhập bị thay bằng ô mới, cú chạm rơi vào hư không và bàn phím tắt ngay.
+    // Vì vậy hoãn mọi lần vẽ lại trong suốt cử chỉ chạm và một nhịp ngắn sau đó.
+    const TOUCH_RENDER_HOLD_MS=450;
+    function panelTouchInProgress() {
+        if(stateRuntime.touchHolding)return true;
+        return Date.now()-Number(stateRuntime.touchEndedAt||0)<TOUCH_RENDER_HOLD_MS;
+    }
+    function renderPausedByUser() {
+        return panelTouchInProgress()||panelInputHasFocus();
+    }
+
+    // Vẽ lại làm mất con trỏ và vị trí cuộn; chụp lại trước rồi trả về sau.
+    function captureFieldFocus(content) {
+        const active=document.activeElement;
+        if(!active||!content.contains(active)||!active.id)return null;
+        const snapshot={scrollTop:content.scrollTop,id:active.id};
+        if(typeof active.selectionStart==='number'){snapshot.start=active.selectionStart;snapshot.end=active.selectionEnd;}
+        return snapshot;
+    }
+    function restoreFieldFocus(content, snapshot) {
+        if(!snapshot)return;
+        if(Number.isFinite(snapshot.scrollTop))content.scrollTop=snapshot.scrollTop;
+        const node=snapshot.id?document.getElementById(snapshot.id):null;
+        if(!node)return;
+        try{node.focus({preventScroll:true});}catch{try{node.focus();}catch{}}
+        if(typeof snapshot.start==='number'&&typeof node.setSelectionRange==='function'){
+            // setSelectionRange ném lỗi với type=number/email, không sao cả.
+            try{node.setSelectionRange(snapshot.start,snapshot.end);}catch{}
+        }
+    }
+
     function renderCurrentTab() {
         const content=document.getElementById('vvvtm-content');if(!content||!stateRuntime.state)return;
-        if(panelInputHasFocus()){
+        if(renderPausedByUser()){
             if(!stateRuntime.pendingTabRender){
                 stateRuntime.pendingTabRender=true;
                 const rerun=()=>{
+                    if(!stateRuntime.pendingTabRender)return;
+                    if(renderPausedByUser()){setTimeout(rerun,180);return;}
                     document.removeEventListener('focusout',rerun,true);
                     stateRuntime.pendingTabRender=false;
-                    setTimeout(()=>{ if(!panelInputHasFocus())renderCurrentTab(); },120);
+                    renderCurrentTab();
                 };
                 document.addEventListener('focusout',rerun,true);
+                setTimeout(rerun,180);
             }
             return;
         }
         stateRuntime.pendingTabRender=false;
         if(stateRuntime.currentTab!=='phone') undockRolePhoneFromTab({hide:true});
         const renderers={overview:renderOverview,tables:renderTables,timeline:renderTimeline,characters:renderCharacters,relations:renderRelations,secrets:renderSecrets,summary:renderSummaryCenter,retrieval:renderRetrieval,phone:renderPhone,worldlife:renderCharacterWorld,appearance:renderAppearance,chapters:renderChapters,diagnostics:renderDiagnostics,api:renderApi,settings:renderSettings};
+        const focusSnapshot=captureFieldFocus(content);
         content.innerHTML=renderers[stateRuntime.currentTab]?.()??renderOverview();
         content.querySelectorAll('[data-jump]').forEach(button=>button.addEventListener('click',()=>jumpToFloor(button.dataset.jump)));
         bindPaging(content);
         if(stateRuntime.currentTab==='overview')bindOverview(content);if(stateRuntime.currentTab==='tables')bindTables(content);if(stateRuntime.currentTab==='secrets')bindSecrets(content);if(stateRuntime.currentTab==='summary')bindSummaryCenter(content);if(stateRuntime.currentTab==='retrieval')bindRetrieval(content);if(stateRuntime.currentTab==='phone')bindPhone(content);if(stateRuntime.currentTab==='worldlife')bindCharacterWorld(content);if(stateRuntime.currentTab==='appearance')bindAppearance(content);if(stateRuntime.currentTab==='chapters')bindChapters(content);if(stateRuntime.currentTab==='diagnostics')bindDiagnostics(content);if(stateRuntime.currentTab==='api')bindApi(content);if(stateRuntime.currentTab==='settings')bindSettings(content);
+        restoreFieldFocus(content,focusSnapshot);
         globalThis.dispatchEvent?.(new CustomEvent('vvvtm-content-rendered',{detail:{tab:stateRuntime.currentTab}}));
     }
 

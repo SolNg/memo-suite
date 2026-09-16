@@ -87,6 +87,15 @@ nên giao diện đổi theo thiết bị thật chứ không đoán theo bề r
 - **Chạm một lần là ăn.** Mọi quy tắc `:hover` đã được bọc trong `@media (hover:hover)`.
   Trên iOS, một quy tắc `:hover` lọt ra ngoài sẽ khiến cú chạm đầu tiên bị tính là
   "rê chuột" — đó chính là lý do trước đây phải chạm hai lần cho gần như mọi thứ.
+- **Thắng được `!important` của bản gốc.** Bản gốc ghim `width:100vw; height:100dvh`
+  kèm `!important` trong `@media (max-width:760px)` — đúng cỡ màn iPhone dọc. Thiếu
+  `!important` thì phần tối ưu im lặng mất tác dụng ở màn dọc mà màn ngang vẫn chạy.
+  `tests/standalone-integrity.mjs` giữ luôn điều kiện này để không tái phát.
+- **Không co lớp phủ khi bàn phím bật lên.** Ô đang gõ bị xê dịch giữa lúc bàn phím
+  trượt lên là iOS huỷ focus ngay (bàn phím nháy một cái rồi tắt). Nay lớp phủ giữ
+  nguyên chiều cao và chỉ chừa thêm chỗ cuộn bằng đúng chiều cao bàn phím.
+- **Không vẽ lại giữa lúc đang chạm hoặc đang gõ**, và giữ nguyên con trỏ cùng vị
+  trí cuộn qua mỗi lần vẽ lại.
 - **Bảng điều khiển bám `visualViewport`**, không tràn ngang, không kéo qua kéo lại;
   bàn phím hiện lên thì khung co lại theo (`data-vvvu-keyboard`).
 - **Ô nhập cỡ chữ 16px, vùng chạm ≥44px** để iOS không tự phóng to trang.

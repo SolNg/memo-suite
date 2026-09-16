@@ -388,6 +388,8 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | Ô kết quả in `HTTP 404` | Base URL thiếu/thừa đường dẫn | Loại tương thích OpenAI thì Base URL kết thúc bằng `/v1`, không kèm `/chat/completions` |
 | Ô kết quả in `HTTP 200 nhưng không thấy mô hình nào` | Nhà cung cấp không mở endpoint `/models` | Gõ tay tên mô hình vào ô **Mô hình mặc định** rồi **Lưu** — vẫn chạy bình thường |
 | iPhone/iPad phải chạm **hai lần** mới ăn | Quy tắc `:hover` của bản gốc: iOS biến cú chạm đầu thành "rê chuột" | Bản này đã bọc mọi quy tắc `:hover` trong `@media (hover:hover)`; chỉ cần tải lại trang (Ctrl+F5 / xoá cache trình duyệt trên máy) |
+| Màn hình **dọc** vẫn phải chạm hai lần, màn hình ngang thì được | Bản gốc ghim `width:100vw; height:100dvh` kèm `!important` cho màn ≤760px, đè mất phần bám theo vùng nhìn thấy; bàn phím bật lên là ô đang gõ bị xê dịch nên iOS huỷ focus | Đã sửa: các khai báo kích thước cho điện thoại nay cũng dùng `!important`, và lớp phủ **không co lại** khi bàn phím mở |
+| Gõ được vài chữ thì mất con trỏ | Bảng vẽ lại giữa lúc đang gõ | Đã sửa: hoãn vẽ lại suốt cử chỉ chạm và khi con trỏ còn trong ô, đồng thời giữ nguyên con trỏ + vị trí cuộn qua mỗi lần vẽ lại |
 | Nút **Memory Hub** mở ra trang trắng/404 | Đường dẫn tiện ích | Bản này đã tự suy ra đường dẫn theo vị trí thật của tiện ích, chỉ cần tải lại trang (Ctrl+F5) |
 | Cài rồi mà không thấy gì trong menu | Còn bản VVV cũ đang chạy | Gỡ `vvv-unified-core` / `vvv-story-memory-suite`, tải lại SillyTavern |
 

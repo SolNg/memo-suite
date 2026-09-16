@@ -126,7 +126,7 @@ const overlays={
   diagnostics(){return [...overlayRegistry.keys()];},
 };
 
-const viewportState={cleanup:null,last:null};
+const viewportState={cleanup:null,last:null,baseHeight:0};
 // Nhận diện thiết bị lúc chạy. Media query của CSS không đủ tin cậy trong
 // WKWebView (app Tauri/SillyTavern trên iOS), nên ta tự xác định rồi gắn thuộc
 // tính lên <html> để cả CSS lẫn JS cùng dựa vào một nguồn duy nhất:
@@ -164,10 +164,18 @@ function syncVisualViewport(){
   // Bàn phím ảo chiếm chỗ: vùng nhìn thấy thấp hơn hẳn chiều cao cửa sổ.
   const windowHeight=Math.max(1,Number(globalThis.innerHeight||height));
   const keyboard=mobile&&(windowHeight-height)>120;
-  const next={left,top,width,height,mobile:!!mobile,ios:device.ios,touch:device.touch,keyboard};
+  // Không co lớp phủ lại khi bàn phím bật lên. WebKit trên iOS huỷ luôn focus vừa
+  // đặt nếu ô đang gõ bị dịch chuyển/đổi kích thước giữa lúc bàn phím trượt lên —
+  // đó chính là cảnh bàn phím nháy một cái rồi tắt. Giữ nguyên chiều cao cũ và chỉ
+  // báo ra chiều cao bàn phím để phần nội dung tự chừa chỗ cuộn.
+  if(!keyboard)viewportState.baseHeight=height;
+  const shellHeight=keyboard?(viewportState.baseHeight||windowHeight):height;
+  const keyboardHeight=Math.max(0,shellHeight-height);
+  const next={left,top,width,height,shellHeight,keyboardHeight,mobile:!!mobile,ios:device.ios,touch:device.touch,keyboard};
   const root=document.documentElement;
   root.style.setProperty('--vvvu-vv-left',`${left}px`);root.style.setProperty('--vvvu-vv-top',`${top}px`);
-  root.style.setProperty('--vvvu-vv-width',`${width}px`);root.style.setProperty('--vvvu-vv-height',`${height}px`);
+  root.style.setProperty('--vvvu-vv-width',`${width}px`);root.style.setProperty('--vvvu-vv-height',`${shellHeight}px`);
+  root.style.setProperty('--vvvu-kb-height',`${keyboardHeight}px`);
   root.dataset.vvvuDevice=mobile?'mobile':'desktop';
   root.toggleAttribute('data-vvvu-mobile',!!mobile);
   root.toggleAttribute('data-vvvu-ios',!!device.ios);
