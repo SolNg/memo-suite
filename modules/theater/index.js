@@ -3489,6 +3489,8 @@ import { sillyTavernRequestHeaders } from '../shared/server-client.js';
             // lần thì bàn phím nháy lên rồi tắt. Gọi focus() ngay trong cử chỉ chạm
             // của người dùng là cách duy nhất chắc chắn mở được bàn phím.
             const FIELD_SELECTOR='input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),textarea';
+            modal.addEventListener('input', event => markFieldDirty(event.target), true);
+            modal.addEventListener('change', event => markFieldDirty(event.target), true);
             modal.addEventListener('touchstart', () => { stateRuntime.touchHolding=true; }, { passive: true });
             const releaseTouch = () => { stateRuntime.touchHolding=false; stateRuntime.touchEndedAt=Date.now(); };
             modal.addEventListener('touchcancel', releaseTouch, { passive: true });
@@ -17789,15 +17791,44 @@ ${JSON.stringify(evidence)}`;
     }
 
     // Vẽ lại làm mất con trỏ và vị trí cuộn; chụp lại trước rồi trả về sau.
+    // Những ô người dùng đã tự gõ nhưng CHƯA bấm Lưu. Bảng vẽ lại thì dựng ô nhập
+    // từ cấu hình đang có trên máy chủ, nên nếu không giữ lại thì mọi thứ vừa gõ
+    // biến mất — đúng cảnh bấm dấu ✓ đóng bàn phím của iOS là trắng hết cả form,
+    // vì bỏ focus chính là lúc lần vẽ lại đang bị hoãn được chạy.
+    function markFieldDirty(node) {
+        if(!node?.id)return;
+        if(!node.matches?.('input,textarea,select'))return;
+        if(!node.closest?.('#vvvtm-content'))return;
+        (stateRuntime.dirtyFields||=new Set()).add(node.id);
+    }
+    function panelFields(content) {
+        return content.querySelectorAll('input[id],textarea[id],select[id]');
+    }
     function captureFieldFocus(content) {
+        const snapshot={scrollTop:content.scrollTop,values:[]};
+        const dirty=stateRuntime.dirtyFields;
+        if(dirty?.size)for(const node of panelFields(content)){
+            if(!dirty.has(node.id))continue;
+            snapshot.values.push({id:node.id,value:node.value,checked:node.checked});
+        }
         const active=document.activeElement;
-        if(!active||!content.contains(active)||!active.id)return null;
-        const snapshot={scrollTop:content.scrollTop,id:active.id};
-        if(typeof active.selectionStart==='number'){snapshot.start=active.selectionStart;snapshot.end=active.selectionEnd;}
-        return snapshot;
+        if(active&&content.contains(active)&&active.id){
+            snapshot.id=active.id;
+            if(typeof active.selectionStart==='number'){snapshot.start=active.selectionStart;snapshot.end=active.selectionEnd;}
+        }
+        return snapshot.id||snapshot.values.length?snapshot:null;
     }
     function restoreFieldFocus(content, snapshot) {
         if(!snapshot)return;
+        if(snapshot.values.length){
+            const wanted=new Map(snapshot.values.map(item=>[item.id,item]));
+            for(const node of panelFields(content)){
+                const item=wanted.get(node.id);
+                if(!item)continue;
+                if(node.type==='checkbox'||node.type==='radio')node.checked=item.checked;
+                else node.value=item.value;
+            }
+        }
         if(Number.isFinite(snapshot.scrollTop))content.scrollTop=snapshot.scrollTop;
         const node=snapshot.id?document.getElementById(snapshot.id):null;
         if(!node)return;
@@ -17826,6 +17857,10 @@ ${JSON.stringify(evidence)}`;
             return;
         }
         stateRuntime.pendingTabRender=false;
+        if(stateRuntime.lastRenderedTab!==stateRuntime.currentTab){
+            stateRuntime.dirtyFields?.clear?.();
+            stateRuntime.lastRenderedTab=stateRuntime.currentTab;
+        }
         if(stateRuntime.currentTab!=='phone') undockRolePhoneFromTab({hide:true});
         const renderers={overview:renderOverview,tables:renderTables,timeline:renderTimeline,characters:renderCharacters,relations:renderRelations,secrets:renderSecrets,summary:renderSummaryCenter,retrieval:renderRetrieval,phone:renderPhone,worldlife:renderCharacterWorld,appearance:renderAppearance,chapters:renderChapters,diagnostics:renderDiagnostics,api:renderApi,settings:renderSettings};
         const focusSnapshot=captureFieldFocus(content);

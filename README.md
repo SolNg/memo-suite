@@ -96,6 +96,9 @@ nên giao diện đổi theo thiết bị thật chứ không đoán theo bề r
   nguyên chiều cao và chỉ chừa thêm chỗ cuộn bằng đúng chiều cao bàn phím.
 - **Không vẽ lại giữa lúc đang chạm hoặc đang gõ**, và giữ nguyên con trỏ cùng vị
   trí cuộn qua mỗi lần vẽ lại.
+- **Giữ nguyên những gì đã gõ mà chưa Lưu.** Bấm dấu ✓ đóng bàn phím của iOS chính
+  là bỏ focus, mà bỏ focus lại cho lần vẽ lại đang bị hoãn chạy ngay — ô nhập được
+  dựng lại từ cấu hình trên máy chủ nên trước đây trắng sạch cả form.
 - **Bảng điều khiển bám `visualViewport`**, không tràn ngang, không kéo qua kéo lại;
   bàn phím hiện lên thì khung co lại theo (`data-vvvu-keyboard`).
 - **Ô nhập cỡ chữ 16px, vùng chạm ≥44px** để iOS không tự phóng to trang.

@@ -55,6 +55,7 @@ assert.ok(core.includes('viewportState.baseHeight')&&core.includes('--vvvu-kb-he
 assert.ok(!theaterCss.includes('html[data-vvvu-keyboard] .vvvtm-tabs { display:none; }'),'hiding the tab bar while typing moves the focused field on iOS');
 assert.ok(theater.includes('<label class="api-field" for='),'API fields must stay inside their own label for iOS tap forwarding');
 assert.ok(theater.includes('function renderPausedByUser'),'render guard during touch/typing missing');
+assert.ok(theater.includes('function markFieldDirty'),'unsaved field values must survive a re-render');
 assert.ok(theater.includes("new URL('../../memory-hub/index.html', import.meta.url)"),'Memory Hub standalone path not patched');
 assert.ok(!theater.includes('/scripts/extensions/third-party/vvv-unified-core/memory-hub/index.html'),'legacy Memory Hub path remains');
 for(const absent of ['modules/cardvault/index.js','modules/creative/index.js'])assert.ok(!fs.existsSync(path.join(root,absent)),`unwanted module included: ${absent}`);

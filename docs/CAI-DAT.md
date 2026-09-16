@@ -390,6 +390,7 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | iPhone/iPad phải chạm **hai lần** mới ăn | Quy tắc `:hover` của bản gốc: iOS biến cú chạm đầu thành "rê chuột" | Bản này đã bọc mọi quy tắc `:hover` trong `@media (hover:hover)`; chỉ cần tải lại trang (Ctrl+F5 / xoá cache trình duyệt trên máy) |
 | Màn hình **dọc** vẫn phải chạm hai lần, màn hình ngang thì được | Bản gốc ghim `width:100vw; height:100dvh` kèm `!important` cho màn ≤760px, đè mất phần bám theo vùng nhìn thấy; bàn phím bật lên là ô đang gõ bị xê dịch nên iOS huỷ focus | Đã sửa: các khai báo kích thước cho điện thoại nay cũng dùng `!important`, và lớp phủ **không co lại** khi bàn phím mở |
 | Gõ được vài chữ thì mất con trỏ | Bảng vẽ lại giữa lúc đang gõ | Đã sửa: hoãn vẽ lại suốt cử chỉ chạm và khi con trỏ còn trong ô, đồng thời giữ nguyên con trỏ + vị trí cuộn qua mỗi lần vẽ lại |
+| Bấm dấu **✓** trên bàn phím iOS là mất sạch những gì vừa nhập | Bỏ focus làm lần vẽ lại đang bị hoãn chạy ngay, mà ô nhập thì được dựng lại từ cấu hình **đang có trên máy chủ** | Đã sửa: những ô bạn tự gõ mà chưa bấm **Lưu** được giữ nguyên qua mỗi lần vẽ lại. Vẫn phải bấm **Lưu** thì khóa mới thật sự nằm trên máy chủ |
 | Nút **Memory Hub** mở ra trang trắng/404 | Đường dẫn tiện ích | Bản này đã tự suy ra đường dẫn theo vị trí thật của tiện ích, chỉ cần tải lại trang (Ctrl+F5) |
 | Cài rồi mà không thấy gì trong menu | Còn bản VVV cũ đang chạy | Gỡ `vvv-unified-core` / `vvv-story-memory-suite`, tải lại SillyTavern |
 
