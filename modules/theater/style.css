@@ -240,6 +240,7 @@ html.vvvtm-open { overflow: hidden !important; }
 .api-field.wide { grid-column:1/-1; }
 .api-field textarea { min-height:90px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
 .api-result { min-height:76px; max-height:220px; overflow:auto; padding:12px; border:1px solid var(--vvvtm-line); border-radius:12px; background:rgba(0,0,0,.26); color:#c4b5fd; white-space:pre-wrap; overflow-wrap:anywhere; }
+.vvvtm-server-stale { margin:10px 0 0; padding:10px 12px; border:1px solid rgba(251,113,133,.42); border-radius:10px; background:rgba(190,24,93,.14); color:#fecdd3; font-size:12px; line-height:1.65; overflow-wrap:anywhere; }
 .vvvtm-settings-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:12px; }
 .vvvtm-setting select { width:min(220px,45%); }
 .vvvtm-phone-modern { min-height:620px; display:grid; grid-template-columns:270px minmax(0,1fr); border:1px solid var(--vvvtm-line); border-radius:20px; overflow:hidden; background:rgba(0,0,0,.15); }

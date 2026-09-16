@@ -16,7 +16,7 @@ const ACCOUNT_ALLOWLIST = new Set(
         .split(',').map(value => value.trim()).filter(Boolean),
 );
 const accountAllowed = handle => ACCOUNT_ALLOWLIST.size === 0 || ACCOUNT_ALLOWLIST.has(handle);
-const VERSION = '0.9.3-r9s1p41-s15-032-u1715-world-map-avatar-studio-r21-memory-bridge-fixed35';
+const VERSION = '0.9.3-vi.4-r9s1p41-s15-032-u1715-world-map-avatar-studio-r21-memory-bridge-fixed35';
 const FICTION_CONTEXT_MARKER = '【THÂN PHẬN SÁNG TÁC: NHÀ VĂN SA CƠ】';
 const FICTION_CONTEXT = [
     FICTION_CONTEXT_MARKER,
@@ -3575,7 +3575,7 @@ export async function init(router) {
         res.json({ ok: true });
     });
 
-    console.log(`[${PLUGIN_ID}] v${VERSION} loaded for account vvv only`);
+    console.log(`[${PLUGIN_ID}] v${VERSION} đã nạp · tài khoản dùng được: ${ACCOUNT_ALLOWLIST.size ? [...ACCOUNT_ALLOWLIST].join(', ') : 'tất cả'}`);
     return Promise.resolve();
 }
 

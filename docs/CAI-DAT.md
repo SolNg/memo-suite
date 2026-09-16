@@ -383,6 +383,7 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | **403** | Thiếu header CSRF hợp lệ | Đóng hết tab SillyTavern cũ, mở lại đúng một tab rồi thử lại |
 | **200** nhưng `only-vvv` | Tài khoản chưa được bật tính năng máy chủ | Xem lại phần cấu hình tài khoản của plugin |
 | Bấm **Lưu** báo thành công, mở lại vẫn trống | Đang xem nhầm tài khoản | Dữ liệu tách riêng theo tài khoản đăng nhập; đăng nhập đúng tài khoản đã lưu |
+| **Đã tải 0 mô hình** mà ô kết quả báo máy chủ trả lời thành công | Plugin máy chủ vẫn là **mã cũ đang chạy trong tiến trình Node** — chép tệp mới vào thư mục là chưa đủ | **Khởi động lại SillyTavern.** Xem thẻ **“Phía máy chủ”** ở đầu tab API: phiên bản phải có chuỗi `vi.` — không có nghĩa là còn bản cũ |
 | **Đã lấy được 0 mô hình** | Bản cũ chỉ đọc đúng một kiểu phản hồi | Bản này đã sửa: tự thử cả ba kiểu xác thực (`Bearer`, `?key=`, `x-api-key`) và đọc mọi kiểu danh sách mô hình. Nếu vẫn không ra thì ô kết quả in rõ từng lần thử thất bại vì lý do gì |
 | Ô kết quả in `HTTP 401` / `HTTP 403` | Khóa sai hoặc hết hạn | Dán lại khóa rồi **Lưu**, sau đó bấm **Lấy danh sách mô hình** |
 | Ô kết quả in `HTTP 404` | Base URL thiếu/thừa đường dẫn | Loại tương thích OpenAI thì Base URL kết thúc bằng `/v1`, không kèm `/chat/completions` |
@@ -394,6 +395,24 @@ Mở **F12 → tab Network**, bấm nút đang lỗi rồi xem dòng yêu cầu 
 | Bấm dấu **✓** trên bàn phím iOS là mất sạch những gì vừa nhập | Bỏ focus làm lần vẽ lại đang bị hoãn chạy ngay, mà ô nhập thì được dựng lại từ cấu hình **đang có trên máy chủ** | Đã sửa: những ô bạn tự gõ mà chưa bấm **Lưu** được giữ nguyên qua mỗi lần vẽ lại. Vẫn phải bấm **Lưu** thì khóa mới thật sự nằm trên máy chủ |
 | Nút **Memory Hub** mở ra trang trắng/404 | Đường dẫn tiện ích | Bản này đã tự suy ra đường dẫn theo vị trí thật của tiện ích, chỉ cần tải lại trang (Ctrl+F5) |
 | Cài rồi mà không thấy gì trong menu | Còn bản VVV cũ đang chạy | Gỡ `vvv-unified-core` / `vvv-story-memory-suite`, tải lại SillyTavern |
+
+---
+
+## Hai thứ phải cập nhật riêng, đừng nhầm
+
+Tiện ích có **hai nửa**, nằm ở hai chỗ khác nhau và cập nhật theo hai cách khác nhau:
+
+| | Nằm ở đâu | Cập nhật thế nào | Xem phiên bản ở đâu |
+| --- | --- | --- | --- |
+| **Giao diện** (tiện ích) | `public/scripts/extensions/third-party/memo-suite` | Trình duyệt tải lại là xong — nhưng phải **xoá bộ nhớ đệm** | Thẻ **“Bản tiện ích trên máy này”** |
+| **Plugin máy chủ** | `plugins/vvv-theater-memory-server` | Chép tệp mới **rồi khởi động lại SillyTavern** | Thẻ **“Phía máy chủ”** |
+
+Cả hai phiên bản đều phải có chuỗi **`vi.`**. Nếu thẻ “Phía máy chủ” ghi **“Đang chạy bản CŨ”**,
+bảng điều khiển sẽ hiện luôn một dòng cảnh báo đỏ ngay dưới phần thống kê.
+
+> Plugin máy chủ chạy trong tiến trình Node của SillyTavern. Node đã nạp tệp vào bộ nhớ
+> rồi thì **chép đè tệp mới không có tác dụng gì cho tới khi khởi động lại**. Đây là lý do
+> hay gặp nhất khiến “sửa rồi mà vẫn y như cũ”.
 
 ---
 

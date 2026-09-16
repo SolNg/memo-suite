@@ -56,6 +56,12 @@ assert.ok(!theaterCss.includes('html[data-vvvu-keyboard] .vvvtm-tabs { display:n
 assert.ok(theater.includes('<label class="api-field" for='),'API fields must stay inside their own label for iOS tap forwarding');
 assert.ok(theater.includes('function renderPausedByUser'),'render guard during touch/typing missing');
 assert.ok(theater.includes('function markFieldDirty'),'unsaved field values must survive a re-render');
+// Plugin máy chủ chỉ được nạp lại khi khởi động lại SillyTavern; bảng điều khiển
+// so dấu "vi.N" trong /health để nói thẳng khi máy chủ còn chạy mã cũ.
+assert.ok(/const VERSION = '[^']*vi\.\d/.test(server),'server VERSION must carry the vi.N build mark the panel compares against');
+assert.ok(/const BUILD='[^']*vi\.\d/.test(core),'extension BUILD must carry the vi.N build mark shown in the panel');
+assert.ok(theater.includes("!serverVersion.includes('vi.')"),'stale server-plugin warning missing');
+assert.ok(!server.includes('loaded for account vvv only'),'stale single-account startup log remains');
 assert.ok(theater.includes("new URL('../../memory-hub/index.html', import.meta.url)"),'Memory Hub standalone path not patched');
 assert.ok(!theater.includes('/scripts/extensions/third-party/vvv-unified-core/memory-hub/index.html'),'legacy Memory Hub path remains');
 for(const absent of ['modules/cardvault/index.js','modules/creative/index.js'])assert.ok(!fs.existsSync(path.join(root,absent)),`unwanted module included: ${absent}`);

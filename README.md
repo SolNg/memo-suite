@@ -65,6 +65,17 @@ bash install-server.sh /home/www/SillyTavern
 
 Phía máy chủ vẫn giữ nguyên hành vi cũ, thư mục dữ liệu không đổi.
 
+## Hai nửa, hai cách cập nhật
+
+- **Giao diện** (`public/scripts/extensions/third-party/memo-suite`) — trình duyệt tải lại
+  là xong, nhưng iOS giữ cache rất dai nên phải xoá bộ nhớ đệm.
+- **Plugin máy chủ** (`plugins/vvv-theater-memory-server`) — chạy trong tiến trình Node của
+  SillyTavern, **chép tệp mới vào là chưa đủ, phải khởi động lại SillyTavern**.
+
+Tab “API & mô hình” hiện phiên bản của cả hai; cả hai đều phải có chuỗi `vi.`. Nếu plugin
+máy chủ còn là bản cũ, bảng điều khiển hiện thẳng một dòng cảnh báo đỏ thay vì để bạn
+đoán — vì bản cũ chính là thứ trả về “0 mô hình” mà không kèm lý do.
+
 ## Tự kiểm tra
 
 ```bash
